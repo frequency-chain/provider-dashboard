@@ -3,6 +3,7 @@
     <link rel="stylesheet" href="/app.css">
 </svelte:head>
 <script>
+    import Hello from "../components/Hello.svelte";
     let connected = false;
     let token = '';
     let blockNumber = 0;
@@ -31,3 +32,5 @@
 
     <button type="button" id="connectButton" disabled>3. Connect to Node</button>
 </form>
+
+<Hello count=10/>
