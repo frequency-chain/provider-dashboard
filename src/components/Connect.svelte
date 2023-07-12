@@ -48,18 +48,16 @@
 	}
 
 	async function loadAccounts() {
-		(document.getElementById("signing-address") as HTMLElement).innerHTML = "";
-
 		// populating for localhost and for a parachain are different since with localhost, there is
 		// access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
-		validAccounts = {};
+		let localAccounts = {};
 		if (selectedProvider === "ws://localhost:9944") {
 			const keyring = new Keyring({ type: 'sr25519' });
 
 			['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach(accountName => {
 				let account = keyring.addFromUri(accountName);
 				account.meta.name = accountName;
-				validAccounts[account.address] = account;
+				localAccounts[account.address] = account;
 			})
 		} else {
 			const extensions = await web3Enable('Frequency parachain signer helper');
@@ -72,10 +70,11 @@
 				// display only the accounts allowed for this chain
 				if (!a.meta.genesisHash
 					|| GENESIS_HASHES[selectedProvider] === a.meta.genesisHash) {
-					validAccounts[a.address] = a;
+					localAccounts[a.address] = a;
 				}
 			});
 		}
+		validAccounts = localAccounts;
 	}
 
 	async function updateConnectionStatus(api) {
@@ -121,7 +120,8 @@
 			connected = api.isConnected;
 			await updateConnectionStatus(api);
 			await loadAccounts();
-		} catch {
+		} catch (e: any){
+			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
 		} finally {
 			// Disable connect button
