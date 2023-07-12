@@ -2,13 +2,34 @@
     <link rel="stylesheet" href="//unpkg.com/mvp.css@1.12/mvp.css">
     <link rel="stylesheet" href="/app.css">
 </svelte:head>
-<script>
-    import Hello from "../components/Hello.svelte";
+<script lang=ts>
+    import { SvelteComponent } from "svelte";
+    import Connect from "../components/Connect.svelte";
+
     let connected = false;
     let token = '';
     let blockNumber = 0;
 
+    let providers = [
+        {
+            name: 'Rococo',
+            url: 'wss://rpc.rococo.frequency.xyz'
+        },
+        {
+            name: 'Localhost',
+            url: 'ws://localhost:9944'
+        },
+        {
+            name: 'other',
+            url: 'wss://some.node'
+        }
+    ];  
+    let selectedProvider: string = providers[0].url;
+    let otherProvider: string = '';
+    let validAccounts = {};
+    let canConnect = false;
 </script>
+
 <h1>Welcome to Provider Dashboard</h1>
 <div id="connection-status">
     <h3>Connection status: { connected ? "Connected" : "Not connected" }</h3>
@@ -19,18 +40,24 @@
 </div>
 <form id="setupForm">
     <label for="provider-list">1. Choose an Endpoint</label>
-    <select id="provider-list" required>
-        <option value="wss://0.rpc.frequency.xyz">Mainnet 0</option>
-        <option value="wss://1.rpc.frequency.xyz">Mainnet 1</option>
-        <option value="wss://rpc.rococo.frequency.xyz" name="rococo">Rococo</option>
-        <option value="ws://localhost:9944" name="localhost">Localhost</option>
-        <option>other</option>
+    <select id="provider-list" required
+        bind:value={selectedProvider}
+    >
+        {#each providers as provider}
+            <option value={provider.url}>{provider.name}</option>
+        {/each}
     </select>
 
+    <Connect bind:connected={connected}
+             bind:blockNumber={blockNumber}
+             bind:validAccounts={validAccounts}
+             selectedProvider={selectedProvider}
+             otherProvider={otherProvider}
+    />
     <label for="signing-address">2. Choose a Transaction Signing Address</label>
-    <select id="signing-address" required></select>
-
-    <button type="button" id="connectButton" disabled>3. Connect to Node</button>
+    <select id="signing-address" required>
+        {#each Object.keys(validAccounts) as address}
+            <option value={address}>{validAccounts[address].meta.name}: {address}</option>
+        {/each}
+    </select>
 </form>
-
-<Hello count=10/>
