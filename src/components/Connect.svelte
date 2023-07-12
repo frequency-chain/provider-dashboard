@@ -53,6 +53,11 @@
 				alert("Polkadot{.js} extension not found; please install it first.");
 				return;
 			}
+			// const extensions = await web3Enable('Frequency parachain signer helper');
+			// if (!extensions || !extensions.length) {
+			// 	alert("Polkadot{.js} extension not found; please install it first.");
+			// 	throw new Error("Polkadot{.js} extension not found; please install it first.");
+			// }
 			let allAccounts = await web3Accounts();
 			allAccounts.forEach(a => {
 				// display only the accounts allowed for this chain
@@ -96,6 +101,14 @@
 		}
 
 		// Singleton Provider because it starts trying to connect here.
+		// Check that the polkadot extension is installed if connecting to Rococo
+		 if (selectedProvider === "Rococo") {
+			const extensions = await web3Enable('Frequency parachain signer helper');
+			if (!extensions || !extensions.length) {
+				alert("Polkadot{.js} extension not found; please install it first.");
+				throw new Error("Polkadot{.js} extension not found; please install it first.");
+			}
+		}
 
 		wsProvider = new WsProvider(selectedProviderURI);
 		apiPromise = await ApiPromise.create({
@@ -135,8 +148,11 @@
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProviderURI || "empty value"}. Please enter a valid and reachable Websocket URL.`);
 		} finally {
-			// Disable connect button
-			canConnect = false;
+			if (apiPromise?.isConnected) {
+				// Disable connect button
+				canConnect = false;
+				console.log("Connected to ", selectedProviderURI);
+			}
 		}
 		return;
 	}

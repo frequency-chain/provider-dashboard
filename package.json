@@ -11,7 +11,7 @@
 		"test": "vitest",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest src",
-		"coverage": "vitest run --covernage"
+		"coverage": "vitest run --coverage"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^2.0.0",
@@ -19,6 +19,7 @@
 		"@sveltejs/kit": "^1.20.4",
 		"@sveltejs/vite-plugin-svelte": "^2.4.2",
 		"@testing-library/jest-dom": "^5.16.5",
+		"@vitest/coverage-v8": "^0.33.0",
 		"jest": "^29.6.1",
 		"jest-environment-jsdom": "^29.6.1",
 		"jsdom": "^22.1.0",

@@ -42,23 +42,23 @@ describe('Connect.svelte Unit Tests', () => {
         // Be sure to wait for all the promises to resolve before checking the result
         await waitFor(() => {
             expect(select).toHaveValue('Rococo');
-            const selectedProvider = getByTextContent('Selected Provider: Rococo');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        let selectedProvider = getByTextContent('Selected Provider: Rococo');
+        expect(selectedProvider).toBeInTheDocument();
 
         await fireEvent.change(select, { target: { value: 'Localhost' } });
         await waitFor(() => {
             expect(select).toHaveValue('Localhost');
-            const selectedProvider = getByTextContent('Selected Provider: Localhost');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        selectedProvider = getByTextContent('Selected Provider: Localhost');
+        expect(selectedProvider).toBeInTheDocument();
 
         await fireEvent.change(select, { target: { value: 'Other' } }); 
         await waitFor(() => {
             expect(select).toHaveValue('Other');
-            const selectedProvider = getByTextContent('Selected Provider: Other');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        selectedProvider = getByTextContent('Selected Provider: Other');
+        expect(selectedProvider).toBeInTheDocument();
     })
 
     it('Other provider can be entered when Other selected', async () => {
