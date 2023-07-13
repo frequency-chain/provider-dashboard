@@ -1,6 +1,6 @@
 <svelte:head>
-    <link rel="stylesheet" href="//unpkg.com/mvp.css@1.12/mvp.css">
-    <link rel="stylesheet" href="/app.css">
+    <link rel="stylesheet" href="https://unpkg.com/mvp.css@1.12/mvp.css">
+    <link rel="stylesheet" href="app.css">
 </svelte:head>
 <script lang=ts>
     import { SvelteComponent } from "svelte";
@@ -80,10 +80,12 @@
              otherProvider={otherProvider}
              bind:token={token}
     />
-    <label for="signing-address">2. Choose a Transaction Signing Address</label>
-    <select id="signing-address" bind:value={signingAddress}>
-        {#each Object.keys(validAccounts) as address}
-            <option value={address}>{validAccounts[address].meta.name}: {address}</option>
-        {/each}
-    </select>
+    <fieldset class={connected ? "" : "hidden"}>
+        <label for="signing-address" >2. Choose a Transaction Signing Address</label>
+        <select id="signing-address" bind:value={signingAddress}>
+            {#each Object.keys(validAccounts) as address}
+                <option value={address}>{validAccounts[address].meta.name}: {address}</option>
+            {/each}
+        </select>
+    </fieldset>
 </form>
