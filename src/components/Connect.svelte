@@ -1,5 +1,6 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
+	import {storeConnected, storeValidAccounts} from "$lib/stores";
 
 	// @ts-ignore
 	let ApiPromise, WsProvider, options, web3Enable, web3Accounts, Keyring;
@@ -22,9 +23,9 @@
 
 	export let selectedProvider: string;
 	export let otherProvider: string;
-	export let connected: boolean;
+	// export let connected: boolean;
 	export let blockNumber: number;
-	export let validAccounts = {};
+	export let token;
 
 	// Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
 	export let canConnect = false;
@@ -35,9 +36,7 @@
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
 
-	let PREFIX = 42;
-	let UNIT = "UNIT";
-
+	// let PREFIX = 42;
 	let api;
 	let singletonApi;
 	let singletonProvider;
@@ -74,15 +73,20 @@
 				}
 			});
 		}
-		validAccounts = localAccounts;
+		storeValidAccounts.update((val) => val = localAccounts);
+	}
+
+	function getToken(chain) {
+		let rawUnit = chain.tokenSymbol.toString();
+		return rawUnit.slice(1,rawUnit.length-1);
 	}
 
 	async function updateConnectionStatus(api) {
 		const chain = await api.rpc.system.properties();
-		PREFIX = Number(chain.ss58Format.toString());
-		UNIT = chain.tokenSymbol.toString();
-		(document.getElementById("unit") as HTMLElement).innerText = UNIT;
+		// PREFIX = Number(chain.ss58Format.toString());
+		token = getToken(chain);
 		blockNumber = await getBlockNumber(singletonApi);
+		storeConnected.update((val) => val = api.isConnected);
 	}
 
 	async function getApi(providerUri: string) {
@@ -112,14 +116,10 @@
 
 	async function connect() {
 		// Exception for the "other" endpoint
-		if (selectedProvider === 'wss://some.node') {
-			selectedProvider = otherProvider;
-		}
 		try {
 			api = await getApi(selectedProvider);
-			connected = api.isConnected;
-			await updateConnectionStatus(api);
 			await loadAccounts();
+			await updateConnectionStatus(api);
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
@@ -135,7 +135,7 @@
 	id="other-endpoint-url"
 	placeholder="wss://some.frequency.node"
 	bind:value={otherProvider}
-	disabled={selectedProvider != 'wss://some.node'}
+	disabled={selectedProvider.toString() != 'Other'}
 />
 <button
 	on:click|preventDefault={async () => await connect()}
