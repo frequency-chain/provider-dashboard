@@ -17,6 +17,7 @@
     let signingAddress = "";
     storeConnected.subscribe((val) => connected = val);
     storeValidAccounts.subscribe((val) => {
+        console.info("page.svelte storeValidAccounts.subscribe");
         validAccounts = val;
         signingAddress = Object.values(val)[0]?.meta.address;
     });
@@ -32,8 +33,8 @@
             url: 'ws://localhost:9944'
         },
         {
-            name: 'other',
-            url: 'wss://some.node'
+            name: 'Other',
+            url: 'Other'
         }
     ];  
     let selectedProvider: string = providers[0].url;
@@ -69,7 +70,7 @@
         bind:value={selectedProvider}
     >
         {#each providers as provider}
-            <option value={provider.url}>{provider.name}</option>
+            <option value={provider.url}>{provider.name}: {provider.url !== "Other" ? provider.url : "Custom websocket"}</option>
         {/each}
     </select>
 
@@ -85,5 +86,4 @@
             <option value={address}>{validAccounts[address].meta.name}: {address}</option>
         {/each}
     </select>
-<p>    {signingAddress}</p>
 </form>

@@ -36,7 +36,7 @@
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
 
-	let PREFIX = 42;
+	// let PREFIX = 42;
 	let api;
 	let singletonApi;
 	let singletonProvider;
@@ -83,9 +83,10 @@
 
 	async function updateConnectionStatus(api) {
 		const chain = await api.rpc.system.properties();
-		PREFIX = Number(chain.ss58Format.toString());
+		// PREFIX = Number(chain.ss58Format.toString());
 		token = getToken(chain);
 		blockNumber = await getBlockNumber(singletonApi);
+		storeConnected.update((val) => val = api.isConnected);
 	}
 
 	async function getApi(providerUri: string) {
@@ -115,14 +116,10 @@
 
 	async function connect() {
 		// Exception for the "other" endpoint
-		if (selectedProvider === 'wss://some.node') {
-			selectedProvider = otherProvider;
-		}
 		try {
 			api = await getApi(selectedProvider);
-			storeConnected.update((val) => val = api.isConnected);
-			await updateConnectionStatus(api);
 			await loadAccounts();
+			await updateConnectionStatus(api);
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
@@ -138,7 +135,7 @@
 	id="other-endpoint-url"
 	placeholder="wss://some.frequency.node"
 	bind:value={otherProvider}
-	disabled={selectedProvider.toString() != 'other'}
+	disabled={selectedProvider.toString() != 'Other'}
 />
 <button
 	on:click|preventDefault={async () => await connect()}

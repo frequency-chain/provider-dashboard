@@ -3,10 +3,10 @@
     let connected;
     storeConnected.subscribe((val) => connected = val);
     let capacityDetails = {
-        remaining_capacity: 0n,
-        total_tokens_staked: 0n,
-        total_capacity_issued: 0n,
-        last_replenished_epoch: 0n
+        remaining_capacity:      8974233n,
+        total_tokens_staked:   500000000n,
+        total_capacity_issued:   1000000n,
+        last_replenished_epoch: 12445n
     };
     export let token;
 </script>
