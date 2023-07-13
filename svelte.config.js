@@ -1,5 +1,5 @@
-import adapter from '@sveltejs/adapter-auto';
 import { vitePreprocess } from '@sveltejs/kit/vite';
+import adapter from '@sveltejs/adapter-static';
 
 // TODO: set up deployment to GitHub pages. See https://kit.svelte.dev/docs/adapter-static#github-pages
 
@@ -17,7 +17,7 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '200.html', // dependent on host platform, see GitHub pages doc, maybe?
+			fallback: undefined, // dependent on host platform, see GitHub pages doc, maybe?
 			precompress: false,
 			strict: true,
 		}),
