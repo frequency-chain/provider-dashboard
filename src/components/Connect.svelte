@@ -1,25 +1,35 @@
 <script lang=ts>
-	import { onMount } from 'svelte';
-	import {storeConnected, storeValidAccounts} from "$lib/stores";
+	// import { onMount } from 'svelte';
+	import {storeConnected, storeValidAccounts, dotApi} from "$lib/stores";
+	import type {DotApi} from "$lib/storeTypes";
+	// import {firstValueFrom, Observable} from "rxjs";
+	import {ApiPromise, WsProvider} from "@polkadot/api";
+	import {frequency} from "@frequency-chain/api-augment/definitions";
+	import {web3Enable, web3Accounts} from "@polkadot/extension-dapp";
+	import { Keyring } from "@polkadot/api";
+
+	let options = frequency.options;
 
 	// @ts-ignore
-	let ApiPromise, WsProvider, options, web3Enable, web3Accounts, Keyring;
-	onMount(async() => {
-		// @ts-ignore
-		let dotapi = await import('https://cdn.jsdelivr.net/npm/@polkadot/api@10.5.1/+esm');
-		ApiPromise = dotapi.ApiPromise;
-		WsProvider = dotapi.WsProvider;
-		// @ts-ignore
-		let polkadotExt = await import('https://cdn.jsdelivr.net/npm/@polkadot/extension-dapp@0.46.2/+esm');
-		web3Enable = polkadotExt.web3Enable;
-		web3Accounts = polkadotExt.web3Accounts;
-		// @ts-ignore
-		let keyringApi = await import('https://cdn.jsdelivr.net/npm/@polkadot/keyring@12.1.2/+esm');
-		Keyring = keyringApi.Keyring;
-		// @ts-ignore
-	    let dotFreq = await import('https://cdn.jsdelivr.net/npm/@frequency-chain/api-augment@1.6.1/+esm');
-		options = dotFreq.options;
-	})
+	let apiPromise: ApiPromise;
+	let wsProvider: WsProvider;
+
+	// onMount(async() => {
+	// 	// @ts-ignore
+	// 	let apilib = await import('https://cdn.jsdelivr.net/npm/@polkadot/api@10.5.1/+esm');
+	// 	ApiPromise = apilib.ApiPromise;
+	// 	WsProvider = apilib.WsProvider;
+	// 	// @ts-ignore
+	// 	let polkadotExt = await import('https://cdn.jsdelivr.net/npm/@polkadot/extension-dapp@0.46.2/+esm');
+	// 	web3Enable = polkadotExt.web3Enable;
+	// 	web3Accounts = polkadotExt.web3Accounts;
+	// 	// @ts-ignore
+	// 	let keyringApi = await import('https://cdn.jsdelivr.net/npm/@polkadot/keyring@12.1.2/+esm');
+	// 	Keyring = keyringApi.Keyring;
+	// 	// @ts-ignore
+	//     let dotFreq = await import('https://cdn.jsdelivr.net/npm/@frequency-chain/api-augment@1.6.1/+esm');
+	// 	options = dotFreq.options;
+	// })
 
 	export let selectedProvider: string;
 	export let otherProvider: string;
@@ -36,13 +46,9 @@
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
 
-	// let PREFIX = 42;
-	let api;
-	let singletonApi;
-	let singletonProvider;
 
-	async function getBlockNumber(api: ApiPromise): Promise<number> {
-		let blockData = await api.rpc.chain.getBlock();
+	async function getBlockNumber(): Promise<number> {
+		let blockData = await apiPromise.rpc.chain.getBlock();
 		return blockData.block.header.number.toNumber()
 	}
 
@@ -81,12 +87,11 @@
 		return rawUnit.slice(1,rawUnit.length-1);
 	}
 
-	async function updateConnectionStatus(api) {
-		const chain = await api.rpc.system.properties();
-		// PREFIX = Number(chain.ss58Format.toString());
+	async function updateConnectionStatus() {
+		const chain = await apiPromise.rpc.system.properties();
 		token = getToken(chain);
-		blockNumber = await getBlockNumber(singletonApi);
-		storeConnected.update((val) => val = api.isConnected);
+		blockNumber = await getBlockNumber();
+		storeConnected.update((val) => val = apiPromise.isConnected);
 	}
 
 	async function getApi(providerUri: string) {
@@ -95,31 +100,40 @@
 		}
 		// Handle disconnects
 		if (providerUri) {
-			if (singletonApi) {
-				await singletonApi.disconnect();
-			} else if (singletonProvider) {
-				await singletonProvider.disconnect();
+			if (apiPromise) {
+				console.info("disconnecting api first.")
+				await apiPromise.disconnect();
+			} else if (wsProvider) {
+				console.info("disconnecting provider first.")
+				await wsProvider.disconnect();
 			}
 		}
 
 		// Singleton Provider because it starts trying to connect here.
-		singletonProvider = new WsProvider(providerUri);
-		singletonApi = await ApiPromise.create({
-			provider: singletonProvider,
+
+		wsProvider = new WsProvider(providerUri);
+		apiPromise = await ApiPromise.create({
+			provider: wsProvider,
 			...options,
 		});
 
-		await singletonApi.isReady;
-		return singletonApi;
+		await apiPromise.isReady;
+		let initializedDotApi: DotApi = {
+			wsProvider: WsProvider,
+			api: ApiPromise,
+			keyring: Keyring,
+			options
+		};
+		dotApi.update(currentApi => currentApi = initializedDotApi);
 	}
 
 
 	async function connect() {
 		// Exception for the "other" endpoint
 		try {
-			api = await getApi(selectedProvider);
+			await getApi(selectedProvider);
 			await loadAccounts();
-			await updateConnectionStatus(api);
+			await updateConnectionStatus();
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);

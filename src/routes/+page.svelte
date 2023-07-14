@@ -19,9 +19,14 @@
     storeValidAccounts.subscribe((val) => {
         console.info("page.svelte storeValidAccounts.subscribe");
         validAccounts = val;
-        signingAddress = Object.values(val)[0]?.meta.address;
+        transactionSigningAddress.update(addr => addr = Object.values(val)[0]?.meta.address);
     });
-    transactionSigningAddress.subscribe(val => signingAddress = val);
+    transactionSigningAddress.subscribe(addr => signingAddress = addr);
+
+    const onChangeTxnSigningAddress = (evt: Event) => {
+        let option = evt.target as HTMLOptionElement;
+        transactionSigningAddress.update(addr => addr = option.value);
+    }
 
     let providers = [
         {
@@ -57,8 +62,6 @@
         <h3>Connection status: { connected ? "Connected" : "Not connected" }</h3>
         <p>Token: <span id="unit">{token}</span></p>
         <p>Current block number: <span id="current-block">{blockNumber}</span></p>
-        <p>For itemized schema on Rococo, use Schema ID = 56</p>
-        <p>For paginated schema on Rococo, use Schema ID = 57</p>
     </div>
     <div id="capacity-status" class="status-item">
         <Capacity bind:token={token} />
@@ -82,7 +85,7 @@
     />
     <fieldset class={connected ? "" : "hidden"}>
         <label for="signing-address" >2. Choose a Transaction Signing Address</label>
-        <select id="signing-address" bind:value={signingAddress}>
+        <select id="signing-address" on:click={onChangeTxnSigningAddress}>
             {#each Object.keys(validAccounts) as address}
                 <option value={address}>{validAccounts[address].meta.name}: {address}</option>
             {/each}

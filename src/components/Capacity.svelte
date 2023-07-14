@@ -1,13 +1,34 @@
 <script>
-    import {storeConnected} from "$lib/stores";
+    import {storeConnected, transactionSigningAddress, dotApi} from "$lib/stores";
+    import {firstValueFrom} from "rxjs";
     let connected;
     storeConnected.subscribe((val) => connected = val);
+    let thisDotApi;
+    dotApi.subscribe(api => {
+        console.info("dotApi subscribe");
+        thisDotApi = api;
+        console.info(thisDotApi.api.isReady)
+    });
+
+
     let capacityDetails = {
-        remaining_capacity:      8974233n,
-        total_tokens_staked:   500000000n,
-        total_capacity_issued:   1000000n,
-        last_replenished_epoch: 12445n
+        remaining_capacity:      0n,
+        total_tokens_staked:   0n,
+        total_capacity_issued:   0n,
+        last_replenished_epoch: 0n
     };
+
+    let signingAddress = ""
+    transactionSigningAddress.subscribe(async (addr) => {
+        console.log("txn signing addr subscribe")
+        signingAddress = addr;
+        if (connected && thisApi.isReady) {
+            const providerId = await thisApi.query.msa.publicKeyToMsaId(addr);
+            const details = await firstValueFrom(thisApi.query.capacity.capacityLedger(providerId));
+            console.info({details})
+            capacityDetails = details;
+        }
+    });
     export let token;
 </script>
 <style>
