@@ -17,7 +17,7 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: undefined, // dependent on host platform, see GitHub pages doc, maybe?
+			fallback: '200.html', // dependent on host platform, see GitHub pages doc, maybe?
 			precompress: false,
 			strict: true,
 		}),

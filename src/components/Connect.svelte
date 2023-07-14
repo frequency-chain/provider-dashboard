@@ -1,35 +1,26 @@
 <script lang=ts>
-	// import { onMount } from 'svelte';
-	import {storeConnected, storeValidAccounts, dotApi} from "$lib/stores";
+	import { onMount } from 'svelte';
+	import {storeConnected, storeValidAccounts, dotApi, transactionSigningAddress} from "$lib/stores";
 	import type {DotApi} from "$lib/storeTypes";
-	// import {firstValueFrom, Observable} from "rxjs";
+	import { options } from "@frequency-chain/api-augment";
 	import {ApiPromise, WsProvider} from "@polkadot/api";
-	import {frequency} from "@frequency-chain/api-augment/definitions";
-	import {web3Enable, web3Accounts} from "@polkadot/extension-dapp";
 	import { Keyring } from "@polkadot/api";
 
-	let options = frequency.options;
+	// let options = frequency.options;
 
 	// @ts-ignore
 	let apiPromise: ApiPromise;
 	let wsProvider: WsProvider;
+	let web3Enable: (originName: string, compatInits?: (() => Promise<boolean>)[]) => Promise<Array<any>> = (): any => {};
+	let web3Accounts = (): any => {};
 
-	// onMount(async() => {
-	// 	// @ts-ignore
-	// 	let apilib = await import('https://cdn.jsdelivr.net/npm/@polkadot/api@10.5.1/+esm');
-	// 	ApiPromise = apilib.ApiPromise;
-	// 	WsProvider = apilib.WsProvider;
-	// 	// @ts-ignore
-	// 	let polkadotExt = await import('https://cdn.jsdelivr.net/npm/@polkadot/extension-dapp@0.46.2/+esm');
-	// 	web3Enable = polkadotExt.web3Enable;
-	// 	web3Accounts = polkadotExt.web3Accounts;
-	// 	// @ts-ignore
-	// 	let keyringApi = await import('https://cdn.jsdelivr.net/npm/@polkadot/keyring@12.1.2/+esm');
-	// 	Keyring = keyringApi.Keyring;
-	// 	// @ts-ignore
-	//     let dotFreq = await import('https://cdn.jsdelivr.net/npm/@frequency-chain/api-augment@1.6.1/+esm');
-	// 	options = dotFreq.options;
-	// })
+	onMount(async() => {
+		// This must be in onMount because the extension requires that you have a window to attach to.
+		// Since this project is precompiled, there will be no window until onMount
+		let polkadotExt = await import("@polkadot/extension-dapp");
+		web3Enable = polkadotExt.web3Enable;
+		web3Accounts = polkadotExt.web3Accounts;
+	});
 
 	export let selectedProvider: string;
 	export let otherProvider: string;
@@ -45,7 +36,6 @@
 		"wss://rpc.rococo.frequency.xyz": "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
-
 
 	async function getBlockNumber(): Promise<number> {
 		let blockData = await apiPromise.rpc.chain.getBlock();
@@ -79,7 +69,11 @@
 				}
 			});
 		}
-		storeValidAccounts.update((val) => val = localAccounts);
+		// to avoid updating subscribers with an empty list
+		if (Object.keys(localAccounts).length > 0) {
+			storeValidAccounts.update((val) => val = localAccounts);
+		}
+		return localAccounts;
 	}
 
 	function getToken(chain) {
@@ -117,10 +111,10 @@
 			...options,
 		});
 
-		await apiPromise.isReady;
+		await apiPromise?.isReady;
 		let initializedDotApi: DotApi = {
-			wsProvider: WsProvider,
-			api: ApiPromise,
+			wsProvider: wsProvider,
+			api: apiPromise,
 			keyring: Keyring,
 			options
 		};
@@ -132,8 +126,10 @@
 		// Exception for the "other" endpoint
 		try {
 			await getApi(selectedProvider);
-			await loadAccounts();
+			let accounts = await loadAccounts();
 			await updateConnectionStatus();
+			let firstAccount = Object.values(accounts)[0];
+			transactionSigningAddress.update((val) => val = firstAccount)
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);

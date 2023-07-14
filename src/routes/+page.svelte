@@ -41,7 +41,7 @@
             name: 'Other',
             url: 'Other'
         }
-    ];  
+    ];
     let selectedProvider: string = providers[0].url;
     let otherProvider: string = '';
 
@@ -85,7 +85,7 @@
     />
     <fieldset class={connected ? "" : "hidden"}>
         <label for="signing-address" >2. Choose a Transaction Signing Address</label>
-        <select id="signing-address" on:click={onChangeTxnSigningAddress}>
+        <select id="signing-address" on:change={onChangeTxnSigningAddress}>
             {#each Object.keys(validAccounts) as address}
                 <option value={address}>{validAccounts[address].meta.name}: {address}</option>
             {/each}
