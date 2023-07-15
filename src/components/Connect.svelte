@@ -5,8 +5,7 @@
 	import { options } from "@frequency-chain/api-augment";
 	import {ApiPromise, WsProvider} from "@polkadot/api";
 	import { Keyring } from "@polkadot/api";
-
-	// let options = frequency.options;
+	import {providers} from "$lib/connections";
 
 	// @ts-ignore
 	let apiPromise: ApiPromise;
@@ -22,8 +21,8 @@
 		web3Accounts = polkadotExt.web3Accounts;
 	});
 
-	export let selectedProvider: string;
-	export let otherProvider: string;
+	let selectedProvider: string = "Rococo";
+	let otherProvider: string;
 	// export let connected: boolean;
 	export let blockNumber: number;
 	export let token;
@@ -33,7 +32,7 @@
 	$: canConnect = selectedProvider !== "" || otherProvider !== "";
 
 	const GENESIS_HASHES: Record<string, string> = {
-		"wss://rpc.rococo.frequency.xyz": "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
+		Rococo: "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
 
@@ -45,14 +44,14 @@
 	async function loadAccounts() {
 		// populating for localhost and for a parachain are different since with localhost, there is
 		// access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
-		let localAccounts = {};
-		if (selectedProvider === "ws://localhost:9944") {
+		let foundAccounts = {};
+		if (selectedProvider === "Localhost") {
 			const keyring = new Keyring({ type: 'sr25519' });
 
 			['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach(accountName => {
 				let account = keyring.addFromUri(accountName);
 				account.meta.name = accountName;
-				localAccounts[account.address] = account;
+				foundAccounts[account.address] = account;
 			})
 		} else {
 			const extensions = await web3Enable('Frequency parachain signer helper');
@@ -65,15 +64,14 @@
 				// display only the accounts allowed for this chain
 				if (!a.meta.genesisHash
 					|| GENESIS_HASHES[selectedProvider] === a.meta.genesisHash) {
-					localAccounts[a.address] = a;
+					foundAccounts[a.address] = a;
 				}
 			});
 		}
 		// to avoid updating subscribers with an empty list
-		if (Object.keys(localAccounts).length > 0) {
-			storeValidAccounts.update((val) => val = localAccounts);
+		if (Object.keys(foundAccounts).length > 0) {
+			storeValidAccounts.update((val) => val = foundAccounts);
 		}
-		return localAccounts;
 	}
 
 	function getToken(chain) {
@@ -125,11 +123,10 @@
 	async function connect() {
 		// Exception for the "other" endpoint
 		try {
-			await getApi(selectedProvider);
-			let accounts = await loadAccounts();
+			let selectedProviderURI = providers[selectedProvider]
+			await getApi(selectedProviderURI);
+			await loadAccounts();
 			await updateConnectionStatus();
-			let firstAccount = Object.values(accounts)[0];
-			transactionSigningAddress.update((val) => val = firstAccount)
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
@@ -140,6 +137,13 @@
 		return;
 	}
 </script>
+<label for="provider-list">1. Choose an Endpoint</label>
+<select id="provider-list" required bind:value={selectedProvider} >
+	{#each Object.keys(providers) as providerName}
+		<option value={providerName}>{providerName}: {providers[providerName]}</option>
+	{/each}
+</select>
+
 <input
 	type="text"
 	id="other-endpoint-url"
