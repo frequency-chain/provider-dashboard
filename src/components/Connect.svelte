@@ -1,6 +1,6 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import {storeConnected, storeValidAccounts, dotApi, transactionSigningAddress} from "$lib/stores";
+	import {storeConnected, storeValidAccounts, dotApi, providerId, transactionSigningAddress} from "$lib/stores";
 	import type {DotApi} from "$lib/storeTypes";
 	import { options } from "@frequency-chain/api-augment";
 	import {ApiPromise, WsProvider} from "@polkadot/api";
@@ -121,7 +121,10 @@
 
 
 	async function connect() {
-		// Exception for the "other" endpoint
+		// TODO: do we need to do this or just properly listen in each component?
+		storeConnected.update(val => val = false);
+		storeValidAccounts.update(val => val = {});
+		transactionSigningAddress.update(val => val = "");
 		try {
 			let selectedProviderURI = providers[selectedProvider]
 			await getApi(selectedProviderURI);

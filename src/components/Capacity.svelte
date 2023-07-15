@@ -1,5 +1,4 @@
 <script lang="ts">
-    import { options } from "@frequency-chain/api-augment";
     import {storeConnected, transactionSigningAddress, dotApi, providerId} from "$lib/stores";
     import {defaultDotApi} from "$lib/storeTypes";
     import { u16, u32, u64, Option } from "@polkadot/types";
@@ -11,34 +10,35 @@
         thisDotApi = api;
     });
 
-    let capacityDetails = {
-        remainingCapacity:  0n,
-        totalTokensStaked:   0n,
-        totalCapacityIssued:   0n,
-        lastReplenishedEpoch: 0n
-    };
+    type CapacityDetails = { remainingCapacity: bigint, totalTokensStaked: bigint, totalCapacityIssued: bigint, lastReplenishedEpoch: bigint};
+    const defaultDetails: CapacityDetails = {
+        remainingCapacity: 0n,
+        totalCapacityIssued: 0n,
+        totalTokensStaked: 0n,
+        lastReplenishedEpoch: 0n};
+
+    let capacityDetails: CapacityDetails = defaultDetails;
 
     let signingAddress = ""
     transactionSigningAddress.subscribe(async (addr) => {
-        if (!!addr) {
-            signingAddress = addr;
-            if (connected && thisDotApi.api.query) {
-                let api = thisDotApi?.api;
-                const received: u64 = (await api.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
-                localProviderId = received.toNumber();
-                if (localProviderId > 0) {
-                    const details: Option<any> = (await api.query.capacity.capacityLedger(localProviderId)).unwrapOrDefault();
-                    capacityDetails = {
-                        remainingCapacity: details.remainingCapacity.toBigInt(),
-                        totalTokensStaked: details.totalTokensStaked.toBigInt(),
-                        totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-                        lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
-                    };
-                    console.log("updating store providerId")
-                }
-                providerId.update(val => val = localProviderId)
+        signingAddress = addr;
+        localProviderId = 0;
+        capacityDetails = defaultDetails;
+        if (connected && thisDotApi.api.query && !!addr) {
+            let api = thisDotApi?.api;
+            const received: u64 = (await api.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
+            localProviderId = received.toNumber();
+            if (localProviderId > 0) {
+                const details: Option<any> = (await api.query.capacity.capacityLedger(localProviderId)).unwrapOrDefault();
+                capacityDetails = {
+                    remainingCapacity: details.remainingCapacity.toBigInt(),
+                    totalTokensStaked: details.totalTokensStaked.toBigInt(),
+                    totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
+                    lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
+                };
             }
         }
+        providerId.update(val => val = localProviderId)
     });
     export let token;
 
