@@ -12,7 +12,7 @@ export async function getBlockNumber(api: ApiPromise): Promise<BigInt> {
         let blockData = await api.rpc.chain.getBlock();
         return blockData.block.header.number.toBigInt()
     }
-    return 0;
+    return 0n;
 }
 
 export async function getEpoch(api: ApiPromise): Promise<BigInt> {

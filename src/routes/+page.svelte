@@ -45,11 +45,11 @@
         <p>Token: <span id="unit">{token}</span></p>
         <p>Current block number: <span id="current-block">{blockNumber}</span></p>
     </div>
-    <div id="capacity-status" class="status-item">
-        <Capacity bind:token={token} />
-    </div>
     <div id="provider-status" class="status-item">
         <Provider />
+    </div>
+    <div id="capacity-status" class="status-item">
+        <Capacity bind:token={token} />
     </div>
 </div>
 <form id="setupForm">
