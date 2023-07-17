@@ -18,7 +18,6 @@
     let signingAddress = "";
     storeConnected.subscribe((val) => connected = val);
     storeValidAccounts.subscribe((val) => {
-        console.info("page.svelte storeValidAccounts.subscribe", val);
         validAccounts = val;
     });
     transactionSigningAddress.subscribe(addr => signingAddress = addr);

@@ -93,10 +93,8 @@
 		// Handle disconnects
 		if (providerUri) {
 			if (apiPromise) {
-				console.info("disconnecting api first.")
 				await apiPromise.disconnect();
 			} else if (wsProvider) {
-				console.info("disconnecting provider first.")
 				await wsProvider.disconnect();
 			}
 		}
