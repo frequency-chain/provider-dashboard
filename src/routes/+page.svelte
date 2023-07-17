@@ -7,6 +7,7 @@
     import Connect from "../components/Connect.svelte";
     import Capacity from "../components/Capacity.svelte";
     import {storeConnected, storeValidAccounts, transactionSigningAddress} from "$lib/stores";
+    import Provider from "../components/Provider.svelte";
 
     let token = '';
     let blockNumber = 0;
@@ -17,29 +18,14 @@
     let signingAddress = "";
     storeConnected.subscribe((val) => connected = val);
     storeValidAccounts.subscribe((val) => {
-        console.info("page.svelte storeValidAccounts.subscribe");
         validAccounts = val;
-        signingAddress = Object.values(val)[0]?.meta.address;
     });
-    transactionSigningAddress.subscribe(val => signingAddress = val);
+    transactionSigningAddress.subscribe(addr => signingAddress = addr);
 
-    let providers = [
-        {
-            name: 'Rococo',
-            url: 'wss://rpc.rococo.frequency.xyz'
-        },
-        {
-            name: 'Localhost',
-            url: 'ws://localhost:9944'
-        },
-        {
-            name: 'Other',
-            url: 'Other'
-        }
-    ];  
-    let selectedProvider: string = providers[0].url;
-    let otherProvider: string = '';
-
+    const onChangeTxnSigningAddress = (evt: Event) => {
+        let option = evt.target as HTMLOptionElement;
+        transactionSigningAddress.update(addr => addr = option.value);
+    }
 </script>
 <style>
     #status-bar {
@@ -57,32 +43,19 @@
         <h3>Connection status: { connected ? "Connected" : "Not connected" }</h3>
         <p>Token: <span id="unit">{token}</span></p>
         <p>Current block number: <span id="current-block">{blockNumber}</span></p>
-        <p>For itemized schema on Rococo, use Schema ID = 56</p>
-        <p>For paginated schema on Rococo, use Schema ID = 57</p>
     </div>
     <div id="capacity-status" class="status-item">
         <Capacity bind:token={token} />
     </div>
+    <div id="provider-status" class="status-item">
+        <Provider />
+    </div>
 </div>
 <form id="setupForm">
-    <label for="provider-list">1. Choose an Endpoint</label>
-    <select id="provider-list" required
-        bind:value={selectedProvider}
-    >
-        {#each providers as provider}
-            <option value={provider.url}>{provider.name}: {provider.url !== "Other" ? provider.url : "Custom websocket"}</option>
-        {/each}
-    </select>
-
-    <Connect
-             bind:blockNumber={blockNumber}
-             selectedProvider={selectedProvider}
-             otherProvider={otherProvider}
-             bind:token={token}
-    />
+    <Connect bind:token bind:blockNumber/>
     <fieldset class={connected ? "" : "hidden"}>
         <label for="signing-address" >2. Choose a Transaction Signing Address</label>
-        <select id="signing-address" bind:value={signingAddress}>
+        <select id="signing-address" on:change={onChangeTxnSigningAddress}>
             {#each Object.keys(validAccounts) as address}
                 <option value={address}>{validAccounts[address].meta.name}: {address}</option>
             {/each}

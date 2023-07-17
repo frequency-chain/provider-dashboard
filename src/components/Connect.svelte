@@ -1,28 +1,28 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import {storeConnected, storeValidAccounts} from "$lib/stores";
+	import {storeConnected, storeValidAccounts, dotApi, providerId, transactionSigningAddress} from "$lib/stores";
+	import type {DotApi} from "$lib/storeTypes";
+	import { options } from "@frequency-chain/api-augment";
+	import {ApiPromise, WsProvider} from "@polkadot/api";
+	import { Keyring } from "@polkadot/api";
+	import {providers} from "$lib/connections";
 
 	// @ts-ignore
-	let ApiPromise, WsProvider, options, web3Enable, web3Accounts, Keyring;
+	let apiPromise: ApiPromise;
+	let wsProvider: WsProvider;
+	let web3Enable: (originName: string, compatInits?: (() => Promise<boolean>)[]) => Promise<Array<any>> = (): any => {};
+	let web3Accounts = (): any => {};
+
 	onMount(async() => {
-		// @ts-ignore
-		let dotapi = await import('https://cdn.jsdelivr.net/npm/@polkadot/api@10.5.1/+esm');
-		ApiPromise = dotapi.ApiPromise;
-		WsProvider = dotapi.WsProvider;
-		// @ts-ignore
-		let polkadotExt = await import('https://cdn.jsdelivr.net/npm/@polkadot/extension-dapp@0.46.2/+esm');
+		// This must be in onMount because the extension requires that you have a window to attach to.
+		// Since this project is precompiled, there will be no window until onMount
+		let polkadotExt = await import("@polkadot/extension-dapp");
 		web3Enable = polkadotExt.web3Enable;
 		web3Accounts = polkadotExt.web3Accounts;
-		// @ts-ignore
-		let keyringApi = await import('https://cdn.jsdelivr.net/npm/@polkadot/keyring@12.1.2/+esm');
-		Keyring = keyringApi.Keyring;
-		// @ts-ignore
-	    let dotFreq = await import('https://cdn.jsdelivr.net/npm/@frequency-chain/api-augment@1.6.1/+esm');
-		options = dotFreq.options;
-	})
+	});
 
-	export let selectedProvider: string;
-	export let otherProvider: string;
+	let selectedProvider: string = "Rococo";
+	let otherProvider: string;
 	// export let connected: boolean;
 	export let blockNumber: number;
 	export let token;
@@ -32,31 +32,26 @@
 	$: canConnect = selectedProvider !== "" || otherProvider !== "";
 
 	const GENESIS_HASHES: Record<string, string> = {
-		"wss://rpc.rococo.frequency.xyz": "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
+		Rococo: "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
 	}
 
-	// let PREFIX = 42;
-	let api;
-	let singletonApi;
-	let singletonProvider;
-
-	async function getBlockNumber(api: ApiPromise): Promise<number> {
-		let blockData = await api.rpc.chain.getBlock();
+	async function getBlockNumber(): Promise<number> {
+		let blockData = await apiPromise.rpc.chain.getBlock();
 		return blockData.block.header.number.toNumber()
 	}
 
 	async function loadAccounts() {
 		// populating for localhost and for a parachain are different since with localhost, there is
 		// access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
-		let localAccounts = {};
-		if (selectedProvider === "ws://localhost:9944") {
+		let foundAccounts = {};
+		if (selectedProvider === "Localhost") {
 			const keyring = new Keyring({ type: 'sr25519' });
 
 			['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach(accountName => {
 				let account = keyring.addFromUri(accountName);
 				account.meta.name = accountName;
-				localAccounts[account.address] = account;
+				foundAccounts[account.address] = account;
 			})
 		} else {
 			const extensions = await web3Enable('Frequency parachain signer helper');
@@ -69,11 +64,14 @@
 				// display only the accounts allowed for this chain
 				if (!a.meta.genesisHash
 					|| GENESIS_HASHES[selectedProvider] === a.meta.genesisHash) {
-					localAccounts[a.address] = a;
+					foundAccounts[a.address] = a;
 				}
 			});
 		}
-		storeValidAccounts.update((val) => val = localAccounts);
+		// to avoid updating subscribers with an empty list
+		if (Object.keys(foundAccounts).length > 0) {
+			storeValidAccounts.update((val) => val = foundAccounts);
+		}
 	}
 
 	function getToken(chain) {
@@ -81,12 +79,11 @@
 		return rawUnit.slice(1,rawUnit.length-1);
 	}
 
-	async function updateConnectionStatus(api) {
-		const chain = await api.rpc.system.properties();
-		// PREFIX = Number(chain.ss58Format.toString());
+	async function updateConnectionStatus() {
+		const chain = await apiPromise.rpc.system.properties();
 		token = getToken(chain);
-		blockNumber = await getBlockNumber(singletonApi);
-		storeConnected.update((val) => val = api.isConnected);
+		blockNumber = await getBlockNumber();
+		storeConnected.update((val) => val = apiPromise.isConnected);
 	}
 
 	async function getApi(providerUri: string) {
@@ -95,31 +92,42 @@
 		}
 		// Handle disconnects
 		if (providerUri) {
-			if (singletonApi) {
-				await singletonApi.disconnect();
-			} else if (singletonProvider) {
-				await singletonProvider.disconnect();
+			if (apiPromise) {
+				await apiPromise.disconnect();
+			} else if (wsProvider) {
+				await wsProvider.disconnect();
 			}
 		}
 
 		// Singleton Provider because it starts trying to connect here.
-		singletonProvider = new WsProvider(providerUri);
-		singletonApi = await ApiPromise.create({
-			provider: singletonProvider,
+
+		wsProvider = new WsProvider(providerUri);
+		apiPromise = await ApiPromise.create({
+			provider: wsProvider,
 			...options,
 		});
 
-		await singletonApi.isReady;
-		return singletonApi;
+		await apiPromise?.isReady;
+		let initializedDotApi: DotApi = {
+			wsProvider: wsProvider,
+			api: apiPromise,
+			keyring: Keyring,
+			options
+		};
+		dotApi.update(currentApi => currentApi = initializedDotApi);
 	}
 
 
 	async function connect() {
-		// Exception for the "other" endpoint
+		// TODO: do we need to do this or just properly listen in each component?
+		storeConnected.update(val => val = false);
+		storeValidAccounts.update(val => val = {});
+		transactionSigningAddress.update(val => val = "");
 		try {
-			api = await getApi(selectedProvider);
+			let selectedProviderURI = providers[selectedProvider]
+			await getApi(selectedProviderURI);
 			await loadAccounts();
-			await updateConnectionStatus(api);
+			await updateConnectionStatus();
 		} catch (e: any){
 			console.error("Error: ", e);
 			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
@@ -130,6 +138,13 @@
 		return;
 	}
 </script>
+<label for="provider-list">1. Choose an Endpoint</label>
+<select id="provider-list" required bind:value={selectedProvider} >
+	{#each Object.keys(providers) as providerName}
+		<option value={providerName}>{providerName}: {providers[providerName]}</option>
+	{/each}
+</select>
+
 <input
 	type="text"
 	id="other-endpoint-url"
