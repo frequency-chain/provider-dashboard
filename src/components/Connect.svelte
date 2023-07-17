@@ -1,11 +1,11 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import {storeConnected, storeValidAccounts, dotApi, providerId, transactionSigningAddress} from "$lib/stores";
+	import {storeBlockNumber, storeConnected, storeValidAccounts, dotApi, providerId, transactionSigningAddress} from "$lib/stores";
 	import type {DotApi} from "$lib/storeTypes";
 	import { options } from "@frequency-chain/api-augment";
 	import {ApiPromise, WsProvider} from "@polkadot/api";
 	import { Keyring } from "@polkadot/api";
-	import {providers} from "$lib/connections";
+	import {providers, getBlockNumber} from "$lib/connections";
 
 	// @ts-ignore
 	let apiPromise: ApiPromise;
@@ -24,7 +24,7 @@
 	let selectedProvider: string = "Rococo";
 	let otherProvider: string;
 	// export let connected: boolean;
-	export let blockNumber: number;
+	let blockNumber: number;
 	export let token;
 
 	// Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
@@ -34,11 +34,6 @@
 	const GENESIS_HASHES: Record<string, string> = {
 		Rococo: "0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72",
 		frequency: "0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1",
-	}
-
-	async function getBlockNumber(): Promise<number> {
-		let blockData = await apiPromise.rpc.chain.getBlock();
-		return blockData.block.header.number.toNumber()
 	}
 
 	async function loadAccounts() {
@@ -82,7 +77,8 @@
 	async function updateConnectionStatus() {
 		const chain = await apiPromise.rpc.system.properties();
 		token = getToken(chain);
-		blockNumber = await getBlockNumber();
+		blockNumber = await getBlockNumber(apiPromise);
+		storeBlockNumber.update(val => val = blockNumber);
 		storeConnected.update((val) => val = apiPromise.isConnected);
 	}
 
