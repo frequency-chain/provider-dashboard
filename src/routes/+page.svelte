@@ -6,11 +6,12 @@
     import { SvelteComponent } from "svelte";
     import Connect from "../components/Connect.svelte";
     import Capacity from "../components/Capacity.svelte";
-    import {storeConnected, storeValidAccounts, transactionSigningAddress} from "$lib/stores";
+    import {storeBlockNumber, storeConnected, storeValidAccounts, transactionSigningAddress} from "$lib/stores";
     import Provider from "../components/Provider.svelte";
 
     let token = '';
     let blockNumber = 0;
+    storeBlockNumber.subscribe(val => blockNumber = val);
 
     let connected = false;
     let validAccounts = {};
@@ -52,7 +53,7 @@
     </div>
 </div>
 <form id="setupForm">
-    <Connect bind:token bind:blockNumber/>
+    <Connect bind:token/>
     <fieldset class={connected ? "" : "hidden"}>
         <label for="signing-address" >2. Choose a Transaction Signing Address</label>
         <select id="signing-address" on:change={onChangeTxnSigningAddress}>
