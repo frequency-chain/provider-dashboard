@@ -43,7 +43,15 @@
             let newKeys = validAccounts[selectedKey];
             let signingKeys = validAccounts[signingAddress]
             if (isLocalhost(endpointURI)) {
-                await submitAddControlKey(thisDotApi.api as ApiPromise, undefined,  newKeys, signingKeys, providerId, endpointURI as string);
+                await submitAddControlKey(
+                    thisDotApi.api as ApiPromise,
+                    undefined,
+                    newKeys,
+                    signingKeys,
+                    providerId,
+                    endpointURI as string,
+                    () => { console.debug("done")}
+                );
             } else {
                 const extensions = web3Enable('Frequency parachain provider dashboard: Adding Keys');
                 if (extensions.length !== 0) {

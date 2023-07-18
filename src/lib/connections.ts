@@ -42,7 +42,8 @@ export async function submitAddControlKey(api: ApiPromise,
                                           newAccount: SigningKey,
                                           signingAccount: SigningKey,
                                           providerId: number,
-                                          endpointURL: string) {
+                                          endpointURL: string,
+                                          callback: () => void) {
     const blockNumber = await getBlockNumber(api) as bigint
     if (api && await api.isReady) {
         const rawPayload: AddKeyData = {
@@ -52,17 +53,23 @@ export async function submitAddControlKey(api: ApiPromise,
         }
 
         const newKeyPayload = api.registry.createType("PalletMsaAddKeyData", rawPayload);
+        const useKeyring: boolean = isLocalhost(endpointURL);
 
-        const ownerKeySignature = isLocalhost(endpointURL) ?
+        const ownerKeySignature = useKeyring ?
             signPayloadWithKeyring(signingAccount as KeyringPair, newKeyPayload) :
             await signPayloadWithExtension(extension as InjectedExtension, signingAccount as InjectedAccountWithMeta, newKeyPayload);
 
-        const newKeySignature = isLocalhost(endpointURL) ?
+        const newKeySignature = useKeyring ?
             signPayloadWithKeyring(newAccount as KeyringPair, newKeyPayload) :
             await signPayloadWithExtension(extension as InjectedExtension, newAccount as InjectedAccountWithMeta, newKeyPayload);
 
-        console.debug("ownerSig: ", ownerKeySignature);
-        console.debug("newKeySig: ", newKeySignature);
+        const ownerKeyProof = { Sr25519: ownerKeySignature };
+        const newKeyProof = { Sr25519: newKeySignature };
+        const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload.toU8a());
+       useKeyring ?
+            await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback):
+            await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount as InjectedAccountWithMeta, callback);
+
     } else {
         console.debug("didn't make it");
     }
@@ -101,7 +108,7 @@ export async function parseChainEvent ({ events = [], status }: { events?: Event
     }
 }
 
-async function submitExtrinsicWithExtension(injector: InjectedExtension,
+async function submitExtrinsicWithExtension(extension: InjectedExtension,
                                             extrinsic: SubmittableExtrinsic,
                                             signingAccount: InjectedAccountWithMeta,
                                             onTxDone: () => void ): Promise<void> {
@@ -133,7 +140,7 @@ async function submitExtrinsicWithExtension(injector: InjectedExtension,
             }
         }
 
-        await extrinsic.signAndSend(signingAccount.address, {signer: injector.signer, nonce: -1}, sendStatusCb);
+        await extrinsic.signAndSend(signingAccount.address, {signer: extension.signer, nonce: -1}, sendStatusCb);
         await waitFor(() => currentTxDone);
     } catch(e) {
         showExtrinsicStatus((e as Error).message);
