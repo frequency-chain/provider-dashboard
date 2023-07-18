@@ -1,6 +1,6 @@
 <script lang=ts>
 	import { onMount } from 'svelte';
-	import {storeBlockNumber, storeConnected, storeValidAccounts, dotApi, providerId, transactionSigningAddress} from "$lib/stores";
+	import {storeBlockNumber, storeConnected, storeValidAccounts, dotApi, storeProviderId, transactionSigningAddress} from "$lib/stores";
 	import type {DotApi} from "$lib/storeTypes";
 	import { options } from "@frequency-chain/api-augment";
 	import {ApiPromise, WsProvider} from "@polkadot/api";
@@ -16,7 +16,7 @@
 	onMount(async() => {
 		// This must be in onMount because the extension requires that you have a window to attach to.
 		// Since this project is precompiled, there will be no window until onMount
-		let polkadotExt = await import("@polkadot/extension-dapp");
+		const polkadotExt = await import("@polkadot/extension-dapp");
 		web3Enable = polkadotExt.web3Enable;
 		web3Accounts = polkadotExt.web3Accounts;
 	});
@@ -48,7 +48,7 @@
 				foundAccounts[account.address] = account;
 			})
 		} else {
-			const extensions = await web3Enable('Frequency parachain signer helper');
+			const extensions = await web3Enable('Frequency parachain provider dashboard');
 			if (!extensions || !extensions.length) {
 				alert("Polkadot{.js} extension not found; please install it first.");
 				return;
@@ -81,12 +81,14 @@
 		storeConnected.update((val) => val = apiPromise.isConnected);
 	}
 
-	async function getApi(providerUri: string) {
-		if (!providerUri) {
+	async function getApi(selectedProvider: string) {
+		let selectedProviderURI = providers[selectedProvider]
+
+		if (!selectedProviderURI) {
 			throw new Error("Empty providerURI");
 		}
 		// Handle disconnects
-		if (providerUri) {
+		if (selectedProviderURI) {
 			if (apiPromise) {
 				await apiPromise.disconnect();
 			} else if (wsProvider) {
@@ -96,7 +98,7 @@
 
 		// Singleton Provider because it starts trying to connect here.
 
-		wsProvider = new WsProvider(providerUri);
+		wsProvider = new WsProvider(selectedProviderURI);
 		apiPromise = await ApiPromise.create({
 			provider: wsProvider,
 			...options,
@@ -107,6 +109,7 @@
 			wsProvider: wsProvider,
 			api: apiPromise,
 			keyring: Keyring,
+			selectedEndpoint: selectedProviderURI,
 			options
 		};
 		dotApi.update(currentApi => currentApi = initializedDotApi);
@@ -124,8 +127,9 @@
 		} else {
 			selectedProviderURI = providers[selectedProvider];
 		}
-			
+
 		try {
+			await getApi(selectedProvider);
 			await getApi(selectedProviderURI);
 			await loadAccounts();
 			await updateConnectionStatus();

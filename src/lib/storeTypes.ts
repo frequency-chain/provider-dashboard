@@ -8,7 +8,15 @@ export type DotApi = {
     wsProvider?: WsProvider,
     keyring?: Keyring,
     options?: any,
+    selectedEndpoint?: string,
 }
 
-export const defaultDotApi: DotApi = {}
-
+export const defaultDotApi: DotApi = {
+    selectedEndpoint: "",
+    options: {},
+}
+export enum ActionForms  {
+    NoForm,
+    AddControlKey,
+    OtherForm,
+}

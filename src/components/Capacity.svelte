@@ -1,6 +1,5 @@
 <script lang="ts">
-    import {storeConnected, transactionSigningAddress, dotApi, providerId, storeBlockNumber} from "$lib/stores";
-    import {defaultDotApi} from "$lib/storeTypes";
+    import {storeConnected, transactionSigningAddress, dotApi, storeProviderId, storeBlockNumber} from "$lib/stores";
     import { u64, Option } from "@polkadot/types";
     import { getEpoch, getBlockNumber } from "$lib/connections";
     import type {ApiPromise} from "@polkadot/api";
@@ -49,7 +48,7 @@
                 };
             }
         }
-        providerId.update(val => val = localProviderId)
+        storeProviderId.update(val => val = localProviderId)
     });
     export let token;
 </script>
