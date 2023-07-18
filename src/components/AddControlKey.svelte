@@ -6,13 +6,13 @@
     import KeySelection from "./KeySelection.svelte";
     import {onMount} from "svelte";
     import {isFunction} from "@polkadot/util";
+    import { isLocalhost} from "$lib/utils";
 
     let connected = false;
     let thisDotApi = defaultDotApi;
     let signingAddress: string = '';
     let showSelf: boolean = false;
     let selectedKey: string = '';
-    let endpointURI: string | undefined = '';
     let web3FromSource;
     let web3Enable;
 
@@ -35,18 +35,22 @@
     }
 
     const addControlKey = async (evt: Event) => {
+        let endpointURI: string = thisDotApi.selectedEndpoint || '';
         evt.preventDefault();
         if (selectedKey === '') {
             alert("Please choose a key to add.")
         } else if (isFunction(web3FromSource) && isFunction(web3Enable)){
             let newKeys = validAccounts[selectedKey];
             let signingKeys = validAccounts[signingAddress]
-            // Error: web3FromSource: web3Enable(originName) needs to be called before web3FromSource
-            const extensions = web3Enable('Frequency parachain provider dashboard: Adding Keys');
-            // TODO: Can we require an extension even if they are just using localhost?
-            if (extensions.length === 0) {}
-            const injectedExtension = await web3FromSource(signingKeys.meta.source);
-            await submitAddControlKey(thisDotApi.api as ApiPromise, injectedExtension,  newKeys, signingKeys, providerId, endpointURI as string);
+            if (isLocalhost(endpointURI)) {
+                await submitAddControlKey(thisDotApi.api as ApiPromise, undefined,  newKeys, signingKeys, providerId, endpointURI as string);
+            } else {
+                const extensions = web3Enable('Frequency parachain provider dashboard: Adding Keys');
+                if (extensions.length !== 0) {
+                    const injectedExtension = await web3FromSource(signingKeys.meta.source);
+                    await submitAddControlKey(thisDotApi.api as ApiPromise, injectedExtension,  newKeys, signingKeys, providerId, endpointURI as string);
+                }
+            }
         }
     }
 </script>

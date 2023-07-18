@@ -38,7 +38,7 @@ export async function getEpoch(api: ApiPromise): Promise<BigInt> {
 
 // TODO: will need to handle "other" URLs and pass the URL instead.
 export async function submitAddControlKey(api: ApiPromise,
-                                          extension: InjectedExtension,
+                                          extension: InjectedExtension | undefined,
                                           newAccount: SigningKey,
                                           signingAccount: SigningKey,
                                           providerId: number,
@@ -55,13 +55,11 @@ export async function submitAddControlKey(api: ApiPromise,
 
         const ownerKeySignature = isLocalhost(endpointURL) ?
             signPayloadWithKeyring(signingAccount as KeyringPair, newKeyPayload) :
-            await signPayloadWithExtension(extension, signingAccount as InjectedAccountWithMeta, newKeyPayload);
-        (document.getElementById('signed_payload') as HTMLTextAreaElement).value = ownerKeySignature;
+            await signPayloadWithExtension(extension as InjectedExtension, signingAccount as InjectedAccountWithMeta, newKeyPayload);
 
         const newKeySignature = isLocalhost(endpointURL) ?
             signPayloadWithKeyring(newAccount as KeyringPair, newKeyPayload) :
-            await signPayloadWithExtension(extension, newAccount as InjectedAccountWithMeta, newKeyPayload);
-        (document.getElementById('signed_payload2') as HTMLTextAreaElement).value = newKeySignature;
+            await signPayloadWithExtension(extension as InjectedExtension, newAccount as InjectedAccountWithMeta, newKeyPayload);
 
         console.debug("ownerSig: ", ownerKeySignature);
         console.debug("newKeySig: ", newKeySignature);
