@@ -7,7 +7,7 @@ import {isLocalhost, waitFor} from "$lib/utils";
 import type {KeyringPair} from "@polkadot/keyring/types";
 import type {InjectedAccountWithMeta, InjectedExtension} from "@polkadot/extension-inject/types";
 import {isFunction, u8aToHex, u8aWrapBytes} from "@polkadot/util";
-import type {SignerResult} from "@polkadot/types/types";
+import type {SignerPayloadRaw, SignerResult} from "@polkadot/types/types";
 import type {SubmittableExtrinsic} from "@polkadot/api/promise/types";
 import type {EventRecord, ExtrinsicStatus} from "@polkadot/types/interfaces";
 
@@ -65,7 +65,7 @@ export async function submitAddControlKey(api: ApiPromise,
 
         const ownerKeyProof = { Sr25519: ownerKeySignature };
         const newKeyProof = { Sr25519: newKeySignature };
-        const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload.toU8a());
+        const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
        useKeyring ?
             await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback):
             await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount as InjectedAccountWithMeta, callback);
@@ -75,9 +75,7 @@ export async function submitAddControlKey(api: ApiPromise,
     }
 }
 
-export function wrapToU8a(payload: any): Uint8Array {
-    return u8aWrapBytes(payload.toU8a())
-}
+
 
 function showExtrinsicStatus(txnStatus: string) {
     console.log("Transaction status: ", txnStatus)
@@ -169,9 +167,10 @@ export async function signPayloadWithExtension(injector: InjectedExtension, sign
     const signRaw = signer?.signRaw;
     let signed: SignerResult;
     if (signer && isFunction(signRaw)) {
-        const payloadWrappedToU8a = wrapToU8a(payload);
-        const signerPayloadRaw = {
-            address: signingAccount.address, data: payloadWrappedToU8a, type: 'bytes'
+        // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.
+        const payloadWrappedToU8a = u8aWrapBytes(payload.toU8a());
+        const signerPayloadRaw: SignerPayloadRaw = {
+            address: signingAccount.address, data: u8aToHex(payloadWrappedToU8a), type: 'bytes'
         }
         try {
             signed = await signRaw(signerPayloadRaw)
@@ -187,7 +186,8 @@ export async function signPayloadWithExtension(injector: InjectedExtension, sign
 // returns a properly formatted signature to submit with an extrinsic
 export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any): string {
     try {
-        return u8aToHex(signingAccount.sign(wrapToU8a(payload)));
+        // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.
+        return u8aToHex(signingAccount.sign(u8aWrapBytes(payload.toU8a())));
     } catch (e: any) {
         alert(`Signing failed: ${e.message}`);
         return "ERROR " + e.message
