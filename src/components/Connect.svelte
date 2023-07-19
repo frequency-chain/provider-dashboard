@@ -23,7 +23,6 @@
 
 	let selectedProvider: string = "Rococo";
 	let otherProvider: string;
-	// export let connected: boolean;
 	let blockNumber: number;
 	export let token;
 
@@ -50,7 +49,7 @@
 			})
 		} else {
 			const extensions = await web3Enable('Frequency parachain signer helper');
-			if (!extensions.length) {
+			if (!extensions || !extensions.length) {
 				alert("Polkadot{.js} extension not found; please install it first.");
 				return;
 			}
@@ -119,14 +118,20 @@
 		storeConnected.update(val => val = false);
 		storeValidAccounts.update(val => val = {});
 		transactionSigningAddress.update(val => val = "");
+		let selectedProviderURI: string = "";
+		if (selectedProvider === 'Other') {
+			selectedProviderURI = otherProvider;
+		} else {
+			selectedProviderURI = providers[selectedProvider];
+		}
+			
 		try {
-			let selectedProviderURI = providers[selectedProvider]
 			await getApi(selectedProviderURI);
 			await loadAccounts();
 			await updateConnectionStatus();
 		} catch (e: any){
 			console.error("Error: ", e);
-			alert(`could not connect to ${selectedProvider || "empty value"}. Please enter a valid and reachable Websocket URL.`);
+			alert(`could not connect to ${selectedProviderURI || "empty value"}. Please enter a valid and reachable Websocket URL.`);
 		} finally {
 			// Disable connect button
 			canConnect = false;
@@ -134,7 +139,7 @@
 		return;
 	}
 </script>
-<label for="provider-list">1. Choose an Endpoint</label>
+<label for="provider-list">1. Select a Provider</label>
 <select id="provider-list" required bind:value={selectedProvider} >
 	{#each Object.keys(providers) as providerName}
 		<option value={providerName}>{providerName}: {providers[providerName]}</option>
@@ -148,11 +153,12 @@
 	bind:value={otherProvider}
 	disabled={selectedProvider.toString() != 'Other'}
 />
+<p>Selected Provider: {selectedProvider}</p>
 <button
 	on:click|preventDefault={async () => await connect()}
 	id="connect-button"
 	disabled={!canConnect}
 >
-	Connect to this Endpoint
+	Connect to {selectedProvider}
 </button>
 
