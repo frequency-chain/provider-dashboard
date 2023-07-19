@@ -81,8 +81,7 @@
 		storeConnected.update((val) => val = apiPromise.isConnected);
 	}
 
-	async function getApi(selectedProvider: string) {
-		let selectedProviderURI = providers[selectedProvider]
+	async function getApi(selectedProviderURI: string) {
 
 		if (!selectedProviderURI) {
 			throw new Error("Empty providerURI");
@@ -129,7 +128,6 @@
 		}
 
 		try {
-			await getApi(selectedProvider);
 			await getApi(selectedProviderURI);
 			await loadAccounts();
 			await updateConnectionStatus();
