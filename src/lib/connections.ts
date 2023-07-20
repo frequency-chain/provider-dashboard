@@ -36,14 +36,14 @@ export async function getEpoch(api: ApiPromise): Promise<BigInt> {
     return 0n;
 }
 
-// TODO: will need to handle "other" URLs and pass the URL instead.
+// creates the payloads and gets or creates the signatures, then submits the extrinsic
 export async function submitAddControlKey(api: ApiPromise,
                                           extension: InjectedExtension | undefined,
                                           newAccount: SigningKey,
                                           signingAccount: SigningKey,
                                           providerId: number,
                                           endpointURL: string,
-                                          callback: () => void) {
+                                          callback: (statusStr: string) => void) {
     const blockNumber = await getBlockNumber(api) as bigint
     if (api && await api.isReady) {
         const rawPayload: AddKeyData = {
@@ -71,94 +71,85 @@ export async function submitAddControlKey(api: ApiPromise,
             await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount as InjectedAccountWithMeta, callback);
 
     } else {
-        console.debug("didn't make it");
+        console.debug("api is not available.");
     }
 }
 
 
+type TxnStatusCallback = (txnStatus: string) => void;
 
-function showExtrinsicStatus(txnStatus: string) {
-    console.log("Transaction status: ", txnStatus)
+// log and call the callback with the status.
+function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
+    console.debug("Transaction status: ", txnStatus)
+    cb(txnStatus)
 }
 
-export async function parseChainEvent ({ events = [], status }: { events?: EventRecord[], status: ExtrinsicStatus; }): Promise<void> {
-    if (status.isInvalid) {
-        showExtrinsicStatus("Invalid transaction");
-        return;
-    } else if ( status.isFinalized ) {
-        showExtrinsicStatus(`Transaction is finalized in blockhash ${status.asFinalized.toHex()}`);
-        events.forEach(
-            ({event}) => {
-                if (event.method === 'ExtrinsicSuccess') {
-                    showExtrinsicStatus('Transaction succeeded');
-                } else if (event.method === 'ExtrinsicFailed') {
-                    showExtrinsicStatus('Transaction failed. See chain explorer for details.');
+// figure out how to display the transaction status as it is updated
+export async function parseChainEvent (
+    { events = [], status }: {  events?: EventRecord[], status: ExtrinsicStatus; },
+       txnStatusCallback: TxnStatusCallback): Promise<void> {
+    try {
+        if (status.isInvalid) {
+            const statusStr = "Invalid transaction";
+            showExtrinsicStatus(statusStr, txnStatusCallback);
+            return;
+        } else if ( status.isFinalized ) {
+            const statusStr =`Transaction is finalized in block hash ${status.asFinalized.toHex()}`;
+            showExtrinsicStatus(statusStr, txnStatusCallback);
+            events.forEach(
+                ({event}) => {
+                    if (event.method === 'ExtrinsicSuccess') {
+                        showExtrinsicStatus('Transaction succeeded', txnStatusCallback);
+                    } else if (event.method === 'ExtrinsicFailed') {
+                        showExtrinsicStatus('Transaction failed. See chain explorer for details.', txnStatusCallback);
+                    }
                 }
+            );
+            return;
+        } else if (status.isInBlock) {
+            showExtrinsicStatus(`Transaction is included in blockHash ${status.asInBlock.toHex()}`, txnStatusCallback);
+        } else {
+            if (!!status) {
+                showExtrinsicStatus(status.toHuman(), txnStatusCallback)
             }
-        );
-        return;
-    } else if (status.isInBlock) {
-        showExtrinsicStatus(`Transaction is included in blockHash ${status.asInBlock.toHex()}`);
-    } else {
-        if (!!status?.status) {
-            showExtrinsicStatus(status.toHuman())
         }
+    } catch(e) {
+        showExtrinsicStatus("Error: " + e.toString(), txnStatusCallback)
     }
 }
 
+// use the Polkadot extension the user selected to submit the provided extrinsic
 async function submitExtrinsicWithExtension(extension: InjectedExtension,
                                             extrinsic: SubmittableExtrinsic,
                                             signingAccount: InjectedAccountWithMeta,
-                                            onTxDone: () => void ): Promise<void> {
-    // const injector = await web3FromSource(signingAccount.meta.source);
+                                            txnStatusCallback: TxnStatusCallback ): Promise<void> {
     let currentTxDone = false;
     try {
-        function sendStatusCb({events = [], status}: { events?: EventRecord[], status: ExtrinsicStatus; }) {
-            if (status.isInvalid) {
-                alert('Transaction is Invalid');
-                currentTxDone = true;
-            } else if (status.isReady) {
-                showExtrinsicStatus("Transaction is Ready");
-            } else if (status.isBroadcast) {
-                showExtrinsicStatus("Transaction is Broadcast");
-            } else if (status.isInBlock) {
-                showExtrinsicStatus(`Transaction is included in blockHash ${status.asInBlock.toHex()}`);
-            } else if (status.isFinalized) {
-                showExtrinsicStatus(`Transaction is finalized in blockhash ${status.asFinalized.toHex()}`);
-                events.forEach(
-                    ({event}) => {
-                        if (event.method === 'ExtrinsicSuccess') {
-                            showExtrinsicStatus('Transaction succeeded');
-                        } else if (event.method === 'ExtrinsicFailed') {
-                            showExtrinsicStatus('Transaction failed. See chain explorer for details.');
-                        }
-                    }
-                );
-                currentTxDone = true;
-            }
-        }
-
-        await extrinsic.signAndSend(signingAccount.address, {signer: extension.signer, nonce: -1}, sendStatusCb);
+        txnStatusCallback("Submitting transaction")
+        await extrinsic.signAndSend(signingAccount.address, {signer: extension.signer, nonce: -1},
+            (result) => parseChainEvent(result, txnStatusCallback));
         await waitFor(() => currentTxDone);
-    } catch(e) {
-        showExtrinsicStatus((e as Error).message);
-        console.info("Timeout reached, transaction was invalid, or transaction was canceled by user. currentTxDone: ", currentTxDone);
-    } finally {
-        onTxDone();
+    } catch {
+        const message = `Timeout reached or transaction was invalid.`
+        showExtrinsicStatus(message, txnStatusCallback);
     }
 }
 
+// Use the built-in tes accounts to submit an extrinsic
 async function submitExtrinsicWithKeyring(
-    extrinsic: SubmittableExtrinsic, signingAccount: KeyringPair, onTxDone: () => void): Promise<void> {
+        extrinsic: SubmittableExtrinsic,
+        signingAccount: KeyringPair,
+        txnStatusCallback: TxnStatusCallback): Promise<void> {
     try {
-        await extrinsic.signAndSend(signingAccount, {nonce: -1}, parseChainEvent );
+        txnStatusCallback("Submitting transaction")
+        await extrinsic.signAndSend(signingAccount, {nonce: -1},
+        (result) => parseChainEvent(result, txnStatusCallback) );
     } catch(e: any) {
-        alert(`There was a problem:  ${e.toString()}`);
-    } finally {
-        onTxDone();
+        showExtrinsicStatus(`Unexpected problem:  ${e.toString()}`, txnStatusCallback);
     }
 }
 
+// Use the user's selected Polkadot extension to sign some data
 // converting to Sr25519Signature is very important, otherwise the signature length
 // is incorrect - just using signature gives:
 // Enum(Sr25519):: Expected input with 64 bytes (512 bits), found 15 bytes
@@ -167,7 +158,7 @@ export async function signPayloadWithExtension(injector: InjectedExtension, sign
     const signRaw = signer?.signRaw;
     let signed: SignerResult;
     if (signer && isFunction(signRaw)) {
-        // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.
+        // u8aWrapBytes literally just puts <Bytes></Bytes> around the payload.
         const payloadWrappedToU8a = u8aWrapBytes(payload.toU8a());
         const signerPayloadRaw: SignerPayloadRaw = {
             address: signingAccount.address, data: u8aToHex(payloadWrappedToU8a), type: 'bytes'
@@ -183,6 +174,7 @@ export async function signPayloadWithExtension(injector: InjectedExtension, sign
     return "Unknown error"
 }
 
+// Use the built-in Alice..Ferdie accounts to sign some data
 // returns a properly formatted signature to submit with an extrinsic
 export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any): string {
     try {

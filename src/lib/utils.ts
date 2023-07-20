@@ -20,8 +20,7 @@ export async function waitFor (predicate: () => Promise<boolean> | boolean, { in
 export function isLocalhost(url: string): boolean {
     try {
         const parsedURL: URL = new URL(url);
-        return parsedURL.hostname.match(/localhost/).length > 0||
-            parsedURL.hostname.match(/127\.0\.0\.1/).length > 0 ;
+        return parsedURL.hostname.includes('localhost') || parsedURL.hostname.includes('127.0.0.1')
     } catch(e: any) {
         console.error(e.toString())
         return false;
