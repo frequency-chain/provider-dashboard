@@ -6,22 +6,27 @@
     import { SvelteComponent } from "svelte";
     import Connect from "../components/Connect.svelte";
     import Capacity from "../components/Capacity.svelte";
-    import {storeBlockNumber, storeConnected, storeValidAccounts, transactionSigningAddress} from "$lib/stores";
+    import {storeBlockNumber, storeConnected, storeValidAccounts, transactionSigningAddress,storeProviderId} from "$lib/stores";
     import Provider from "../components/Provider.svelte";
+    import AddControlKey from "../components/AddControlKey.svelte";
+    import {providers} from "$lib/connections";
+    import KeySelection from "../components/KeySelection.svelte";
 
     let token = '';
     let blockNumber = 0;
-    storeBlockNumber.subscribe(val => blockNumber = val);
-
     let connected = false;
     let validAccounts = {};
-
     let signingAddress = "";
+    let providerId = 0;
+
+    storeBlockNumber.subscribe(val => blockNumber = val);
+
     storeConnected.subscribe((val) => connected = val);
     storeValidAccounts.subscribe((val) => {
         validAccounts = val;
     });
     transactionSigningAddress.subscribe(addr => signingAddress = addr);
+    storeProviderId.subscribe(id => providerId = id);
 
     const onChangeTxnSigningAddress = (evt: Event) => {
         let option = evt.target as HTMLOptionElement;
@@ -55,11 +60,13 @@
 <form id="setupForm">
     <Connect bind:token/>
     <fieldset class={connected ? "" : "hidden"}>
-        <label for="signing-address" >2. Choose a Transaction Signing Address</label>
-        <select id="signing-address" on:change={onChangeTxnSigningAddress}>
-            {#each Object.keys(validAccounts) as address}
-                <option value={address}>{validAccounts[address].meta.name}: {address}</option>
-            {/each}
-        </select>
+        <KeySelection
+                component="TransactionSigningKey"
+                selectLabel="2. Choose a Transaction Signing Address"
+                selectedOption={""}
+                onSelect={onChangeTxnSigningAddress}
+                {validAccounts}
+            />
     </fieldset>
 </form>
+<AddControlKey {providerId} {validAccounts}/>
