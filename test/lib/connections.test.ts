@@ -2,7 +2,6 @@ import {getEpoch, submitAddControlKey, getBlockNumber, signPayloadWithKeyring} f
 import {expect, test, describe} from "vitest";
 import {ApiPromise} from "@polkadot/api";
 import {Keyring} from "@polkadot/keyring";
-import {isFunction} from "@polkadot/util";
 
 const mocks = vi.hoisted(() => {
     // this has to be inside here because otherwise the error will be
@@ -24,6 +23,8 @@ const mocks = vi.hoisted(() => {
         isReady: vi.fn().mockResolvedValue(true),
         query: { capacity: { currentEpoch: vi.fn().mockResolvedValue(epochNumber) } },
         rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) }},
+        registry: { createType: vi.fn().mockResolvedValue('abcdef')},
+        tx: { msa: {addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined)} },
     };
     mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain)
 
@@ -63,19 +64,25 @@ describe('getBlockNumber', () => {
 describe('submitAddControlKey', async () => {
     const keyring = new Keyring({ type: 'sr25519' });
     const alice = keyring.addFromUri("//Alice")
-    const bob = keyring.addFromUri('//Bob');
+    const bob = keyring.addFromUri('//Bob');let mockedIncrement = 0;
 
-   it('calls signPayloadWithKeyring when localhost',async () => {
-       let mockFn = vi.fn();
-       vi.doMock("../../src/lib/connections", () =>
-           ({ signPayloadWithKeyring: mockFn })
-       );
+   it('calls the callback when localhost',async () => {
        const api = await ApiPromise.create();
        const extension = undefined;
        const callback = vi.fn();
        const providerId = 4;
        const endpointURL = "ws://localhost:9944"
-
        await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback);
+       expect(callback).toHaveBeenCalled();
+    })
+    it ('calls the callback when not localhost', async () => {
+        const api = await ApiPromise.create();
+        const extension = undefined;
+        const callback = vi.fn();
+        const providerId = 4;
+        const endpointURL = "ws://someotherhost:9944"
+        await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback);
+        expect(callback).toHaveBeenCalled();
+
     })
 });
