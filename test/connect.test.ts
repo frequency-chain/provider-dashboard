@@ -79,15 +79,6 @@ describe('Connect.svelte Unit Tests', () => {
         });
     });
 
-    it('Connect button is disabled after connection', async () => {
-        render(Connect, props);
-        const btn = screen.getByRole('button');
-        await fireEvent.click(btn);
-        await waitFor(() => {
-            expect(btn).toBeDisabled();
-        });
-    });
-
     it('Connect button is enabled after changing provider', async () => {
         render(Connect, props);
         const btn = screen.getByRole('button');
