@@ -51,11 +51,11 @@
 
 		try {
 			await getApi(
-					selectedProviderURI,
-					selectedProvider,
-					thisDotApi,
-					wsProvider,
-					thisWeb3Enable,
+				selectedProviderURI,
+				selectedProvider,
+				thisDotApi,
+				wsProvider,
+				thisWeb3Enable,
 			);
 			await loadAccounts(selectedProvider, thisWeb3Accounts);
 			await updateConnectionStatus(thisDotApi.api as ApiPromise);
