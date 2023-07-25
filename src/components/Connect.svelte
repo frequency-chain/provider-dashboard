@@ -19,8 +19,8 @@
 	let thisWeb3Enable: typeof web3Enable;
 	let thisWeb3Accounts: typeof web3Accounts;
 
-    let connected = false;
-    let thisDotApi = defaultDotApi;
+	let connected = false;
+	let thisDotApi = defaultDotApi;
 
 	onMount(async() => {
 		// This must be in onMount because the extension requires that you have a window to attach to.
@@ -37,8 +37,8 @@
 	let canConnect = false;
 	$: canConnect = selectedProvider !== "" || otherProvider !== "";
 
-    storeConnected.subscribe(val => connected = val);
-    dotApi.subscribe(api => thisDotApi = api);
+	storeConnected.subscribe(val => connected = val);
+	dotApi.subscribe(api => thisDotApi = api);
 
 
 	async function connect() {
