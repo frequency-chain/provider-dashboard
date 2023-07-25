@@ -31,7 +31,7 @@ const mocks = vi.hoisted(() => {
     const mockExtension = vi.fn();
     return {
         ApiPromise: mockApiPromise,
-        InjectedExtension: mockExtension
+        InjectedExtension: mockExtension,
     };
 })
 
@@ -66,6 +66,7 @@ describe('submitAddControlKey', async () => {
     const alice = keyring.addFromUri("//Alice")
     const bob = keyring.addFromUri('//Bob');let mockedIncrement = 0;
 
+    // TODO: probably separate this into a different file so can mock signPayloadWith(Keyring|Extension)
    it('calls the callback when localhost',async () => {
        const api = await ApiPromise.create();
        const extension = undefined;
