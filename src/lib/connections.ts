@@ -167,7 +167,6 @@ export async function signPayloadWithExtension(injector: InjectedExtension, sign
             signed = await signRaw(signerPayloadRaw)
             return signed?.signature;
         } catch(e: any) {
-            alert(`Signing failed: ${e.message}`);
             return "ERROR " + e.message;
         }
     }
@@ -181,7 +180,6 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
         // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.
         return u8aToHex(signingAccount.sign(u8aWrapBytes(payload.toU8a())));
     } catch (e: any) {
-        alert(`Signing failed: ${e.message}`);
         return "ERROR " + e.message
     }
 }
