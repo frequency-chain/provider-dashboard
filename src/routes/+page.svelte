@@ -3,7 +3,6 @@
     <link rel="stylesheet" href="app.css">
 </svelte:head>
 <script lang=ts>
-    // import { SvelteComponent } from "svelte";
     import Connect from "../components/Connect.svelte";
     import Capacity from "../components/Capacity.svelte";
     import {
