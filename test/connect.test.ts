@@ -24,17 +24,13 @@ describe('Connect.svelte Unit Tests', () => {
     // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
     afterEach(() => cleanup())
 
-    let props = {
-            token: '',
-    };
-
     it('Connection component mounts correctly', () => {
-        const { container } = render(Connect, props);
+        const { container } = render(Connect);
         expect(container).toBeInTheDocument();
     })
 
     it('selectedProvider changes according to select box', async () => {
-        const { getByRole } = render(Connect, props);
+        const { getByRole } = render(Connect);
         const select = getByRole('combobox');
 
         await fireEvent.change(select, { target: { value: 'Rococo' } });
@@ -62,7 +58,7 @@ describe('Connect.svelte Unit Tests', () => {
     })
 
     it('Other provider can be entered when Other selected', async () => {
-        render(Connect, props);
+        render(Connect);
         const select = screen.getByRole('combobox');
         const input = screen.getByRole('textbox');
         expect(input).toBeDisabled();
@@ -80,7 +76,7 @@ describe('Connect.svelte Unit Tests', () => {
     });
 
     it('Connect button is enabled after changing provider', async () => {
-        render(Connect, props);
+        render(Connect);
         const btn = screen.getByRole('button');
         const select = screen.getByRole('combobox');
         await fireEvent.change(select, { target: { value: 'Other' } });
@@ -91,7 +87,7 @@ describe('Connect.svelte Unit Tests', () => {
 
     it('Can subscribe to storeConnected', () => {
         storeConnected.set(false);
-        render(Connect, props)
+        render(Connect)
 
         let storeValue;
         const unsubscribe = storeConnected.subscribe(value => {
