@@ -11,3 +11,5 @@ export const dotApi = writable(defaultDotApi);
 export const storeBlockNumber = writable(0n);
 
 export const storeCurrentAction = writable(ActionForms.NoForm);
+
+export const storeToken = writable("");

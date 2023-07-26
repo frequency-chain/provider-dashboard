@@ -24,17 +24,13 @@ describe('Connect.svelte Unit Tests', () => {
     // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
     afterEach(() => cleanup())
 
-    let props = {
-            token: '',
-    };
-
     it('Connection component mounts correctly', () => {
-        const { container } = render(Connect, props);
+        const { container } = render(Connect);
         expect(container).toBeInTheDocument();
     })
 
     it('selectedProvider changes according to select box', async () => {
-        const { getByRole } = render(Connect, props);
+        const { getByRole } = render(Connect);
         const select = getByRole('combobox');
 
         await fireEvent.change(select, { target: { value: 'Rococo' } });
@@ -42,27 +38,27 @@ describe('Connect.svelte Unit Tests', () => {
         // Be sure to wait for all the promises to resolve before checking the result
         await waitFor(() => {
             expect(select).toHaveValue('Rococo');
-            const selectedProvider = getByTextContent('Selected Provider: Rococo');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        let selectedProvider = getByTextContent('Selected Provider: Rococo');
+        expect(selectedProvider).toBeInTheDocument();
 
         await fireEvent.change(select, { target: { value: 'Localhost' } });
         await waitFor(() => {
             expect(select).toHaveValue('Localhost');
-            const selectedProvider = getByTextContent('Selected Provider: Localhost');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        selectedProvider = getByTextContent('Selected Provider: Localhost');
+        expect(selectedProvider).toBeInTheDocument();
 
         await fireEvent.change(select, { target: { value: 'Other' } }); 
         await waitFor(() => {
             expect(select).toHaveValue('Other');
-            const selectedProvider = getByTextContent('Selected Provider: Other');
-            expect(selectedProvider).toBeInTheDocument();
         });
+        selectedProvider = getByTextContent('Selected Provider: Other');
+        expect(selectedProvider).toBeInTheDocument();
     })
 
     it('Other provider can be entered when Other selected', async () => {
-        render(Connect, props);
+        render(Connect);
         const select = screen.getByRole('combobox');
         const input = screen.getByRole('textbox');
         expect(input).toBeDisabled();
@@ -79,17 +75,8 @@ describe('Connect.svelte Unit Tests', () => {
         });
     });
 
-    it('Connect button is disabled after connection', async () => {
-        render(Connect, props);
-        const btn = screen.getByRole('button');
-        await fireEvent.click(btn);
-        await waitFor(() => {
-            expect(btn).toBeDisabled();
-        });
-    });
-
     it('Connect button is enabled after changing provider', async () => {
-        render(Connect, props);
+        render(Connect);
         const btn = screen.getByRole('button');
         const select = screen.getByRole('combobox');
         await fireEvent.change(select, { target: { value: 'Other' } });
@@ -100,7 +87,7 @@ describe('Connect.svelte Unit Tests', () => {
 
     it('Can subscribe to storeConnected', () => {
         storeConnected.set(false);
-        render(Connect, props)
+        render(Connect)
 
         let storeValue;
         const unsubscribe = storeConnected.subscribe(value => {

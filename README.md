@@ -30,6 +30,13 @@ You can preview the production build with `npm run preview`.
 
 ## Testing
 To run the tests:
+The end to end tests require that a local instance of the frequency server is running.
+Clone the frequency server repo from:
+https://github.com/LibertyDSNP/frequency
+and run the following command from the root of the repo:
 ```bash
+make start # starts the frequency node
+Then run the tests:
+
 npm run test
 ```

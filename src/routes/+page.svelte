@@ -3,13 +3,18 @@
     <link rel="stylesheet" href="app.css">
 </svelte:head>
 <script lang=ts>
-    import { SvelteComponent } from "svelte";
     import Connect from "../components/Connect.svelte";
     import Capacity from "../components/Capacity.svelte";
-    import {storeBlockNumber, storeConnected, storeValidAccounts, transactionSigningAddress,storeProviderId} from "$lib/stores";
+    import {
+        storeBlockNumber,
+        storeConnected,
+        storeValidAccounts,
+        transactionSigningAddress,
+        storeProviderId,
+        storeToken
+    } from "$lib/stores";
     import Provider from "../components/Provider.svelte";
     import AddControlKey from "../components/AddControlKey.svelte";
-    import {providers} from "$lib/connections";
     import KeySelection from "../components/KeySelection.svelte";
 
     let token = '';
@@ -20,11 +25,9 @@
     let providerId = 0;
 
     storeBlockNumber.subscribe(val => blockNumber = val);
-
+    storeToken.subscribe(val => token = val);
     storeConnected.subscribe((val) => connected = val);
-    storeValidAccounts.subscribe((val) => {
-        validAccounts = val;
-    });
+    storeValidAccounts.subscribe((val) =>  validAccounts = val);
     transactionSigningAddress.subscribe(addr => signingAddress = addr);
     storeProviderId.subscribe(id => providerId = id);
 
@@ -58,7 +61,7 @@
     </div>
 </div>
 <form id="setupForm">
-    <Connect bind:token/>
+    <Connect />
     <fieldset class={connected ? "" : "hidden"}>
         <KeySelection
                 component="TransactionSigningKey"

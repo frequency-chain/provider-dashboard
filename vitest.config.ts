@@ -1,7 +1,8 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { resolve } from 'path'
 
+// Why do the alias not work in vite.config.ts?
 export default defineConfig({
   plugins: [
     svelte({ hot: !process.env.VITEST }),
