@@ -5,7 +5,7 @@
 		dotApi,
 	} from "$lib/stores";
 	import { defaultDotApi } from '$lib/storeTypes';
-	import { providers } from "$lib/connections";
+	import { ProviderMap } from "$lib/connections";
 	import {
 		getApi,
 		loadAccounts,
@@ -46,7 +46,7 @@
 		if (selectedProvider === 'Other') {
 			selectedProviderURI = otherProvider;
 		} else {
-			selectedProviderURI = providers[selectedProvider];
+			selectedProviderURI = ProviderMap[selectedProvider];
 		}
 
 		try {
@@ -75,8 +75,8 @@
 
 <label for="provider-list">1. Select a Provider</label>
 <select id="provider-list" required bind:value={selectedProvider} >
-	{#each Object.keys(providers) as providerName}
-		<option value={providerName}>{providerName}: {providers[providerName]}</option>
+	{#each Object.keys(ProviderMap) as providerName}
+		<option value={providerName}>{providerName}: {ProviderMap[providerName]}</option>
 	{/each}
 </select>
 

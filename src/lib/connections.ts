@@ -11,11 +11,7 @@ import type {SignerPayloadRaw, SignerResult} from "@polkadot/types/types";
 import type {SubmittableExtrinsic} from "@polkadot/api/promise/types";
 import type {EventRecord, ExtrinsicStatus} from "@polkadot/types/interfaces";
 
-type ProviderMap = {
-    [key: string]: string;
-}
-
-export let providers: ProviderMap = {
+export const ProviderMap: Record<string,string> = {
     Rococo: 'wss://rpc.rococo.frequency.xyz',
     Localhost: 'ws://localhost:9944',
     Other: 'wss://some.node',
