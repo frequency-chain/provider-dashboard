@@ -44,8 +44,9 @@ describe('End to End Tests', () => {
         await fireEvent.click(btn);
         await waitFor(() => {
             expect(getByTextContent('Connection status: Connected')).toBeInTheDocument();
-            expect(btn).toBeDisabled();
         });
+        const hiddenButton = screen.queryByRole('button', { name: 'Connect to Localhost' });
+        expect(hiddenButton).toBeNull();
 
         const signer = screen.getByLabelText('2. Choose a Transaction Signing Address');
         await fireEvent.change(signer, { target: { value: '//Alice: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' } });
