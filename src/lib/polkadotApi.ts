@@ -9,6 +9,7 @@ import {
     storeToken,
     dotApi
 } from "./stores";
+import { isLocalhost } from "./utils";
 import { options } from "@frequency-chain/api-augment";
 
 import type { DotApi } from "$lib/storeTypes";
@@ -17,19 +18,13 @@ import type { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
 import type { InjectedAccountWithMeta } from "@polkadot/extension-inject/types";
 import type { ChainProperties } from "@polkadot/types/interfaces";
 
-interface AccountMap {
-    [key: string]: KeyringPair;
-}
-interface MetaMap {
-    [key: string]: InjectedAccountWithMeta;
-}
+type AccountMap = Record<string, KeyringPair>;
+type MetaMap = Record<string, InjectedAccountWithMeta>;
 
 export async function getApi(
     selectedProviderURI: string,
-    selectedProvider: string,
     thisDotApi: DotApi,
     wsProvider: WsProvider,
-    thisWeb3Enable: typeof web3Enable,
 ) {
 
     if (!selectedProviderURI) {
@@ -45,15 +40,6 @@ export async function getApi(
     }
 
     // Singleton Provider because it starts trying to connect here.
-    // Check that the polkadot extension is installed if connecting to Rococo
-    if (selectedProvider === "Rococo") {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-        if (!extensions || !extensions.length) {
-            alert("Polkadot{.js} extension not found; please install it first.");
-            throw new Error("Polkadot{.js} extension not found; please install it first.");
-        }
-    }
-
     wsProvider = new WsProvider(selectedProviderURI);
     const apiPromise = await ApiPromise.create({
         provider: wsProvider,
@@ -71,11 +57,15 @@ export async function getApi(
     dotApi.update(currentApi => currentApi = initializedDotApi);
 }
 
-export async function loadAccounts(selectedProvider: string, thisWeb3Accounts: typeof web3Accounts) {
+export async function loadAccounts(
+    selectedProviderURI: string,
+    selectedProvider: string,
+    thisWeb3Enable: typeof web3Enable,
+    thisWeb3Accounts: typeof web3Accounts) {
     // populating for localhost and for a parachain are different since with localhost, there is
     // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
     let foundAccounts: AccountMap | MetaMap = {};
-    if (selectedProvider === "Localhost") {
+    if (isLocalhost(selectedProviderURI)) {
         const keyring = new Keyring({ type: 'sr25519' });
 
         ['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach(accountName => {
@@ -84,6 +74,13 @@ export async function loadAccounts(selectedProvider: string, thisWeb3Accounts: t
             foundAccounts[account.address] = account;
         })
     } else {
+        // Check that the polkadot extension is installed
+        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
+        if (!extensions || !extensions.length) {
+            alert("Polkadot{.js} extension not found; please install it first.");
+            throw new Error("Polkadot{.js} extension not found; please install it first.");
+        }
+
         let allAccounts = await thisWeb3Accounts();
         allAccounts.forEach(a => {
             // display only the accounts allowed for this chain
