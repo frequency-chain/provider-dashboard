@@ -89,12 +89,23 @@
 	bind:value={otherProvider}
 	disabled={selectedProvider.toString() != 'Other'}
 />
-<p>Selected Provider: {selectedProvider}</p>
-<button
-	on:click|preventDefault={async () => await connect()}
-	id="connect-button"
-	disabled={!canConnect}
->
-	Connect to {selectedProvider}
-</button>
+<div class={connected ? "" : "hidden"}>
+	<p>Selected Provider: {selectedProvider}</p>
+	<p>
+		<a href="https://faucet.rococo.frequency.xyz/" 
+			target="_blank"
+			hidden={selectedProvider !== "Rococo"}>
+			Get XRQCY tokens for Frequency Rococo testnet
+		</a>
+	</p>
+</div>
+<div>
+	<button
+		on:click|preventDefault={async () => await connect()}
+		id="connect-button"
+		hidden={!canConnect}
+	>
+		Connect to {selectedProvider}
+	</button>
+</div>
 
