@@ -1,12 +1,25 @@
-import {getEpoch, submitAddControlKey, getBlockNumber, signPayloadWithKeyring} from "../../src/lib/connections";
-import {expect, test, describe} from "vitest";
-import {ApiPromise} from "@polkadot/api";
+import {
+    getBlockNumber,
+    getEpoch,
+    signPayloadWithExtension,
+    signPayloadWithKeyring,
+    submitAddControlKey
+} from "../../src/lib/connections";
+import {describe, expect, test} from "vitest";
+import {ApiPromise,} from "@polkadot/api";
 import {Keyring} from "@polkadot/keyring";
+import {stringToU8a} from "@polkadot/util";
+import {
+    AnyJson,
+    SignerPayloadJSON,
+    SignerPayloadRaw,
+    SignerResult
+} from "@polkadot/types/types";
+import { ISubmittableResult } from "@polkadot/types/types";
 
 const mocks = vi.hoisted(() => {
     // this has to be inside here because otherwise the error will be
     // 'Cannot access TestCodec before initialization'
-
     class TestCodec {
         value: bigint;
         constructor(val: bigint) {
@@ -14,8 +27,61 @@ const mocks = vi.hoisted(() => {
         }
         toBigInt(): bigint { return this.value; }
     }
+    class TestDetectCodec<T,K>  {
+        value: string;
+        constructor(val: string) {
+            this.value = val
+        }
+        toU8a(): Uint8Array { return stringToU8a(this.value) }
+    }
+
+    class TestSigner {
+        signingId: number;
+        constructor(val: number) {
+            this.signingId = val;
+        }
+        public async signPayload (payload: SignerPayloadJSON): Promise<SignerResult> {
+            return { id: this.signingId, signature: "0xdeadbeef"};
+        }
+        public async signRaw (payload: SignerPayloadRaw): Promise<SignerResult> {
+            return { id: this.signingId, signature: "0xc0ffeec0ffee"};
+        }
+    }
+
+    class TestSubmittableResult implements ISubmittableResult {
+        readonly events: EventRecord[];
+        readonly isCompleted: boolean;
+        readonly isError: boolean;
+        readonly isFinalized: boolean;
+        readonly isInBlock: boolean;
+        readonly isWarning: boolean;
+        readonly status: ExtrinsicStatus;
+        readonly txHash: Hash;
+
+        constructor(setStatus: string) {
+            this.isFinalized = setStatus === 'isFinalized';
+            this.isCompleted = setStatus === 'isCompleted';
+            this.isError = setStatus === 'isError';
+            this.isInBlock = setStatus === 'isInBlock';
+            this.isWarning = setStatus === 'isWarning';
+            this.status = new ExtrinsicStatus()
+        }
+        filterRecords(section: string, method: string): EventRecord[] {
+            return [];
+        }
+
+        findRecord(section: string, method: string): EventRecord | undefined {
+            return undefined;
+        }
+
+        toHuman(isExtended?: boolean): AnyJson {
+            return JSON.stringify({foo: "bar"});
+        }
+    }
+
     const mockApiPromise = vi.fn();
     const epochNumber = new TestCodec(101n);
+    const mockCreatedType= new TestDetectCodec("hello world");
     let blockData = {
         block: { header: {number: new TestCodec(1001n)} }
     }
@@ -23,15 +89,19 @@ const mocks = vi.hoisted(() => {
         isReady: vi.fn().mockResolvedValue(true),
         query: { capacity: { currentEpoch: vi.fn().mockResolvedValue(epochNumber) } },
         rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) }},
-        registry: { createType: vi.fn().mockResolvedValue('abcdef')},
+        registry: { createType: vi.fn().mockResolvedValue(mockCreatedType)},
         tx: { msa: {addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined)} },
     };
     mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain)
 
-    const mockExtension = vi.fn();
+    const mockWeb3FromSource = vi.fn();
+    let testSigner = { signer: new TestSigner(123) }
+    const mockExtension = vi.fn().mockResolvedValue(testSigner)
     return {
         ApiPromise: mockApiPromise,
         InjectedExtension: mockExtension,
+        web3FromSource: mockWeb3FromSource,
+
     };
 })
 
@@ -40,6 +110,9 @@ vi.mock('@polkadot/api', async ()=> {
 });
 vi.mock('@polkadot/extension-inject/types', async () => {
     return { InjectedExtension: mocks.InjectedExtension }
+})
+vi.mock('@polkadot/extension-dapp', async () => {
+    return { web3FromSource: mocks.web3FromSource }
 })
 describe('getEpoch', () => {
     beforeEach(() => {
@@ -84,6 +157,28 @@ describe('submitAddControlKey', async () => {
         const endpointURL = "ws://someotherhost:9944"
         await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback);
         expect(callback).toHaveBeenCalled();
-
     })
+});
+
+describe('signPayloadWithKeyring', () => {
+    it("returns a hex signature", async () => {
+        const keyring = new Keyring({ type: 'sr25519' });
+        const signer = keyring.addFromUri("//Charlie");
+
+        const mockApi = await ApiPromise.create();
+        const message = await mockApi.registry.createType('MyMessage', "Anything");
+        const result = signPayloadWithKeyring(signer, message);
+        expect(result).toMatch(/^0x/);
+        expect(result.length).toEqual(130);
+    })
+});
+
+describe('signPayloadWithExtension', () => {
+    it("returns the expected 'signature'", async () => {
+        const mockApi = await ApiPromise.create();
+        const message = await mockApi.registry.createType('MyMessage', "Anything");
+        const injected = await mocks.InjectedExtension();
+        let result = await signPayloadWithExtension(injected, "//Someone", message);
+        expect(result).toEqual('0xc0ffeec0ffee')
+    });
 });

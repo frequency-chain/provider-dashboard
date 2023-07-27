@@ -50,11 +50,6 @@ describe('End to End Tests', () => {
 
         const signer = screen.getByLabelText('2. Choose a Transaction Signing Address');
         await fireEvent.change(signer, { target: { value: '//Alice: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' } });
-        // await waitFor(() => {
-        //     expect
-        // });
-
-
     });
 });
 

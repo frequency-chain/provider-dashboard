@@ -2,25 +2,14 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/sv
 import '@testing-library/jest-dom'
 import { storeConnected } from '$lib/stores'
 import Connect from '$components/Connect.svelte'
+import { getByTextContent } from "../helpers";
 
 // vitest mocking: TODO: this hides an alert window but doesn't affect the parameters
 //                       tested here. It should not be mocked for e2e tests.
 globalThis.alert = () => {};
 
-// Helper function to get text that is broken up into multiple elements (->stackExchange)
-const getByTextContent = (text: string) => {
-    // Passing custom matcher function to `getByText`
-    return screen.getByText((_content, element) => {
-        const hasText = element => element.textContent === text
-        const elementHasText = hasText(element)
-        const childrenDontHaveText = Array.from(element?.children || []).every(child => !hasText(child))
-        return elementHasText && childrenDontHaveText
-    })
-}
-  
-
 describe('Connect.svelte Unit Tests', () => {
-    beforeAll
+
     // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
     afterEach(() => cleanup())
 

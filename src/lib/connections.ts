@@ -6,7 +6,7 @@ import {isLocalhost, waitFor} from "$lib/utils";
 
 import type {KeyringPair} from "@polkadot/keyring/types";
 import type {InjectedAccountWithMeta, InjectedExtension} from "@polkadot/extension-inject/types";
-import {isFunction, u8aToHex, u8aWrapBytes} from "@polkadot/util";
+import {isFunction, stringToU8a, u8aToHex, u8aWrapBytes} from "@polkadot/util";
 import type {SignerPayloadRaw, SignerResult} from "@polkadot/types/types";
 import type {SubmittableExtrinsic} from "@polkadot/api/promise/types";
 import type {EventRecord, ExtrinsicStatus} from "@polkadot/types/interfaces";
@@ -62,18 +62,19 @@ export async function submitAddControlKey(api: ApiPromise,
 
         const ownerKeySignature = useKeyring ?
             signPayloadWithKeyring(signingAccount as KeyringPair, newKeyPayload) :
-            await signPayloadWithExtension(extension as InjectedExtension, signingAccount as InjectedAccountWithMeta, newKeyPayload);
+            await signPayloadWithExtension(extension as InjectedExtension, signingAccount.address, newKeyPayload);
 
         const newKeySignature = useKeyring ?
             signPayloadWithKeyring(newAccount as KeyringPair, newKeyPayload) :
-            await signPayloadWithExtension(extension as InjectedExtension, newAccount as InjectedAccountWithMeta, newKeyPayload);
+            await signPayloadWithExtension(extension as InjectedExtension, newAccount.address, newKeyPayload);
 
         const ownerKeyProof = { Sr25519: ownerKeySignature };
         const newKeyProof = { Sr25519: newKeySignature };
-        const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+        const extrinsic =
+            api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
        useKeyring ?
             await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback):
-            await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount as InjectedAccountWithMeta, callback);
+            await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
 
     } else {
         console.debug("api is not available.");
@@ -126,12 +127,12 @@ export async function parseChainEvent (
 // use the Polkadot extension the user selected to submit the provided extrinsic
 async function submitExtrinsicWithExtension(extension: InjectedExtension,
                                             extrinsic: SubmittableExtrinsic,
-                                            signingAccount: InjectedAccountWithMeta,
+                                            signingAddress: string,
                                             txnStatusCallback: TxnStatusCallback ): Promise<void> {
     let currentTxDone = false;
     try {
         txnStatusCallback("Submitting transaction")
-        await extrinsic.signAndSend(signingAccount.address, {signer: extension.signer, nonce: -1},
+        await extrinsic.signAndSend(signingAddress, {signer: extension.signer, nonce: -1},
             (result) => parseChainEvent(result, txnStatusCallback));
         await waitFor(() => currentTxDone);
     } catch {
@@ -140,7 +141,7 @@ async function submitExtrinsicWithExtension(extension: InjectedExtension,
     }
 }
 
-// Use the built-in tes accounts to submit an extrinsic
+// Use the built-in test accounts to submit an extrinsic
 async function submitExtrinsicWithKeyring(
         extrinsic: SubmittableExtrinsic,
         signingAccount: KeyringPair,
@@ -158,18 +159,17 @@ async function submitExtrinsicWithKeyring(
 // converting to Sr25519Signature is very important, otherwise the signature length
 // is incorrect - just using signature gives:
 // Enum(Sr25519):: Expected input with 64 bytes (512 bits), found 15 bytes
-export async function signPayloadWithExtension(injector: InjectedExtension, signingAccount: InjectedAccountWithMeta, payload: any): Promise<string>{
+export async function signPayloadWithExtension(injector: InjectedExtension, signingPublicKey: string, payload: any): Promise<string>{
     const signer = injector?.signer;
-    const signRaw = signer?.signRaw;
     let signed: SignerResult;
-    if (signer && isFunction(signRaw)) {
+    if (signer && isFunction(signer.signRaw)) {
         // u8aWrapBytes literally just puts <Bytes></Bytes> around the payload.
         const payloadWrappedToU8a = u8aWrapBytes(payload.toU8a());
         const signerPayloadRaw: SignerPayloadRaw = {
-            address: signingAccount.address, data: u8aToHex(payloadWrappedToU8a), type: 'bytes'
+            address: signingPublicKey, data: u8aToHex(payloadWrappedToU8a), type: 'bytes'
         }
         try {
-            signed = await signRaw(signerPayloadRaw)
+            signed = await signer.signRaw(signerPayloadRaw)
             return signed?.signature;
         } catch(e: any) {
             return "ERROR " + e.message;

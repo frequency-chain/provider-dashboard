@@ -3,6 +3,7 @@
     import {ActionForms} from "$lib/storeTypes";
     import {storeCurrentAction} from "$lib/stores.js";
 
+    // the locally stored value of the provider Id
     let localProvider = 0;
     storeProviderId.subscribe(val => localProvider = val);
     let connected = false;
