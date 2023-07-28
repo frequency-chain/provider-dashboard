@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-function get_frequency_pid () {
-    lsof -i tcp:9933 | grep frequency | xargs | awk '{print $2}'
+function get_docker_pid () {
+    # REVIEW: This works on macOs, but may not work on other platforms.
+    lsof -i tcp:9944 | grep docke | xargs | awk '{print $2}'
 }
 
 function cleanup () {
@@ -14,22 +15,13 @@ function cleanup () {
             exit
             ;;
         EXIT)
-            # kill_freq.sh is not used here because we do not know what directory
-            # the script is in when a signal is received. Therefore, we do not
-            # know how to navigate to the kill_freq.sh script with relative paths.
-            if [ -n "${PID}" ]
-            then
-                kill -9 ${PID}
-                echo "Frequency has been killed. 💀"
-            else
-                echo "Frequency was not started by integration-test."
-            fi
+            docker stop vitest-node
+            echo "Frequency docker has been stopped. 💀"
             ;;
     esac
 }
 
 RUNDIR=$(dirname ${0})
-SKIP_JS_BUILD=
 CHAIN="development"
 
 # A distinction is made between the local node and the the test chain
@@ -44,9 +36,6 @@ trap 'cleanup INT' INT
 while getopts "sc:" OPTNAME
 do
     case "${OPTNAME}" in
-        "s")
-            SKIP_JS_BUILD=1
-        ;;
         "c")
             CHAIN=$OPTARG
         ;;
@@ -57,7 +46,6 @@ shift $((OPTIND-1))
 case "${CHAIN}" in
     "development")
         PROVIDER_URL="ws://127.0.0.1:9944"
-        NPM_RUN_COMMAND="test"
         CHAIN_ENVIRONMENT="dev"
 
         if [[ "$1" == "load" ]]; then
@@ -80,83 +68,39 @@ case "${CHAIN}" in
     ;;
 esac
 
+if [ "${CHAIN_ENVIRONMENT}" = "rococo-local" ]
+then
+    echo "Frequency is not running."
+    echo "The intended use case of running integration tests with a chain environment"
+    echo "of \"rococo-local\" is to run the tests against a locally running Frequency"
+    echo "chain with locally running Polkadot relay nodes."
+    exit 1
+fi
+
+echo "Starting a Docker Frequency Node with block sealing ${LOCAL_NODE_BLOCK_SEALING}..."
+case ${LOCAL_NODE_BLOCK_SEALING} in
+    "instant") \
+        docker run --rm -p 9944:9944 -p 9933:9933 -p 30333:30333 --platform=linux/amd64 \
+        --name vitest-node --detach \
+        frequencychain/instant-seal-node:latest &
+    ;;
+    "manual") ${RUNDIR}/init.sh start-frequency-manual >& frequency.log &
+    ;;
+esac
+
 echo "The integration test output will be logged on this console"
+echo -e "The Docker Frequency node output will be logged to docker logs\n"
+echo -e "You can:\n\t'docker logs --follow vitest-node'\n\n\tin another terminal to see both side-by-side."
+echo -e "\t(Now would be a good time to try accessing the docker logs,\n\t which are only available while the node is running.)\n"
 
-echo "The Frequency node output will be logged to the file frequency.log."
-echo "You can 'tail -f frequency.log' in another terminal to see both side-by-side."
-echo ""
-echo -e "Checking to see if Frequency is running..."
+# TODO: Find a better way to determine if the node is running.
+# The Connect test will fail without this delay.
+# using `nc -zv localhost 9944` to check the WebSocket connection was not sufficient.
+sleep 6
 
-if [ -n "$( get_frequency_pid )" ]
-then
-    echo "Frequency is already running."
-else
-    if [ "${CHAIN_ENVIRONMENT}" = "rococo-local" ]
-    then
-        echo "Frequency is not running."
-        echo "The intended use case of running integration tests with a chain environment"
-        echo "of \"rococo-local\" is to run the tests against a locally running Frequency"
-        echo "chain with locally running Polkadot relay nodes."
-        exit 1
-    fi
-
-    echo "Building a no-relay Frequency executable..."
-    if ! make build-no-relay
-    then
-        echo "Error building Frequency executable; aborting."
-        exit 1
-    fi
-
-    echo "Starting a Frequency Node with block sealing ${LOCAL_NODE_BLOCK_SEALING}..."
-    case ${LOCAL_NODE_BLOCK_SEALING} in
-        "instant") ${RUNDIR}/init.sh start-frequency-instant >& frequency.log &
-        ;;
-        "manual") ${RUNDIR}/init.sh start-frequency-manual >& frequency.log &
-        ;;
-    esac
-
-    declare -i timeout_secs=60
-    declare -i i=0
-    while (( !PID && i < timeout_secs ))
-    do
-        PID=$( get_frequency_pid )
-        sleep 1
-        (( i += 1 ))
-    done
-
-    if [ -z "${PID}" ]
-    then
-        echo "Unable to find or start a Frequency node; aborting."
-        exit 1
-    fi
-    echo "---------------------------------------------"
-    echo "Frequency running here:"
-    echo "PID: ${PID}"
-    echo "---------------------------------------------"
-fi
-
-if [ "${SKIP_JS_BUILD}" = "1" ]
-then
-    echo "Skipping js/api-augment build"
-else
-    echo "Building js/api-augment..."
-    cd js/api-augment
-    npm i
-    npm run fetch:local
-    npm run --silent build
-    cd dist
-    echo "Packaging up into js/api-augment/dist/frequency-chain-api-augment-0.0.0.tgz"
-    npm pack --silent
-    cd ../../..
-fi
-
-
-cd integration-tests
-echo "Installing js/api-augment/dist/frequency-chain-api-augment-0.0.0.tgz"
-npm i ../js/api-augment/dist/frequency-chain-api-augment-0.0.0.tgz
-npm install
+npm install &> /dev/null
 echo "---------------------------------------------"
 echo "Starting Tests..."
 echo "---------------------------------------------"
 
-CHAIN_ENVIRONMENT=$CHAIN_ENVIRONMENT FUNDING_ACCOUNT_SEED_PHRASE=$FUNDING_ACCOUNT_SEED_PHRASE WS_PROVIDER_URL="$PROVIDER_URL" npm run $NPM_RUN_COMMAND
+npm run test:once
