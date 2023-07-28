@@ -9,6 +9,7 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
+		"test:once": "vitest run",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest src",
 		"coverage": "vitest run --coverage"
