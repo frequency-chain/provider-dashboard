@@ -10,11 +10,12 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
 		"test:once": "vitest run",
+		"test:ci": "vitest run --dir ./test/components && vitest run --dir ./test/lib",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest src",
 		"coverage": "vitest run --coverage",
 		"lint": "npx eslint src test",
-		"format": "npx prettier --write  --plugin prettier-plugin-svelte test src"
+		"prettier": "npx prettier --write  --plugin prettier-plugin-svelte test src",
 	},
 	"devDependencies": {
 		"@polkadot/types-codec": "^10.9.1",
