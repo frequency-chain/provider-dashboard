@@ -1,111 +1,92 @@
-<script lang=ts>
-	import { onMount } from 'svelte';
-	import {
-		storeConnected,
-		dotApi,
-	} from "$lib/stores";
-	import { defaultDotApi } from '$lib/storeTypes';
-	import { ProviderMap } from "$lib/connections";
-	import {
-		getApi,
-		loadAccounts,
-		updateConnectionStatus
-	} from "$lib/polkadotApi";
+<script lang="ts">
+  import { onMount } from 'svelte';
+  import { storeConnected, dotApi } from '$lib/stores';
+  import { defaultDotApi } from '$lib/storeTypes';
+  import { ProviderMap } from '$lib/connections';
+  import { getApi, loadAccounts, updateConnectionStatus } from '$lib/polkadotApi';
 
-	import type { ApiPromise, WsProvider } from "@polkadot/api";
-	import type { web3Enable, web3Accounts } from "@polkadot/extension-dapp";
+  import type { ApiPromise, WsProvider } from '@polkadot/api';
+  import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 
-	let wsProvider: WsProvider;
-	let thisWeb3Enable: typeof web3Enable;
-	let thisWeb3Accounts: typeof web3Accounts;
+  let wsProvider: WsProvider;
+  let thisWeb3Enable: typeof web3Enable;
+  let thisWeb3Accounts: typeof web3Accounts;
 
-	let connected = false;
-	let thisDotApi = defaultDotApi;
+  let connected = false;
+  let thisDotApi = defaultDotApi;
 
-	onMount(async() => {
-		// This must be in onMount because the extension requires that you have a window to attach to.
-		// Since this project is precompiled, there will be no window until onMount
-		const polkadotExt = await import("@polkadot/extension-dapp");
-		thisWeb3Enable = polkadotExt.web3Enable;
-		thisWeb3Accounts = polkadotExt.web3Accounts;
-	});
+  onMount(async () => {
+    // This must be in onMount because the extension requires that you have a window to attach to.
+    // Since this project is precompiled, there will be no window until onMount
+    const polkadotExt = await import('@polkadot/extension-dapp');
+    thisWeb3Enable = polkadotExt.web3Enable;
+    thisWeb3Accounts = polkadotExt.web3Accounts;
+  });
 
-	let selectedProvider: string = "Rococo";
-	let otherProvider: string;
+  let selectedProvider: string = 'Rococo';
+  let otherProvider: string;
 
-	// Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
-	let canConnect = false;
-	$: canConnect = selectedProvider !== "" || otherProvider !== "";
+  // Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
+  let canConnect = false;
+  $: canConnect = selectedProvider !== '' || otherProvider !== '';
 
-	storeConnected.subscribe(val => connected = val);
-	dotApi.subscribe(api => thisDotApi = api);
+  storeConnected.subscribe((val) => (connected = val));
+  dotApi.subscribe((api) => (thisDotApi = api));
 
+  async function connect() {
+    let selectedProviderURI: string = '';
+    if (selectedProvider === 'Other') {
+      selectedProviderURI = otherProvider;
+    } else {
+      selectedProviderURI = ProviderMap[selectedProvider];
+    }
 
-	async function connect() {
-		let selectedProviderURI: string = "";
-		if (selectedProvider === 'Other') {
-			selectedProviderURI = otherProvider;
-		} else {
-			selectedProviderURI = ProviderMap[selectedProvider];
-		}
-
-		try {
-			await getApi(
-				selectedProviderURI,
-				thisDotApi,
-				wsProvider,
-			);
-			await loadAccounts(
-				selectedProviderURI,
-				selectedProvider,
-				thisWeb3Enable,
-				thisWeb3Accounts);
-			await updateConnectionStatus(thisDotApi.api as ApiPromise);
-		} catch (e: any){
-			console.error("Error: ", e);
-			alert(`could not connect to ${selectedProviderURI || "empty value"}. Please enter a valid and reachable Websocket URL.`);
-		} finally {
-			if (thisDotApi.api?.isConnected) {
-				// Disable connect button
-				canConnect = false;
-				console.log("Connected to ", selectedProviderURI);
-			}
-		}
-		return;
-	}
+    try {
+      await getApi(selectedProviderURI, thisDotApi, wsProvider);
+      await loadAccounts(selectedProviderURI, selectedProvider, thisWeb3Enable, thisWeb3Accounts);
+      await updateConnectionStatus(thisDotApi.api as ApiPromise);
+    } catch (e: any) {
+      console.error('Error: ', e);
+      alert(
+        `could not connect to ${
+          selectedProviderURI || 'empty value'
+        }. Please enter a valid and reachable Websocket URL.`
+      );
+    } finally {
+      if (thisDotApi.api?.isConnected) {
+        // Disable connect button
+        canConnect = false;
+        console.log('Connected to ', selectedProviderURI);
+      }
+    }
+    return;
+  }
 </script>
 
 <label for="provider-list">1. Select a Provider</label>
-<select id="provider-list" required bind:value={selectedProvider} >
-	{#each Object.keys(ProviderMap) as providerName}
-		<option value={providerName}>{providerName}: {ProviderMap[providerName]}</option>
-	{/each}
+<select id="provider-list" required bind:value={selectedProvider}>
+  {#each Object.keys(ProviderMap) as providerName}
+    <option value={providerName}>{providerName}: {ProviderMap[providerName]}</option>
+  {/each}
 </select>
 
 <input
-	type="text"
-	id="other-endpoint-url"
-	placeholder="wss://some.frequency.node"
-	bind:value={otherProvider}
-	disabled={selectedProvider.toString() != 'Other'}
+  type="text"
+  id="other-endpoint-url"
+  placeholder="wss://some.frequency.node"
+  bind:value={otherProvider}
+  disabled={selectedProvider.toString() != 'Other'}
 />
-<div class={connected ? "" : "hidden"}>
-	<p>Selected Provider: {selectedProvider}</p>
-	<p>
-		<a href="https://faucet.rococo.frequency.xyz/" 
-			target="_blank"
-			hidden={selectedProvider !== "Rococo"}>
-			Get XRQCY tokens for Frequency Rococo testnet
-		</a>
-	</p>
+<div class={connected ? '' : 'hidden'}>
+  <p>Selected Provider: {selectedProvider}</p>
+  <p>
+    <a href="https://faucet.rococo.frequency.xyz/" target="_blank" hidden={selectedProvider !== 'Rococo'}>
+      Get XRQCY tokens for Frequency Rococo testnet
+    </a>
+  </p>
 </div>
 <div>
-	<button
-		on:click|preventDefault={async () => await connect()}
-		id="connect-button"
-		hidden={!canConnect}
-	>
-		Connect to {selectedProvider}
-	</button>
+  <button on:click|preventDefault={async () => await connect()} id="connect-button" hidden={!canConnect}>
+    Connect to {selectedProvider}
+  </button>
 </div>
-
