@@ -52,12 +52,7 @@
     });
     export let token;
 </script>
-<style>
-    .hidden {
-        display: none;
-    }
-</style>
-<div class={ localProviderId > 0 ? "" : "hidden"}>
+<div class:hidden={localProviderId === 0}>
     <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
     <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
     <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>

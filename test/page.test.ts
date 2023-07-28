@@ -28,7 +28,7 @@ describe('End to End Tests', () => {
     });
 
     test('connect to localhost', async () => {
-        const { getByRole } = render(Page);
+        const { getByRole, getByText } = render(Page);
 
         // Get the select box
         const select = screen.getByLabelText('1. Select a Provider');
@@ -42,6 +42,7 @@ describe('End to End Tests', () => {
 
         const btn = screen.getByText('Connect to Localhost');
         await fireEvent.click(btn);
+
         await waitFor(() => {
             expect(getByTextContent('Connection status: Connected')).toBeInTheDocument();
         });
@@ -50,6 +51,9 @@ describe('End to End Tests', () => {
 
         const signer = screen.getByLabelText('2. Choose a Transaction Signing Address');
         await fireEvent.change(signer, { target: { value: '//Alice: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY' } });
+        await waitFor(() => {
+            expect(getByTextContent('Selected Key is not associated with a Provider'))
+        })
     });
 });
 

@@ -119,7 +119,7 @@ export async function parseChainEvent (
                 showExtrinsicStatus(status.toHuman(), txnStatusCallback)
             }
         }
-    } catch(e) {
+    } catch(e: any) {
         showExtrinsicStatus("Error: " + e.toString(), txnStatusCallback)
     }
 }
