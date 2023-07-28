@@ -15,7 +15,7 @@
 		"test:watch": "vitest src",
 		"coverage": "vitest run --coverage",
 		"lint": "npx eslint src test",
-		"prettier": "npx prettier --write  --plugin prettier-plugin-svelte test src",
+		"prettier": "npx prettier --write  --plugin prettier-plugin-svelte test src"
 	},
 	"devDependencies": {
 		"@polkadot/types-codec": "^10.9.1",
