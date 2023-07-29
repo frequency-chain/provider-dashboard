@@ -9,7 +9,7 @@
   storeConnected.subscribe((val) => (connected = val));
   let apiPromise: ApiPromise | undefined;
   dotApi.subscribe((api) => {
-    if (api) {
+    if (api?.api) {
       apiPromise = api.api;
     }
   });
@@ -42,9 +42,10 @@
       blockNumber = await getBlockNumber(apiPromise);
       storeBlockNumber.update((val) => (val = blockNumber));
     }
-    if (connected && apiPromise?.query && !!addr) {
+    if (connected && apiPromise?.query && addr) {
       const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
       localProviderId = received.toNumber();
+      console.log("localProviderId: ", localProviderId)
       epochNumber = await getEpoch(apiPromise);
       if (localProviderId > 0) {
         const details: Option<any> = (
@@ -58,12 +59,14 @@
         };
       }
     }
+    console.log("localProviderId2: ", localProviderId);
     storeProviderId.update((val) => (val = localProviderId));
   });
   export let token;
 </script>
 
 <div class:hidden={localProviderId === 0}>
+  <p>{localProviderId}</p>
   <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
   <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
   <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>
