@@ -6,7 +6,7 @@
 
   let connected;
   let localProviderId = 0;
-  storeConnected.subscribe((val) => (connected = val));
+  storeConnected.subscribe( val => connected = val);
   let apiPromise: ApiPromise | undefined;
   dotApi.subscribe((api) => {
     if (api?.api) {
@@ -32,7 +32,7 @@
   let signingAddress = '';   // eslint-disable-line no-unused-vars
   let epochNumber = 0n;
   let blockNumber = 0n;
-  storeBlockNumber.subscribe((val) => (blockNumber = val));
+  storeBlockNumber.subscribe(val => blockNumber = val);
 
   transactionSigningAddress.subscribe(async (addr) => {
     signingAddress = addr;
@@ -40,7 +40,7 @@
     capacityDetails = defaultDetails;
     if (connected && apiPromise) {
       blockNumber = await getBlockNumber(apiPromise);
-      storeBlockNumber.update((val) => (val = blockNumber));
+            storeBlockNumber.update(val => val = blockNumber)
     }
     if (connected && apiPromise?.query && addr) {
       const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
@@ -65,8 +65,7 @@
   export let token;
 </script>
 
-<div class:hidden={localProviderId === 0}>
-  <p>{localProviderId}</p>
+<div class={ localProviderId > 0 ? "" : "hidden"}>
   <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
   <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
   <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>

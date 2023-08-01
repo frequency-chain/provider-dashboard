@@ -1,4 +1,4 @@
-import { cleanup, render } from '@testing-library/svelte';
+import {cleanup, render, waitFor} from '@testing-library/svelte';
 import { getEpoch, getBlockNumber } from '$lib/connections';
 import type { ApiPromise } from '@polkadot/api';
 import '@testing-library/jest-dom';
@@ -102,6 +102,8 @@ describe('Capacity.svelte', () => {
     await dotApi.update(val => val = {...val, api: createdApi});
     await storeConnected.set(true);
     await transactionSigningAddress.set("0xabcdef0000");
-    expect(container.querySelector('div div')).not.toHaveClass('hidden')
+    await waitFor( () => {
+      expect(container.querySelector('div div')).not.toHaveClass('hidden')
+    })
   })
 });
