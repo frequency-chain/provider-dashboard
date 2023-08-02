@@ -87,12 +87,12 @@ describe('Capacity.svelte', () => {
   afterEach(() => cleanup());
 
   it('mounts', () => {
-    const { container } = render(Capacity);
+    const { container } = render(Capacity, {token: 'TEST'});
     expect(container).toBeInTheDocument();
   });
 
   it('is hidden if the provider id === 0 and shows otherwise', () => {
-      const { container } = render(Capacity);
+      const { container } = render(Capacity, {token: 'TEST'});
       expect(container.querySelector('div div')).toHaveClass('hidden');
   });
 
