@@ -7,7 +7,6 @@
 
   import type { ApiPromise, WsProvider } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import * as net from "net";
 
   let wsProvider: WsProvider;
   let thisWeb3Enable: typeof web3Enable;
