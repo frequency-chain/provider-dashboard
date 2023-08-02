@@ -28,13 +28,20 @@ describe('End to End Tests', () => {
   });
 
   test('connect to localhost', async () => {
-    render(Page);
+    let {container, getByText, getByLabelText} = render(Page);
+    let ok = screen.getByText("Ok");
+    await fireEvent.click(ok);
 
+    await waitFor(() => {
+      let statusBar = container.querySelector('#status-bar');
+      expect(statusBar).toBeDefined();
+      expect(statusBar).not.toHaveClass('hidden');
+    });
     // Get the select box
-    const select = screen.getByLabelText('1. Select a Provider');
+    const select = getByLabelText('1. Select a Network');
 
     // Change the select box value
-    await fireEvent.change(select, { target: { value: 'Localhost' } });
+    await fireEvent.select(select, { target: { value: 'Localhost' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
@@ -42,7 +49,7 @@ describe('End to End Tests', () => {
     });
     expect(getByTextContent('Selected Provider: Localhost')).toBeInTheDocument();
 
-    const btn = screen.getByText('Connect to Localhost');
+    const btn = getByText('Connect to Localhost');
     await fireEvent.click(btn);
 
     await waitFor(() => {

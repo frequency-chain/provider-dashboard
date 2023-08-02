@@ -25,6 +25,12 @@
 
   let selectedProvider: string = 'Rococo';
   let otherProvider: string;
+  let showExplainer = false;
+
+  const toggleExplain = (evt: Event) => {
+    evt.preventDefault()
+    showExplainer = !showExplainer;
+  }
 
   // Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
   let canConnect = false;
@@ -61,9 +67,18 @@
     }
     return;
   }
+  let networkQuestion = "What's the difference between Mainnet and Testnet (Rococo)?";
 </script>
-
-<label for="provider-list">1. Select a Provider</label>
+<a href="/" on:click={toggleExplain} on:keydown={toggleExplain} class:hidden={showExplainer} class="explainer-text">{networkQuestion}</a>
+<div class:hidden={!showExplainer}>
+  <p>The main purpose of the Mainnet is to run the actual blockchain network.</p>
+  <p>The Testnet, which works with the Rococo Polkadot Testnet, is designed for developers to test and debug their applications without risking real assets.</p>
+  <p><strong>What about the other options?</strong></p>
+  <p>If you need to connect a node running development code locally, choose Localhost.
+  <p>If you need to connect to a node that is not in the list, choose Other, then type the WebSocket address in the text field.</p>
+  <button on:click={toggleExplain} on:keydown={toggleExplain}>Thanks.</button>
+</div>
+<label for="provider-list">1. Select a Network</label>
 <select id="provider-list" required bind:value={selectedProvider}>
   {#each Object.keys(ProviderMap) as providerName}
     <option value={providerName}>{providerName}: {ProviderMap[providerName]}</option>
@@ -81,7 +96,7 @@
   <p>Selected Provider: {selectedProvider}</p>
   <p>
     <a href="https://faucet.rococo.frequency.xyz/" target="_blank" hidden={selectedProvider !== 'Rococo'}>
-      Get XRQCY tokens for Frequency Rococo testnet
+      Get XRQCY tokens for Frequency Testnet (Rococo)
     </a>
   </p>
 </div>

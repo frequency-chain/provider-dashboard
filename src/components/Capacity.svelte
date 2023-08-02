@@ -45,7 +45,6 @@
     if (connected && apiPromise?.query && addr) {
       const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
       localProviderId = received.toNumber();
-      console.log("localProviderId: ", localProviderId)
       epochNumber = await getEpoch(apiPromise);
       if (localProviderId > 0) {
         const details: Option<any> = (
@@ -59,12 +58,10 @@
         };
       }
     }
-    console.log("localProviderId2: ", localProviderId);
     storeProviderId.update((val) => (val = localProviderId));
   });
   export let token;
 </script>
-
 <div class={ localProviderId > 0 ? "" : "hidden"}>
   <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
   <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>

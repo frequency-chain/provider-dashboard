@@ -67,7 +67,7 @@ describe('Connect.svelte Unit Tests', () => {
 
   it('Connect button is enabled after changing provider', async () => {
     render(Connect);
-    const btn = screen.getByRole('button');
+    const btn = screen.getByText('Connect to Rococo');
     const select = screen.getByRole('combobox');
     await fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {

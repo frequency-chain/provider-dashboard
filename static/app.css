@@ -4,3 +4,8 @@ body {
 .hidden {
     display: none;
 }
+.explainer-text {
+    font-size: smaller;
+    color: -webkit-link;
+    cursor: pointer;
+}
