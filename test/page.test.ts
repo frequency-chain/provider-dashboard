@@ -28,8 +28,8 @@ describe('End to End Tests', () => {
   });
 
   test('connect to localhost', async () => {
-    let {container, getByText, getByLabelText} = render(Page);
-    let ok = screen.getByText("Ok");
+    let { container, getByText, getByLabelText } = render(Page);
+    let ok = screen.getByText('Ok');
     await fireEvent.click(ok);
 
     await waitFor(() => {

@@ -87,26 +87,31 @@ export async function submitAddControlKey(
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
-export async function submitStake(api: ApiPromise,
-                                          extension: InjectedExtension | undefined,
-                                          signingAccount: SigningKey,
-                                          providerId: number,
-                                          stakeAmount: bigint,
-                                          endpointURL: string,
-                                          callback: (statusStr: string) => void) {
-    if (api && await api.isReady) {
-        const useKeyring: boolean = isLocalhost(endpointURL);
+export async function submitStake(
+  api: ApiPromise,
+  extension: InjectedExtension | undefined,
+  signingAccount: SigningKey,
+  providerId: number,
+  stakeAmount: bigint,
+  endpointURL: string,
+  callback: (statusStr: string) => void
+) {
+  if (api && (await api.isReady)) {
+    const useKeyring: boolean = isLocalhost(endpointURL);
 
-        const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
-        useKeyring ?
-            await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback):
-            await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount as InjectedAccountWithMeta, callback);
-
-    } else {
-        console.debug("api is not available.");
-    }
+    const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
+    useKeyring
+      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
+      : await submitExtrinsicWithExtension(
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount as InjectedAccountWithMeta,
+          callback
+      );
+  } else {
+    console.debug('api is not available.');
+  }
 }
-
 
 type TxnStatusCallback = (txnStatus: string) => void;
 

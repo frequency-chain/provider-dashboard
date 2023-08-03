@@ -9,7 +9,7 @@
   } from '$lib/stores';
   import Connect from '$components/Connect.svelte';
   import Capacity from '$components/Capacity.svelte';
-  import Intro from "$components/Intro.svelte";
+  import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
   import AddControlKey from '$components/AddControlKey.svelte';
   import KeySelection from '$components/KeySelection.svelte';
@@ -39,7 +39,7 @@
 </svelte:head>
 
 <h1>Welcome to Provider Dashboard</h1>
-<Intro bind:dismissed={showDashboard}/>
+<Intro bind:dismissed={showDashboard} />
 <div id="status-bar">
   <div id="connection-status" class="status-item">
     <h3>Connection status: {connected ? 'Connected' : 'Not connected'}</h3>
@@ -58,11 +58,11 @@
     <Connect />
     <div class={connected ? '' : 'hidden'}>
       <KeySelection
-              component="TransactionSigningKey"
-              selectLabel="2. Choose a Transaction Signing Address"
-              selectedOption={''}
-              onSelect={onChangeTxnSigningAddress}
-              {validAccounts}
+        component="TransactionSigningKey"
+        selectLabel="2. Choose a Transaction Signing Address"
+        selectedOption={''}
+        onSelect={onChangeTxnSigningAddress}
+        {validAccounts}
       />
     </div>
   </form>

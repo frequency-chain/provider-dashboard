@@ -23,7 +23,8 @@ const mocks = vi.hoisted(() => {
       return this.value;
     }
   }
-  class TestDetectCodec<T, K> {     // eslint-disable-line no-unused-vars
+  class TestDetectCodec<T, K> {
+    // eslint-disable-line no-unused-vars
     value: string;
     constructor(val: string) {
       this.value = val;
