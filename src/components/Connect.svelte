@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { storeConnected, dotApi } from '$lib/stores';
+  import { storeConnected, dotApi, storeProviderId } from '$lib/stores';
   import { defaultDotApi } from '$lib/storeTypes';
   import { ProviderMap } from '$lib/connections';
   import { getApi, loadAccounts, updateConnectionStatus } from '$lib/polkadotApi';
@@ -15,7 +15,6 @@
   let showFaucetInstructions = true;
   const toggleFaucetInstructions = (_evt: Event) => {
     showFaucetInstructions = !showFaucetInstructions;
-    console.log(showFaucetInstructions)
   }
   let connected = false;
   let thisDotApi = defaultDotApi;
@@ -51,7 +50,7 @@
     } else {
       selectedProviderURI = ProviderMap[selectedProvider];
     }
-
+    storeProviderId.set(0);
     try {
       await getApi(selectedProviderURI, thisDotApi, wsProvider);
       await loadAccounts(selectedProviderURI, selectedProvider, thisWeb3Enable, thisWeb3Accounts);
@@ -98,7 +97,6 @@
   disabled={selectedProvider.toString() != 'Other'}
 />
 <div class={connected ? '' : 'hidden'}>
-  <p>Selected Provider: {selectedProvider}</p>
   <div hidden={selectedProvider !== 'Rococo' || !showFaucetInstructions}>
     <p>To transact on Frequency as a provider you will need frequency utility tokens.
       On Frequency testnet, you can get tokens from the Testnet Faucet.
