@@ -59,11 +59,12 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
   const stake = async (evt: Event) => {
+    evt.preventDefault();
     clearTxnStatuses();
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
     evt.preventDefault();
     if (selectedKey === '') {
-      alert('Please choose a key to add.');
+      alert('Please choose a key to stake from.');
     } else if (isFunction(web3FromSource) && isFunction(web3Enable)) {
       let signingKeys = validAccounts[selectedKey];
       showTransactionStatus = true;
