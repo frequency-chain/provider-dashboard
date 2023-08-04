@@ -13,6 +13,7 @@
   import Provider from '$components/Provider.svelte';
   import AddControlKey from '$components/AddControlKey.svelte';
   import KeySelection from '$components/KeySelection.svelte';
+  import Stake from '../components/Stake.svelte';
 
   let token = '';
   let blockNumber = 0;
@@ -67,6 +68,7 @@
     </div>
   </form>
   <AddControlKey {providerId} {validAccounts} />
+  <Stake {providerId} {validAccounts} />
 </div>
 
 <style>
