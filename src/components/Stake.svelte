@@ -72,7 +72,7 @@
         await submitStake(
           thisDotApi.api as ApiPromise,
           undefined,
-          signingKeys,
+          signingKeys.address,
           providerId,
           stakeAmountInDollars,
           endpointURI as string,
@@ -85,7 +85,7 @@
           await submitStake(
             thisDotApi.api as ApiPromise,
             injectedExtension,
-            signingKeys,
+            signingKeys.address,
             providerId,
             stakeAmountInDollars,
             endpointURI as string,
