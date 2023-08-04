@@ -13,7 +13,7 @@
   let thisDotApi = defaultDotApi;
   let signingAddress: string = '';
   let showSelf: boolean = false;
-  let selectedKey: string = '';
+  let selectedKeyToAdd: string = '';
   let web3FromSource;
   let web3Enable;
   let showTransactionStatus = false;
@@ -29,7 +29,10 @@
   export let validAccounts = {};
 
   storeConnected.subscribe((val) => (connected = val));
-  dotApi.subscribe((api) => (thisDotApi = api));
+  dotApi.subscribe((api) => {
+    thisDotApi = api;
+    selectedKeyToAdd = '';
+  });
   transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.AddControlKey));
 
@@ -47,10 +50,10 @@
     clearTxnStatuses();
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
     evt.preventDefault();
-    if (selectedKey === '') {
+    if (selectedKeyToAdd === '') {
       alert('Please choose a key to add.');
     } else if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-      let newKeys = validAccounts[selectedKey];
+      let newKeys = validAccounts[selectedKeyToAdd];
       let signingKeys = validAccounts[signingAddress];
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
@@ -106,7 +109,7 @@
     <KeySelection
       component="AddControlKey"
       selectLabel="Key to Add"
-      bind:selectedOption={selectedKey}
+      bind:selectedOption={selectedKeyToAdd}
       {validAccounts}
     />
     <button on:click={addControlKey}>Add It</button>
