@@ -2,38 +2,55 @@
   import {
     storeBlockNumber,
     storeConnected,
+    storeCurrentAction, storeMsaInfo,
+    storeToken,
     storeValidAccounts,
     transactionSigningAddress,
-    storeProviderId,
-    storeToken,
   } from '$lib/stores';
   import Connect from '$components/Connect.svelte';
   import Capacity from '$components/Capacity.svelte';
   import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
-  import AddControlKey from '$components/AddControlKey.svelte';
   import KeySelection from '$components/KeySelection.svelte';
   import Stake from '$components/Stake.svelte';
-  import CreateProvider from "$components/CreateProvider.svelte";
-  import {base} from "$app/paths";
+  import type {ActionForms} from "$lib/storeTypes";
+  import {ActionForms, defaultMsaInfo} from "$lib/storeTypes";
+  import type {SvelteComponent} from "svelte";
+  import RequestToBeProvider from "../components/RequestToBeProvider.svelte";
+  import AddControlKey from "../components/AddControlKey.svelte";
+  import CreateProvider from "../components/CreateProvider.svelte";
 
   let token = '';
-  let blockNumber = 0;
+  let blockNumber = 0n;
   let connected = false;
   let validAccounts = {};
-  let providerId = 0;
   let showDashboard = false;
+  let currentAction = ActionForms.NoForm;
 
   storeBlockNumber.subscribe((val) => (blockNumber = val));
   storeToken.subscribe((val) => (token = val));
   storeConnected.subscribe((val) => (connected = val));
   storeValidAccounts.subscribe((val) => (validAccounts = val));
-  storeProviderId.subscribe((id) => (providerId = id));
+  storeCurrentAction.subscribe((val) => (currentAction =val));
 
   const onChangeTxnSigningAddress = (evt: Event) => {
+    storeMsaInfo.set(defaultMsaInfo);
     let option = evt.target as HTMLOptionElement;
     transactionSigningAddress.update((addr) => (addr = option.value));
   };
+
+  const showForm = (): SvelteComponent|undefined =>  {
+    switch (currentAction) {
+      case ActionForms.RequestToBeProvider:
+        return RequestToBeProvider;
+      case ActionForms.AddControlKey:
+        return AddControlKey;
+      case ActionForms.CreateProvider:
+        return CreateProvider
+      default:
+        return undefined
+    }
+  }
 </script>
 
 <svelte:head>

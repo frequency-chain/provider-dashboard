@@ -17,7 +17,9 @@
 
   // the locally stored value of the provider Id
   let localProviderId = 0;
-  storeMsaInfo.subscribe((info: MsaInfo) => (localProviderId = info?.isProvider ? info.msaId : 0 ));
+  storeMsaInfo.subscribe((info: MsaInfo) => {
+    localProviderId = info?.isProvider ? info.msaId : 0
+  });
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
 

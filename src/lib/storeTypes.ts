@@ -23,10 +23,7 @@ export enum ActionForms {
   CreateProvider,
   RequestToBeProvider,
 }
-export type AccountInfo = {
-  free: bigint,
-  frozen: bigint,
-}
+
 export type MsaInfo = {
   isProvider: boolean;
   msaId: number;
