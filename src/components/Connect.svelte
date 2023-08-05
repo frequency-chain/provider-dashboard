@@ -73,7 +73,7 @@
   }
   let networkQuestion = "What's the difference between Mainnet and Testnet (Rococo)?";
 </script>
-<a href="/" on:click={toggleExplain} on:keydown={toggleExplain} class:hidden={showExplainer} class="explainer-text">{networkQuestion}</a>
+<a href="" on:click={toggleExplain} on:keydown={toggleExplain} class:hidden={showExplainer} class="explainer-text">{networkQuestion}</a>
 <div class:hidden={!showExplainer}>
   <p>The main purpose of the Mainnet is to run the actual blockchain network.</p>
   <p>The Testnet, which works with the Rococo Polkadot Testnet, is designed for developers to test and debug their applications without risking real assets.</p>
