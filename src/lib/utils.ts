@@ -29,3 +29,13 @@ export function isLocalhost(url: string): boolean {
     return false;
   }
 }
+
+export function isMainnet(url: string): boolean {
+  try {
+    const parsedURL: URL = new URL(url);
+    return !!parsedURL.hostname.match(/^(0|1).rpc.frequency.xyz/)?.length
+  } catch (e: any) {
+    console.error(e.toString());
+    return false;
+  }
+}

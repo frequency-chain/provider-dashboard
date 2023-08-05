@@ -20,4 +20,20 @@ export enum ActionForms {
   NoForm,
   AddControlKey,
   Stake,
+  CreateProvider,
+  RequestToBeProvider,
+}
+export type AccountInfo = {
+  free: bigint,
+  frozen: bigint,
+}
+export type MsaInfo = {
+  isProvider: boolean;
+  msaId: number;
+  providerName: string;
+}
+export const defaultMsaInfo: MsaInfo = {
+  isProvider: false,
+  msaId: 0,
+  providerName: ''
 }

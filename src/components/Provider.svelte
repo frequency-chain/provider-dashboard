@@ -1,23 +1,33 @@
 <script lang="ts">
-  import { dotApi, storeProviderId, storeConnected, storeToken, transactionSigningAddress } from '$lib/stores';
-  import { ActionForms } from '$lib/storeTypes';
-  import type { AccountInfo } from '$lib/storeTypes';
-  import { storeCurrentAction } from '$lib/stores.js';
-  import type { ApiPromise } from '@polkadot/api';
-  import { formatBalance } from '@polkadot/util';
-  import { getBalances } from '$lib/polkadotApi';
+  import {
+    dotApi,
+    storeConnected,
+    storeCurrentAction,
+    storeMsaInfo,
+    storeToken,
+    transactionSigningAddress
+  } from '$lib/stores';
+  import type {MsaInfo} from '$lib/storeTypes';
+  import {ActionForms} from "$lib/storeTypes";
+  import type {ApiPromise} from "@polkadot/api";
+  import {formatBalance} from "@polkadot/util";
+  import {getBalances} from "$lib/polkadotApi";
+  import type { AccountBalances } from "$lib/polkadotApi";
+  import { isMainnet } from "$lib/utils";
 
   // the locally stored value of the provider Id
-  let localProvider = 0;
-  storeProviderId.subscribe((val) => (localProvider = val));
+  let localProviderId = 0;
+  storeMsaInfo.subscribe((info: MsaInfo) => (localProviderId = info?.isProvider ? info.msaId : 0 ));
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
 
   let token = '';
-  storeToken.subscribe((val) => (token = val));
+  storeToken.subscribe((val) => (token = val.toString()));
 
   let api: ApiPromise;
+  let network:string  = '';
   dotApi.subscribe((storeDotApi) => {
+    network = storeDotApi?.selectedEndpoint || '';
     if (storeConnected && storeDotApi.api) {
       api = storeDotApi.api;
     }
@@ -28,7 +38,7 @@
   transactionSigningAddress.subscribe(async (val) => {
     localSigningAddress = val;
     if (api) {
-      accountInfo = await getBalances(api, val);
+      accountBalances = await getBalances(api, val);
     }
   });
 
@@ -43,18 +53,28 @@
   function showStake() {
     storeCurrentAction.update((val) => (val = ActionForms.Stake));
   }
+  // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
+  function showCreateOrRequestProvider(_evt: Event) {
+    const currentAction: ActionForms = isMainnet(network) ? ActionForms.RequestToBeProvider : ActionForms.CreateProvider;
+    storeCurrentAction.set(currentAction);
+  }
 </script>
 
 <div class={connected ? '' : 'hidden'}>
   <h3>Provider</h3>
-  {#if !localProvider}
-    <p>Selected Key is not associated with a Provider</p>
+  {#if localProviderId === 0}
+    {#if localSigningAddress === ''}
+      <p>No transaction signing address selected</p>
+    {:else}
+      <p>Selected Key is not associated with a Provider</p>
+      <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress===''}>Become a Provider</button>
+    {/if}
   {:else}
-    <p>Id: {localProvider}</p>
-    <p>Total Balance: {balanceToHuman(accountInfo.free + accountInfo.frozen)}</p>
-    <p>Transferable: {balanceToHuman(accountInfo.free)}</p>
-    <p>Locked: {balanceToHuman(accountInfo.frozen)}</p>
+    <p>Id: {localProviderID}</p>
     <button on:click={showAddControlKey}>Add control key</button>
     <button on:click={showStake}>Stake To Provider</button>
   {/if}
+  <p>Total Balance: {balanceToHuman(accountBalaces.free + accountBalaces.frozen)}</p>
+  <p>Transferable: {balanceToHuman(accountBalaces.free)}</p>
+  <p>Locked: {balanceToHuman(accountBalaces.frozen)}</p>
 </div>
