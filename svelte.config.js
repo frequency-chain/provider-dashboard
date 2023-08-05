@@ -16,12 +16,15 @@ const config = {
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '$index.html', // dependent on host platform, see GitHub pages doc, maybe?
+			fallback: 'index.html', // dependent on host platform, see GitHub pages doc, maybe?
 			precompress: false,
 			strict: true,
 		}),
 		paths: {
 			base: dev ? '' : process.env.BASE_PATH,
+		},
+		prerender: {
+			handleHttpError: 'warn',
 		}
 	}
 };
