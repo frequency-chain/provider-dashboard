@@ -3,9 +3,7 @@ Dashboard for Providers
 
 Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-## Creating a project
-
-If you're seeing this, you've probably already done this step. Congrats!
+[![Deploy to GitHub Pages](https://github.com/LibertyDSNP/provider-dashboard/actions/workflows/deploy.yml/badge.svg)](https://github.com/LibertyDSNP/provider-dashboard/actions/workflows/deploy.yml)
 
 ## Developing
 ```bash
