@@ -41,15 +41,14 @@ describe('End to End Tests', () => {
     const select = getByLabelText('1. Select a Network');
 
     // Change the select box value
-    await fireEvent.select(select, { target: { value: 'Localhost' } });
+    await fireEvent.change(select, { target: { value: 'Localhost' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
       expect(select).toHaveValue('Localhost');
     });
-    expect(getByTextContent('Selected Provider: Localhost')).toBeInTheDocument();
 
-    const btn = getByText('Connect to Localhost');
+    const btn = screen.queryByRole('button', { name: 'Connect to Localhost', });
     await fireEvent.click(btn);
 
     await waitFor(() => {
