@@ -13,6 +13,7 @@
   import Provider from '$components/Provider.svelte';
   import AddControlKey from '$components/AddControlKey.svelte';
   import KeySelection from '$components/KeySelection.svelte';
+  import {base} from "$app/paths";
 
   let token = '';
   let blockNumber = 0;
@@ -35,7 +36,7 @@
 
 <svelte:head>
   <link rel="stylesheet" href="https://unpkg.com/mvp.css@1.12/mvp.css" />
-  <link rel="stylesheet" href="app.css" />
+  <link rel="stylesheet" href="{base}/app.css" />
 </svelte:head>
 
 <h1>Welcome to Provider Dashboard</h1>
