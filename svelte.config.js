@@ -10,14 +10,13 @@ const config = {
 	// Consult https://kit.svelte.dev/docs/integrations#preprocessors
 	// for more information about preprocessors
 	preprocess: vitePreprocess(),
-
 	kit: {
 		// this is an adapter for  statically-rendered, single page application.
 		// See https://kit.svelte.dev/docs/adapters for more information about adapters.
 		adapter: adapter({
 			pages: 'build',
 			assets: 'build',
-			fallback: '200.html', // dependent on host platform, see GitHub pages doc, maybe?
+			fallback: 'index.html', // dependent on host platform, see GitHub pages doc, maybe?
 			precompress: false,
 			strict: true,
 		}),

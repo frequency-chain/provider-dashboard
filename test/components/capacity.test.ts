@@ -1,12 +1,7 @@
-import { cleanup, render, waitFor } from '@testing-library/svelte';
-import { getEpoch, getBlockNumber } from '$lib/connections';
-import type { ApiPromise } from '@polkadot/api';
+import {cleanup, render, waitFor} from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { storeConnected, storeProviderId, transactionSigningAddress, dotApi } from '../../src/lib/stores';
+import {storeConnected, transactionSigningAddress, dotApi} from "../../src/lib/stores";
 import Capacity from '$components/Capacity.svelte';
-import { TypeRegistry } from '@polkadot/types';
-import { Option, U64 } from '@polkadot/types-codec';
-import { Test } from 'vitest';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {

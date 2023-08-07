@@ -58,7 +58,7 @@
         };
       }
     }
-    storeProviderId.update((val) => (val = localProviderId));
+    storeProviderId.set(localProviderId);
   });
   export let token;
 </script>
