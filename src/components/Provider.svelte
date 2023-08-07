@@ -15,11 +15,6 @@
   import type { AccountBalances } from "$lib/polkadotApi";
   import { isMainnet } from "$lib/utils";
 
-  // the locally stored value of the provider Id
-  let localProviderId = 0;
-  storeMsaInfo.subscribe((info: MsaInfo) => {
-    localProviderId = info?.isProvider ? info.msaId : 0
-  });
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
 
@@ -43,6 +38,15 @@
       accountBalances = await getBalances(api, val);
     }
   });
+
+  // the locally stored value of the provider Id
+  let localProviderId = 0;
+  storeMsaInfo.subscribe((info: MsaInfo) => {
+    console.log("new info: ", info)
+    localProviderId = info?.isProvider ? info.msaId : 0
+  });
+
+  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n};
 
   const balanceToHuman = (balance: bigint): string => {
     return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true });
