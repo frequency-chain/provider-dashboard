@@ -100,7 +100,7 @@ sleep 6
 
 npm install &> /dev/null
 echo "---------------------------------------------"
-echo "Starting Tests..."
+echo "Starting e2e Tests..."
 echo "---------------------------------------------"
 
-npm run test:once
+npm run test:e2e

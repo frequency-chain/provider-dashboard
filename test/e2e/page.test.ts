@@ -48,7 +48,7 @@ describe('End to End Tests', () => {
       expect(select).toHaveValue('Localhost');
     });
 
-    const btn = screen.queryByRole('button', { name: 'Connect to Localhost', });
+    const btn = screen.queryByRole('button', { name: 'Connect to Localhost' });
     await fireEvent.click(btn);
 
     await waitFor(() => {

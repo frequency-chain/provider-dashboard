@@ -1,7 +1,7 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import { storeConnected } from '$lib/stores';
-import Connect from '$components/Stake.svelte';
+import Stake from '$components/Stake.svelte';
 import { getByTextContent } from '../helpers';
 
 // vitest mocking: TODO: this hides an alert window but doesn't affect the parameters
