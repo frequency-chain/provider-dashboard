@@ -12,7 +12,6 @@
   import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
-  import {defaultMsaInfo} from "$lib/storeTypes";
   import {base} from "$app/paths";
   import ProviderActions from "$components/ProviderActions.svelte";
 
@@ -28,7 +27,6 @@
   storeValidAccounts.subscribe((val) => (validAccounts = val));
 
   const onChangeTxnSigningAddress = (evt: Event) => {
-    storeMsaInfo.set(defaultMsaInfo);
     let option = evt.target as HTMLOptionElement;
     transactionSigningAddress.update((addr) => (addr = option.value));
   };

@@ -29,8 +29,3 @@ export type MsaInfo = {
   msaId: number;
   providerName: string;
 }
-export const defaultMsaInfo: MsaInfo = {
-  isProvider: false,
-  msaId: 0,
-  providerName: ''
-}

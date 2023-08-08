@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { storeConnected, dotApi, storeMsaInfo } from '$lib/stores';
-  import { defaultDotApi, defaultMsaInfo } from '$lib/storeTypes';
+  import { defaultDotApi } from '$lib/storeTypes';
   import { ProviderMap } from '$lib/connections';
   import { getApi, loadAccounts, updateConnectionStatus } from '$lib/polkadotApi';
 
@@ -49,7 +49,7 @@
     } else {
       selectedProviderURI = ProviderMap[selectedProvider];
     }
-    storeMsaInfo.set(defaultMsaInfo);
+    storeMsaInfo.set({isProvider: false, msaId: 0, providerName: ''});
     try {
       await getApi(selectedProviderURI, thisDotApi, wsProvider);
       await loadAccounts(selectedProviderURI, selectedProvider, thisWeb3Enable, thisWeb3Accounts);

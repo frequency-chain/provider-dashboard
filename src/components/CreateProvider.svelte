@@ -15,7 +15,7 @@
         currentAction === me
     }
 </script>
-<div class:hidden={!showSelf}>
+<div class:hidden={!showSelf()}>
     <h2>Become a Provider</h2>
     <p>For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may
         simply submit a <code>createProvider</code> transaction.</p>

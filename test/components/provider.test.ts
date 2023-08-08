@@ -9,7 +9,11 @@ import {
   transactionSigningAddress
 } from '../../src/lib/stores';
 import Provider from '$components/Provider.svelte';
-import {ActionForms, defaultMsaInfo, DotApi, MsaInfo} from '../../src/lib/storeTypes';
+import {ActionForms, DotApi, MsaInfo} from '../../src/lib/storeTypes';
+
+const defaultMsaInfo: MsaInfo = {
+  isProvider: false, msaId: 0, providerName: ''
+}
 
 const mocks =  vi.hoisted(() => {
   class TestCodec {
@@ -76,7 +80,7 @@ describe('Provider.svelte', () => {
   afterEach(() => cleanup());
   beforeEach( () => {
     storeCurrentAction.set(ActionForms.NoForm);
-    storeMsaInfo.set(defaultMsaInfo);
+    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: ''})
   })
   it('mounts', () => {
     const { container } = render(Provider);

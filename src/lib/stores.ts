@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store';
-import { ActionForms, defaultDotApi, defaultMsaInfo } from '$lib/storeTypes';
+import { ActionForms, defaultDotApi } from '$lib/storeTypes';
 
 export const storeConnected = writable(false);
 export const storeValidAccounts = writable({});

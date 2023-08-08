@@ -2,12 +2,12 @@
     import RequestToBeProvider from "./RequestToBeProvider.svelte";
     import CreateProvider from "./CreateProvider.svelte";
     import AddControlKey from "$components/AddControlKey.svelte";
-    import {ActionForms, defaultMsaInfo} from "$lib/storeTypes.js";
+    import {ActionForms} from "$lib/storeTypes.js";
     import type {MsaInfo} from '$lib/storeTypes';
 
     import {storeCurrentAction, storeMsaInfo, transactionSigningAddress, storeValidAccounts} from "$lib/stores.js";
 
-    let msaInfo = defaultMsaInfo;
+    let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
     let currentAction: ActionForms = ActionForms.NoForm;
     let localSigningAddress = '';
     let validAccounts: Array<string> = [];

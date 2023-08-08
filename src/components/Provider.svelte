@@ -40,10 +40,13 @@
   });
 
   // the locally stored value of the provider Id
-  let localProviderId = 0;
+  let msaId = 0;
+  let isProvider = false;
+
   storeMsaInfo.subscribe((info: MsaInfo) => {
     console.log("new info: ", info)
-    localProviderId = info?.isProvider ? info.msaId : 0
+    msaId = info?.msaId || 0;
+    isProvider = info?.isProvider || false
   });
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n};
@@ -68,7 +71,10 @@
 
 <div class={connected ? '' : 'hidden'}>
   <h3>Provider</h3>
-  {#if localProviderId === 0}
+  {#if isProvider}
+    <p>Id: {msaId}</p>
+    <button on:click|preventDefault={showAddControlKey}>Add control key</button>
+  {:else}
     {#if localSigningAddress === ''}
       <p>No transaction signing address selected</p>
     {:else}

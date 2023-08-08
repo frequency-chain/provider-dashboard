@@ -2,7 +2,7 @@ import {cleanup, render, waitFor} from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import {storeConnected, transactionSigningAddress, dotApi, storeMsaInfo} from "../../src/lib/stores";
 import Capacity from '$components/Capacity.svelte';
-import {defaultMsaInfo, MsaInfo} from "../../src/lib/storeTypes";
+import {MsaInfo} from "../../src/lib/storeTypes";
 import {getByTextContent} from "../helpers";
 
 const mocks = vi.hoisted(() => {
@@ -93,7 +93,7 @@ vi.mock('@polkadot/api', async () => {
 describe('Capacity.svelte', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    storeMsaInfo.set(defaultMsaInfo)
+    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: ''})
   });
   afterEach(() => cleanup());
 
@@ -114,8 +114,8 @@ describe('Capacity.svelte', () => {
     })
 
     beforeEach(async () => {
-      await storeMsaInfo.set(defaultMsaInfo)
-      await transactionSigningAddress.set('')
+      storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: ''})
+      transactionSigningAddress.set('')
     })
 
     it('is hidden if isProvider is false', () => {
