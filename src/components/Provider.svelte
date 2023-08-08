@@ -44,7 +44,6 @@
   let isProvider = false;
 
   storeMsaInfo.subscribe((info: MsaInfo) => {
-    console.log("new info: ", info)
     msaId = info?.msaId || 0;
     isProvider = info?.isProvider || false
   });
@@ -74,6 +73,8 @@
   {#if isProvider}
     <p>Id: {msaId}</p>
     <button on:click|preventDefault={showAddControlKey}>Add control key</button>
+  {:else if (msaId === 0)}
+    <p>No Msa Id. Please create an MSA first.</p>
   {:else}
     {#if localSigningAddress === ''}
       <p>No transaction signing address selected</p>

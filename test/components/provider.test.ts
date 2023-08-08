@@ -103,33 +103,56 @@ describe('Provider.svelte', () => {
   describe("once connected", () => {
 
     beforeAll(() => storeConnected.set(true) )
+    describe("if they don't have an MSA", () => {
+      beforeEach(() => {
+        storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: false, msaId: 0});
+      })
+      it("says you should create an msa", () => {
+        const { container } = render(Provider);
+        const main = container.querySelector('p');
+        expect(main.innerHTML).toEqual('No Msa Id. Please create an MSA first.');
+        expect(container.querySelector('button')).toBeNull();
+      })
+      it("still shows balances", async () => {
+        const createdApi = await mocks.ApiPromise.create();
+
+        dotApi.update(val => val = {...val, api: createdApi});
+        const {getByText} = render(Provider);
+
+        expect(getByText('Transferable: 0')).toBeInTheDocument();
+        waitFor(() => {
+          // these values are from the mocks
+          expect(getByText('Transferable: 100.0000 FLARP')).toBeInTheDocument();
+          expect(getByText('Locked: 50.0000 FLARP')).toBeInTheDocument();
+          expect(getByText('Total Balance: 150.0000 FLARP')).toBeInTheDocument();
+        })
+
+      })
+    });
 
     describe("if they have an MSA Id but aren't a provider", () => {
       beforeEach(() => {
-        storeMsaInfo.update((info: MsaInfo) => {
-            info = {...info, providerName: '', isProvider: false, msaId: 5 }
-        });
+        storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: false, msaId: 11});
       })
-      describe("and they have not selected a signing address", () => {
-        it('tells you if you have not selected a signing transaction key', () => {
-          const { container } = render(Provider);
+      it('tells you if you have not selected a signing transaction key', async () => {
+        const { container } = render(Provider);
+        await waitFor(() => {
           const main = container.querySelector('p');
           expect(main.innerHTML).toEqual('No transaction signing address selected');
           expect(container.querySelector('button')).toBeNull();
-        });
+        })
       });
+
       describe("and they have selected a signing address", () => {
 
-        beforeAll(() => {
+        beforeEach(() => {
           transactionSigningAddress.set('0xabcdbeef');
           storeToken.set('FLARP');
           // to get rid of an extraneous error
           dotApi.update(api => api = {...api, selectedEndpoint: "ws://localhost:9944"})
         })
 
-        beforeEach( () => {})
-
-        it('Says there is no provider and shows Become Provider button', () => {
+        it('Says there is no provider and shows Become a Provider button', () => {
           const { container, getByRole } = render(Provider);
           const main = container.querySelector('p');
           expect(main.innerHTML).toEqual('Selected Key is not associated with a Provider');
@@ -137,7 +160,6 @@ describe('Provider.svelte', () => {
         });
         it('shows balances', async ()=> {
           const createdApi = await mocks.ApiPromise.create();
-          storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: true, msaId: 11});
 
           await dotApi.update(val => val = {...val, api: createdApi});
           const {getByText} = render(Provider);
@@ -150,23 +172,12 @@ describe('Provider.svelte', () => {
             expect(getByText('Total Balance: 150.0000 FLARP')).toBeInTheDocument();
           })
         });
-        it("clicking Become Provider sets the action forms to CreateProvider, if not on Mainnet", async () => {
-          const { getByRole } = render(Provider);
-          const becomeProviderButton = getByRole('button', {name: "Become a Provider"});
-          await fireEvent.click(becomeProviderButton);
-          let currentAction;
-          storeCurrentAction.subscribe(a => currentAction = a);
-          await waitFor(() => {
-            expect(currentAction).toEqual(ActionForms.CreateProvider);
-          })
-        });
-
         it("clicking Become Provider sets the action forms to RequestToBeProvider, if on Mainnet", async () => {
+          dotApi.update((api: DotApi) => api = {...api, selectedEndpoint: 'wss://0.rpc.frequency.xyz'});
           let currentAction;
-          storeCurrentAction.subscribe(a => currentAction = a);
-          dotApi.update( (api: DotApi) => api = {...api, selectedEndpoint:  'wss://0.rpc.frequency.xyz'});
+          storeCurrentAction.subscribe((action) => currentAction = action);
 
-          const { getByRole } = render(Provider);
+          const {getByRole} = render(Provider);
 
           const becomeProviderButton = getByRole('button', {name: "Become a Provider"});
           await fireEvent.click(becomeProviderButton);
@@ -174,11 +185,11 @@ describe('Provider.svelte', () => {
             expect(currentAction).toEqual(ActionForms.RequestToBeProvider);
           })
         });
+
       });
     });
     describe('when they are a Provider', () => {
-      it('Shows Provider Id if non-zero', () => {
-        storeConnected.set(true);
+      it('Shows Provider Id', () => {
         storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: true, msaId: 11});
         const { container } = render(Provider);
         const main = container.querySelector('p');
@@ -187,7 +198,6 @@ describe('Provider.svelte', () => {
       it('updates storeCurrentAction when button is clicked', async () => {
         let currentAction: ActionForms = ActionForms.NoForm;
         storeCurrentAction.subscribe((v) => (currentAction = v));
-        storeConnected.set(true);
         storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: true, msaId: 11});
         const { getByText } = render(Provider);
         await fireEvent.click(getByText('Add control key'));

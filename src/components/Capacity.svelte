@@ -49,30 +49,10 @@
       storeBlockNumber.update((val) => (val = blockNumber));
     }
     if (connected && apiPromise?.query && addr) {
-      let result = await getMsaEpochAndCapacityInfo(apiPromise, addr);
-      msaInfo = {...msaInfo, ...result.msaInfo };
-      capacityDetails = {...defaultDetails, ...result.capacityDetails};
-      epochNumber = result.epochNumber;
-      // const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
-      // msaInfo.msaId = received.toNumber();
-      // epochNumber = await getEpoch(apiPromise);
-      // if (msaInfo.msaId > 0) {
-      //   const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
-      //   if (providerRegistry.isSome) {
-      //     msaInfo.isProvider = true;
-      //     const registryEntry = providerRegistry.unwrap();
-      //     msaInfo.providerName = registryEntry.providerName;
-      //     const details: any = (
-      //             await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)
-      //     ).unwrapOrDefault();
-      //     capacityDetails = {
-      //       remainingCapacity: details.remainingCapacity.toBigInt(),
-      //       totalTokensStaked: details.totalTokensStaked.toBigInt(),
-      //       totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-      //       lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
-      //     };
-      //   }
-      // }
+      let info = await getMsaEpochAndCapacityInfo(apiPromise, addr);
+      msaInfo = {...msaInfo, ...info.msaInfo };
+      capacityDetails = {...defaultDetails, ...info.capacityDetails};
+      epochNumber = info.epochNumber;
       storeMsaInfo.set(msaInfo);
     }
   });

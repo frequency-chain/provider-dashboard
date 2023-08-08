@@ -21,8 +21,6 @@
     }
 
 </script>
-
-<p>current action: {currentAction}</p>
 <AddControlKey providerId={providerId()} {validAccounts} />
-<CreateProvider />
-<RequestToBeProvider />
+<CreateProvider {currentAction} msaId={msaInfo.msaId} {validAccounts}/>
+<RequestToBeProvider {currentAction} {validAccounts}/>
