@@ -55,7 +55,7 @@
   };
 
   function showAddControlKey() {
-    storeCurrentAction.update((val) => (val = ActionForms.AddControlKey));
+    storeCurrentAction.set(ActionForms.AddControlKey);
   }
 
   function showStake() {

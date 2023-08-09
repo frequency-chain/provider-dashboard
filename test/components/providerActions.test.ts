@@ -12,10 +12,10 @@ describe("ProviderActions component", () => {
         })
         it('All children are hidden when currentAction is NoForm', () => {
             storeCurrentAction.set(ActionForms.NoForm);
-            const { container, debug} = render(ProviderActions);
+            const { container} = render(ProviderActions);
             ['add-control-key', 'request-to-be-provider', 'create-provider'].forEach((id) => {
                 const el = container.querySelector(`#${id}`);
-                expect(el).toHaveClass('hidden')
+                expect(el).toBeNull()
             })
         })
         describe("Components are not hidden when currentAction is their action", () => {

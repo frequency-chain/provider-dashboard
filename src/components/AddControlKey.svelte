@@ -18,6 +18,7 @@
   let web3Enable;
   let showTransactionStatus = false;
   export let txnStatuses: Array<string> = [];
+  export let cancelAction;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -35,11 +36,6 @@
   });
   transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.AddControlKey));
-
-  const hideSelf = () => {
-    storeCurrentAction.update((val) => (val = ActionForms.NoForm));
-    clearTxnStatuses();
-  };
 
   const addNewTxnStatus = (txnStatus: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
@@ -113,7 +109,7 @@
       {validAccounts}
     />
     <button on:click|preventDefault={addControlKey}>Add It</button>
-    <button on:click|preventDefault={hideSelf}>Cancel Add</button>
+    <button on:click|preventDefault={cancelAction}>Cancel Add</button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>

@@ -1,23 +1,17 @@
 <script lang="ts">
     import {ActionForms} from "$lib/storeTypes";
+    import type { MsaInfo } from "$lib/storeTypes";
+    import {storeMsaInfo, transactionSigningAddress} from "$lib/stores";
 
     const me: ActionForms = ActionForms.RequestToBeProvider
     let msaId = 0;
-    export let currentAction = ActionForms.NoForm;
     export let validAccounts: Array<string> = [];
-/*    storeCurrentAction.subscribe( action => showSelf = action === ActionForms.RequestToBeProvider)
+    export let cancelAction;
     storeMsaInfo.subscribe((info: MsaInfo) => info?.msaId || 0)
     let localSigningAddress = '0xabcdefbeef';
-    transactionSigningAddress.subscribe(addr => localSigningAddress = addr) */
-    const shouldShowSelf = () => {
-        if ( currentAction === undefined) return false;
-        return currentAction === me
-    }
-    const hideSelf = () => {
-        currentAction = ActionForms.NoForm
-    }
+    transactionSigningAddress.subscribe(addr => localSigningAddress = addr)
 </script>
-<div id='request-to-be-provider' class:hidden={!shouldShowSelf()}>
+<div id='request-to-be-provider'>
     <h2>Request to be a Provider</h2>
     <h3>What is a Provider?</h3>
     <p>A Provider is an MSA holder on Frequency with special permissions.</p>
@@ -35,6 +29,6 @@
         <label for="providerNameRtB">Provider name, less than 8 letters</label>
         <input id="providerNameRtB" placeholder="Short name" maxlength="8"/>
         <button id="request-2b-provider-btn">Submit Request To Be Provider</button>
-        <button on:click={hideSelf}>Cancel</button>
+        <button on:click={cancelAction}>Cancel</button>
     </form>
 </div>

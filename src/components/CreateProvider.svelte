@@ -1,7 +1,7 @@
 <script lang="ts">
     import {dotApi, storeCurrentAction, transactionSigningAddress} from "$lib/stores";
     import type {DotApi} from '$lib/storeTypes';
-    import {ActionForms, defaultDotApi} from "$lib/storeTypes";
+    import {defaultDotApi} from "$lib/storeTypes";
     import type {ApiPromise} from "@polkadot/api";
     import {isLocalhost} from "$lib/utils";
     import {submitCreateProvider} from "$lib/connections";
@@ -9,7 +9,6 @@
     import {isFunction} from "@polkadot/util";
     import {onMount} from "svelte";
 
-    let me = ActionForms.CreateProvider;
     let newProviderName = '';
     let localDotApi: DotApi = defaultDotApi;
     let web3FromSource;
@@ -17,8 +16,8 @@
     let showTransactionStatus = false;
     export let txnStatuses: Array<string> = [];
     export let validAccounts = {}
-    let currentAction: ActionForms;
     export let signingAddress = '';
+    export let cancelAction;
 
     onMount(async () => {
         const extension = await import('@polkadot/extension-dapp');
@@ -29,13 +28,6 @@
     let localSigningAddress = '0xabcdefbeef';
     transactionSigningAddress.subscribe(addr => localSigningAddress = addr)
     dotApi.subscribe((api: DotApi) => localDotApi = api)
-    storeCurrentAction.subscribe(action => {
-        currentAction = action
-    });
-
-    const hideSelf = () => {
-        storeCurrentAction.set(ActionForms.NoForm);
-    }
 
     const doCreateProvider = async (_evt: Event) => {
         if (newProviderName === '') {
@@ -82,7 +74,7 @@
     const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
 </script>
-<div id='create-provider' class:hidden={currentAction !== me}>
+<div id='create-provider'>
     <h2>Become a Provider</h2>
     <p>For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may
         simply submit a <code>createProvider</code> transaction.</p>
@@ -92,7 +84,7 @@
         <label for="providerNameCB">Provider name</label>
         <input id="providerNameCB" required placeholder="Short name" maxlength="8" bind:value={newProviderName}/>
         <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}>Create Provider</button>
-        <button on:click|preventDefault={hideSelf}>Cancel</button>
+        <button on:click|preventDefault={cancelAction}>Cancel</button>
     </form>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses}/>
 </div>

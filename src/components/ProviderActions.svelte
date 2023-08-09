@@ -12,15 +12,23 @@
     let signingAddress = '';
     let validAccounts: Array<string> = [];
 
-    storeCurrentAction.subscribe((val) => (currentAction =val));
+    storeCurrentAction.subscribe((val) => (currentAction = val));
     storeMsaInfo.subscribe((info: MsaInfo) => msaInfo = info);
     storeValidAccounts.subscribe((accts: Array<string>) => validAccounts = accts);
     transactionSigningAddress.subscribe(addr => signingAddress = addr);
-    const providerId  = () => {
+    const providerId = () => {
         return msaInfo?.isProvider ? msaInfo?.msaId : 0
     }
 
+    const cancelAction = () => {
+        storeCurrentAction.set(ActionForms.NoForm);
+    }
+
 </script>
-<AddControlKey providerId={providerId()} {validAccounts} />
-<CreateProvider {validAccounts} {signingAddress}/>
-<RequestToBeProvider {currentAction} {validAccounts}/>
+{#if currentAction === ActionForms.AddControlKey}
+    <AddControlKey providerId={providerId()} {validAccounts} {cancelAction}/>
+{:else if currentAction === ActionForms.CreateProvider}
+    <CreateProvider {validAccounts} {signingAddress} {cancelAction}/>
+{:else if currentAction === ActionForms.RequestToBeProvider}
+    <RequestToBeProvider {cancelAction} {validAccounts}/>
+{/if}

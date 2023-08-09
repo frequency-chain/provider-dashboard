@@ -203,8 +203,6 @@ describe('Provider.svelte', () => {
         fireEvent.click(getByText('Add control key'));
         expect(currentAction).toEqual(ActionForms.AddControlKey);
       });
-
-
     })
   })
 });

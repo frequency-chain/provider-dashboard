@@ -256,3 +256,23 @@ export async function submitCreateProvider(
   }
   return false;
 }
+
+export async function submitRequestToBeProvider(
+    api: ApiPromise | undefined,
+    extension: InjectedExtension | undefined,
+    endpointURL: string,
+    signingAccount: SigningKey,
+    providerName: string,
+    callback: (statusStr: string) => void,
+): Promise<boolean> {
+  if (api && (await api.isReady)) {
+    const useKeyring: boolean = isLocalhost(endpointURL);
+
+    const extrinsic = api.tx.msa.proposeToBeProvider(providerName);
+    useKeyring
+        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
+        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
+    return true;
+  }
+  return false
+}
