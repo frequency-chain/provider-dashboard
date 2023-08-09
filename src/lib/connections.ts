@@ -245,13 +245,13 @@ export async function submitCreateProvider(
     providerName: string,
     callback: (statusStr: string) => void,
 ): Promise<boolean> {
-  const extrinsic = api.tx.msa.createProvider(providerName);
-  const useKeyring: boolean = isLocalhost(endpointURL);
-
   if (api && (await api.isReady)) {
+    const extrinsic = api.tx.msa.createProvider(providerName);
+    const useKeyring: boolean = isLocalhost(endpointURL);
+
     useKeyring
-        ? submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback)
-        : submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback);
+        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
+        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
     return true;
   }
   return false;

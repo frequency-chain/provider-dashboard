@@ -28,7 +28,7 @@
 
     let localSigningAddress = '0xabcdefbeef';
     transactionSigningAddress.subscribe(addr => localSigningAddress = addr)
-    dotApi.subscribe((api: DotApi) => localDotApi = dotApi)
+    dotApi.subscribe((api: DotApi) => localDotApi = api)
     storeCurrentAction.subscribe(action => {
         currentAction = action
     });
