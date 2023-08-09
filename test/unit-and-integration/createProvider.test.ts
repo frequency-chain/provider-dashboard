@@ -4,6 +4,7 @@ import {ActionForms} from "../../src/lib/storeTypes";
 import CreateProvider from "../../src/components/CreateProvider.svelte";
 import {fireEvent, render, waitFor} from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
+globalThis.alert = () => {};
 
 describe("CreateProvider component", () => {
     beforeAll(() => {
@@ -27,7 +28,7 @@ describe("CreateProvider component", () => {
         });
     })
     // TODO: get this working as intended
-    it.skip("not filling in a provider name doesn't let you submit and highlights field", () => {
+    it("not filling in a provider name doesn't let you submit and highlights field", () => {
         const { getByRole} = render(CreateProvider)
         let btn = getByRole('button', { name: 'Create Provider'});
         fireEvent.click(btn);

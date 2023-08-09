@@ -1,4 +1,4 @@
-import {isLocalhost, isMainnet, createMailto} from "../../src/lib/utils";
+import {isLocalhost, isMainnet, createMailto} from "../../../src/lib/utils";
 
 describe("isLocalhost", () => {
     it('works', () => {
