@@ -1,22 +1,42 @@
 <script lang="ts">
-    import {storeCurrentAction, storeMsaInfo, transactionSigningAddress} from "$lib/stores";
-    import type {MsaInfo} from '$lib/storeTypes';
+    import {dotApi, storeCurrentAction, storeMsaInfo, transactionSigningAddress} from "$lib/stores";
+    import type {MsaInfo, DotApi} from '$lib/storeTypes';
     import {ActionForms} from "$lib/storeTypes";
+    import type {ApiPromise} from "@polkadot/api";
+    import {createProvider} from "$lib/polkadotApi";
 
     let me = ActionForms.CreateProvider;
+    let newProviderName = '';
+    let localApi: ApiPromise | undefined;
     export let currentAction: ActionForms;
     export let msaId = 0;
-    export let validAccounts: Array<string>
 
     storeMsaInfo.subscribe((info: MsaInfo) => info?.msaId || 0)
     let localSigningAddress = '0xabcdefbeef';
     transactionSigningAddress.subscribe(addr => localSigningAddress = addr)
+    dotApi.subscribe((api: DotApi) => {
+        console.log("api: ", api?.api)
+        if (api?.api) { localApi = api.api }
+    })
 
     const shouldShowSelf = () => {
         return currentAction === me
     }
     const hideSelf = () => {
         currentAction = ActionForms.NoForm
+    }
+
+    const doCreateProvider = async (_evt: Event) => {
+        if (newProviderName === '') {
+            console.error("please enter a Provider Name");
+            return;
+        }
+        if (!localApi) {
+            console.error('please reconnect to an endpoint');
+            return;
+        }
+        console.log("SUCCESS")
+        await createProvider(localApi as ApiPromise, localSigningAddress, newProviderName)
     }
 </script>
 <div id='create-provider' class:hidden={!shouldShowSelf()}>
@@ -26,9 +46,9 @@
     <p>This action will register the MSA Id that is controlled by the selected Transaction Signing Address above.
         Any control key for the MSA Id can submit the transaction.</p>
     <form>
-        <label for="providerNameCB">Provider name, less than 8 letters</label>
-        <input id="providerNameCB" placeholder="Short name" maxlength="8"/>
-        <button id="create-provider-btn">Create Provider</button>
-        <button on:click={hideSelf}>Cancel</button>
+        <label for="providerNameCB">Provider name</label>
+        <input id="providerNameCB" required placeholder="Short name" maxlength="8" bind:value={newProviderName}/>
+        <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}>Create Provider</button>
+        <button on:click|preventDefault={hideSelf}>Cancel</button>
     </form>
 </div>

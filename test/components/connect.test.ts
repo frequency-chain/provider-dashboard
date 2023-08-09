@@ -21,7 +21,7 @@ describe('Connect.svelte Unit Tests', () => {
     const { getByRole } = render(Connect);
     const select = getByRole('combobox');
 
-    await fireEvent.change(select, { target: { value: 'Rococo' } });
+    fireEvent.change(select, { target: { value: 'Rococo' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
@@ -29,13 +29,13 @@ describe('Connect.svelte Unit Tests', () => {
       expect(getByRole('button',{name: "Connect to Rococo"})).toBeInTheDocument()
     });
 
-    await fireEvent.change(select, { target: { value: 'Localhost' } });
+    fireEvent.change(select, { target: { value: 'Localhost' } });
     await waitFor(() => {
       expect(select).toHaveValue('Localhost');
       expect(getByRole('button',{name: "Connect to Localhost"})).toBeInTheDocument()
     });
 
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
       expect(select).toHaveValue('Other')
       expect(getByRole('button',{name: "Connect to Other"})).toBeInTheDocument()
@@ -48,12 +48,12 @@ describe('Connect.svelte Unit Tests', () => {
     const input = screen.getByRole('textbox');
     expect(input).toBeDisabled();
 
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
       expect(input).toBeEnabled();
     });
 
-    await fireEvent.change(input, {
+    fireEvent.change(input, {
       target: { value: 'wss://testing.some.node' },
     });
     // Check the otherProvider changes
@@ -66,7 +66,7 @@ describe('Connect.svelte Unit Tests', () => {
     render(Connect);
     const btn = screen.getByText('Connect to Rococo');
     const select = screen.getByRole('combobox');
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
       expect(btn).toBeEnabled();
     });

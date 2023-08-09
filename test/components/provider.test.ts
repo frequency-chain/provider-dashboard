@@ -180,7 +180,7 @@ describe('Provider.svelte', () => {
           const {getByRole} = render(Provider);
 
           const becomeProviderButton = getByRole('button', {name: "Become a Provider"});
-          await fireEvent.click(becomeProviderButton);
+          fireEvent.click(becomeProviderButton);
           await waitFor(() => {
             expect(currentAction).toEqual(ActionForms.RequestToBeProvider);
           })
@@ -200,7 +200,7 @@ describe('Provider.svelte', () => {
         storeCurrentAction.subscribe((v) => (currentAction = v));
         storeMsaInfo.update((info: MsaInfo) => info = {...info, isProvider: true, msaId: 11});
         const { getByText } = render(Provider);
-        await fireEvent.click(getByText('Add control key'));
+        fireEvent.click(getByText('Add control key'));
         expect(currentAction).toEqual(ActionForms.AddControlKey);
       });
 
