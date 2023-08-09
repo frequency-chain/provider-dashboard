@@ -49,7 +49,6 @@
   const addControlKey = async (evt: Event) => {
     clearTxnStatuses();
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
-    evt.preventDefault();
     if (selectedKeyToAdd === '') {
       alert('Please choose a key to add.');
     } else if (isFunction(web3FromSource) && isFunction(web3Enable)) {
@@ -113,8 +112,8 @@
       bind:selectedOption={selectedKeyToAdd}
       {validAccounts}
     />
-    <button on:click={addControlKey}>Add It</button>
-    <button on:click={hideSelf}>Cancel Add</button>
+    <button on:click|preventDefault={addControlKey}>Add It</button>
+    <button on:click|preventDefault={hideSelf}>Cancel Add</button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>

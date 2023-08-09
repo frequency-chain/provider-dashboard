@@ -9,18 +9,18 @@
 
     let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
     let currentAction: ActionForms = ActionForms.NoForm;
-    let localSigningAddress = '';
+    let signingAddress = '';
     let validAccounts: Array<string> = [];
 
     storeCurrentAction.subscribe((val) => (currentAction =val));
     storeMsaInfo.subscribe((info: MsaInfo) => msaInfo = info);
     storeValidAccounts.subscribe((accts: Array<string>) => validAccounts = accts);
-    transactionSigningAddress.subscribe(addr => localSigningAddress = addr);
+    transactionSigningAddress.subscribe(addr => signingAddress = addr);
     const providerId  = () => {
         return msaInfo?.isProvider ? msaInfo?.msaId : 0
     }
 
 </script>
 <AddControlKey providerId={providerId()} {validAccounts} />
-<CreateProvider {currentAction} msaId={msaInfo.msaId} {validAccounts}/>
+<CreateProvider {validAccounts} {signingAddress}/>
 <RequestToBeProvider {currentAction} {validAccounts}/>

@@ -10,6 +10,7 @@ import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
+import type {DotApi} from "$lib/storeTypes";
 
 export const ProviderMap: Record<string, string> = {
   Rococo: 'wss://rpc.rococo.frequency.xyz',
@@ -226,4 +227,32 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
   } catch (e: any) {
     return 'ERROR ' + e.message;
   }
+}
+
+
+//   api: ApiPromise,
+//   extension: InjectedExtension | undefined,
+//   newAccount: SigningKey,
+//   signingAccount: SigningKey,
+//   providerId: number,
+//   endpointURL: string,
+//   callback: (statusStr: string) => void
+export async function submitCreateProvider(
+    api: ApiPromise | undefined,
+    extension: InjectedExtension | undefined,
+    endpointURL: string,
+    signingAccount: SigningKey,
+    providerName: string,
+    callback: (statusStr: string) => void,
+): Promise<boolean> {
+  const extrinsic = api.tx.msa.createProvider(providerName);
+  const useKeyring: boolean = isLocalhost(endpointURL);
+
+  if (api && (await api.isReady)) {
+    useKeyring
+        ? submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback)
+        : submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback);
+    return true;
+  }
+  return false;
 }

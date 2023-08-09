@@ -138,7 +138,3 @@ export async function getMsaEpochAndCapacityInfo(apiPromise: ApiPromise, account
   return {msaInfo, epochNumber, capacityDetails}
 }
 
-export async function createProvider(apiPromise: ApiPromise, accountId: string, providerName: string):
-  Promise<boolean> {
-  return true;
-}
