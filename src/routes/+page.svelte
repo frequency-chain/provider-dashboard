@@ -19,7 +19,6 @@
   let blockNumber = 0;
   let connected = false;
   let validAccounts = {};
-  let signingAddress = ''; // eslint-disable-line no-unused-vars
   let providerId = 0;
   let showDashboard = false;
 
@@ -27,7 +26,6 @@
   storeToken.subscribe((val) => (token = val));
   storeConnected.subscribe((val) => (connected = val));
   storeValidAccounts.subscribe((val) => (validAccounts = val));
-  transactionSigningAddress.subscribe((addr) => (signingAddress = addr));
   storeProviderId.subscribe((id) => (providerId = id));
 
   const onChangeTxnSigningAddress = (evt: Event) => {
