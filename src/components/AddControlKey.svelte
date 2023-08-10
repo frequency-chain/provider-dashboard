@@ -78,7 +78,6 @@
       }
     }
   };
-  // TODO: make this component show and hide like the other actions.
 </script>
 
 <div id='add-control-key' class:hidden={!(connected && showSelf)}>

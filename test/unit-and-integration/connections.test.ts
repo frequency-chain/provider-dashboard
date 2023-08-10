@@ -4,7 +4,7 @@ import {
   signPayloadWithExtension,
   signPayloadWithKeyring,
   submitAddControlKey,
-} from '../../../src/lib/connections';
+} from '../../src/lib/connections';
 import { describe, expect, test } from 'vitest';
 import { ApiPromise } from '@polkadot/api';
 import { Keyring } from '@polkadot/keyring';

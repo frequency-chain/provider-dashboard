@@ -40,18 +40,18 @@
         }
         clearTxnStatuses();
         let endpointURI: string = localDotApi.selectedEndpoint || '';
-        if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-            let signingKeys = validAccounts[signingAddress];
-            showTransactionStatus = true;
-            if (isLocalhost(endpointURI)) {
-                await submitCreateProvider(
-                    localDotApi.api as ApiPromise,
-                    undefined,
-                    endpointURI,
-                    signingKeys,
-                    newProviderName,
-                    addNewTxnStatus);
-            } else {
+        let signingKeys = validAccounts[signingAddress];
+        showTransactionStatus = true;
+        if (isLocalhost(endpointURI)) {
+            await submitCreateProvider(
+                localDotApi.api as ApiPromise,
+                undefined,
+                endpointURI,
+                signingKeys,
+                newProviderName,
+                addNewTxnStatus);
+        } else {
+            if (isFunction(web3FromSource) && isFunction(web3Enable)) {
                 const extensions = web3Enable('Frequency parachain provider dashboard: Creating provider');
                 if (extensions.length !== 0) {
                     const injectedExtension = await web3FromSource(signingKeys.meta.source);

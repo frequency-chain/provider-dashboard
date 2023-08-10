@@ -1,38 +1,49 @@
 import {dotApi, storeConnected, storeCurrentAction} from "../../src/lib/stores";
 import '@testing-library/jest-dom';
 import {ActionForms} from "../../src/lib/storeTypes";
-import CreateProvider from "../../src/components/CreateProvider.svelte";
+import RequestToBeProvider from "../../src/components/RequestToBeProvider.svelte"
 import {fireEvent, render, waitFor} from "@testing-library/svelte";
 import userEvent from "@testing-library/user-event";
 
-globalThis.alert = () => {};
+let alertWasCalled = false;
+const resetAlert = () => {
+    alertWasCalled = false
+};
+globalThis.alert = () => {
+    alertWasCalled = true;
+};
 
-describe("CreateProvider component", () => {
+describe("RequestToBeProvider component", () => {
     const mockCancelAction = vi.fn();
 
-    beforeAll(() => {
+    beforeEach(()=> {
+        resetAlert();
         storeConnected.set(true);
-    })
-    it("shows text + Cancel button", () => {
-        const { container, getByRole} = render(CreateProvider, {cancelAction: mockCancelAction})
+    });
+
+    it('shows text + Cancel button', () => {
+        const { container, getByRole } = render(RequestToBeProvider, {cancelAction: mockCancelAction});
         const title = container.querySelector('h2');
-        expect(title).toHaveTextContent('Become a Provider');
-        expect(getByRole('button', {name: 'Create Provider'})).toBeInTheDocument();
-        expect(getByRole('button', { name: 'Cancel'})).toBeInTheDocument();
+        expect(title).toHaveTextContent('Request to Be a Provider');
+        expect(getByRole('button', {name: 'Submit Request To Be Provider'})).toBeInTheDocument();
+        expect(getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
     })
-    it("clicking Cancel performs the callback", async () => {
+
+    it("clicking Cancel performs the cancelAction callback", async () => {
         let currentAction = ActionForms.CreateProvider
         storeCurrentAction.subscribe(action => currentAction = action);
 
-        let { getByRole} = render(CreateProvider, {cancelAction: mockCancelAction})
+        let { getByRole} = render(RequestToBeProvider, {cancelAction: mockCancelAction})
 
         let cancel = getByRole('button', { name: 'Cancel'});
         fireEvent.click(cancel);
         expect(mockCancelAction).toHaveBeenCalled()
     })
-    it('clicking CreateProvider calls the extrinsic', async () => {
+
+    it("clicking Request To Be Provider submits extrinsic", async () => {
         const user = userEvent.setup();
-        const { getByRole, getByLabelText} = render(CreateProvider, {cancelAction: mockCancelAction});
+        const { getByRole, getByLabelText} = render(RequestToBeProvider,
+            {cancelAction: mockCancelAction});
 
         let extrinsicWasCalled = false;
         const mockReady = vi.fn().mockResolvedValue(true);
@@ -44,25 +55,25 @@ describe("CreateProvider component", () => {
             ...val,
             selectedEndpoint: "ws://localhost:9944",
             api: {
-                tx: { msa: { createProvider: mockExtrinsic } },
+                tx: { msa: { proposeToBeProvider: mockExtrinsic } },
                 isReady: mockReady,
             },
         });
         let input = getByLabelText('Provider name');
         expect(input).toBeInTheDocument();
 
-        let btn = getByRole('button', { name: 'Create Provider'});
+        let btn = getByRole('button', { name: 'Submit Request To Be Provider'});
         userEvent.click(btn);
         await waitFor(() => {
             expect(extrinsicWasCalled).toBe(false);
         })
 
-        await user.type(input,"Bobbay");
-        expect(input).toHaveValue("Bobbay");
+        await user.type(input,"Allus");
+        expect(input).toHaveValue("Allus");
         userEvent.click(btn);
         await waitFor(() => {
             expect(extrinsicWasCalled).toBe(true)
         })
-    })
 
+    })
 })
