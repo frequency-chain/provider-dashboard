@@ -42,9 +42,10 @@
         let endpointURI: string = localDotApi.selectedEndpoint || '';
         let signingKeys = validAccounts[signingAddress];
         showTransactionStatus = true;
+        const apiPromise = localDotApi.api as ApiPromise
         if (isLocalhost(endpointURI)) {
             await submitCreateProvider(
-                localDotApi.api as ApiPromise,
+                apiPromise,
                 undefined,
                 endpointURI,
                 signingKeys,
@@ -52,11 +53,11 @@
                 addNewTxnStatus);
         } else {
             if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-                const extensions = web3Enable('Frequency parachain provider dashboard: Creating provider');
+                const extensions = await web3Enable('Frequency parachain provider dashboard: Creating provider');
                 if (extensions.length !== 0) {
                     const injectedExtension = await web3FromSource(signingKeys.meta.source);
                     await submitCreateProvider(
-                        localDotApi as ApiPromise,
+                        apiPromise,
                         injectedExtension,
                         endpointURI,
                         signingKeys,
@@ -70,6 +71,7 @@
 
     const addNewTxnStatus = (txnStatus: string) => {
         txnStatuses = [...txnStatuses, txnStatus];
+        return;
     };
     const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 

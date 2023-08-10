@@ -168,9 +168,9 @@ async function submitExtrinsicWithExtension(
       parseChainEvent(result, txnStatusCallback)
     );
     await waitFor(() => currentTxDone);
-  } catch {
-    const message = `Timeout reached or transaction was invalid.`;
-    showExtrinsicStatus(message, txnStatusCallback);
+  } catch (e: unknown) {
+    console.debug("caught exception:", e.toString())
+    showExtrinsicStatus("", txnStatusCallback);
   }
 }
 

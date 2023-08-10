@@ -59,7 +59,7 @@
                 addNewTxnStatus);
         } else {
             if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-                const extensions = web3Enable('Frequency parachain provider dashboard: Proposing to be provider');
+                const extensions = await web3Enable('Frequency parachain provider dashboard: Proposing to be provider');
                 if (extensions.length !== 0) {
                     const injectedExtension = await web3FromSource(signingKeys.meta.source);
                     await submitRequestToBeProvider(
@@ -84,6 +84,7 @@
 
     const addNewTxnStatus = (txnStatus: string) => {
         txnStatuses = [...txnStatuses, txnStatus];
+        return;
     };
     const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
