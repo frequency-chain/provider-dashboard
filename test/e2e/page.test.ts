@@ -2,6 +2,8 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/sv
 import '@testing-library/jest-dom';
 import Page from '$routes/+page.svelte';
 
+// global.alert = () => {};
+// vitest mocking
 globalThis.alert = () => {};
 
 const getByTextContent = (text) => {
