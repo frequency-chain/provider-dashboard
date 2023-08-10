@@ -109,7 +109,7 @@
   }
 </script>
 
-<div class:hidden={!connected}>
+<div class:hidden={!(connected && showSelf)}>
   <h3>Stake to Provider Id {providerId}</h3>
   <div class="directions">
     <p><strong>Directions</strong></p>
