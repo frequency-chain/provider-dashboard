@@ -25,7 +25,7 @@ export const GENESIS_HASHES: Record<string, string> = {
 };
 
 type AddKeyData = { msaId: string; expiration: string; newPublicKey: string };
-type SigningKey = InjectedAccountWithMeta | KeyringPair;
+export type SigningKey = InjectedAccountWithMeta | KeyringPair;
 
 export const CENTS: bigint = 1000000n;
 export const DOLLARS: bigint = 100n * CENTS;
@@ -105,7 +105,7 @@ export async function submitStake(
       : await submitExtrinsicWithExtension(
           extension as InjectedExtension,
           extrinsic,
-          signingAccount as InjectedAccountWithMeta,
+          signingAccount.address,
           callback
       );
   } else {

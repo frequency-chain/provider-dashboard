@@ -19,7 +19,7 @@
   let blockNumber = 0;
   let connected = false;
   let validAccounts = {};
-  let signingAddress = '';
+  let signingAddress = ''; // eslint-disable-line no-unused-vars
   let providerId = 0;
   let showDashboard = false;
 

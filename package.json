@@ -11,6 +11,7 @@
 		"test": "vitest",
 		"test:e2e": "vitest run --dir ./test/e2e",
 		"test:ci": "vitest run --dir ./test/components && vitest run --dir ./test/lib",
+		"test:stake": "vitest stake",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest src",
 		"coverage": "vitest run --coverage",

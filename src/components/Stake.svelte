@@ -16,14 +16,16 @@
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
   import TransactionStatus from './TransactionStatus.svelte';
+  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+  import type { AccountMap } from '$lib/polkadotApi';
 
   let connected = false;
   let thisDotApi = defaultDotApi;
-  let signingAddress: string = '';
-  let showSelf: boolean = false;
+  let signingAddress: string = ''; // eslint-disable-line no-unused-vars
+  let showSelf: boolean = false; // eslint-disable-line no-unused-vars
   let selectedKey: string = '';
-  let web3FromSource;
-  let web3Enable;
+  let thisWeb3FromSource: typeof web3FromSource;
+  let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   let stakeAmount: bigint = 1n;
   let token = '';
@@ -33,12 +35,12 @@
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
-    web3FromSource = extension.web3FromSource;
-    web3Enable = extension.web3Enable;
+    thisWeb3FromSource = extension.web3FromSource;
+    thisWeb3Enable = extension.web3Enable;
   });
 
   export let providerId = 0;
-  export let validAccounts = {};
+  export let validAccounts: AccountMap = {};
 
   storeConnected.subscribe((val) => (connected = val));
   dotApi.subscribe((api) => (thisDotApi = api));
@@ -65,27 +67,27 @@
     evt.preventDefault();
     if (selectedKey === '') {
       alert('Please choose a key to stake from.');
-    } else if (isFunction(web3FromSource) && isFunction(web3Enable)) {
+    } else if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
       let signingKeys = validAccounts[selectedKey];
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
         await submitStake(
           thisDotApi.api as ApiPromise,
           undefined,
-          signingKeys.address,
+          signingKeys,
           providerId,
           stakeAmountInDollars,
           endpointURI as string,
           addNewTxnStatus
         );
       } else {
-        const extensions = web3Enable('Frequency parachain provider dashboard: Adding Keys');
+        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
         if (extensions.length !== 0) {
-          const injectedExtension = await web3FromSource(signingKeys.meta.source);
+          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
           await submitStake(
             thisDotApi.api as ApiPromise,
             injectedExtension,
-            signingKeys.address,
+            signingKeys,
             providerId,
             stakeAmountInDollars,
             endpointURI as string,
@@ -114,14 +116,7 @@
     <ol>
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
-      <!--
-            <li>This will require 3 signatures: two for the authorization payload, and one to send the transaction.</li>
-            <ul>
-                <li>Sign with the new control key</li>
-                <li>Sign with the current control key</li>
-                <li>Sign the transaction with the current control key</li>
-            </ul>
-            -->
+      <li>This will require 1 signature to send the transaction.</li>
     </ol>
   </div>
   <form>
