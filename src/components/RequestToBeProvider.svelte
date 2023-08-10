@@ -37,7 +37,6 @@
     dotApi.subscribe((api) => localDotApi = api)
 
     const doProposeToBeProvider = async (_evt: Event) => {
-        console.log("WAT")
         if (newProviderName === '') {
             alert("please enter a Provider Name");
             return;
