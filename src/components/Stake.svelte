@@ -64,7 +64,6 @@
     evt.preventDefault();
     clearTxnStatuses();
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
-    evt.preventDefault();
     if (selectedKey === '') {
       alert('Please choose a key to stake from.');
     } else if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {

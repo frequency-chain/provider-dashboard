@@ -1,13 +1,32 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
+import {
+  dotApi,
+  storeConnected,
+  storeProviderId,
+} from '../../src/lib/stores';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
 
-// vitest mocking: TODO: this hides an alert window but doesn't affect the parameters
-//                       tested here. It should not be mocked for e2e tests.
-globalThis.alert = () => {};
+const mocks = vi.hoisted(() => {
+  const resolvedApi = {
+    isReady: vi.fn().mockResolvedValue(true),
+  };
+
+  const mockApiPromise = vi.fn();
+  mockApiPromise.create = vi.fn().mockResolvedValue(resolvedApi);
+
+  const mockWeb3FromSource = vi.fn();
+  return {
+    ApiPromise: mockApiPromise,
+    web3FromSource: mockWeb3FromSource,
+  };
+});
+
+vi.mock('@polkadot/api', async () => {
+  return { ApiPromise: mocks.ApiPromise };
+});
 
 describe('Stake.svelte Unit Tests', () => {
-  // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
   afterEach(() => cleanup());
 
   it('Stake component mounts correctly', () => {
@@ -28,13 +47,26 @@ describe('Stake.svelte Unit Tests', () => {
     }
   });
 
-  // TODO: we need to mock web3Enable and web3FromSource to test this
-  // it('Stake button submits transaction', async () => {
-  //   const { container } = render(Stake);
-  //   const button = screen.getByRole('button', { name: 'Stake' });
-  //   // click button and check that submitStake is called
-  //   await fireEvent.click(button);
-  //   expect(showTransactionStatus).toBe(true);
-  // });
+  it('Shows alert is no staking key is selected', async () => {
+    const mockAlert = vi.fn();
+    window.alert = mockAlert;
 
+    render(Stake);
+    const button = screen.getByRole('button', { name: 'Stake' });
+    await fireEvent.click(button);
+    expect(mockAlert).toBeCalledWith('Please choose a key to stake from.');
+  });
+
+  it('Stake button submits transaction', async () => {
+    const createdApi = await mocks.ApiPromise.create();
+    storeConnected.set(true);
+    storeProviderId.set(1);
+
+    const { getByText } = render(Stake);
+    await dotApi.update((val) => (val = { ...val, api: createdApi }));
+
+    const button = screen.getByRole('button', { name: 'Stake' });
+    await fireEvent.click(button);
+    expect(getByText('Transaction status')).toBeInTheDocument();
+  });
 });

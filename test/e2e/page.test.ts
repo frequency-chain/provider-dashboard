@@ -28,12 +28,12 @@ describe('End to End Tests', () => {
   });
 
   test('connect to localhost', async () => {
-    let { container, getByText, getByLabelText } = render(Page);
-    let ok = screen.getByText('Ok');
+    const { container, getByLabelText } = render(Page);
+    const ok = screen.getByText('Ok');
     await fireEvent.click(ok);
 
     await waitFor(() => {
-      let statusBar = container.querySelector('#status-bar');
+      const statusBar = container.querySelector('#status-bar');
       expect(statusBar).toBeDefined();
       expect(statusBar).not.toHaveClass('hidden');
     });
