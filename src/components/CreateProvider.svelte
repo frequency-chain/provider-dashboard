@@ -17,7 +17,10 @@
     export let txnStatuses: Array<string> = [];
     export let validAccounts = {}
     export let signingAddress = '';
+    // a callback for when the user cancels this action
     export let cancelAction;
+    // a callback for when a transaction hits a final state
+    export let txnFinished = () => { console.log("default txnFinished callback") };
 
     onMount(async () => {
         const extension = await import('@polkadot/extension-dapp');
@@ -50,7 +53,9 @@
                 endpointURI,
                 signingKeys,
                 newProviderName,
-                addNewTxnStatus);
+                addNewTxnStatus,
+                txnFinished
+            );
         } else {
             if (isFunction(web3FromSource) && isFunction(web3Enable)) {
                 const extensions = await web3Enable('Frequency parachain provider dashboard: Creating provider');
@@ -62,7 +67,8 @@
                         endpointURI,
                         signingKeys,
                         newProviderName,
-                        addNewTxnStatus
+                        addNewTxnStatus,
+                        txnFinished
                     );
                 }
             }
@@ -84,7 +90,7 @@
         Any control key for the MSA Id can submit the transaction.</p>
     <form>
         <label for="providerNameCB">Provider name</label>
-        <input id="providerNameCB" required placeholder="Short name" maxlength="20" bind:value={newProviderName}/>
+        <input id="providerNameCB" required placeholder="Short name" maxlength="" bind:value={newProviderName}/>
         <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}>Create Provider</button>
         <button on:click|preventDefault={cancelAction}>Cancel</button>
     </form>

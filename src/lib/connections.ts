@@ -54,7 +54,9 @@ export async function submitAddControlKey(
   signingAccount: SigningKey,
   providerId: number,
   endpointURL: string,
-  callback: (statusStr: string) => void
+  txnStatusCallback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback
+
 ) {
   const blockNumber = (await getBlockNumber(api)) as bigint;
   if (api && (await api.isReady)) {
@@ -79,8 +81,8 @@ export async function submitAddControlKey(
     const newKeyProof = { Sr25519: newKeySignature };
     const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
     useKeyring
-      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
-      : await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
+      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
+      : await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, txnStatusCallback, txnFinishedCallback);
   } else {
     console.debug('api is not available.');
   }
@@ -114,6 +116,7 @@ export async function submitStake(
 }
 
 type TxnStatusCallback = (txnStatus: string) => void;
+type TxnFinishedCallback = () => void;
 
 // log and call the callback with the status.
 function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
@@ -124,7 +127,8 @@ function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
 // figure out how to display the transaction status as it is updated
 export async function parseChainEvent(
   { events = [], status }: { events?: EventRecord[]; status: ExtrinsicStatus },
-  txnStatusCallback: TxnStatusCallback
+  txnStatusCallback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback,
 ): Promise<void> {
   let statusStr = '';
   try {
@@ -143,18 +147,17 @@ export async function parseChainEvent(
           showExtrinsicStatus('Transaction failed. See chain explorer for details.', txnStatusCallback);
         }
       });
+      txnFinishedCallback();
       return;
     } else if (status.isInBlock) {
       statusStr = `Transaction is included in blockHash ${status.asInBlock.toHex()}`;
-    } else if (status) {
-      statusStr = `Transaction Error`
     } else {
       console.debug({status})
       return;
     }
     showExtrinsicStatus(statusStr, txnStatusCallback);
   } catch (e: any) {
-    showExtrinsicStatus('Error: ' + e.toString(), txnStatusCallback);
+      showExtrinsicStatus('Error: ' + e.toString(), txnStatusCallback);
   }
 }
 
@@ -163,18 +166,21 @@ async function submitExtrinsicWithExtension(
   extension: InjectedExtension,
   extrinsic: SubmittableExtrinsic,
   signingAddress: string,
-  txnStatusCallback: TxnStatusCallback
+  txnStatusCallback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback,
 ): Promise<void> {
   let currentTxDone = false; // eslint-disable-line prefer-const
   try {
-    txnStatusCallback('Submitting transaction');
     await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, (result) =>
-      parseChainEvent(result, txnStatusCallback)
+      parseChainEvent(result, txnStatusCallback, txnFinishedCallback)
     );
     await waitFor(() => currentTxDone);
   } catch (e: any) {
-    console.debug("caught exception:", e.toString())
-    showExtrinsicStatus(e.toString(), txnStatusCallback);
+    let message = e.toString();
+    console.debug("caught exception:", message)
+    if ( message.match(/timeout/i) === null ) {
+      showExtrinsicStatus(e.toString(), txnStatusCallback);
+    }
   }
 }
 
@@ -182,11 +188,12 @@ async function submitExtrinsicWithExtension(
 async function submitExtrinsicWithKeyring(
   extrinsic: SubmittableExtrinsic,
   signingAccount: KeyringPair,
-  txnStatusCallback: TxnStatusCallback
+  txnStatusCallback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback,
 ): Promise<void> {
   try {
     txnStatusCallback('Submitting transaction');
-    await extrinsic.signAndSend(signingAccount, { nonce: -1 }, (result) => parseChainEvent(result, txnStatusCallback));
+    await extrinsic.signAndSend(signingAccount, { nonce: -1 }, (result) => parseChainEvent(result, txnStatusCallback, txnFinishedCallback));
   } catch (e: any) {
     showExtrinsicStatus(`Unexpected problem:  ${e.toString()}`, txnStatusCallback);
   }
@@ -246,15 +253,16 @@ export async function submitCreateProvider(
     endpointURL: string,
     signingAccount: SigningKey,
     providerName: string,
-    callback: (statusStr: string) => void,
+    txnStatusCallback: TxnStatusCallback,
+    txnFinishedCallback: TxnFinishedCallback,
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
     const extrinsic = api.tx.msa.createProvider(providerName);
     const useKeyring: boolean = isLocalhost(endpointURL);
 
     useKeyring
-        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
-        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
+        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
+        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, txnStatusCallback, txnFinishedCallback);
     return true;
   }
   return false;
@@ -266,15 +274,16 @@ export async function submitRequestToBeProvider(
     endpointURL: string,
     signingAccount: SigningKey,
     providerName: string,
-    callback: (statusStr: string) => void,
+    txnStatusCallback: TxnStatusCallback,
+    txnFinishedCallback: TxnFinishedCallback
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
     const useKeyring: boolean = isLocalhost(endpointURL);
 
     const extrinsic = api.tx.msa.proposeToBeProvider(providerName);
     useKeyring
-        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
-        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, callback);
+        ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
+        : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address, txnStatusCallback, txnFinishedCallback);
     return true;
   }
   console.error("submit failed because api is", api);

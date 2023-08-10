@@ -17,6 +17,7 @@
   let web3FromSource;
   let web3Enable;
   let showTransactionStatus = false;
+  let txnFinished = () => {}
   export let txnStatuses: Array<string> = [];
   export let cancelAction;
 
@@ -59,10 +60,11 @@
           signingKeys,
           providerId,
           endpointURI as string,
-          addNewTxnStatus
+          addNewTxnStatus,
+          txnFinished,
         );
       } else {
-        const extensions = web3Enable('Frequency parachain provider dashboard: Adding Keys');
+        const extensions = await web3Enable('Frequency parachain provider dashboard: Adding Keys');
         if (extensions.length !== 0) {
           const injectedExtension = await web3FromSource(signingKeys.meta.source);
           await submitAddControlKey(
@@ -72,7 +74,8 @@
             signingKeys,
             providerId,
             endpointURI as string,
-            addNewTxnStatus
+            addNewTxnStatus,
+            txnFinished
           );
         }
       }

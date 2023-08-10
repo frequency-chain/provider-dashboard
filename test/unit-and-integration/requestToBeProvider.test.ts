@@ -40,9 +40,9 @@ describe("RequestToBeProvider component", () => {
         expect(mockCancelAction).toHaveBeenCalled()
     })
 
-    it("clicking Request To Be Provider submits extrinsic", async () => {
+    it("clicking Request To Be Provider submits extrinsic and shows Transaction status", async () => {
         const user = userEvent.setup();
-        const { getByRole, getByLabelText} = render(RequestToBeProvider,
+        const { container, getByRole, getByLabelText, getByText} = render(RequestToBeProvider,
             {cancelAction: mockCancelAction});
 
         let extrinsicWasCalled = false;
@@ -73,6 +73,9 @@ describe("RequestToBeProvider component", () => {
         userEvent.click(btn);
         await waitFor(() => {
             expect(extrinsicWasCalled).toBe(true)
+            expect(container.querySelector('#transaction-status')).not.toHaveClass('hidden')
+            expect(getByText('Transaction status')).toBeInTheDocument()
+            expect(getByText('Submitting transaction')).toBeInTheDocument()
         })
 
     })

@@ -8,7 +8,7 @@
   };
 </script>
 
-<div class:hidden={!showSelf}>
+<div class:hidden={!showSelf} id="transaction-status">
   <h3>Transaction status</h3>
   <ul>
     {#each statuses as status}

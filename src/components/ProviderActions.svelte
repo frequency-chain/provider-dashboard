@@ -24,11 +24,21 @@
         storeCurrentAction.set(ActionForms.NoForm);
     }
 
+    // Trigger updates in other components if/when a provider action succeeds
+    const txnFinished = () => {
+        let thisAddr = signingAddress
+        // this is b/c SvelteKit is 'smart' and won't update if the value isn't changed.
+        transactionSigningAddress.set("")
+        transactionSigningAddress.set(thisAddr)
+        // for objects, it is not that smart.
+        storeMsaInfo.update((info: MsaInfo) => info = {...info, msaId: msaInfo.msaId })
+    }
+
 </script>
 {#if currentAction === ActionForms.AddControlKey}
     <AddControlKey providerId={providerId()} {validAccounts} {cancelAction}/>
 {:else if currentAction === ActionForms.CreateProvider}
-    <CreateProvider {validAccounts} {signingAddress} {cancelAction}/>
+    <CreateProvider {validAccounts} {signingAddress} {cancelAction} {txnFinished}/>
 {:else if currentAction === ActionForms.RequestToBeProvider}
-    <RequestToBeProvider {cancelAction} {validAccounts}/>
+    <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished}/>
 {/if}

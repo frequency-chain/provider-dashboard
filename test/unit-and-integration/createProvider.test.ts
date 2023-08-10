@@ -32,7 +32,7 @@ describe("CreateProvider component", () => {
     })
     it('clicking CreateProvider calls the extrinsic', async () => {
         const user = userEvent.setup();
-        const { getByRole, getByLabelText} = render(CreateProvider, {cancelAction: mockCancelAction});
+        const { container, getByRole, getByLabelText, getByText} = render(CreateProvider, {cancelAction: mockCancelAction});
 
         let extrinsicWasCalled = false;
         const mockReady = vi.fn().mockResolvedValue(true);
@@ -62,6 +62,9 @@ describe("CreateProvider component", () => {
         userEvent.click(btn);
         await waitFor(() => {
             expect(extrinsicWasCalled).toBe(true)
+            expect(container.querySelector('#transaction-status')).not.toHaveClass('hidden')
+            expect(getByText('Transaction status')).toBeInTheDocument()
+            expect(getByText('Submitting transaction')).toBeInTheDocument()
         })
     })
 

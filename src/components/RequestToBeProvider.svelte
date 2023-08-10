@@ -24,7 +24,10 @@
     export let txnStatuses: Array<string> = [];
     export let validAccounts = {}
     export let signingAddress = '';
+    // a callback for when the user cancels this action
     export let cancelAction;
+    // a callback for when a transaction hits a final state
+    export let txnFinished = () => { console.log("default txnFinished callback") };
 
     onMount(async () => {
         const extension = await import('@polkadot/extension-dapp');
@@ -56,7 +59,9 @@
                 endpointURI,
                 signingKeys,
                 newProviderName,
-                addNewTxnStatus);
+                addNewTxnStatus,
+                txnFinished
+            );
         } else {
             if (isFunction(web3FromSource) && isFunction(web3Enable)) {
                 const extensions = await web3Enable('Frequency parachain provider dashboard: Proposing to be provider');
@@ -68,7 +73,8 @@
                         endpointURI,
                         signingKeys,
                         newProviderName,
-                        addNewTxnStatus
+                        addNewTxnStatus,
+                        txnFinished
                     );
                 } else {
                     console.error("found no extensions")
@@ -105,7 +111,7 @@
     </ol>
     <form>
         <label for="providerNameRtB">Provider name</label>
-        <input id="providerNameRtB" placeholder="Short name" maxlength=20 bind:value={newProviderName}/>
+        <input id="providerNameRtB" placeholder="Short name" maxlength=16 bind:value={newProviderName}/>
         <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn">Submit Request To Be Provider</button>
         <button on:click|preventDefault={cancelAction}>Cancel</button>
     </form>
