@@ -74,8 +74,13 @@
   let networkQuestion = "What's the difference between Mainnet and Testnet (Rococo)?";
 </script>
 
-<a href="www.example.com" on:click={toggleExplain} on:keydown={toggleExplain} class:hidden={showExplainer} class="explainer-text"
-  >{networkQuestion}</a
+<a
+  id="here"
+  href="#here"
+  on:click={toggleExplain}
+  on:keydown={toggleExplain}
+  class:hidden={showExplainer}
+  class="explainer-text">{networkQuestion}</a
 >
 <div class:hidden={!showExplainer}>
   <p>The main purpose of the Mainnet is to run the actual blockchain network.</p>
