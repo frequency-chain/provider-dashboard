@@ -126,14 +126,16 @@ export async function parseChainEvent(
   { events = [], status }: { events?: EventRecord[]; status: ExtrinsicStatus },
   txnStatusCallback: TxnStatusCallback
 ): Promise<void> {
+  let statusStr = '';
   try {
     if (status.isInvalid) {
-      const statusStr = 'Invalid transaction';
-      showExtrinsicStatus(statusStr, txnStatusCallback);
-      return;
+      statusStr = 'Invalid transaction';
+    } else if (status.isBroadcast) {
+      statusStr = `Transaction is Broadcast`;
     } else if (status.isFinalized) {
-      const statusStr = `Transaction is finalized in block hash ${status.asFinalized.toHex()}`;
-      showExtrinsicStatus(statusStr, txnStatusCallback);
+      showExtrinsicStatus(
+          `Transaction is finalized in block hash ${status.asFinalized.toHex()}`,
+          txnStatusCallback);
       events.forEach(({ event }) => {
         if (event.method === 'ExtrinsicSuccess') {
           showExtrinsicStatus('Transaction succeeded', txnStatusCallback);
@@ -143,12 +145,14 @@ export async function parseChainEvent(
       });
       return;
     } else if (status.isInBlock) {
-      showExtrinsicStatus(`Transaction is included in blockHash ${status.asInBlock.toHex()}`, txnStatusCallback);
+      statusStr = `Transaction is included in blockHash ${status.asInBlock.toHex()}`;
+    } else if (status) {
+      statusStr = `Transaction Error`
     } else {
-      if (status) {
-        showExtrinsicStatus(status.toHuman(), txnStatusCallback);
-      }
+      console.debug({status})
+      return;
     }
+    showExtrinsicStatus(statusStr, txnStatusCallback);
   } catch (e: any) {
     showExtrinsicStatus('Error: ' + e.toString(), txnStatusCallback);
   }
@@ -168,9 +172,9 @@ async function submitExtrinsicWithExtension(
       parseChainEvent(result, txnStatusCallback)
     );
     await waitFor(() => currentTxDone);
-  } catch (e: unknown) {
+  } catch (e: any) {
     console.debug("caught exception:", e.toString())
-    showExtrinsicStatus("", txnStatusCallback);
+    showExtrinsicStatus(e.toString(), txnStatusCallback);
   }
 }
 

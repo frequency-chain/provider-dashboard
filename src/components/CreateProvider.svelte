@@ -84,7 +84,7 @@
         Any control key for the MSA Id can submit the transaction.</p>
     <form>
         <label for="providerNameCB">Provider name</label>
-        <input id="providerNameCB" required placeholder="Short name" maxlength="8" bind:value={newProviderName}/>
+        <input id="providerNameCB" required placeholder="Short name" maxlength="20" bind:value={newProviderName}/>
         <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}>Create Provider</button>
         <button on:click|preventDefault={cancelAction}>Cancel</button>
     </form>

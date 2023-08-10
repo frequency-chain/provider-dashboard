@@ -8,8 +8,8 @@
     import {isFunction} from "@polkadot/util";
     import {isLocalhost, createMailto} from "$lib/utils";
     import {ApiPromise} from "@polkadot/api";
+    import TransactionStatus from "$components/TransactionStatus.svelte";
 
-    const providerNameMax = 20;
     let newProviderName = '';
     let msaId = 0;
     let localDotApi: DotApi = defaultDotApi;
@@ -105,8 +105,9 @@
     </ol>
     <form>
         <label for="providerNameRtB">Provider name</label>
-        <input id="providerNameRtB" placeholder="Short name" maxlength={providerNameMax} bind:value={newProviderName}/>
+        <input id="providerNameRtB" placeholder="Short name" maxlength=20 bind:value={newProviderName}/>
         <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn">Submit Request To Be Provider</button>
         <button on:click|preventDefault={cancelAction}>Cancel</button>
     </form>
+    <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses}/>
 </div>
