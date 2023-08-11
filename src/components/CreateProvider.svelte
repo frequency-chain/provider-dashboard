@@ -1,4 +1,5 @@
 <script lang="ts">
+    import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
     import {dotApi, storeCurrentAction, transactionSigningAddress} from "$lib/stores";
     import type {DotApi} from '$lib/storeTypes';
     import {defaultDotApi} from "$lib/storeTypes";
@@ -11,8 +12,8 @@
 
     let newProviderName = '';
     let localDotApi: DotApi = defaultDotApi;
-    let web3FromSource;
-    let web3Enable;
+    let thisWeb3FromSource: typeof web3FromSource;
+    let thisWeb3Enable: typeof web3Enable;
     let showTransactionStatus = false;
     export let txnStatuses: Array<string> = [];
     export let validAccounts = {}
@@ -24,8 +25,8 @@
 
     onMount(async () => {
         const extension = await import('@polkadot/extension-dapp');
-        web3FromSource = extension.web3FromSource;
-        web3Enable = extension.web3Enable;
+        thisWeb3FromSource = extension.web3FromSource;
+        thisWeb3Enable = extension.web3Enable;
     });
 
     let localSigningAddress = '0xabcdefbeef';
@@ -57,10 +58,10 @@
                 txnFinished
             );
         } else {
-            if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-                const extensions = await web3Enable('Frequency parachain provider dashboard: Creating provider');
+            if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+                const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
                 if (extensions.length !== 0) {
-                    const injectedExtension = await web3FromSource(signingKeys.meta.source);
+                    const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
                     await submitCreateProvider(
                         apiPromise,
                         injectedExtension,

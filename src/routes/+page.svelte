@@ -2,7 +2,6 @@
   import {
     storeBlockNumber,
     storeConnected,
-    storeMsaInfo,
     storeToken,
     storeValidAccounts,
     transactionSigningAddress,
@@ -12,7 +11,6 @@
   import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
-  import {base} from "$app/paths";
   import ProviderActions from "$components/ProviderActions.svelte";
 
   let token = '';
@@ -61,7 +59,6 @@
               selectLabel="2. Choose a Transaction Signing Address"
               selectedOption={''}
               onSelect={onChangeTxnSigningAddress}
-              onChange={onChangeTxnSigningAddress}
               {validAccounts}
       />
     </div>

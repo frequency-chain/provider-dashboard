@@ -15,6 +15,8 @@
   import type { AccountBalances } from "$lib/polkadotApi";
   import { isMainnet } from "$lib/utils";
 
+  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n};
+
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
 
@@ -48,8 +50,6 @@
     isProvider = info?.isProvider || false
   });
 
-  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n};
-
   const balanceToHuman = (balance: bigint): string => {
     return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true });
   };
@@ -73,6 +73,7 @@
   {#if isProvider}
     <p>Id: {msaId}</p>
     <button on:click|preventDefault={showAddControlKey}>Add control key</button>
+    <button on:click={showStake}>Stake To Provider</button>
   {:else if (msaId === 0)}
     <p>No Msa Id. Please create an MSA first.</p>
   {:else}
@@ -82,12 +83,8 @@
       <p>Selected Key is not associated with a Provider</p>
       <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress===''}>Become a Provider</button>
     {/if}
-  {:else}
-    <p>Id: {localProviderID}</p>
-    <button on:click={showAddControlKey}>Add control key</button>
-    <button on:click={showStake}>Stake To Provider</button>
   {/if}
-  <p>Total Balance: {balanceToHuman(accountBalaces.free + accountBalaces.frozen)}</p>
-  <p>Transferable: {balanceToHuman(accountBalaces.free)}</p>
-  <p>Locked: {balanceToHuman(accountBalaces.frozen)}</p>
+  <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
+  <p>Transferable: {balanceToHuman(accountBalances.free)}</p>
+  <p>Locked: {balanceToHuman(accountBalances.frozen)}</p>
 </div>

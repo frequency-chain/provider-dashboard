@@ -96,19 +96,21 @@ export async function submitStake(
   providerId: number,
   stakeAmount: bigint,
   endpointURL: string,
-  callback: (statusStr: string) => void
+  callback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback
 ) {
   if (api && (await api.isReady)) {
     const useKeyring: boolean = isLocalhost(endpointURL);
 
     const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
     useKeyring
-      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback)
+      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback, txnFinishedCallback)
       : await submitExtrinsicWithExtension(
           extension as InjectedExtension,
           extrinsic,
           signingAccount.address,
-          callback
+          callback,
+            txnFinishedCallback
       );
   } else {
     console.debug('api is not available.');

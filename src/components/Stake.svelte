@@ -2,15 +2,15 @@
   import {
     dotApi,
     storeConnected,
-    storeCurrentAction,
-    storeProviderId,
+    storeCurrentAction, storeMsaInfo,
     storeToken,
     storeValidAccounts,
     transactionSigningAddress,
   } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
-  import { ActionForms, defaultDotApi } from '$lib/storeTypes';
+  import {ActionForms, defaultDotApi} from '$lib/storeTypes';
+  import type { MsaInfo } from '$lib/storeTypes'
   import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -27,7 +27,7 @@
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
-  let stakeAmount: bigint = 1n;
+  export let stakeAmount: bigint = 1n;
   let token = '';
   export let txnStatuses: Array<string> = [];
 
@@ -41,12 +41,14 @@
 
   export let providerId = 0;
   export let validAccounts: AccountMap = {};
+  export let cancelAction = () => {};
+  export let txnFinished = () => {};
 
   storeConnected.subscribe((val) => (connected = val));
   dotApi.subscribe((api) => (thisDotApi = api));
   transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
-  storeProviderId.subscribe((val) => (providerId = val));
+  storeMsaInfo.subscribe((info: MsaInfo) => (providerId = info.isProvider ? info.msaId : 0));
   storeValidAccounts.subscribe((val) => (validAccounts = val));
   storeToken.subscribe((val) => (token = val));
 
@@ -77,7 +79,8 @@
           providerId,
           stakeAmountInDollars,
           endpointURI as string,
-          addNewTxnStatus
+          addNewTxnStatus,
+          txnFinished,
         );
       } else {
         if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
@@ -91,7 +94,8 @@
               providerId,
               stakeAmountInDollars,
               endpointURI as string,
-              addNewTxnStatus
+              addNewTxnStatus,
+              txnFinished,
             );
           }
         }
@@ -133,7 +137,7 @@
       <span class="units">{token}</span>
     </div>
     <button on:click|preventDefault={stake}>Stake</button>
-    <button on:click|preventDefault={hideSelf}>Cancel Stake</button>
+    <button on:click|preventDefault={cancelAction}>Cancel Stake</button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>

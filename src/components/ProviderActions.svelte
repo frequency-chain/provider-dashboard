@@ -1,7 +1,8 @@
 <script lang="ts">
-    import RequestToBeProvider from "./RequestToBeProvider.svelte";
-    import CreateProvider from "./CreateProvider.svelte";
     import AddControlKey from "$components/AddControlKey.svelte";
+    import CreateProvider from "./CreateProvider.svelte";
+    import RequestToBeProvider from "./RequestToBeProvider.svelte";
+    import Stake from "./Stake.svelte";
     import {ActionForms} from "$lib/storeTypes.js";
     import type {MsaInfo} from '$lib/storeTypes';
 
@@ -10,11 +11,11 @@
     let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
     let currentAction: ActionForms = ActionForms.NoForm;
     let signingAddress = '';
-    let validAccounts: Array<string> = [];
+    let validAccounts = {};
 
     storeCurrentAction.subscribe((val) => (currentAction = val));
     storeMsaInfo.subscribe((info: MsaInfo) => msaInfo = info);
-    storeValidAccounts.subscribe((accts: Array<string>) => validAccounts = accts);
+    storeValidAccounts.subscribe((accts) => (validAccounts = accts));
     transactionSigningAddress.subscribe(addr => signingAddress = addr);
     const providerId = () => {
         return msaInfo?.isProvider ? msaInfo?.msaId : 0
@@ -41,4 +42,6 @@
     <CreateProvider {validAccounts} {signingAddress} {cancelAction} {txnFinished}/>
 {:else if currentAction === ActionForms.RequestToBeProvider}
     <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished}/>
+{:else if currentAction === ActionForms.Stake}
+    <Stake providerId={msaInfo.isProvider ? msaInfo.msaId : 0} {validAccounts} {cancelAction} {txnFinished}/>
 {/if}
