@@ -6,7 +6,7 @@
   export let onSelect = () => {};
 </script>
 <div class="pt-8">
-  <label for={`signing-address-${component}`}>{selectLabel}</label>
+  <h3 class="text-lg"><label for={`signing-address-${component}`}>{selectLabel}</label></h3>
   <select id={`signing-address-${component}`} bind:value={selectedOption} on:change={onSelect}
           class="bg-green5 px-6 py-2 rounded-md border-0">
     {#each Object.keys(validAccounts) as address}

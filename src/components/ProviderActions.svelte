@@ -7,6 +7,7 @@
   import type { MsaInfo } from '$lib/storeTypes';
 
   import { storeCurrentAction, storeMsaInfo, transactionSigningAddress, storeValidAccounts } from '$lib/stores.js';
+  import {isMainnet} from "$lib/utils";
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   let currentAction: ActionForms = ActionForms.NoForm;
@@ -34,7 +35,40 @@
     // for objects, it is not that smart.
     storeMsaInfo.update((info: MsaInfo) => (info = { ...info, msaId: msaInfo.msaId }));
   };
+
+  function showAddControlKey() {
+    storeCurrentAction.set(ActionForms.AddControlKey);
+  }
+
+  function showStake() {
+    storeCurrentAction.update((val) => (val = ActionForms.Stake));
+  }
+  // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
+  function showCreateOrRequestProvider(_evt: Event) {
+    const currentAction: ActionForms = isMainnet(network)
+      ? ActionForms.RequestToBeProvider
+      : ActionForms.CreateProvider;
+    storeCurrentAction.set(currentAction);
+  }
+  const actionButtonClasses = 'mt-6 ml-8 px-8 p-2 rounded-2xl text-white border-black bg-aqua';
+
 </script>
+{#if msaInfo?.isProvider}
+  <button on:click|preventDefault={showAddControlKey}
+          class={actionButtonClasses}>
+    Add control key
+  </button>
+  <button on:click={showStake}
+          class={actionButtonClasses}>
+    Stake To Provider
+  </button>
+{:else if msaInfo?.msaId > 0}
+  <button on:click|preventDefault={showCreateOrRequestProvider}
+          class:hidden={signingAddress === ''}
+          class={actionButtonClasses}>
+    Become a Provider
+  </button>
+{/if}
 
 {#if currentAction === ActionForms.AddControlKey}
   <AddControlKey providerId={providerId()} {validAccounts} {cancelAction} />
@@ -43,5 +77,5 @@
 {:else if currentAction === ActionForms.RequestToBeProvider}
   <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished} />
 {:else if currentAction === ActionForms.Stake}
-  <Stake providerId={msaInfo.isProvider ? msaInfo.msaId : 0} {validAccounts} {cancelAction} {txnFinished} />
+  <Stake providerId={msaInfo?.isProvider ? msaInfo?.msaId : 0} {validAccounts} {cancelAction} {txnFinished} />
 {/if}

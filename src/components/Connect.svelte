@@ -98,7 +98,7 @@
 </div>
 
 <div class="pt-8">
-  <label for="provider-list">1. Select a Network</label>
+  <h3 class="text-lg"><label for="provider-list">Select a Network</label></h3>
   <select id="provider-list" required bind:value={selectedProvider} class="text-left bg-green5 pr-8 pl-4 py-2 rounded-md border-0">
     {#each Object.keys(ProviderMap) as providerName}
       <option value={providerName} class="bg-base">{providerName}: {ProviderMap[providerName]}</option>
@@ -113,6 +113,10 @@
           class:hidden={selectedProvider.toString() != 'Other'}
           class="w-80 rounded-md"
   />
+  <button on:click|preventDefault={async () => await connect()} id="connect-button" hidden={!canConnect}
+          class="px-8 p-2 rounded-2xl text-white bg-aqua">
+    Connect to {selectedProvider}
+  </button>
 </div>
 <div class:hidden={connected}>
   <div hidden={selectedProvider !== 'Rococo' || !showFaucetInstructions}>
@@ -140,10 +144,4 @@
             class="mt-6 ml-8 px-8 p-2 rounded-2xl text-white border-black bg-cobalt">
       I have token</button>
   </div>
-</div>
-<div>
-  <button on:click|preventDefault={async () => await connect()} id="connect-button" hidden={!canConnect}
-          class="mt-6 px-8 p-2 rounded-2xl text-white border-black bg-cobalt">
-    Connect to {selectedProvider}
-  </button>
 </div>

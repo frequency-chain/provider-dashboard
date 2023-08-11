@@ -89,13 +89,13 @@
       }
     }
   };
+  const actionButtonClasses = 'mt-6 ml-8 px-8 p-2 rounded-2xl text-white border-black bg-cobalt';
 </script>
 
-<div id="add-control-key" class:hidden={!(connected && showSelf)}>
-  <h3>Add a Control Key to Provider Id {providerId}</h3>
+<div id="add-control-key" class:hidden={!(connected && showSelf)} class="pt-8">
+  <h3 class="text-lg">Add a Control Key to Provider Id {providerId}</h3>
   <div class="directions">
-    <p><strong>Directions</strong></p>
-    <ol>
+    <ol class="list-decimal text-lg">
       <li>
         Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
         transactions.
@@ -118,8 +118,12 @@
       bind:selectedOption={selectedKeyToAdd}
       {validAccounts}
     />
-    <button on:click|preventDefault={addControlKey}>Add It</button>
-    <button on:click|preventDefault={cancelAction}>Cancel Add</button>
+    <button on:click|preventDefault={addControlKey} class={actionButtonClasses}>
+      Add It
+    </button>
+    <button on:click|preventDefault={cancelAction} class={actionButtonClasses}>
+      Cancel Add
+    </button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses}/>
   </form>
 </div>

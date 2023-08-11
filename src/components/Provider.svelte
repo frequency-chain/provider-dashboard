@@ -48,21 +48,6 @@
   const balanceToHuman = (balance: bigint): string => {
     return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 10 });
   };
-
-  function showAddControlKey() {
-    storeCurrentAction.set(ActionForms.AddControlKey);
-  }
-
-  function showStake() {
-    storeCurrentAction.update((val) => (val = ActionForms.Stake));
-  }
-  // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
-  function showCreateOrRequestProvider(_evt: Event) {
-    const currentAction: ActionForms = isMainnet(network)
-      ? ActionForms.RequestToBeProvider
-      : ActionForms.CreateProvider;
-    storeCurrentAction.set(currentAction);
-  }
 </script>
 
 <div class="pl-6 ml-6 border-l-8 border-aqua">
@@ -80,12 +65,8 @@
       {/if}
       {#if msaInfo?.isProvider}
         <p>Name: {msaInfo.providerName}</p>
-        <button on:click|preventDefault={showAddControlKey}>Add control key</button>
-        <button on:click={showStake}>Stake To Provider</button>
       {:else if msaInfo.msaId > 0}
         <p>Selected Key is not associated with a Provider</p>
-        <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress === ''}>
-          Become a Provider</button>
       {/if}
     {/if}
   {/if}

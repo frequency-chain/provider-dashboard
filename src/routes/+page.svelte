@@ -32,7 +32,7 @@
   };
 </script>
 
-<h1 class="text-3xl font-bold pb-8">
+<h1 class="text-3xl font-bold">
   Welcome to Provider Dashboard</h1>
 <div id="status-bar" class="flex pr-8 justify-start pt-6 h-52">
   <ConnectionStatus {blockNumber} {connected} {token}/>
@@ -45,7 +45,7 @@
     <div class={connected ? '' : 'hidden'}>
       <KeySelection
         component="TransactionSigningKey"
-        selectLabel="2. Choose a Transaction Signing Address"
+        selectLabel="Choose a Transaction Signing Address"
         selectedOption={''}
         onSelect={onChangeTxnSigningAddress}
         {validAccounts}
