@@ -10,6 +10,7 @@ export default {
       'scarlet': '#F82013',
       'white': '#ffffff',
       'silver': '#D3D3D3',
+      'aqua': '#76CBCA'
     },
     extend: {
       borderRadius: {
@@ -18,6 +19,6 @@ export default {
       }
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/forms'),],
 }
 

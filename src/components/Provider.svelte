@@ -70,7 +70,7 @@
 </script>
 
 <div class={connected ? '' : 'hidden'}>
-  <h3>Provider</h3>
+  <h3 class="text-aqua font-bold">Provider</h3>
   {#if isProvider}
     <p>Id: {msaId}</p>
     <button on:click|preventDefault={showAddControlKey}>Add control key</button>

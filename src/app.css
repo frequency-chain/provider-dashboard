@@ -4,13 +4,6 @@
 @tailwind components;
 @tailwind utilities;
 
-#status-bar {
-    display: flex;
-    font-size: smaller;
-}
-.status-item {
-    padding-right: 1.5em;
-}
 body {
     color: white;
     min-height: 100vh;
@@ -20,4 +13,9 @@ body {
 }
 .hidden {
     display: none;
+}
+
+select {
+    background-color: white;
+    color: black;
 }

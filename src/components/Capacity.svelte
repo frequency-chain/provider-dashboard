@@ -65,4 +65,10 @@
   <p><strong>Total Issued:</strong> {capacityDetails?.totalCapacityIssued}</p>
   <p><strong>Last replenished:</strong> Epoch {capacityDetails?.lastReplenishedEpoch}</p>
   <p><strong>Staked Token:</strong> {capacityDetails?.totalCapacityIssued} {token}</p>
+<div class={ localProviderId > 0 ? "" : "hidden"}>
+  <h3 class="text-aqua font-bold">Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
+  <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
+  <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>
+  <p><strong>Last replenished:</strong> Epoch {capacityDetails.lastReplenishedEpoch}</p>
+  <p><strong>Staked Token:</strong> {capacityDetails.totalCapacityIssued} {token}</p>
 </div>
