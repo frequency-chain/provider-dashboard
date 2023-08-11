@@ -5,7 +5,7 @@
   };
 </script>
 
-<div class:hidden={dismissed}>
+<div class:hidden={dismissed} class="pt-8">
     <p>Frequency enables users to have control over their own data.
         While providers can send and receive messages on behalf of users,
         there is need for separation of control via

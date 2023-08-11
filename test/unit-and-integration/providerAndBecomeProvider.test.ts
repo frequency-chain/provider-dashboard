@@ -22,6 +22,7 @@ describe('Provider component and action buttons', () => {
   });
 
   it('when they are a provider, AddControlKey can be clicked, then AddControlKey component is shown', async () => {
+    transactionSigningAddress.set('just needs to be set');
     storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true, msaId: 99, providerName: 'Testy' }));
     let currentAction = ActionForms.NoForm;
     storeCurrentAction.subscribe((action) => (currentAction = action));

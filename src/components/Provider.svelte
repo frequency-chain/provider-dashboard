@@ -10,11 +10,12 @@
   import type { MsaInfo } from '$lib/storeTypes';
   import { ActionForms } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
-  import { formatBalance } from '@polkadot/util';
+  import {formatBalance } from '@polkadot/util';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import { isMainnet } from '$lib/utils';
 
+  let msaInfo: MsaInfo;
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
   let connected = false;
@@ -40,17 +41,12 @@
     }
   });
 
-  // the locally stored value of the provider Id
-  let msaId = 0;
-  let isProvider = false;
-
   storeMsaInfo.subscribe((info: MsaInfo) => {
-    msaId = info?.msaId || 0;
-    isProvider = info?.isProvider || false;
+    msaInfo = info;
   });
 
   const balanceToHuman = (balance: bigint): string => {
-    return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true });
+    return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 10 });
   };
 
   function showAddControlKey() {
@@ -69,23 +65,33 @@
   }
 </script>
 
-<div class={connected ? '' : 'hidden'}>
+<div class="pl-6 ml-6 border-l-8 border-aqua">
   <h3 class="text-aqua font-bold">Provider</h3>
-  {#if isProvider}
-    <p>Id: {msaId}</p>
-    <button on:click|preventDefault={showAddControlKey}>Add control key</button>
-    <button on:click={showStake}>Stake To Provider</button>
-  {:else if msaId === 0}
-    <p>No Msa Id. Please create an MSA first.</p>
-  {:else if localSigningAddress === ''}
-    <p>No transaction signing address selected</p>
+  {#if !connected}
+    <p>Not connected</p>
   {:else}
-    <p>Selected Key is not associated with a Provider</p>
-    <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress === ''}
-      >Become a Provider</button
-    >
+    {#if localSigningAddress === ''}
+      <p>No transaction signing address selected</p>
+    {:else }
+      {#if msaInfo?.msaId === 0}
+        <p>No Msa Id. Please create an MSA first.</p>
+      {:else}
+        <p>Id: {msaInfo.msaId}</p>
+      {/if}
+      {#if msaInfo?.isProvider}
+        <p>Name: {msaInfo.providerName}</p>
+        <button on:click|preventDefault={showAddControlKey}>Add control key</button>
+        <button on:click={showStake}>Stake To Provider</button>
+      {:else if msaInfo.msaId > 0}
+        <p>Selected Key is not associated with a Provider</p>
+        <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress === ''}>
+          Become a Provider</button>
+      {/if}
+    {/if}
   {/if}
-  <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
-  <p>Transferable: {balanceToHuman(accountBalances.free)}</p>
-  <p>Locked: {balanceToHuman(accountBalances.frozen)}</p>
+  {#if localSigningAddress !== ''}
+    <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
+    <p>Transferable: {balanceToHuman(accountBalances.free)}</p>
+    <p>Locked: {balanceToHuman(accountBalances.frozen)}</p>
+  {/if}
 </div>

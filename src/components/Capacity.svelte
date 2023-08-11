@@ -1,15 +1,21 @@
 <script lang="ts">
-  import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo, storeBlockNumber } from '$lib/stores';
-  import { getBlockNumber } from '$lib/connections';
-  import type { ApiPromise } from '@polkadot/api';
-  import type { MsaInfo } from '$lib/storeTypes';
-  import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
+  import {storeConnected, transactionSigningAddress, dotApi, storeMsaInfo, storeBlockNumber} from '$lib/stores';
+  import {getBlockNumber} from '$lib/connections';
+  import type {ApiPromise} from '@polkadot/api';
+  import type {MsaInfo} from '$lib/storeTypes';
+  import {getMsaEpochAndCapacityInfo} from '$lib/polkadotApi';
+  import {hexToString} from "@polkadot/util";
+  import {providerNameToHuman} from "$lib/utils";
 
+  let signingAddress = ''; // eslint-disable-line no-unused-vars
+  let epochNumber = 0n;
   let connected;
   storeConnected.subscribe((val) => (connected = val));
 
-  let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
-  storeMsaInfo.subscribe((info: MsaInfo) => (msaInfo = info));
+  let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
+  storeMsaInfo.subscribe((info: MsaInfo) => {
+    msaInfo = info;
+  });
 
   storeConnected.subscribe((val) => (connected = val));
   let apiPromise: ApiPromise | undefined;
@@ -18,6 +24,10 @@
       apiPromise = api.api;
     }
   });
+  let blockNumber = 0n;
+  storeBlockNumber.subscribe((val) => (blockNumber = val));
+
+  export let token;
 
   type CapacityDetails = {
     remainingCapacity: bigint;
@@ -34,41 +44,44 @@
 
   let capacityDetails: CapacityDetails = defaultDetails;
 
-  let signingAddress = ''; // eslint-disable-line no-unused-vars
-  let epochNumber = 0n;
-  let blockNumber = 0n;
-  storeBlockNumber.subscribe((val) => (blockNumber = val));
-
   transactionSigningAddress.subscribe(async (addr) => {
     // first set/reset all our local values.
     signingAddress = addr;
-    msaInfo = { isProvider: false, msaId: 0, providerName: '' };
+    msaInfo = {isProvider: false, msaId: 0, providerName: ''};
     if (connected && apiPromise) {
       blockNumber = await getBlockNumber(apiPromise);
       storeBlockNumber.update((val) => (val = blockNumber));
     }
     if (connected && apiPromise?.query && addr) {
       let info = await getMsaEpochAndCapacityInfo(apiPromise, addr);
-      msaInfo = { ...msaInfo, ...info.msaInfo };
-      capacityDetails = { ...defaultDetails, ...info.capacityDetails };
+      if (info?.msaInfo) {
+        msaInfo.providerName = providerNameToHuman(info.msaInfo.providerName);
+      }
+      msaInfo.msaId = info?.msaInfo?.msaId || 0;
+      msaInfo.isProvider = info?.msaInfo?.isProvider || false;
+      capacityDetails = {...defaultDetails, ...info.capacityDetails};
       epochNumber = info.epochNumber;
       storeMsaInfo.set(msaInfo);
     }
   });
-  export let token;
+
 </script>
 
-<div class:hidden={!msaInfo.isProvider}>
-  <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
-  <p>Provider name: {msaInfo.providerName}</p>
-  <p><strong>Remaining:</strong> {capacityDetails?.remainingCapacity}</p>
-  <p><strong>Total Issued:</strong> {capacityDetails?.totalCapacityIssued}</p>
-  <p><strong>Last replenished:</strong> Epoch {capacityDetails?.lastReplenishedEpoch}</p>
-  <p><strong>Staked Token:</strong> {capacityDetails?.totalCapacityIssued} {token}</p>
-<div class={ localProviderId > 0 ? "" : "hidden"}>
-  <h3 class="text-aqua font-bold">Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
-  <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
-  <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>
-  <p><strong>Last replenished:</strong> Epoch {capacityDetails.lastReplenishedEpoch}</p>
-  <p><strong>Staked Token:</strong> {capacityDetails.totalCapacityIssued} {token}</p>
+<div class="pl-6 ml-6 border-l-8 border-aqua">
+  <h3 class="text-aqua font-bold">Capacity</h3>
+  {#if (!connected)}
+    <p>Not connected</p>
+  {:else if (msaInfo.isProvider)}
+    <h3 class="text-aqua font-bold">As of Block {blockNumber}, Epoch {epochNumber}</h3>
+    <p>Remaining: {capacityDetails?.remainingCapacity}</p>
+    <p>Total Issued: {capacityDetails?.totalCapacityIssued}</p>
+    <p>Last replenished: Epoch {capacityDetails?.lastReplenishedEpoch}</p>
+    <p>Staked Token: {capacityDetails?.totalCapacityIssued} {token}</p>
+  {:else}
+    {#if (signingAddress == '') }
+      <p>No transaction signing address selected</p>
+    {:else}
+      <p>Not a provider</p>
+    {/if}
+  {/if}
 </div>
