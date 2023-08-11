@@ -5,17 +5,17 @@
     storeCurrentAction,
     storeMsaInfo,
     storeToken,
-    transactionSigningAddress
+    transactionSigningAddress,
   } from '$lib/stores';
-  import type {MsaInfo} from '$lib/storeTypes';
-  import {ActionForms} from "$lib/storeTypes";
-  import type {ApiPromise} from "@polkadot/api";
-  import {formatBalance} from "@polkadot/util";
-  import {getBalances} from "$lib/polkadotApi";
-  import type { AccountBalances } from "$lib/polkadotApi";
-  import { isMainnet } from "$lib/utils";
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { ActionForms } from '$lib/storeTypes';
+  import type { ApiPromise } from '@polkadot/api';
+  import { formatBalance } from '@polkadot/util';
+  import { getBalances } from '$lib/polkadotApi';
+  import type { AccountBalances } from '$lib/polkadotApi';
+  import { isMainnet } from '$lib/utils';
 
-  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n};
+  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
@@ -24,7 +24,7 @@
   storeToken.subscribe((val) => (token = val.toString()));
 
   let api: ApiPromise;
-  let network:string  = '';
+  let network: string = '';
   dotApi.subscribe((storeDotApi) => {
     network = storeDotApi?.selectedEndpoint || '';
     if (storeConnected && storeDotApi.api) {
@@ -32,7 +32,6 @@
     }
   });
 
-  let accountInfo: AccountInfo = { balanceFree: 0n, balanceReserved: 0n, balanceFrozen: 0n, balanceTotal: 0n };
   let localSigningAddress = ''; // eslint-disable-line no-unused-vars
   transactionSigningAddress.subscribe(async (val) => {
     localSigningAddress = val;
@@ -47,7 +46,7 @@
 
   storeMsaInfo.subscribe((info: MsaInfo) => {
     msaId = info?.msaId || 0;
-    isProvider = info?.isProvider || false
+    isProvider = info?.isProvider || false;
   });
 
   const balanceToHuman = (balance: bigint): string => {
@@ -63,7 +62,9 @@
   }
   // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
   function showCreateOrRequestProvider(_evt: Event) {
-    const currentAction: ActionForms = isMainnet(network) ? ActionForms.RequestToBeProvider : ActionForms.CreateProvider;
+    const currentAction: ActionForms = isMainnet(network)
+      ? ActionForms.RequestToBeProvider
+      : ActionForms.CreateProvider;
     storeCurrentAction.set(currentAction);
   }
 </script>
@@ -74,15 +75,15 @@
     <p>Id: {msaId}</p>
     <button on:click|preventDefault={showAddControlKey}>Add control key</button>
     <button on:click={showStake}>Stake To Provider</button>
-  {:else if (msaId === 0)}
+  {:else if msaId === 0}
     <p>No Msa Id. Please create an MSA first.</p>
+  {:else if localSigningAddress === ''}
+    <p>No transaction signing address selected</p>
   {:else}
-    {#if localSigningAddress === ''}
-      <p>No transaction signing address selected</p>
-    {:else}
-      <p>Selected Key is not associated with a Provider</p>
-      <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress===''}>Become a Provider</button>
-    {/if}
+    <p>Selected Key is not associated with a Provider</p>
+    <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress === ''}
+      >Become a Provider</button
+    >
   {/if}
   <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
   <p>Transferable: {balanceToHuman(accountBalances.free)}</p>

@@ -28,4 +28,4 @@ export type MsaInfo = {
   isProvider: boolean;
   msaId: number;
   providerName: string;
-}
+};

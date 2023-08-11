@@ -17,7 +17,7 @@
   let web3FromSource;
   let web3Enable;
   let showTransactionStatus = false;
-  let txnFinished = () => {}
+  let txnFinished = () => {};
   export let txnStatuses: Array<string> = [];
   export let cancelAction;
 
@@ -61,7 +61,7 @@
           providerId,
           endpointURI as string,
           addNewTxnStatus,
-          txnFinished,
+          txnFinished
         );
       } else {
         const extensions = await web3Enable('Frequency parachain provider dashboard: Adding Keys');
@@ -83,7 +83,7 @@
   };
 </script>
 
-<div id='add-control-key' class:hidden={!(connected && showSelf)}>
+<div id="add-control-key" class:hidden={!(connected && showSelf)}>
   <h3>Add a Control Key to Provider Id {providerId}</h3>
   <div class="directions">
     <p><strong>Directions</strong></p>

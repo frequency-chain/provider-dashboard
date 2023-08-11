@@ -1,9 +1,9 @@
-import {cleanup, render, waitFor} from '@testing-library/svelte';
+import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import {storeConnected, transactionSigningAddress, dotApi, storeMsaInfo} from "../../src/lib/stores";
+import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
-import {MsaInfo} from "../../src/lib/storeTypes";
-import {getByTextContent} from "../helpers";
+import { MsaInfo } from '../../src/lib/storeTypes';
+import { getByTextContent } from '../helpers';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -23,14 +23,14 @@ const mocks = vi.hoisted(() => {
   }
 
   class TestProviderRegistry {
-    providerName: string
-    isSome: boolean
+    providerName: string;
+    isSome: boolean;
     constructor(val: string) {
-      this.providerName = val
+      this.providerName = val;
       this.isSome = val !== '';
     }
     unwrap(): TestProviderRegistry {
-      return this
+      return this;
     }
   }
 
@@ -69,7 +69,7 @@ const mocks = vi.hoisted(() => {
       },
       msa: {
         publicKeyToMsaId: vi.fn().mockResolvedValue(new TestCodec(3n)),
-        providerToRegistryEntry: vi.fn().mockResolvedValue( new TestProviderRegistry("Bobbay"))
+        providerToRegistryEntry: vi.fn().mockResolvedValue(new TestProviderRegistry('Bobbay')),
       },
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
@@ -93,79 +93,79 @@ vi.mock('@polkadot/api', async () => {
 describe('Capacity.svelte', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: ''})
+    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
   });
   afterEach(() => cleanup());
 
   it('mounts', () => {
-    const { container } = render(Capacity, {token: 'FLARP'});
+    const { container } = render(Capacity, { token: 'FLARP' });
     expect(container).toBeInTheDocument();
   });
 
-  describe("if not connected", () => {
+  describe('if not connected', () => {
     it('is hidden', () => {
-      const { container } = render(Capacity, {token: 'FLARP'});
+      const { container } = render(Capacity, { token: 'FLARP' });
       expect(container.querySelector('div div')).toHaveClass('hidden');
     });
-  })
-  describe("if connected to an endpoint", () => {
+  });
+  describe('if connected to an endpoint', () => {
     beforeAll(async () => {
-      storeConnected.set(true)
-    })
+      storeConnected.set(true);
+    });
 
     beforeEach(async () => {
-      storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: ''})
-      transactionSigningAddress.set('')
-    })
+      storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
+      transactionSigningAddress.set('');
+    });
 
     it('is hidden if isProvider is false', () => {
-      const { container } = render(Capacity, {token: 'FLARP'});
+      const { container } = render(Capacity, { token: 'FLARP' });
       expect(container.querySelector('div div')).toHaveClass('hidden');
-    })
+    });
 
-    it("is shown if it isProvider is true", async ()=> {
-      const { container, debug } = render(Capacity, {token: 'FLARP'});
-      storeMsaInfo.update( (info: MsaInfo) => info = { ...info, isProvider: true })
+    it('is shown if it isProvider is true', async () => {
+      const { container } = render(Capacity, { token: 'FLARP' });
+      storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true }));
       await waitFor(() => {
         expect(container.querySelector('div div')).not.toHaveClass('hidden');
-      })
-    })
-  })
+      });
+    });
+  });
 
-  describe("integration: transactionSigningAddress.subscribe function", () => {
+  describe('integration: transactionSigningAddress.subscribe function', () => {
     beforeAll(async () => {
-      storeConnected.set(true)
-    })
+      storeConnected.set(true);
+    });
     // Also this depends on set-in-stone mocks which will return the address as a Provider
-    it('Capacity elements are shown when selected transaction address, with MSA and is a Provider', async ()=> {
+    it('Capacity elements are shown when selected transaction address, with MSA and is a Provider', async () => {
       // render component first
       const createdApi = await mocks.ApiPromise.create();
-      const { container } = render(Capacity, {token: 'FLARP'});
+      const { container } = render(Capacity, { token: 'FLARP' });
 
       // trigger changes as if user clicked Connect and such
-      await dotApi.update(val => val = {...val, api: createdApi });
+      await dotApi.update((val) => (val = { ...val, api: createdApi }));
       transactionSigningAddress.set('0xdeadbeef');
       await waitFor(() => {
         expect(container.querySelector('div div')).not.toHaveClass('hidden');
-      })
-    })
+      });
+    });
 
     it('Shows the expected values for Capacity, block and epoch', async () => {
       // render component first
       const createdApi = await mocks.ApiPromise.create();
-      const { container } = render(Capacity, {token: 'FLARP'});
+      const { container } = render(Capacity, { token: 'FLARP' });
 
       // trigger changes as if user clicked Connect and such
-      await dotApi.update(val => val = {...val, api: createdApi });
+      await dotApi.update((val) => (val = { ...val, api: createdApi }));
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
-        expect(container.innerHTML.includes('Capacity at Block 1021, Epoch 122')).toBe(true)
-        expect(getByTextContent('Provider name: Bobbay')).toBeInTheDocument()
-        expect(getByTextContent('Remaining: 501')).toBeInTheDocument()
-        expect(getByTextContent('Total Issued: 1000')).toBeInTheDocument()
-        expect(getByTextContent('Staked Token: 1000 FLARP')).toBeInTheDocument()
-        expect(container.innerHTML.includes('Epoch 59')).toBe(true)
-      })
-    })
-  })
+        expect(container.innerHTML.includes('Capacity at Block 1021, Epoch 122')).toBe(true);
+        expect(getByTextContent('Provider name: Bobbay')).toBeInTheDocument();
+        expect(getByTextContent('Remaining: 501')).toBeInTheDocument();
+        expect(getByTextContent('Total Issued: 1000')).toBeInTheDocument();
+        expect(getByTextContent('Staked Token: 1000 FLARP')).toBeInTheDocument();
+        expect(container.innerHTML.includes('Epoch 59')).toBe(true);
+      });
+    });
+  });
 });

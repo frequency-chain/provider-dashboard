@@ -49,7 +49,7 @@
     } else {
       selectedProviderURI = ProviderMap[selectedProvider];
     }
-    storeMsaInfo.set({isProvider: false, msaId: 0, providerName: ''});
+    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
     try {
       await getApi(selectedProviderURI, thisDotApi, wsProvider);
       await loadAccounts(selectedProviderURI, selectedProvider, thisWeb3Enable, thisWeb3Accounts);

@@ -9,7 +9,7 @@ import type { KeyringPair } from '@polkadot/keyring/types';
 import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type {Option, u64} from "@polkadot/types";
+import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 type MetaMap = Record<string, InjectedAccountWithMeta>;
@@ -111,12 +111,14 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   };
 }
 
-export async function getMsaEpochAndCapacityInfo(apiPromise: ApiPromise, accountId: string):
-    Promise<{epochNumber: bigint, msaInfo: MsaInfo, capacityDetails: any}> {
+export async function getMsaEpochAndCapacityInfo(
+  apiPromise: ApiPromise,
+  accountId: string
+): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
   const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(accountId)).unwrapOrDefault();
-  let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
+  const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received.toNumber();
-  let epochNumber = await getEpoch(apiPromise);
+  const epochNumber = await getEpoch(apiPromise);
   let capacityDetails;
   if (msaInfo.msaId > 0) {
     const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
@@ -124,9 +126,7 @@ export async function getMsaEpochAndCapacityInfo(apiPromise: ApiPromise, account
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
       msaInfo.providerName = registryEntry.providerName;
-      const details: any = (
-          await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)
-      ).unwrapOrDefault();
+      const details: any = (await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)).unwrapOrDefault();
       capacityDetails = {
         remainingCapacity: details.remainingCapacity.toBigInt(),
         totalTokensStaked: details.totalTokensStaked.toBigInt(),
@@ -135,6 +135,5 @@ export async function getMsaEpochAndCapacityInfo(apiPromise: ApiPromise, account
       };
     }
   }
-  return {msaInfo, epochNumber, capacityDetails}
+  return { msaInfo, epochNumber, capacityDetails };
 }
-

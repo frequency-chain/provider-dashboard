@@ -1,16 +1,15 @@
 <script lang="ts">
   import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo, storeBlockNumber } from '$lib/stores';
-  import { u64, Option } from '@polkadot/types';
-  import { getEpoch, getBlockNumber } from '$lib/connections';
+  import { getBlockNumber } from '$lib/connections';
   import type { ApiPromise } from '@polkadot/api';
-  import type { MsaInfo} from "$lib/storeTypes";
-  import { getMsaEpochAndCapacityInfo} from "$lib/polkadotApi";
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
 
   let connected;
-  storeConnected.subscribe( val => connected = val);
+  storeConnected.subscribe((val) => (connected = val));
 
-  let msaInfo: MsaInfo = {isProvider: false, msaId: 0, providerName: ''};
-  storeMsaInfo.subscribe( (info: MsaInfo )=> msaInfo = info );
+  let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+  storeMsaInfo.subscribe((info: MsaInfo) => (msaInfo = info));
 
   storeConnected.subscribe((val) => (connected = val));
   let apiPromise: ApiPromise | undefined;
@@ -43,22 +42,23 @@
   transactionSigningAddress.subscribe(async (addr) => {
     // first set/reset all our local values.
     signingAddress = addr;
-    msaInfo = { isProvider: false, msaId: 0, providerName: ''};
+    msaInfo = { isProvider: false, msaId: 0, providerName: '' };
     if (connected && apiPromise) {
       blockNumber = await getBlockNumber(apiPromise);
       storeBlockNumber.update((val) => (val = blockNumber));
     }
     if (connected && apiPromise?.query && addr) {
       let info = await getMsaEpochAndCapacityInfo(apiPromise, addr);
-      msaInfo = {...msaInfo, ...info.msaInfo };
-      capacityDetails = {...defaultDetails, ...info.capacityDetails};
+      msaInfo = { ...msaInfo, ...info.msaInfo };
+      capacityDetails = { ...defaultDetails, ...info.capacityDetails };
       epochNumber = info.epochNumber;
       storeMsaInfo.set(msaInfo);
     }
   });
   export let token;
 </script>
-<div class:hidden={ !msaInfo.isProvider }>
+
+<div class:hidden={!msaInfo.isProvider}>
   <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
   <p>Provider name: {msaInfo.providerName}</p>
   <p><strong>Remaining:</strong> {capacityDetails?.remainingCapacity}</p>

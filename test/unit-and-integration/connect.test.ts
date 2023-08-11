@@ -2,7 +2,6 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/sv
 import '@testing-library/jest-dom';
 import { storeConnected } from '$lib/stores';
 import Connect from '$components/Connect.svelte';
-import { getByTextContent } from '../helpers';
 
 // vitest mocking: TODO: this hides an alert window but doesn't affect the parameters
 //                       tested here. It should not be mocked for e2e tests.
@@ -26,19 +25,19 @@ describe('Connect.svelte Unit Tests', () => {
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
       expect(select).toHaveValue('Rococo');
-      expect(getByRole('button',{name: "Connect to Rococo"})).toBeInTheDocument()
+      expect(getByRole('button', { name: 'Connect to Rococo' })).toBeInTheDocument();
     });
 
     fireEvent.change(select, { target: { value: 'Localhost' } });
     await waitFor(() => {
       expect(select).toHaveValue('Localhost');
-      expect(getByRole('button',{name: "Connect to Localhost"})).toBeInTheDocument()
+      expect(getByRole('button', { name: 'Connect to Localhost' })).toBeInTheDocument();
     });
 
     fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
-      expect(select).toHaveValue('Other')
-      expect(getByRole('button',{name: "Connect to Other"})).toBeInTheDocument()
+      expect(select).toHaveValue('Other');
+      expect(getByRole('button', { name: 'Connect to Other' })).toBeInTheDocument();
     });
   });
 

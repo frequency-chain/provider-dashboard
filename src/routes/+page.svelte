@@ -11,7 +11,7 @@
   import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
-  import ProviderActions from "$components/ProviderActions.svelte";
+  import ProviderActions from '$components/ProviderActions.svelte';
 
   let token = '';
   let blockNumber = 0n;
@@ -28,7 +28,6 @@
     let option = evt.target as HTMLOptionElement;
     transactionSigningAddress.update((addr) => (addr = option.value));
   };
-
 </script>
 
 <svelte:head>
@@ -55,11 +54,11 @@
     <Connect />
     <div class={connected ? '' : 'hidden'}>
       <KeySelection
-              component="TransactionSigningKey"
-              selectLabel="2. Choose a Transaction Signing Address"
-              selectedOption={''}
-              onSelect={onChangeTxnSigningAddress}
-              {validAccounts}
+        component="TransactionSigningKey"
+        selectLabel="2. Choose a Transaction Signing Address"
+        selectedOption={''}
+        onSelect={onChangeTxnSigningAddress}
+        {validAccounts}
       />
     </div>
   </form>

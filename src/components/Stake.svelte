@@ -2,15 +2,16 @@
   import {
     dotApi,
     storeConnected,
-    storeCurrentAction, storeMsaInfo,
+    storeCurrentAction,
+    storeMsaInfo,
     storeToken,
     storeValidAccounts,
     transactionSigningAddress,
   } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
-  import {ActionForms, defaultDotApi} from '$lib/storeTypes';
-  import type { MsaInfo } from '$lib/storeTypes'
+  import { ActionForms, defaultDotApi } from '$lib/storeTypes';
+  import type { MsaInfo } from '$lib/storeTypes';
   import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -52,11 +53,6 @@
   storeValidAccounts.subscribe((val) => (validAccounts = val));
   storeToken.subscribe((val) => (token = val));
 
-  const hideSelf = () => {
-    storeCurrentAction.update((val) => (val = ActionForms.NoForm));
-    clearTxnStatuses();
-  };
-
   const addNewTxnStatus = (txnStatus: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
   };
@@ -67,8 +63,7 @@
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
     if (selectedKey === '') {
       alert('Please choose a key to stake from.');
-    }
-    else {
+    } else {
       let signingKeys = validAccounts[selectedKey];
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
@@ -80,7 +75,7 @@
           stakeAmountInDollars,
           endpointURI as string,
           addNewTxnStatus,
-          txnFinished,
+          txnFinished
         );
       } else {
         if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
@@ -95,7 +90,7 @@
               stakeAmountInDollars,
               endpointURI as string,
               addNewTxnStatus,
-              txnFinished,
+              txnFinished
             );
           }
         }
