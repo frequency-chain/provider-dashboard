@@ -1,11 +1,11 @@
 body {
-    margin: 22px;
+  margin: 22px;
 }
 .hidden {
-    display: none;
+  display: none;
 }
 .explainer-text {
-    font-size: smaller;
-    color: -webkit-link;
-    cursor: pointer;
+  font-size: smaller;
+  color: -webkit-link;
+  cursor: pointer;
 }

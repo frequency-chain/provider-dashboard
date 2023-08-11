@@ -4,6 +4,8 @@ export async function sleep(ms: number): Promise<void> {
 
 type WaitOptions = { interval?: number; timeout?: number };
 
+// This is used only in connections.  In testing, use the waitFor function provided by
+// vitest.
 export async function waitFor(
   predicate: () => Promise<boolean> | boolean,
   { interval = 500, timeout = 36000 }: WaitOptions = {}
@@ -28,4 +30,27 @@ export function isLocalhost(url: string): boolean {
     console.error(e.toString());
     return false;
   }
+}
+
+export function isMainnet(url: string): boolean {
+  try {
+    const parsedURL: URL = new URL(url);
+    return !!parsedURL.hostname.match(/^(0|1).rpc.frequency.xyz/)?.length;
+  } catch (e: any) {
+    console.error(e.toString());
+    return false;
+  }
+}
+
+// create a URL-encoded mailto URL string using the provided parameters.
+export function createMailto(to: string, subject?: string, body?: string): string {
+  // this regex is not at all rigourous, it's just for preventing blatant errors
+  const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/; // eslint-disable-line no-useless-escape
+  const matches = to.match(emailRegex);
+  if (matches === null) {
+    throw `to is not an email address: ${to}`;
+  }
+
+  const mailtoUrl = ['mailto:', to, '?subject=', encodeURIComponent(subject), '&body=', encodeURIComponent(body)];
+  return mailtoUrl.join('');
 }

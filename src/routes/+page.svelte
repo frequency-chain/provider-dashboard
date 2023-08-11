@@ -2,31 +2,27 @@
   import {
     storeBlockNumber,
     storeConnected,
+    storeToken,
     storeValidAccounts,
     transactionSigningAddress,
-    storeProviderId,
-    storeToken,
   } from '$lib/stores';
   import Connect from '$components/Connect.svelte';
   import Capacity from '$components/Capacity.svelte';
   import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
-  import AddControlKey from '$components/AddControlKey.svelte';
   import KeySelection from '$components/KeySelection.svelte';
-  import Stake from '$components/Stake.svelte';
+  import ProviderActions from '$components/ProviderActions.svelte';
 
   let token = '';
-  let blockNumber = 0;
+  let blockNumber = 0n;
   let connected = false;
   let validAccounts = {};
-  let providerId = 0;
   let showDashboard = false;
 
   storeBlockNumber.subscribe((val) => (blockNumber = val));
   storeToken.subscribe((val) => (token = val));
   storeConnected.subscribe((val) => (connected = val));
   storeValidAccounts.subscribe((val) => (validAccounts = val));
-  storeProviderId.subscribe((id) => (providerId = id));
 
   const onChangeTxnSigningAddress = (evt: Event) => {
     let option = evt.target as HTMLOptionElement;
@@ -66,8 +62,7 @@
       />
     </div>
   </form>
-  <AddControlKey {providerId} {validAccounts} />
-  <Stake {providerId} {validAccounts} />
+  <ProviderActions />
 </div>
 
 <style>

@@ -2,7 +2,6 @@ import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/sv
 import '@testing-library/jest-dom';
 import { storeConnected } from '$lib/stores';
 import Connect from '$components/Connect.svelte';
-import { getByTextContent } from '../helpers';
 
 // vitest mocking: TODO: this hides an alert window but doesn't affect the parameters
 //                       tested here. It should not be mocked for e2e tests.
@@ -21,24 +20,24 @@ describe('Connect.svelte Unit Tests', () => {
     const { getByRole } = render(Connect);
     const select = getByRole('combobox');
 
-    await fireEvent.change(select, { target: { value: 'Rococo' } });
+    fireEvent.change(select, { target: { value: 'Rococo' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
       expect(select).toHaveValue('Rococo');
-      expect(getByRole('button',{name: "Connect to Rococo"})).toBeInTheDocument()
+      expect(getByRole('button', { name: 'Connect to Rococo' })).toBeInTheDocument();
     });
 
-    await fireEvent.change(select, { target: { value: 'Localhost' } });
+    fireEvent.change(select, { target: { value: 'Localhost' } });
     await waitFor(() => {
       expect(select).toHaveValue('Localhost');
-      expect(getByRole('button',{name: "Connect to Localhost"})).toBeInTheDocument()
+      expect(getByRole('button', { name: 'Connect to Localhost' })).toBeInTheDocument();
     });
 
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
-      expect(select).toHaveValue('Other')
-      expect(getByRole('button',{name: "Connect to Other"})).toBeInTheDocument()
+      expect(select).toHaveValue('Other');
+      expect(getByRole('button', { name: 'Connect to Other' })).toBeInTheDocument();
     });
   });
 
@@ -48,12 +47,12 @@ describe('Connect.svelte Unit Tests', () => {
     const input = screen.getByRole('textbox');
     expect(input).toBeDisabled();
 
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
       expect(input).toBeEnabled();
     });
 
-    await fireEvent.change(input, {
+    fireEvent.change(input, {
       target: { value: 'wss://testing.some.node' },
     });
     // Check the otherProvider changes
@@ -66,7 +65,7 @@ describe('Connect.svelte Unit Tests', () => {
     render(Connect);
     const btn = screen.getByText('Connect to Rococo');
     const select = screen.getByRole('combobox');
-    await fireEvent.change(select, { target: { value: 'Other' } });
+    fireEvent.change(select, { target: { value: 'Other' } });
     await waitFor(() => {
       expect(btn).toBeEnabled();
     });

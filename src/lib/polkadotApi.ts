@@ -1,14 +1,15 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import { GENESIS_HASHES, getBlockNumber } from './connections';
+import { GENESIS_HASHES, getBlockNumber, getEpoch } from './connections';
 import { dotApi, storeBlockNumber, storeConnected, storeToken, storeValidAccounts } from './stores';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
-import type { DotApi } from '$lib/storeTypes';
+import type { DotApi, MsaInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
+import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 type MetaMap = Record<string, InjectedAccountWithMeta>;
@@ -108,4 +109,31 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
     frozen: accountData.frozen.toBigInt(),
     reserved: accountData.reserved.toBigInt(),
   };
+}
+
+export async function getMsaEpochAndCapacityInfo(
+  apiPromise: ApiPromise,
+  accountId: string
+): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
+  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(accountId)).unwrapOrDefault();
+  const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+  msaInfo.msaId = received.toNumber();
+  const epochNumber = await getEpoch(apiPromise);
+  let capacityDetails;
+  if (msaInfo.msaId > 0) {
+    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
+    if (providerRegistry.isSome) {
+      msaInfo.isProvider = true;
+      const registryEntry = providerRegistry.unwrap();
+      msaInfo.providerName = registryEntry.providerName;
+      const details: any = (await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)).unwrapOrDefault();
+      capacityDetails = {
+        remainingCapacity: details.remainingCapacity.toBigInt(),
+        totalTokensStaked: details.totalTokensStaked.toBigInt(),
+        totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
+        lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
+      };
+    }
+  }
+  return { msaInfo, epochNumber, capacityDetails };
 }

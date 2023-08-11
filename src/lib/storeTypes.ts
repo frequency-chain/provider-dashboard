@@ -20,4 +20,12 @@ export enum ActionForms {
   NoForm,
   AddControlKey,
   Stake,
+  CreateProvider,
+  RequestToBeProvider,
 }
+
+export type MsaInfo = {
+  isProvider: boolean;
+  msaId: number;
+  providerName: string;
+};

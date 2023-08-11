@@ -17,7 +17,6 @@ const getByTextContent = (text) => {
 };
 
 describe('End to End Tests', () => {
-  beforeAll;
   // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
   afterEach(() => cleanup());
 

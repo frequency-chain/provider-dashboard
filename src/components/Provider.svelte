@@ -1,35 +1,52 @@
 <script lang="ts">
-  import { dotApi, storeProviderId, storeConnected, storeToken, transactionSigningAddress } from '$lib/stores';
+  import {
+    dotApi,
+    storeConnected,
+    storeCurrentAction,
+    storeMsaInfo,
+    storeToken,
+    transactionSigningAddress,
+  } from '$lib/stores';
+  import type { MsaInfo } from '$lib/storeTypes';
   import { ActionForms } from '$lib/storeTypes';
-  import type { AccountInfo } from '$lib/storeTypes';
-  import { storeCurrentAction } from '$lib/stores.js';
   import type { ApiPromise } from '@polkadot/api';
   import { formatBalance } from '@polkadot/util';
   import { getBalances } from '$lib/polkadotApi';
+  import type { AccountBalances } from '$lib/polkadotApi';
+  import { isMainnet } from '$lib/utils';
 
-  // the locally stored value of the provider Id
-  let localProvider = 0;
-  storeProviderId.subscribe((val) => (localProvider = val));
+  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
+
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
 
   let token = '';
-  storeToken.subscribe((val) => (token = val));
+  storeToken.subscribe((val) => (token = val.toString()));
 
   let api: ApiPromise;
+  let network: string = '';
   dotApi.subscribe((storeDotApi) => {
+    network = storeDotApi?.selectedEndpoint || '';
     if (storeConnected && storeDotApi.api) {
       api = storeDotApi.api;
     }
   });
 
-  let accountInfo: AccountInfo = { balanceFree: 0n, balanceReserved: 0n, balanceFrozen: 0n, balanceTotal: 0n };
   let localSigningAddress = ''; // eslint-disable-line no-unused-vars
   transactionSigningAddress.subscribe(async (val) => {
     localSigningAddress = val;
     if (api) {
-      accountInfo = await getBalances(api, val);
+      accountBalances = await getBalances(api, val);
     }
+  });
+
+  // the locally stored value of the provider Id
+  let msaId = 0;
+  let isProvider = false;
+
+  storeMsaInfo.subscribe((info: MsaInfo) => {
+    msaId = info?.msaId || 0;
+    isProvider = info?.isProvider || false;
   });
 
   const balanceToHuman = (balance: bigint): string => {
@@ -37,24 +54,38 @@
   };
 
   function showAddControlKey() {
-    storeCurrentAction.update((val) => (val = ActionForms.AddControlKey));
+    storeCurrentAction.set(ActionForms.AddControlKey);
   }
 
   function showStake() {
     storeCurrentAction.update((val) => (val = ActionForms.Stake));
   }
+  // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
+  function showCreateOrRequestProvider(_evt: Event) {
+    const currentAction: ActionForms = isMainnet(network)
+      ? ActionForms.RequestToBeProvider
+      : ActionForms.CreateProvider;
+    storeCurrentAction.set(currentAction);
+  }
 </script>
 
 <div class={connected ? '' : 'hidden'}>
   <h3>Provider</h3>
-  {#if !localProvider}
-    <p>Selected Key is not associated with a Provider</p>
-  {:else}
-    <p>Id: {localProvider}</p>
-    <p>Total Balance: {balanceToHuman(accountInfo.free + accountInfo.frozen)}</p>
-    <p>Transferable: {balanceToHuman(accountInfo.free)}</p>
-    <p>Locked: {balanceToHuman(accountInfo.frozen)}</p>
-    <button on:click={showAddControlKey}>Add control key</button>
+  {#if isProvider}
+    <p>Id: {msaId}</p>
+    <button on:click|preventDefault={showAddControlKey}>Add control key</button>
     <button on:click={showStake}>Stake To Provider</button>
+  {:else if msaId === 0}
+    <p>No Msa Id. Please create an MSA first.</p>
+  {:else if localSigningAddress === ''}
+    <p>No transaction signing address selected</p>
+  {:else}
+    <p>Selected Key is not associated with a Provider</p>
+    <button on:click|preventDefault={showCreateOrRequestProvider} class:hidden={localSigningAddress === ''}
+      >Become a Provider</button
+    >
   {/if}
+  <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
+  <p>Transferable: {balanceToHuman(accountBalances.free)}</p>
+  <p>Locked: {balanceToHuman(accountBalances.frozen)}</p>
 </div>

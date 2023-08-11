@@ -1,10 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import {
-  dotApi,
-  storeConnected,
-  storeProviderId,
-} from '../../src/lib/stores';
+import { dotApi, storeConnected, storeMsaInfo } from '../../src/lib/stores';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
 
 const mocks = vi.hoisted(() => {
@@ -27,6 +23,9 @@ vi.mock('@polkadot/api', async () => {
 });
 
 describe('Stake.svelte Unit Tests', () => {
+  beforeEach(() => {
+    storeMsaInfo.set({ isProvider: true, providerName: 'test', msaId: 1 });
+  });
   afterEach(() => cleanup());
 
   it('Stake component mounts correctly', () => {
@@ -47,7 +46,7 @@ describe('Stake.svelte Unit Tests', () => {
     }
   });
 
-  it('Shows alert is no staking key is selected', async () => {
+  it('Shows alert if no staking key is selected', async () => {
     const mockAlert = vi.fn();
     window.alert = mockAlert;
 
@@ -60,7 +59,6 @@ describe('Stake.svelte Unit Tests', () => {
   it('Stake button submits transaction', async () => {
     const createdApi = await mocks.ApiPromise.create();
     storeConnected.set(true);
-    storeProviderId.set(1);
 
     const { getByText } = render(Stake);
     await dotApi.update((val) => (val = { ...val, api: createdApi }));

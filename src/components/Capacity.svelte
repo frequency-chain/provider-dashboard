@@ -1,11 +1,16 @@
 <script lang="ts">
-  import { storeConnected, transactionSigningAddress, dotApi, storeProviderId, storeBlockNumber } from '$lib/stores';
-  import { u64, Option } from '@polkadot/types';
-  import { getEpoch, getBlockNumber } from '$lib/connections';
+  import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo, storeBlockNumber } from '$lib/stores';
+  import { getBlockNumber } from '$lib/connections';
   import type { ApiPromise } from '@polkadot/api';
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
 
   let connected;
-  let localProviderId = 0;
+  storeConnected.subscribe((val) => (connected = val));
+
+  let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+  storeMsaInfo.subscribe((info: MsaInfo) => (msaInfo = info));
+
   storeConnected.subscribe((val) => (connected = val));
   let apiPromise: ApiPromise | undefined;
   dotApi.subscribe((api) => {
@@ -35,38 +40,29 @@
   storeBlockNumber.subscribe((val) => (blockNumber = val));
 
   transactionSigningAddress.subscribe(async (addr) => {
+    // first set/reset all our local values.
     signingAddress = addr;
-    localProviderId = 0;
-    capacityDetails = defaultDetails;
+    msaInfo = { isProvider: false, msaId: 0, providerName: '' };
     if (connected && apiPromise) {
       blockNumber = await getBlockNumber(apiPromise);
       storeBlockNumber.update((val) => (val = blockNumber));
     }
     if (connected && apiPromise?.query && addr) {
-      const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(addr)).unwrapOrDefault();
-      localProviderId = received.toNumber();
-      epochNumber = await getEpoch(apiPromise);
-      if (localProviderId > 0) {
-        const details: Option<any> = (
-          await apiPromise.query.capacity.capacityLedger(localProviderId)
-        ).unwrapOrDefault();
-        capacityDetails = {
-          remainingCapacity: details.remainingCapacity.toBigInt(),
-          totalTokensStaked: details.totalTokensStaked.toBigInt(),
-          totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-          lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
-        };
-      }
+      let info = await getMsaEpochAndCapacityInfo(apiPromise, addr);
+      msaInfo = { ...msaInfo, ...info.msaInfo };
+      capacityDetails = { ...defaultDetails, ...info.capacityDetails };
+      epochNumber = info.epochNumber;
+      storeMsaInfo.set(msaInfo);
     }
-    storeProviderId.set(localProviderId);
   });
   export let token;
 </script>
 
-<div class={localProviderId > 0 ? '' : 'hidden'}>
+<div class:hidden={!msaInfo.isProvider}>
   <h3>Capacity at Block {blockNumber}, Epoch {epochNumber}</h3>
-  <p><strong>Remaining:</strong> {capacityDetails.remainingCapacity}</p>
-  <p><strong>Total Issued:</strong> {capacityDetails.totalCapacityIssued}</p>
-  <p><strong>Last replenished:</strong> Epoch {capacityDetails.lastReplenishedEpoch}</p>
-  <p><strong>Staked Token:</strong> {capacityDetails.totalCapacityIssued} {token}</p>
+  <p>Provider name: {msaInfo.providerName}</p>
+  <p><strong>Remaining:</strong> {capacityDetails?.remainingCapacity}</p>
+  <p><strong>Total Issued:</strong> {capacityDetails?.totalCapacityIssued}</p>
+  <p><strong>Last replenished:</strong> Epoch {capacityDetails?.lastReplenishedEpoch}</p>
+  <p><strong>Staked Token:</strong> {capacityDetails?.totalCapacityIssued} {token}</p>
 </div>
