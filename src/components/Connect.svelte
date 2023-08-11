@@ -32,7 +32,6 @@
   let showExplainer = false;
 
   const toggleExplain = (evt: Event) => {
-    evt.preventDefault();
     showExplainer = !showExplainer;
   };
 
@@ -77,8 +76,8 @@
 <a
   id="here"
   href="#here"
-  on:click={toggleExplain}
-  on:keydown={toggleExplain}
+  on:click|preventDefault={toggleExplain}
+  on:keydown|preventDefault={toggleExplain}
   class:hidden={showExplainer}
   class="explainer-text">{networkQuestion}</a
 >

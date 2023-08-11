@@ -61,12 +61,12 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
   const stake = async (evt: Event) => {
-    evt.preventDefault();
     clearTxnStatuses();
     let endpointURI: string = thisDotApi.selectedEndpoint || '';
     if (selectedKey === '') {
       alert('Please choose a key to stake from.');
-    } else if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+    }
+    else {
       let signingKeys = validAccounts[selectedKey];
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
@@ -80,18 +80,20 @@
           addNewTxnStatus
         );
       } else {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
-          await submitStake(
-            thisDotApi.api as ApiPromise,
-            injectedExtension,
-            signingKeys,
-            providerId,
-            stakeAmountInDollars,
-            endpointURI as string,
-            addNewTxnStatus
-          );
+        if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+          const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
+          if (extensions.length !== 0) {
+            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
+            await submitStake(
+              thisDotApi.api as ApiPromise,
+              injectedExtension,
+              signingKeys,
+              providerId,
+              stakeAmountInDollars,
+              endpointURI as string,
+              addNewTxnStatus
+            );
+          }
         }
       }
     }
@@ -130,8 +132,8 @@
       <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
       <span class="units">{token}</span>
     </div>
-    <button on:click={stake}>Stake</button>
-    <button on:click={hideSelf}>Cancel Stake</button>
+    <button on:click|preventDefault={stake}>Stake</button>
+    <button on:click|preventDefault={hideSelf}>Cancel Stake</button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>

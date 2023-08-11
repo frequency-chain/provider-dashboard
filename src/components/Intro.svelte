@@ -1,7 +1,6 @@
 <script lang="ts">
   export let dismissed = false;
   const hide = (evt: Event) => {
-    evt.preventDefault();
     dismissed = true;
   };
 </script>
@@ -13,5 +12,5 @@
     relationships in form of Permissions and Grants, respectively.
   </p>
   <p>Click OK to get started.</p>
-  <button on:click={hide} on:keydown={hide}>Ok</button>
+  <button on:click|preventDefault={hide} on:keydown|preventDefault={hide}>Ok</button>
 </div>

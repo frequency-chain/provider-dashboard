@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import Intro from '$components/Intro.svelte';
 
@@ -16,7 +16,7 @@ describe('Intro', () => {
 
   it('clicking the button hides the component content', async () => {
     const { container, getByRole } = render(Intro);
-    let dismissButton = getByRole('button', { name: 'Ok' });
+    const dismissButton = getByRole('button', { name: 'Ok' });
     fireEvent.click(dismissButton);
     await waitFor(() => {
       expect(container.querySelector('div div')).toHaveClass('hidden');
