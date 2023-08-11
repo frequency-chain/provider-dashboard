@@ -33,11 +33,11 @@
 <svelte:head>
   <link rel="stylesheet" href="https://unpkg.com/mvp.css@1.12/mvp.css" />
 </svelte:head>
-
-<h1>Welcome to Provider Dashboard</h1>
-<Intro bind:dismissed={showDashboard} />
+<h1 class="text-3xl font-bold pb-8">
+  Welcome to Provider Dashboard</h1>
+<Intro bind:dismissed={showDashboard}/>
 <div id="status-bar">
-  <div id="connection-status" class="status-item">
+  <div id="connection-status" class="status-item pt-6">
     <h3>Connection status: {connected ? 'Connected' : 'Not connected'}</h3>
     <p>Token: <span id="unit">{token}</span></p>
     <p>Current block number: <span id="current-block">{blockNumber}</span></p>
@@ -64,13 +64,3 @@
   </form>
   <ProviderActions />
 </div>
-
-<style>
-  #status-bar {
-    display: flex;
-    font-size: smaller;
-  }
-  .status-item {
-    padding-right: 1.5em;
-  }
-</style>

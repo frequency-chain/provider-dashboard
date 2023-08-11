@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#status-bar {
+    display: flex;
+    font-size: smaller;
+}
+.status-item {
+    padding-right: 1.5em;
+}
+body {
+    color: white;
+    min-height: 100vh;
+    margin: 2em;
+    background:  linear-gradient(to bottom right, #2e3f63, #74cad0);
+    font-family: Poppins, sans-serif;
+}
+.hidden {
+    display: none;
+}
