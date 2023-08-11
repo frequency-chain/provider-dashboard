@@ -1,16 +1,16 @@
-import {ApiPromise, Keyring, WsProvider} from '@polkadot/api';
-import {GENESIS_HASHES, getBlockNumber} from './connections';
-import {dotApi, storeBlockNumber, storeConnected, storeToken, storeValidAccounts} from './stores';
-import {isLocalhost} from './utils';
-import {options} from '@frequency-chain/api-augment';
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
+import { GENESIS_HASHES, getBlockNumber } from './connections';
+import { dotApi, storeBlockNumber, storeConnected, storeToken, storeValidAccounts } from './stores';
+import { isLocalhost } from './utils';
+import { options } from '@frequency-chain/api-augment';
 
-import type {DotApi} from '$lib/storeTypes';
-import type {KeyringPair} from '@polkadot/keyring/types';
-import type {web3Accounts, web3Enable} from '@polkadot/extension-dapp';
-import type {InjectedAccountWithMeta} from '@polkadot/extension-inject/types';
-import type {ChainProperties} from '@polkadot/types/interfaces';
+import type { DotApi } from '$lib/storeTypes';
+import type { KeyringPair } from '@polkadot/keyring/types';
+import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import type { ChainProperties } from '@polkadot/types/interfaces';
 
-type AccountMap = Record<string, KeyringPair>;
+export type AccountMap = Record<string, KeyringPair>;
 type MetaMap = Record<string, InjectedAccountWithMeta>;
 
 export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, wsProvider: WsProvider) {
@@ -97,12 +97,12 @@ export async function updateConnectionStatus(apiPromise: ApiPromise) {
 }
 
 export type AccountBalances = {
-  free: bigint,
-  frozen: bigint,
-  reserved: bigint,
-}
+  free: bigint;
+  frozen: bigint;
+  reserved: bigint;
+};
 export async function getBalances(apiPromise: ApiPromise, accountId: string): Promise<AccountBalances> {
-  let accountData = (await apiPromise.query.system.account(accountId)).data;
+  const accountData = (await apiPromise.query.system.account(accountId)).data;
   return {
     free: accountData.free.toBigInt(),
     frozen: accountData.frozen.toBigInt(),

@@ -9,8 +9,9 @@
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"test": "vitest",
-		"test:once": "vitest run",
+		"test:e2e": "vitest run --dir ./test/e2e",
 		"test:ci": "vitest run --dir ./test/components && vitest run --dir ./test/lib",
+		"test:stake": "vitest stake",
 		"test:ui": "vitest --ui",
 		"test:watch": "vitest src",
 		"coverage": "vitest run --coverage",
@@ -26,6 +27,7 @@
 		"@testing-library/svelte": "^4.0.3",
 		"@testing-library/jest-dom": "^5.16.5",
 		"@typescript-eslint/eslint-plugin": "^6.2.1",
+
 		"@typescript-eslint/parser": "^6.2.1",
 		"@vitest/coverage-v8": "^0.34.1",
 		"@vitest/ui": "^0.34.1",

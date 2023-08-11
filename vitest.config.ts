@@ -15,6 +15,9 @@ export default defineConfig({
     },
   },
   test: {
+    server: {
+      deps: { inline: ['@sveltejs/kit'] },
+    },
     environment: 'jsdom',
     globals: true,
   },

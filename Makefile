@@ -1,8 +1,13 @@
 UNAME := $(shell uname)
 
-integration-test:
-	./scripts/run_integration_tests.sh
+tests-all: tests-unit tests-e2e
 
-integration-test-only:
-	./scripts/run_integration_tests.sh -s
+tests-unit:
+	@echo "---------------------------------------------"
+	@echo "Running unit tests"
+	@echo "---------------------------------------------"
+	npm run test:ci
+
+tests-e2e:
+	./scripts/run_e2e_tests.sh
 

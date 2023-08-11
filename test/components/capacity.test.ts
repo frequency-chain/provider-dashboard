@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import {storeConnected, transactionSigningAddress, dotApi} from "../../src/lib/stores";
 import Capacity from '$components/Capacity.svelte';
 
-const mocks =  vi.hoisted(() => {
+const mocks = vi.hoisted(() => {
   class TestCodec {
     value: bigint;
     constructor(val: bigint) {
@@ -43,18 +43,18 @@ const mocks =  vi.hoisted(() => {
   }
 
   // set up capacity details response
-  const capacityDetails: TestCapacityDetails =  new TestCapacityDetails(501n, 5000n, 1000n, 59n);
+  const capacityDetails: TestCapacityDetails = new TestCapacityDetails(501n, 5000n, 1000n, 59n);
 
   const resolvedCurrentEpochChain = {
     isReady: vi.fn().mockResolvedValue(true),
     query: {
       capacity: {
         currentEpoch: vi.fn().mockResolvedValue(epochNumber),
-        capacityLedger: vi.fn().mockResolvedValue(capacityDetails)
+        capacityLedger: vi.fn().mockResolvedValue(capacityDetails),
       },
       msa: {
-        publicKeyToMsaId: vi.fn().mockResolvedValue(new TestCodec(3n))
-      }
+        publicKeyToMsaId: vi.fn().mockResolvedValue(new TestCodec(3n)),
+      },
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
     tx: { msa: { addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined) } },
@@ -68,7 +68,6 @@ const mocks =  vi.hoisted(() => {
     ApiPromise: mockApiPromise,
     web3FromSource: mockWeb3FromSource,
   };
-
 });
 
 vi.mock('@polkadot/api', async () => {
@@ -82,23 +81,23 @@ describe('Capacity.svelte', () => {
   afterEach(() => cleanup());
 
   it('mounts', () => {
-    const { container } = render(Capacity, {token: 'TEST'});
+    const { container } = render(Capacity, { token: 'TEST' });
     expect(container).toBeInTheDocument();
   });
 
   it('is hidden if the provider id === 0 and shows otherwise', () => {
-      const { container } = render(Capacity, {token: 'TEST'});
-      expect(container.querySelector('div div')).toHaveClass('hidden');
+    const { container } = render(Capacity, { token: 'TEST' });
+    expect(container.querySelector('div div')).toHaveClass('hidden');
   });
 
   it('is shown when there is a provider id', async () => {
-    const { container, debug } = render(Capacity, {token: "XFRQCY"})
+    const { container, debug } = render(Capacity, { token: 'XFRQCY' });
     const createdApi = await mocks.ApiPromise.create();
-    await dotApi.update(val => val = {...val, api: createdApi});
+    await dotApi.update((val) => (val = { ...val, api: createdApi }));
     await storeConnected.set(true);
-    await transactionSigningAddress.set("0xabcdef0000");
-    await waitFor( () => {
-      expect(container.querySelector('div div')).not.toHaveClass('hidden')
-    })
-  })
+    await transactionSigningAddress.set('0xabcdef0000');
+    await waitFor(() => {
+      expect(container.querySelector('div div')).not.toHaveClass('hidden');
+    });
+  });
 });
