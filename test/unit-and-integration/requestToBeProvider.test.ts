@@ -10,7 +10,6 @@ describe('RequestToBeProvider component', () => {
   const mockCancelAction = vi.fn();
 
   beforeEach(() => {
-    resetAlert();
     storeConnected.set(true);
   });
 

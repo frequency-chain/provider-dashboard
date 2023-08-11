@@ -15,5 +15,5 @@
       <li>{status}</li>
     {/each}
   </ul>
-  <button on:click={hideSelf}>I'm done here</button>
+  <button on:click|preventDefault={hideSelf}>I'm done here</button>
 </div>
