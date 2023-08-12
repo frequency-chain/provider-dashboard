@@ -6,21 +6,25 @@
   import { ActionForms } from '$lib/storeTypes.js';
   import type { MsaInfo } from '$lib/storeTypes';
 
-  import { storeCurrentAction, storeMsaInfo, transactionSigningAddress, storeValidAccounts } from '$lib/stores.js';
-  import {isMainnet} from "$lib/utils";
+  import { storeCurrentAction, storeMsaInfo, transactionSigningAddress, dotApi } from '$lib/stores.js';
+  import { isMainnet } from '$lib/utils';
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   let currentAction: ActionForms = ActionForms.NoForm;
   let signingAddress = '';
-  let validAccounts = {};
+  export let validAccounts = {};
+  let network: string = '';
 
   storeCurrentAction.subscribe((val) => (currentAction = val));
   storeMsaInfo.subscribe((info: MsaInfo) => (msaInfo = info));
-  storeValidAccounts.subscribe((accts) => (validAccounts = accts));
   transactionSigningAddress.subscribe((addr) => (signingAddress = addr));
   const providerId = () => {
     return msaInfo?.isProvider ? msaInfo?.msaId : 0;
   };
+
+  dotApi.subscribe((storeDotApi) => {
+    network = storeDotApi?.selectedEndpoint || '';
+  });
 
   const cancelAction = () => {
     storeCurrentAction.set(ActionForms.NoForm);
@@ -51,21 +55,17 @@
     storeCurrentAction.set(currentAction);
   }
   const actionButtonClasses = 'mt-6 ml-8 px-8 p-2 rounded-2xl text-white border-black bg-aqua';
-
 </script>
+
 {#if msaInfo?.isProvider}
-  <button on:click|preventDefault={showAddControlKey}
-          class={actionButtonClasses}>
-    Add control key
-  </button>
-  <button on:click={showStake}
-          class={actionButtonClasses}>
-    Stake To Provider
-  </button>
+  <button on:click|preventDefault={showAddControlKey} class={actionButtonClasses}> Add control key </button>
+  <button on:click={showStake} class={actionButtonClasses}> Stake To Provider </button>
 {:else if msaInfo?.msaId > 0}
-  <button on:click|preventDefault={showCreateOrRequestProvider}
-          class:hidden={signingAddress === ''}
-          class={actionButtonClasses}>
+  <button
+    on:click|preventDefault={showCreateOrRequestProvider}
+    class:hidden={signingAddress === ''}
+    class={actionButtonClasses}
+  >
     Become a Provider
   </button>
 {/if}

@@ -4,13 +4,17 @@
   export let selectLabel = 'empty';
   export let selectedOption = '';
   export let onSelect = () => {};
+  // for styling the dropdown
+  export let classOverrides = '';
 </script>
-<div class="pt-8">
+
+<div class="mt-8">
   <h3 class="text-lg"><label for={`signing-address-${component}`}>{selectLabel}</label></h3>
-  <select id={`signing-address-${component}`} bind:value={selectedOption} on:change={onSelect}
-          class="bg-green5 px-6 py-2 rounded-md border-0">
-    {#each Object.keys(validAccounts) as address}
-      <option value={address}>{validAccounts[address].meta.name}: {address}</option>
-    {/each}
-  </select>
+  <div class="{classOverrides} inline-block">
+    <select id={`signing-address-${component}`} bind:value={selectedOption} on:change={onSelect}>
+      {#each Object.keys(validAccounts) as address}
+        <option value={address}>{validAccounts[address].meta.name}: {address}</option>
+      {/each}
+    </select>
+  </div>
 </div>

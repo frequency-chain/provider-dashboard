@@ -21,7 +21,7 @@ describe('End to End Tests', () => {
   afterEach(() => cleanup());
 
   test('check connection status: not connected', async () => {
-    const {container, getByText} = render(Page);
+    const { container } = render(Page);
     expect(container.querySelector('#connection-status h3')).toHaveTextContent('Connection status');
     expect(container.querySelector('#connection-status p').innerHTML).toMatch('Not connected');
   });

@@ -83,21 +83,22 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="create-provider">
-  <h2>Become a Provider</h2>
-  <p>
+<div id="create-provider" class="action-card">
+  <p class="text-black">
     For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
     submit a <code>createProvider</code> transaction.
   </p>
-  <p>
+  <p class="text-black">
     This action will register the MSA Id that is controlled by the selected Transaction Signing Address above. Any
     control key for the MSA Id can submit the transaction.
   </p>
   <form>
     <label for="providerNameCB">Provider name</label>
     <input id="providerNameCB" required placeholder="Short name" maxlength="" bind:value={newProviderName} />
-    <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}>Create Provider</button>
-    <button on:click|preventDefault={cancelAction}>Cancel</button>
+    <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary text-black">
+      Create Provider
+    </button>
+    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
   </form>
   <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
 </div>

@@ -1,7 +1,8 @@
 <script lang="ts">
   import {
     storeBlockNumber,
-    storeConnected, storeMsaInfo,
+    storeConnected,
+    storeMsaInfo,
     storeToken,
     storeValidAccounts,
     transactionSigningAddress,
@@ -12,7 +13,7 @@
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
-  import ConnectionStatus from "$components/ConnectionStatus.svelte";
+  import ConnectionStatus from '$components/ConnectionStatus.svelte';
 
   let token = '';
   let blockNumber = 0n;
@@ -32,14 +33,13 @@
   };
 </script>
 
-<h1 class="text-3xl font-bold">
-  Welcome to Provider Dashboard</h1>
+<h1 class="text-3xl font-bold">Welcome to Provider Dashboard</h1>
 <div id="status-bar" class="flex pr-8 justify-start pt-6 h-52">
-  <ConnectionStatus {blockNumber} {connected} {token}/>
+  <ConnectionStatus {blockNumber} {connected} {token} />
   <Provider />
   <Capacity bind:token />
 </div>
-<div id="main-actions" class:hidden={!showDashboard} class="mt-8">
+<div id="main-actions" class:hidden={!showDashboard} class="mt-8 text-white">
   <form id="setupForm">
     <Connect />
     <div class={connected ? '' : 'hidden'}>
@@ -52,6 +52,6 @@
       />
     </div>
   </form>
-  <ProviderActions />
+  <ProviderActions {validAccounts} />
 </div>
-<Intro bind:dismissed={showDashboard}/>
+<Intro bind:dismissed={showDashboard} />

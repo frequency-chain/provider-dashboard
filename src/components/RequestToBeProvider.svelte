@@ -89,7 +89,7 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="request-to-be-provider">
+<div id="request-to-be-provider" class="action-card">
   <h2>Request to Be a Provider</h2>
   <h3>What is a Provider?</h3>
   <p>A Provider is an MSA holder on Frequency with special permissions.</p>
@@ -102,15 +102,15 @@
   <ol>
     <li>Submit an on-chain transaction to request be become a provider by filling in and submitting the form below.</li>
     <li>
-      <a href={mailTo}>Contact the Frequency Council</a> and inform them that you have requested to become a Provider, and
-      provide them with your MSA Id.
+      <a href={mailTo} class="underline"> Contact the Frequency Council </a>
+      and inform them that you have requested to become a Provider, and provide them with your MSA Id.
     </li>
   </ol>
   <form>
     <label for="providerNameRtB">Provider name</label>
     <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn"
-      >Submit Request To Be Provider</button
+    <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
+      Submit Request To Be Provider</button
     >
     <button on:click|preventDefault={cancelAction}>Cancel</button>
   </form>

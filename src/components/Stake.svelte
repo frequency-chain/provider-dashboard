@@ -1,7 +1,6 @@
 <script lang="ts">
   import {
     dotApi,
-    storeConnected,
     storeCurrentAction,
     storeMsaInfo,
     storeToken,
@@ -20,7 +19,6 @@
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import type { AccountMap } from '$lib/polkadotApi';
 
-  let connected = false;
   let thisDotApi = defaultDotApi;
   let signingAddress: string = ''; // eslint-disable-line no-unused-vars
   let showSelf: boolean = false; // eslint-disable-line no-unused-vars
@@ -45,7 +43,6 @@
   export let cancelAction = () => {};
   export let txnFinished = () => {};
 
-  storeConnected.subscribe((val) => (connected = val));
   dotApi.subscribe((api) => (thisDotApi = api));
   transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
@@ -81,7 +78,7 @@
         if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
           const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
           if (extensions.length !== 0) {
-            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
+            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source.toString());
             await submitStake(
               thisDotApi.api as ApiPromise,
               injectedExtension,
@@ -109,11 +106,13 @@
   }
 </script>
 
-<div class:hidden={!(connected && showSelf)}>
-  <h3>Stake to Provider Id {providerId}</h3>
-  <div class="directions">
-    <p><strong>Directions</strong></p>
-    <ol>
+<div class:hidden={false} class="action-card">
+  <h3 class="font-semibold text-lg">
+    Stake to Provider Id {providerId}
+  </h3>
+  <div>
+    <p>Directions</p>
+    <ol class="list-decimal ml-8">
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
       <li>This will require 1 signature to send the transaction.</li>
@@ -125,38 +124,20 @@
       selectLabel="Key to Stake From"
       bind:selectedOption={selectedKey}
       {validAccounts}
+      classOverrides="border-silver border-2 rounded-lg"
     />
     <label for="stakingInput">Amount to Stake in Tokens</label>
     <div class="input-container">
       <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
       <span class="units">{token}</span>
     </div>
-    <button on:click|preventDefault={stake}>Stake</button>
-    <button on:click|preventDefault={cancelAction}>Cancel Stake</button>
+    <button on:click|preventDefault={stake} class="btn-primary text-black">Stake</button>
+    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel Stake</button>
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>
 
 <style>
-  .directions {
-    font-size: small;
-  }
-  .directions li {
-    line-height: 1.1em;
-  }
-  .input-container {
-    display: flex;
-    align-items: center;
-  }
-  .input-container input {
-    flex: 1;
-  }
-  .input-container .units {
-    flex: 1;
-    margin-left: 0.5em;
-    align-content: center;
-  }
-
   #stakingInput::-webkit-inner-spin-button,
   #stakingInput::-webkit-outer-spin-button {
     margin-left: 10px;

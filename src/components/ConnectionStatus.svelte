@@ -3,6 +3,7 @@
   export let token = '';
   export let blockNumber = 0n;
 </script>
+
 <div id="connection-status" class="pr-4 border-aqua">
   <h3 class="text-aqua font-bold">Connection status</h3>
   <p>{connected ? 'Connected' : 'Not connected'}</p>

@@ -2,18 +2,15 @@
   import {
     dotApi,
     storeConnected,
-    storeCurrentAction,
     storeMsaInfo,
     storeToken,
     transactionSigningAddress,
   } from '$lib/stores';
   import type { MsaInfo } from '$lib/storeTypes';
-  import { ActionForms } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
-  import {formatBalance } from '@polkadot/util';
+  import { formatBalance } from '@polkadot/util';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
-  import { isMainnet } from '$lib/utils';
 
   let msaInfo: MsaInfo;
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
@@ -25,9 +22,7 @@
   storeToken.subscribe((val) => (token = val.toString()));
 
   let api: ApiPromise;
-  let network: string = '';
   dotApi.subscribe((storeDotApi) => {
-    network = storeDotApi?.selectedEndpoint || '';
     if (storeConnected && storeDotApi.api) {
       api = storeDotApi.api;
     }
@@ -54,20 +49,18 @@
   <h3 class="text-aqua font-bold">Provider</h3>
   {#if !connected}
     <p>Not connected</p>
+  {:else if localSigningAddress === ''}
+    <p>No transaction signing address selected</p>
   {:else}
-    {#if localSigningAddress === ''}
-      <p>No transaction signing address selected</p>
-    {:else }
-      {#if msaInfo?.msaId === 0}
-        <p>No Msa Id. Please create an MSA first.</p>
-      {:else}
-        <p>Id: {msaInfo.msaId}</p>
-      {/if}
-      {#if msaInfo?.isProvider}
-        <p>Name: {msaInfo.providerName}</p>
-      {:else if msaInfo.msaId > 0}
-        <p>Selected Key is not associated with a Provider</p>
-      {/if}
+    {#if msaInfo?.msaId === 0}
+      <p>No Msa Id. Please create an MSA first.</p>
+    {:else}
+      <p>Id: {msaInfo.msaId}</p>
+    {/if}
+    {#if msaInfo?.isProvider}
+      <p>Name: {msaInfo.providerName}</p>
+    {:else if msaInfo.msaId > 0}
+      <p>Selected Key is not associated with a Provider</p>
     {/if}
   {/if}
   {#if localSigningAddress !== ''}
