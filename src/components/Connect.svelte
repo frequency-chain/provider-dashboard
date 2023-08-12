@@ -75,7 +75,7 @@
 <h3
   class="text-lg pt-8 underline cursor-pointer font-bold"
 >
-  <a href="#here"
+  <a id='here' href="#here"
      on:click|preventDefault={toggleExplain}
      on:keydown|preventDefault={toggleExplain}
   >What's the difference between Mainnet and Testnet (Rococo)?</a>
