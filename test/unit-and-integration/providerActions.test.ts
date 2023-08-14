@@ -1,8 +1,15 @@
-import { storeConnected, storeCurrentAction, storeMsaInfo } from '../../src/lib/stores';
-import { ActionForms, MsaInfo } from '../../src/lib/storeTypes';
-import { render } from '@testing-library/svelte';
+import {
+  dotApi,
+  storeConnected,
+  storeCurrentAction,
+  storeMsaInfo,
+  transactionSigningAddress,
+} from '../../src/lib/stores';
+import { ActionForms, DotApi, MsaInfo } from '../../src/lib/storeTypes';
+import { render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import ProviderActions from '../../src/components/ProviderActions.svelte';
+import userEvent from '@testing-library/user-event';
 
 describe('ProviderActions component', () => {
   describe('general rendering', () => {
@@ -29,6 +36,77 @@ describe('ProviderActions component', () => {
           const { container } = render(ProviderActions);
           const el = container.querySelector(`#${component.id}`);
           expect(el).not.toHaveClass('hidden');
+        });
+      });
+    });
+  });
+  describe('interaction with children', () => {
+    beforeEach(() => {
+      storeConnected.set(true);
+      storeCurrentAction.set(ActionForms.NoForm);
+      storeMsaInfo.set((info: MsaInfo) => (info = { isProvider: false, msaId: 0, providerName: '' }));
+    });
+
+    it('when they are a provider, AddControlKey can be clicked, then AddControlKey component is shown', async () => {
+      transactionSigningAddress.set('does not matter');
+      storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true, msaId: 99, providerName: 'Testy' }));
+      let currentAction = ActionForms.NoForm;
+      storeCurrentAction.subscribe((action) => (currentAction = action));
+      const providerActions = render(ProviderActions);
+      const actionButton = providerActions.getByRole('button', { name: 'Add control key' });
+      expect(actionButton).toBeInTheDocument();
+      userEvent.click(actionButton);
+      await waitFor(() => {
+        expect(currentAction).toEqual(ActionForms.AddControlKey);
+        const expectedForm = providerActions.container.querySelector('#add-control-key');
+        expect(expectedForm).toBeInTheDocument();
+        expect(expectedForm).not.toHaveClass('hidden');
+      });
+    });
+    describe('when connected to localhost', () => {
+      beforeEach(() => {
+        dotApi.update((api: DotApi) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
+      });
+      describe('when a signing address is selected', () => {
+        beforeEach(() => transactionSigningAddress.set('0xabcdbeef'));
+
+        it("when they aren't a provider, Become Provider can be clicked, then Create Provider component is shown", async () => {
+          storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 99, providerName: '' }));
+          let currentAction = ActionForms.NoForm;
+          storeCurrentAction.subscribe((action) => (currentAction = action));
+          const providerActions = render(ProviderActions);
+          const actionButton = providerActions.getByRole('button', { name: 'Become a Provider' });
+          expect(actionButton).toBeInTheDocument();
+          userEvent.click(actionButton);
+          await waitFor(() => {
+            expect(currentAction).toEqual(ActionForms.CreateProvider);
+            const expectedForm = providerActions.container.querySelector('#create-provider');
+            expect(expectedForm).toBeInTheDocument();
+            expect(expectedForm).not.toHaveClass('hidden');
+          });
+        });
+      });
+    });
+    describe('when connected to mainnet', () => {
+      beforeEach(() => {
+        dotApi.update((api: DotApi) => (api = { ...api, selectedEndpoint: 'wss://1.rpc.frequency.xyz' }));
+      });
+      describe('when a signing address is selected', () => {
+        beforeEach(() => transactionSigningAddress.set('0xabcdbeef'));
+        it("if they aren't a provider, Become Provider can be clicked, then Request to be provider is shown", async () => {
+          storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 99, providerName: '' }));
+          let currentAction = ActionForms.NoForm;
+          storeCurrentAction.subscribe((action) => (currentAction = action));
+          const providerActions = render(ProviderActions);
+          const actionButton = providerActions.getByRole('button', { name: 'Become a Provider' });
+          expect(actionButton).toBeInTheDocument();
+          userEvent.click(actionButton);
+          await waitFor(() => {
+            expect(currentAction).toEqual(ActionForms.RequestToBeProvider);
+            const expectedForm = providerActions.container.querySelector('#request-to-be-provider');
+            expect(expectedForm).toBeInTheDocument();
+            expect(expectedForm).not.toHaveClass('hidden');
+          });
         });
       });
     });

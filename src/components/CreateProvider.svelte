@@ -100,5 +100,5 @@
     </button>
     <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
   </form>
-  <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
 </div>
+<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

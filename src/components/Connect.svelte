@@ -72,13 +72,10 @@
   }
 </script>
 
-<h3
-  class="text-lg pt-8 underline cursor-pointer font-bold"
->
-  <a id='here' href="#here"
-     on:click|preventDefault={toggleExplain}
-     on:keydown|preventDefault={toggleExplain}
-  >What's the difference between Mainnet and Testnet (Rococo)?</a>
+<h3 class="text-lg pt-8 underline cursor-pointer font-bold">
+  <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
+    >What's the difference between Mainnet and Testnet (Rococo)?</a
+  >
 </h3>
 <div class:hidden={!showExplainer} class="pt-4">
   <p>The Frequency Mainnet is the production Frequency blockchain network.</p>
@@ -94,7 +91,7 @@
     To connect to a node that is not in the list, choose <span class="font-bold text-aqua">Other</span>, then type the
     desired WebSocket address in the text field.
   </p>
-  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-secondary"> Thanks. </button>
+  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-secondary">Okay</button>
 </div>
 
 <div class="pt-8">

@@ -132,10 +132,10 @@
       <span class="units">{token}</span>
     </div>
     <button on:click|preventDefault={stake} class="btn-primary text-black">Stake</button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel Stake</button>
-    <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
+    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
   </form>
 </div>
+<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
 
 <style>
   #stakingInput::-webkit-inner-spin-button,

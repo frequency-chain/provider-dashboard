@@ -1,15 +1,15 @@
 // @ts-ignore
-import {ApiPromise} from '@polkadot/api/promise';
+import { ApiPromise } from '@polkadot/api/promise';
 // @ts-ignore
 // import { SignerResult } from "@polkadot/types";
-import {isLocalhost, waitFor} from '$lib/utils';
+import { isLocalhost, waitFor } from '$lib/utils';
 
-import type {KeyringPair} from '@polkadot/keyring/types';
-import type {InjectedAccountWithMeta, InjectedExtension} from '@polkadot/extension-inject/types';
-import {isFunction, u8aToHex, u8aWrapBytes} from '@polkadot/util';
-import type {SignerPayloadRaw, SignerResult} from '@polkadot/types/types';
-import type {SubmittableExtrinsic} from '@polkadot/api/promise/types';
-import type {EventRecord, ExtrinsicStatus} from '@polkadot/types/interfaces';
+import type { KeyringPair } from '@polkadot/keyring/types';
+import type { InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types';
+import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
+import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 export const ProviderMap: Record<string, string> = {
   Rococo: 'wss://rpc.rococo.frequency.xyz',
@@ -76,8 +76,8 @@ export async function submitAddControlKey(
       ? signPayloadWithKeyring(newAccount as KeyringPair, newKeyPayload)
       : await signPayloadWithExtension(extension as InjectedExtension, newAccount.address, newKeyPayload);
 
-    const ownerKeyProof = {Sr25519: ownerKeySignature};
-    const newKeyProof = {Sr25519: newKeySignature};
+    const ownerKeyProof = { Sr25519: ownerKeySignature };
+    const newKeyProof = { Sr25519: newKeySignature };
     const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
     useKeyring
       ? await submitExtrinsicWithKeyring(
@@ -116,11 +116,11 @@ export async function submitStake(
     useKeyring
       ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback, txnFinishedCallback)
       : await submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        callback,
-        txnFinishedCallback
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          callback,
+          txnFinishedCallback
       );
   } else {
     console.debug('api is not available.');
@@ -138,7 +138,7 @@ function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
 
 // figure out how to display the transaction status as it is updated
 export async function parseChainEvent(
-  {events = [], status}: { events?: EventRecord[]; status: ExtrinsicStatus },
+  { events = [], status }: { events?: EventRecord[]; status: ExtrinsicStatus },
   txnStatusCallback: TxnStatusCallback,
   txnFinishedCallback: TxnFinishedCallback
 ): Promise<void> {
@@ -150,7 +150,7 @@ export async function parseChainEvent(
       statusStr = `Transaction is Broadcast`;
     } else if (status.isFinalized) {
       showExtrinsicStatus(`Transaction is finalized in block hash ${status.asFinalized.toHex()}`, txnStatusCallback);
-      events.forEach(({event}) => {
+      events.forEach(({ event }) => {
         if (event.method === 'ExtrinsicSuccess') {
           showExtrinsicStatus('Transaction succeeded', txnStatusCallback);
         } else if (event.method === 'ExtrinsicFailed') {
@@ -162,7 +162,7 @@ export async function parseChainEvent(
     } else if (status.isInBlock) {
       statusStr = `Transaction is included in blockHash ${status.asInBlock.toHex()}`;
     } else {
-      console.debug({status});
+      console.debug({ status });
       return;
     }
     showExtrinsicStatus(statusStr, txnStatusCallback);
@@ -181,7 +181,7 @@ async function submitExtrinsicWithExtension(
 ): Promise<void> {
   let currentTxDone = false; // eslint-disable-line prefer-const
   try {
-    await extrinsic.signAndSend(signingAddress, {signer: extension.signer, nonce: -1}, (result) =>
+    await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, (result) =>
       parseChainEvent(result, txnStatusCallback, txnFinishedCallback)
     );
     await waitFor(() => currentTxDone);
@@ -203,7 +203,7 @@ async function submitExtrinsicWithKeyring(
 ): Promise<void> {
   try {
     txnStatusCallback('Submitting transaction');
-    await extrinsic.signAndSend(signingAccount, {nonce: -1}, (result) =>
+    await extrinsic.signAndSend(signingAccount, { nonce: -1 }, (result) =>
       parseChainEvent(result, txnStatusCallback, txnFinishedCallback)
     );
   } catch (e: any) {
@@ -274,11 +274,11 @@ export async function submitCreateProvider(
     useKeyring
       ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
       : submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
       );
     return true;
   }
@@ -301,11 +301,11 @@ export async function submitRequestToBeProvider(
     useKeyring
       ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
       : submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
       );
     return true;
   }

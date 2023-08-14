@@ -1,4 +1,4 @@
-import { hexToString } from '@polkadot/util';
+import { formatBalance, hexToString } from '@polkadot/util';
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -60,4 +60,8 @@ export function createMailto(to: string, subject?: string, body?: string): strin
 // Convert the provider name in hex to a human-readable value.
 export const providerNameToHuman = (name: any): string => {
   return hexToString(name.toString());
+};
+
+export const balanceToHuman = (balance: bigint, token: string): string => {
+  return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 10 });
 };

@@ -112,7 +112,7 @@
     <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
       Submit Request To Be Provider</button
     >
-    <button on:click|preventDefault={cancelAction}>Cancel</button>
+    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
   </form>
-  <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
 </div>
+<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

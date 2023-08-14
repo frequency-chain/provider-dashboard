@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import {
   dotApi,
@@ -9,7 +9,7 @@ import {
   transactionSigningAddress,
 } from '../../src/lib/stores';
 import Provider from '$components/Provider.svelte';
-import { ActionForms, DotApi, MsaInfo } from '../../src/lib/storeTypes';
+import { ActionForms } from '../../src/lib/storeTypes';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -138,10 +138,9 @@ describe('Provider.svelte', () => {
         // to get rid of an extraneous error
         dotApi.update((api) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
       });
-      it('Says there is no provider and shows Become a Provider button', () => {
-        const { getByText, getByRole } = render(Provider);
+      it('Says there is no provider', () => {
+        const { getByText } = render(Provider);
         expect(getByText('Selected Key is not associated with a Provider')).toBeInTheDocument();
-        expect(getByRole('button', { name: 'Become a Provider' })).toBeInTheDocument();
       });
 
       it('still shows balances', async () => {
@@ -158,20 +157,6 @@ describe('Provider.svelte', () => {
           expect(getByText('Locked: 5.0000 nano FLARP')).toBeInTheDocument();
         });
       });
-
-      it('clicking Become Provider sets the action forms to RequestToBeProvider, if on Mainnet', async () => {
-        dotApi.update((api: DotApi) => (api = { ...api, selectedEndpoint: 'wss://0.rpc.frequency.xyz' }));
-        let currentAction;
-        storeCurrentAction.subscribe((action) => (currentAction = action));
-
-        const { getByRole } = render(Provider);
-
-        const becomeProviderButton = getByRole('button', { name: 'Become a Provider' });
-        fireEvent.click(becomeProviderButton);
-        await waitFor(() => {
-          expect(currentAction).toEqual(ActionForms.RequestToBeProvider);
-        });
-      });
     });
     describe('when they are a Provider', () => {
       beforeEach(() => {
@@ -183,15 +168,6 @@ describe('Provider.svelte', () => {
         const { getByText } = render(Provider);
         expect(getByText('Id: 11')).toBeInTheDocument();
         expect(getByText('Name: Bobbay')).toBeInTheDocument();
-      });
-
-      it('updates storeCurrentAction when button is clicked', async () => {
-        let currentAction: ActionForms = ActionForms.NoForm;
-        storeCurrentAction.subscribe((v) => (currentAction = v));
-        storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true, msaId: 11 }));
-        const { getByText } = render(Provider);
-        fireEvent.click(getByText('Add control key'));
-        expect(currentAction).toEqual(ActionForms.AddControlKey);
       });
     });
   });

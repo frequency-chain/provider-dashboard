@@ -1,14 +1,8 @@
 <script lang="ts">
-  import {
-    dotApi,
-    storeConnected,
-    storeMsaInfo,
-    storeToken,
-    transactionSigningAddress,
-  } from '$lib/stores';
+  import { dotApi, storeConnected, storeMsaInfo, storeToken, transactionSigningAddress } from '$lib/stores';
   import type { MsaInfo } from '$lib/storeTypes';
+  import { balanceToHuman } from '$lib/utils';
   import type { ApiPromise } from '@polkadot/api';
-  import { formatBalance } from '@polkadot/util';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
 
@@ -39,10 +33,6 @@
   storeMsaInfo.subscribe((info: MsaInfo) => {
     msaInfo = info;
   });
-
-  const balanceToHuman = (balance: bigint): string => {
-    return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 10 });
-  };
 </script>
 
 <div class="pl-6 ml-6 border-l-8 border-aqua">
@@ -64,8 +54,8 @@
     {/if}
   {/if}
   {#if localSigningAddress !== ''}
-    <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen)}</p>
-    <p>Transferable: {balanceToHuman(accountBalances.free)}</p>
-    <p>Locked: {balanceToHuman(accountBalances.frozen)}</p>
+    <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen, token)}</p>
+    <p>Transferable: {balanceToHuman(accountBalances.free, token)}</p>
+    <p>Locked: {balanceToHuman(accountBalances.frozen, token)}</p>
   {/if}
 </div>

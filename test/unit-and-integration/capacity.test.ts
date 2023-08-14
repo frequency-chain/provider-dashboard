@@ -166,9 +166,10 @@ describe('Capacity.svelte', () => {
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
         expect(container.innerHTML.includes('As of Block 1021, Epoch 122')).toBe(true);
-        expect(getByTextContent('Remaining: 501')).toBeInTheDocument();
-        expect(getByTextContent('Total Issued: 1000')).toBeInTheDocument();
-        expect(getByTextContent('Staked Token: 1000 FLARP')).toBeInTheDocument();
+        expect(getByTextContent('Remaining: 50.1000 nano CAP')).toBeInTheDocument();
+        expect(getByTextContent('Total Issued: 100.0000 nano CAP')).toBeInTheDocument();
+        expect(getByTextContent('Last Replenished: Epoch 59')).toBeInTheDocument();
+        expect(getByTextContent('Staked Token: 100.0000 nano FLARP')).toBeInTheDocument();
         expect(container.innerHTML.includes('Epoch 59')).toBe(true);
       });
     });

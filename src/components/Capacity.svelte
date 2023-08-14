@@ -5,6 +5,7 @@
   import type { MsaInfo } from '$lib/storeTypes';
   import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
   import { providerNameToHuman } from '$lib/utils';
+  import { balanceToHuman } from '$lib/utils.js';
 
   let signingAddress = ''; // eslint-disable-line no-unused-vars
   let epochNumber = 0n;
@@ -71,10 +72,10 @@
     <p>Not connected</p>
   {:else if msaInfo.isProvider}
     <h3 class="text-aqua font-bold">As of Block {blockNumber}, Epoch {epochNumber}</h3>
-    <p>Remaining: {capacityDetails?.remainingCapacity}</p>
-    <p>Total Issued: {capacityDetails?.totalCapacityIssued}</p>
-    <p>Last replenished: Epoch {capacityDetails?.lastReplenishedEpoch}</p>
-    <p>Staked Token: {capacityDetails?.totalCapacityIssued} {token}</p>
+    <p>Remaining: {balanceToHuman(capacityDetails?.remainingCapacity, 'CAP')}</p>
+    <p>Total Issued: {balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP')}</p>
+    <p>Last Replenished: Epoch {capacityDetails?.lastReplenishedEpoch}</p>
+    <p>Staked Token: {balanceToHuman(capacityDetails?.totalCapacityIssued, token)}</p>
   {:else if signingAddress == ''}
     <p>No transaction signing address selected</p>
   {:else}

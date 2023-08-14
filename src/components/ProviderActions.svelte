@@ -70,12 +70,14 @@
   </button>
 {/if}
 
-{#if currentAction === ActionForms.AddControlKey}
-  <AddControlKey providerId={providerId()} {validAccounts} {cancelAction} />
-{:else if currentAction === ActionForms.CreateProvider}
-  <CreateProvider {validAccounts} {signingAddress} {cancelAction} {txnFinished} />
-{:else if currentAction === ActionForms.RequestToBeProvider}
-  <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished} />
-{:else if currentAction === ActionForms.Stake}
-  <Stake providerId={msaInfo?.isProvider ? msaInfo?.msaId : 0} {validAccounts} {cancelAction} {txnFinished} />
-{/if}
+<div class="flex">
+  {#if currentAction === ActionForms.AddControlKey}
+    <AddControlKey providerId={providerId()} {validAccounts} {cancelAction} />
+  {:else if currentAction === ActionForms.CreateProvider}
+    <CreateProvider {validAccounts} {signingAddress} {cancelAction} {txnFinished} />
+  {:else if currentAction === ActionForms.RequestToBeProvider}
+    <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished} />
+  {:else if currentAction === ActionForms.Stake}
+    <Stake providerId={msaInfo?.isProvider ? msaInfo?.msaId : 0} {validAccounts} {cancelAction} {txnFinished} />
+  {/if}
+</div>

@@ -91,7 +91,7 @@
   };
 </script>
 
-<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card">
+<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card basis-40">
   <h3 class="font-semibold text-lg">
     Add a Control Key to Provider Id {providerId}
   </h3>
@@ -120,6 +120,6 @@
     />
     <button on:click|preventDefault={addControlKey} class="btn-primary text-black"> Add It </button>
     <button on:click|preventDefault={cancelAction} class="btn-cancel text-black"> Cancel Add </button>
-    <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </form>
 </div>
+<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
