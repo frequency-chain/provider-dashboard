@@ -103,9 +103,9 @@ describe('Capacity.svelte', () => {
   });
 
   describe('if not connected', () => {
-    it('is hidden', () => {
-      const { container } = render(Capacity, { token: 'FLARP' });
-      expect(container.querySelector('div div')).toHaveClass('hidden');
+    it('says it is not connected', () => {
+      const { getByText } = render(Capacity, { token: 'FLARP' });
+      expect(getByText('Not connected')).toBeInTheDocument();
     });
   });
   describe('if connected to an endpoint', () => {
@@ -118,9 +118,15 @@ describe('Capacity.svelte', () => {
       transactionSigningAddress.set('');
     });
 
-    it('is hidden if isProvider is false', () => {
-      const { container } = render(Capacity, { token: 'FLARP' });
-      expect(container.querySelector('div div')).toHaveClass('hidden');
+    it('if address is not selected it says so', () => {
+      const { getByText } = render(Capacity, { token: 'FLARP' });
+      expect(getByText('No transaction signing address selected')).toBeInTheDocument();
+    });
+
+    it('isProvider is false it says you are not a provider', () => {
+      transactionSigningAddress.set("doesn't matter");
+      const { getByText } = render(Capacity, { token: 'FLARP' });
+      expect(getByText('Not a provider')).toBeInTheDocument();
     });
 
     it('is shown if it isProvider is true', async () => {
@@ -159,11 +165,11 @@ describe('Capacity.svelte', () => {
       await dotApi.update((val) => (val = { ...val, api: createdApi }));
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
-        expect(container.innerHTML.includes('Capacity at Block 1021, Epoch 122')).toBe(true);
-        expect(getByTextContent('Provider name: Bobbay')).toBeInTheDocument();
-        expect(getByTextContent('Remaining: 501')).toBeInTheDocument();
-        expect(getByTextContent('Total Issued: 1000')).toBeInTheDocument();
-        expect(getByTextContent('Staked Token: 1000 FLARP')).toBeInTheDocument();
+        expect(container.innerHTML.includes('As of Block 1021, Epoch 122')).toBe(true);
+        expect(getByTextContent('Remaining: 5.0100 micro CAP')).toBeInTheDocument();
+        expect(getByTextContent('Total Issued: 10.0000 micro CAP')).toBeInTheDocument();
+        expect(getByTextContent('Last Replenished: Epoch 59')).toBeInTheDocument();
+        expect(getByTextContent('Staked Token: 10.0000 micro FLARP')).toBeInTheDocument();
         expect(container.innerHTML.includes('Epoch 59')).toBe(true);
       });
     });

@@ -1,6 +1,10 @@
-import { dotApi, storeConnected } from '../../src/lib/stores';
+import {
+  dotApi,
+  storeConnected,
+} from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import CreateProvider from '../../src/components/CreateProvider.svelte';
+
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 
@@ -13,9 +17,7 @@ describe('CreateProvider component', () => {
     storeConnected.set(true);
   });
   it('shows text + Cancel button', () => {
-    const { container, getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
-    const title = container.querySelector('h2');
-    expect(title).toHaveTextContent('Become a Provider');
+    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
     expect(getByRole('button', { name: 'Create Provider' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });

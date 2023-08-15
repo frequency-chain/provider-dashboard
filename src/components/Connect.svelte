@@ -70,55 +70,70 @@
     }
     return;
   }
-  let networkQuestion = "What's the difference between Mainnet and Testnet (Rococo)?";
 </script>
 
-<a
-  id="here"
-  href="#here"
-  on:click|preventDefault={toggleExplain}
-  on:keydown|preventDefault={toggleExplain}
-  class:hidden={showExplainer}
-  class="explainer-text">{networkQuestion}</a
->
-<div class:hidden={!showExplainer}>
-  <p>The main purpose of the Mainnet is to run the actual blockchain network.</p>
+<h3 class="text-lg pt-8 underline cursor-pointer font-bold">
+  <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
+    >What's the difference between Mainnet and Testnet (Rococo)?</a
+  >
+</h3>
+<div class:hidden={!showExplainer} class="pt-4">
+  <p>The Frequency Mainnet is the production Frequency blockchain network.</p>
   <p>
-    The Testnet, which works with the Rococo Polkadot Testnet, is designed for developers to test and debug their
+    The Frequency Rococo Testnet, which works with the Polkadot Rococo Testnet, is for developers to test and debug
     applications without risking real assets.
   </p>
-  <p><strong>What about the other options?</strong></p>
-  <p>If you need to connect a node running development code locally, choose Localhost.</p>
+  <h3 class="text-lg pt-4 pb-2">
+    <strong>What about the other options?</strong>
+  </h3>
+  <p>To connect to a node running on your desktop, choose <span class="font-bold text-aqua">Localhost.</span></p>
   <p>
-    If you need to connect to a node that is not in the list, choose Other, then type the WebSocket address in the text
-    field.
+    To connect to a node that is not in the list, choose <span class="font-bold text-aqua">Other</span>, then type the
+    desired WebSocket address in the text field.
   </p>
-  <button on:click={toggleExplain} on:keydown={toggleExplain}>Thanks.</button>
+  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-secondary">Okay</button>
 </div>
-<label for="provider-list">1. Select a Network</label>
-<select id="provider-list" required bind:value={selectedProvider}>
-  {#each Object.keys(ProviderMap) as providerName}
-    <option value={providerName}>{providerName}: {ProviderMap[providerName]}</option>
-  {/each}
-</select>
 
-<input
-  type="text"
-  id="other-endpoint-url"
-  placeholder="wss://some.frequency.node"
-  bind:value={otherProvider}
-  disabled={selectedProvider.toString() != 'Other'}
-/>
-<div class={connected ? '' : 'hidden'}>
+<div class="pt-8">
+  <h3 class="text-lg"><label for="provider-list">Select a Network</label></h3>
+  <select
+    id="provider-list"
+    required
+    bind:value={selectedProvider}
+    class="text-left bg-green5 pr-8 pl-4 py-2 rounded-md border-0"
+  >
+    {#each Object.keys(ProviderMap) as providerName}
+      <option value={providerName} class="bg-base">{providerName}: {ProviderMap[providerName]}</option>
+    {/each}
+  </select>
+  <input
+    type="text"
+    id="other-endpoint-url"
+    placeholder="wss://some.frequency.node"
+    bind:value={otherProvider}
+    disabled={selectedProvider.toString() != 'Other'}
+    class:hidden={selectedProvider.toString() != 'Other'}
+    class="w-80 rounded-md"
+  />
+  <button
+    on:click|preventDefault={async () => await connect()}
+    id="connect-button"
+    hidden={!canConnect}
+    class="btn-primary"
+  >
+    Connect to {selectedProvider}
+  </button>
+</div>
+<div class:hidden={connected} class="pt-8 color-inherit">
   <div hidden={selectedProvider !== 'Rococo' || !showFaucetInstructions}>
-    <p>
+    <p class="pl-8 color-inherit">
       To transact on Frequency as a provider you will need frequency utility tokens. On Frequency testnet, you can get
       tokens from the Testnet Faucet. To do that:
     </p>
-    <ol>
+    <ol class="list-disc pl-12">
       <li>
-        Go to <a href="https://faucet.rococo.frequency.xyz/" target="_blank">
-          to get XRQCY tokens for Frequency Testnet (Rococo)
+        <a href="https://faucet.rococo.frequency.xyz/" target="_blank" class="underline">
+          Get XRQCY tokens for Frequency Testnet (Rococo)
         </a> and follow the instructions using your desired wallet address to get XRQCY tokens.
       </li>
       <li>
@@ -126,16 +141,12 @@
         above. You may need to wait a minute.
       </li>
       <li>
-        For more information, you can also visit the <a href="https://cloudflare-ipfs.com/ipns/dotapps.io/#/accounts"
-          >Rococo Accounts page via the Polkadot UI</a
-        >.
+        For more information, you can also visit the
+        <a href="https://cloudflare-ipfs.com/ipns/dotapps.io/#/accounts" class="underline">
+          Rococo Accounts page via the Polkadot UI.
+        </a>
       </li>
     </ol>
-    <button on:click|preventDefault={toggleFaucetInstructions}>I have token</button>
+    <button on:click|preventDefault={toggleFaucetInstructions} class="btn-secondary ml-8"> I have token</button>
   </div>
-</div>
-<div>
-  <button on:click|preventDefault={async () => await connect()} id="connect-button" hidden={!canConnect}>
-    Connect to {selectedProvider}
-  </button>
 </div>

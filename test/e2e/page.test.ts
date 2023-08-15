@@ -21,9 +21,9 @@ describe('End to End Tests', () => {
   afterEach(() => cleanup());
 
   test('check connection status: not connected', async () => {
-    render(Page);
-    const connectedText = getByTextContent('Connection status: Not connected');
-    expect(connectedText).toBeInTheDocument();
+    const { container } = render(Page);
+    expect(container.querySelector('#connection-status h3')).toHaveTextContent('Connection status');
+    expect(container.querySelector('#connection-status p').innerHTML).toMatch('Not connected');
   });
 
   test('connect to localhost', async () => {
@@ -37,7 +37,7 @@ describe('End to End Tests', () => {
       expect(statusBar).not.toHaveClass('hidden');
     });
     // Get the select box
-    const select = getByLabelText('1. Select a Network');
+    const select = getByLabelText('Select a Network');
 
     // Change the select box value
     await fireEvent.change(select, { target: { value: 'Localhost' } });
@@ -51,7 +51,7 @@ describe('End to End Tests', () => {
     await fireEvent.click(btn);
 
     await waitFor(() => {
-      expect(getByTextContent('Connection status: Connected')).toBeInTheDocument();
+      expect(getByTextContent('Connected')).toBeInTheDocument();
     });
     const hiddenButton = screen.queryByRole('button', {
       name: 'Connect to Localhost',
