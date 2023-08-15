@@ -14,7 +14,7 @@
   let web3FromSource;
   let web3Enable;
   let showTransactionStatus = false;
-  let mailTo = createMailto('hello@frequency.xyz', '', '');
+  let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   export let txnStatuses: Array<string> = [];
   export let validAccounts = {};
   export let signingAddress = '';

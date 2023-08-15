@@ -37,7 +37,7 @@ describe('End to End Tests', () => {
       expect(statusBar).not.toHaveClass('hidden');
     });
     // Get the select box
-    const select = getByLabelText('1. Select a Network');
+    const select = getByLabelText('Select a Network');
 
     // Change the select box value
     await fireEvent.change(select, { target: { value: 'Localhost' } });

@@ -123,9 +123,9 @@ describe('Provider.svelte', () => {
         const { getByText } = render(Provider);
 
         await waitFor(() => {
-          expect(getByText('Transferable: 10.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByText('Locked: 5.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByText('Total Balance: 15.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByText('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
+          expect(getByText('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByText('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
         });
       });
     });
@@ -152,9 +152,9 @@ describe('Provider.svelte', () => {
         expect(getByText('Transferable: 0')).toBeInTheDocument();
         await waitFor(() => {
           // these values are from the mocks
-          expect(getByText('Total Balance: 15.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByText('Transferable: 10.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByText('Locked: 5.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByText('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
+          expect(getByText('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
+          expect(getByText('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
         });
       });
     });

@@ -63,5 +63,5 @@ export const providerNameToHuman = (name: any): string => {
 };
 
 export const balanceToHuman = (balance: bigint, token: string): string => {
-  return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 10 });
+  return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 8 });
 };

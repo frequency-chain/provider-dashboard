@@ -103,7 +103,7 @@ describe('Capacity.svelte', () => {
   });
 
   describe('if not connected', () => {
-    it('is says it is not connected', () => {
+    it('says it is not connected', () => {
       const { getByText } = render(Capacity, { token: 'FLARP' });
       expect(getByText('Not connected')).toBeInTheDocument();
     });
@@ -166,10 +166,10 @@ describe('Capacity.svelte', () => {
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
         expect(container.innerHTML.includes('As of Block 1021, Epoch 122')).toBe(true);
-        expect(getByTextContent('Remaining: 50.1000 nano CAP')).toBeInTheDocument();
-        expect(getByTextContent('Total Issued: 100.0000 nano CAP')).toBeInTheDocument();
+        expect(getByTextContent('Remaining: 5.0100 micro CAP')).toBeInTheDocument();
+        expect(getByTextContent('Total Issued: 10.0000 micro CAP')).toBeInTheDocument();
         expect(getByTextContent('Last Replenished: Epoch 59')).toBeInTheDocument();
-        expect(getByTextContent('Staked Token: 100.0000 nano FLARP')).toBeInTheDocument();
+        expect(getByTextContent('Staked Token: 10.0000 micro FLARP')).toBeInTheDocument();
         expect(container.innerHTML.includes('Epoch 59')).toBe(true);
       });
     });
