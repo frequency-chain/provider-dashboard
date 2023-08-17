@@ -14,7 +14,7 @@ import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 export const ProviderMap: Record<string, string> = {
   Rococo: 'wss://rpc.rococo.frequency.xyz',
   Mainnet: 'wss://0.rpc.frequency.xyz',
-  Localhost: 'ws://localhost:9944',
+  Localhost: 'ws://127.0.01:9944',
   Other: 'a custom endpoint',
 };
 
@@ -81,18 +81,18 @@ export async function submitAddControlKey(
     const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
     useKeyring
       ? await submitExtrinsicWithKeyring(
-        extrinsic,
-        signingAccount as KeyringPair,
-        txnStatusCallback,
-        txnFinishedCallback
-      )
+          extrinsic,
+          signingAccount as KeyringPair,
+          txnStatusCallback,
+          txnFinishedCallback
+        )
       : await submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
   } else {
     console.debug('api is not available.');
   }
@@ -121,7 +121,7 @@ export async function submitStake(
           signingAccount.address,
           callback,
           txnFinishedCallback
-      );
+        );
   } else {
     console.debug('api is not available.');
   }
@@ -253,11 +253,11 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
 
 //   api: ApiPromise,
 //   extension: InjectedExtension | undefined,
-//   newAccount: SigningKey,
-//   signingAccount: SigningKey,
-//   providerId: number,
 //   endpointURL: string,
-//   callback: (statusStr: string) => void
+//   signingAccount: SigningKey,
+//   providerName: number,
+//   txnStatusCallback: (statusStr: string) => void
+//   txnFinishedCallback: () => void
 export async function submitCreateProvider(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
@@ -279,7 +279,7 @@ export async function submitCreateProvider(
           signingAccount.address,
           txnStatusCallback,
           txnFinishedCallback
-      );
+        );
     return true;
   }
   return false;
@@ -306,7 +306,7 @@ export async function submitRequestToBeProvider(
           signingAccount.address,
           txnStatusCallback,
           txnFinishedCallback
-      );
+        );
     return true;
   }
   console.error('submit failed because api is', api);

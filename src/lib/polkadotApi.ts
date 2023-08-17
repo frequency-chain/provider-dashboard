@@ -31,10 +31,12 @@ export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, ws
   wsProvider = new WsProvider(selectedProviderURI);
   const apiPromise = await ApiPromise.create({
     provider: wsProvider,
+    throwOnConnect: true,
+    throwOnUnknown: true,
     ...options,
   });
 
-  await apiPromise?.isReady;
+  await apiPromise.isReady;
   const initializedDotApi: DotApi = {
     wsProvider: wsProvider,
     api: apiPromise,
