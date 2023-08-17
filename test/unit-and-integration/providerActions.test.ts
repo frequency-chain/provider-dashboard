@@ -20,7 +20,7 @@ describe('ProviderActions component', () => {
     it('All children are hidden when currentAction is NoForm', () => {
       storeCurrentAction.set(ActionForms.NoForm);
       const { container } = render(ProviderActions);
-      ['add-control-key', 'request-to-be-provider', 'create-provider'].forEach((id) => {
+      ['add-control-key', 'request-to-be-provider', 'create-provider', 'create-msa'].forEach((id) => {
         const el = container.querySelector(`#${id}`);
         expect(el).toBeNull();
       });
@@ -30,6 +30,7 @@ describe('ProviderActions component', () => {
         { id: 'add-control-key', action: ActionForms.AddControlKey },
         { id: 'request-to-be-provider', action: ActionForms.RequestToBeProvider },
         { id: 'create-provider', action: ActionForms.CreateProvider },
+        { id: 'create-msa', action: ActionForms.CreateMsa },
       ].forEach((component) => {
         it(`${component.id} is not hidden`, () => {
           storeCurrentAction.set(component.action);
@@ -70,6 +71,22 @@ describe('ProviderActions component', () => {
       describe('when a signing address is selected', () => {
         beforeEach(() => transactionSigningAddress.set('0xabcdbeef'));
 
+        it("when they aren't an MSA or a provider, Create MSA can be clicked, then Create MSA component is shown", async () => {
+          storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 0, providerName: '' }));
+          let currentAction = ActionForms.NoForm;
+          storeCurrentAction.subscribe((action) => (currentAction = action));
+          const providerActions = render(ProviderActions);
+          const actionButton = providerActions.getByRole('button', { name: 'Create an MSA' });
+          expect(actionButton).toBeInTheDocument();
+          userEvent.click(actionButton);
+          await waitFor(() => {
+            expect(currentAction).toEqual(ActionForms.CreateMsa);
+            const expectedForm = providerActions.container.querySelector('#create-msa');
+            expect(expectedForm).toBeInTheDocument();
+            expect(expectedForm).not.toHaveClass('hidden');
+          });
+        });
+
         it("when they aren't a provider, Become Provider can be clicked, then Create Provider component is shown", async () => {
           storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 99, providerName: '' }));
           let currentAction = ActionForms.NoForm;
@@ -93,6 +110,23 @@ describe('ProviderActions component', () => {
       });
       describe('when a signing address is selected', () => {
         beforeEach(() => transactionSigningAddress.set('0xabcdbeef'));
+
+        it("when they aren't an MSA or a provider, Create MSA can be clicked, then Create MSA component is shown", async () => {
+          storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 0, providerName: '' }));
+          let currentAction = ActionForms.NoForm;
+          storeCurrentAction.subscribe((action) => (currentAction = action));
+          const providerActions = render(ProviderActions);
+          const actionButton = providerActions.getByRole('button', { name: 'Create an MSA' });
+          expect(actionButton).toBeInTheDocument();
+          userEvent.click(actionButton);
+          await waitFor(() => {
+            expect(currentAction).toEqual(ActionForms.CreateMsa);
+            const expectedForm = providerActions.container.querySelector('#create-msa');
+            expect(expectedForm).toBeInTheDocument();
+            expect(expectedForm).not.toHaveClass('hidden');
+          });
+        });
+
         it("if they aren't a provider, Become Provider can be clicked, then Request to be provider is shown", async () => {
           storeMsaInfo.update((info: MsaInfo) => (info = { isProvider: false, msaId: 99, providerName: '' }));
           let currentAction = ActionForms.NoForm;

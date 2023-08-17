@@ -80,7 +80,7 @@ fi
 echo "Starting a Docker Frequency Node with block sealing ${LOCAL_NODE_BLOCK_SEALING}..."
 case ${LOCAL_NODE_BLOCK_SEALING} in
     "instant") \
-        docker run --rm -p 9944:9944 -p 9933:9933 -p 30333:30333 --platform=linux/amd64 \
+        docker run --rm -p 9944:9944 -p 30333:30333 --platform=linux/amd64 \
         --name vitest-node --detach \
         frequencychain/instant-seal-node:latest &
     ;;
