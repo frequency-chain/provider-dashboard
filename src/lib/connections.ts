@@ -312,3 +312,30 @@ export async function submitRequestToBeProvider(
   console.error('submit failed because api is', api);
   return false;
 }
+
+//Use the current api and signing account to create an MSA for this account
+export async function submitCreateMsa(
+  api: ApiPromise | undefined,
+  extension: InjectedExtension | undefined,
+  endpointURL: string,
+  signingAccount: SigningKey,
+  txnStatusCallback: TxnStatusCallback,
+  txnFinishedCallback: TxnFinishedCallback
+): Promise<boolean> {
+  if (api && (await api.isReady)) {
+    const extrinsic = api.tx.msa.create();
+    const useKeyring: boolean = isLocalhost(endpointURL);
+
+    useKeyring
+      ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
+      : submitExtrinsicWithExtension(
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
+    return true;
+  }
+  return false;
+}

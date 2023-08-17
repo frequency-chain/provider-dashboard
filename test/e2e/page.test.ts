@@ -47,7 +47,7 @@ describe('End to End Tests', () => {
       expect(select).toHaveValue('Localhost');
     });
 
-    const btn = screen.queryByRole('button', { name: 'Connect to Localhost' });
+    const btn = container.querySelector('button#connect-button');
     await fireEvent.click(btn);
 
     await waitFor(() => {
@@ -58,14 +58,18 @@ describe('End to End Tests', () => {
     });
     expect(hiddenButton).toBeNull();
 
-    const signer = screen.getByLabelText('2. Choose a Transaction Signing Address');
+    const signer = screen.getByLabelText('Choose a Transaction Signing Address');
     await fireEvent.change(signer, {
       target: {
         value: '//Alice: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
       },
     });
     await waitFor(() => {
-      expect(getByTextContent('Selected Key is not associated with a Provider'));
+      expect(
+        screen.queryByRole('button', {
+          name: 'Create an MSA',
+        })
+      );
     });
   });
 });

@@ -18,6 +18,7 @@ export const defaultDotApi: DotApi = {
 /* eslint-disable no-unused-vars */
 export enum ActionForms {
   NoForm,
+  CreateMsa,
   AddControlKey,
   Stake,
   CreateProvider,

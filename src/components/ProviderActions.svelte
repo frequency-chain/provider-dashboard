@@ -8,6 +8,7 @@
 
   import { storeCurrentAction, storeMsaInfo, transactionSigningAddress, dotApi } from '$lib/stores.js';
   import { isMainnet } from '$lib/utils';
+  import CreateMsa from './CreateMsa.svelte';
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   let currentAction: ActionForms = ActionForms.NoForm;
@@ -44,9 +45,14 @@
     storeCurrentAction.set(ActionForms.AddControlKey);
   }
 
+  function showCreateMsa() {
+    storeCurrentAction.set(ActionForms.CreateMsa);
+  }
+
   function showStake() {
     storeCurrentAction.update((val) => (val = ActionForms.Stake));
   }
+
   // Show RequestToBeProvider if we are Mainnet, show CreateProvider otherwise.
   function showCreateOrRequestProvider(_evt: Event) {
     const currentAction: ActionForms = isMainnet(network)
@@ -68,6 +74,11 @@
   >
     Become a Provider
   </button>
+{:else}
+  <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class={actionButtonClasses}>
+    Create an MSA
+  </button>
+  <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
 {/if}
 
 <div class="flex">
@@ -79,5 +90,7 @@
     <RequestToBeProvider {cancelAction} {validAccounts} {txnFinished} />
   {:else if currentAction === ActionForms.Stake}
     <Stake providerId={msaInfo?.isProvider ? msaInfo?.msaId : 0} {validAccounts} {cancelAction} {txnFinished} />
+  {:else if currentAction === ActionForms.CreateMsa}
+    <CreateMsa {validAccounts} {signingAddress} {cancelAction} {txnFinished} />
   {/if}
 </div>
