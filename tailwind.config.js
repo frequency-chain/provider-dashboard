@@ -15,12 +15,21 @@ export default {
       'scarlet': '#F82013',
       'silver': '#D3D3D3',
       'aqua': '#76CBCA',
+      'lilac': '#F3CEFF',
+      'periwinkle': '#789FF3',
+      'teal-light': '#AFEBF4',
+      'teal-dark': '#549EAA',
+      'white-transparent': 'rgb(254,255,255,.1)',
+    },
+    width: {
+      '500': '500px',
     },
     extend: {
       borderRadius: {
         'rounded-3xl': '20px',
         'rounded-md': '5px',
       }
+
     },
   },
   plugins: [require('@tailwindcss/forms'),],

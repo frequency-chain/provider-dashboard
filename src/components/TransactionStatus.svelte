@@ -15,5 +15,5 @@
       <li class="last:text-cobalt">{status}</li>
     {/each}
   </ul>
-  <button on:click|preventDefault={hideSelf} class="btn-secondary">Dismiss Status</button>
+  <button on:click|preventDefault={hideSelf} class="btn-primary">Dismiss Status</button>
 </div>

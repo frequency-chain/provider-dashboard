@@ -91,7 +91,7 @@
     To connect to a node that is not in the list, choose <span class="font-bold text-aqua">Other</span>, then type the
     desired WebSocket address in the text field.
   </p>
-  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-secondary">Okay</button>
+  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-primary">Okay</button>
 </div>
 
 <div class="pt-8">
@@ -147,6 +147,6 @@
         </a>
       </li>
     </ol>
-    <button on:click|preventDefault={toggleFaucetInstructions} class="btn-secondary ml-8"> I have token</button>
+    <button on:click|preventDefault={toggleFaucetInstructions} class="btn-primary ml-8"> I have token</button>
   </div>
 </div>

@@ -66,7 +66,7 @@
   });
 </script>
 
-<div class="pl-6 ml-6 border-l-8 border-aqua">
+<div class="pl-6 ml-6">
   <h3 class="text-aqua font-bold">Capacity</h3>
   {#if !connected}
     <p>Not connected</p>

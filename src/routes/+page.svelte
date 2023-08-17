@@ -14,6 +14,9 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ConnectionStatus from '$components/ConnectionStatus.svelte';
+  import logo from '$lib/assets/logo.png';
+  import topright from '$lib/assets/top-right-bars.png';
+  import bottomleft from '$lib/assets/bottom-left-bars.png';
 
   let token = '';
   let blockNumber = 0n;
@@ -32,9 +35,11 @@
     transactionSigningAddress.set(option.value);
   };
 </script>
-
+<img alt="decoration-top-right" src={topright} class="float-right z-0"/>
+<img alt="The project logo" src={logo} />
 <h1 class="text-3xl font-bold">Welcome to Provider Dashboard</h1>
-<div id="status-bar" class="flex pr-8 justify-start pt-6 h-52">
+<div id="status-bar" class="flex p-8 justify-start h-52 bg-white-transparent">
+  <div class="pr-8">Overview:</div>
   <ConnectionStatus {blockNumber} {connected} {token} />
   <Provider />
   <Capacity bind:token />
@@ -55,3 +60,4 @@
   <ProviderActions {validAccounts} />
 </div>
 <Intro bind:dismissed={showDashboard} />
+<img alt="decoration-bottom-left" src={bottomleft} class="mt-20 sticky bottom left-8 -z-40"/>

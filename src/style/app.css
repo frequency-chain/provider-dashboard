@@ -7,19 +7,16 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply mt-6 px-8 p-2 rounded-2xl text-white bg-aqua border-white;
-  }
-  .btn-secondary {
-    @apply mt-6 px-8 p-2 rounded-2xl text-white bg-cobalt border-black;
+    @apply mt-6 px-8 p-3 rounded-full text-white bg-cobalt border-black;
   }
   .btn-cancel {
     @apply mt-6 px-8 p-2 rounded-2xl text-white bg-silver border-black;
   }
   select {
-    @apply text-black px-6 py-2 rounded-md border-0;
+    @apply text-black px-6 py-2 rounded-md border-0 w-500;
   }
   .action-card {
-    @apply mt-8 p-4 text-black bg-white rounded-lg;
+    @apply mt-8 p-4 rounded-lg bg-white-transparent text-white drop-shadow-md;
   }
   .action-card input {
     @apply border-silver rounded;
@@ -30,5 +27,5 @@ body {
   color: white;
   min-height: 100vh;
   margin: 2em;
-  background: linear-gradient(to bottom right, #2e3f63, #74cad0);
+  background: linear-gradient(to bottom right, #293B59, #007DA1);
 }
