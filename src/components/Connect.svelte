@@ -91,7 +91,7 @@
     bind:value={otherProvider}
     disabled={selectedProvider.toString() != 'Other'}
     class:hidden={selectedProvider.toString() != 'Other'}
-    class="w-80 rounded-md"
+    class="w-96 border-silver rounded text-white bg-white-transparent"
   />
   <button
     on:click|preventDefault={async () => await connect()}

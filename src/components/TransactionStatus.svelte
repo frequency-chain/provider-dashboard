@@ -11,7 +11,7 @@
 <div
   class:hidden={!showSelf}
   id="transaction-status"
-  class="ml-8 action-card basis-40 grow-1 "
+  class="ml-8 action-card basis-1/3 grow-1"
 >
   <p class="action-card-title">Transaction status</p>
   <ul class="">

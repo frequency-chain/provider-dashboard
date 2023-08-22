@@ -75,11 +75,11 @@
   >
     Become a Provider
   </button>
-{:else}
+{:else if signingAddress !== ''}
+  <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
   <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class='btn-primary'>
     Create an MSA
   </button>
-  <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
 {/if}
 
 <div class="flex">
