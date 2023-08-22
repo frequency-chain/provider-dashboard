@@ -45,7 +45,7 @@
 </div>
 
 <ChainStatus {blockNumber} {connected} {token} {epochNumber}/>
-<div class="flex justify-between items-start items-stretch">
+<div class="flex justify-center">
   <Provider/>
   <Capacity bind:token/>
 </div>
