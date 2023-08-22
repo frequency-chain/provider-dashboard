@@ -91,7 +91,7 @@
     bind:value={otherProvider}
     disabled={selectedProvider.toString() != 'Other'}
     class:hidden={selectedProvider.toString() != 'Other'}
-    class="w-96 border-silver rounded text-white bg-white-transparent"
+    class="w-500 border-silver rounded text-white bg-white-transparent"
   />
   <button
     on:click|preventDefault={async () => await connect()}
@@ -102,11 +102,11 @@
     Connect to {selectedProvider}
   </button>
 </div>
-<span class="text-sm pt-8 underline cursor-pointer font-light">
+<p class="text-sm pt-4 underline cursor-pointer font-light">
     <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
     >What's the difference between Mainnet and Testnet (Rococo)?</a
     >
-  </span>
+  </p>
 <div class:hidden={!showExplainer} class="pt-4">
   <p>The Frequency Mainnet is the production Frequency blockchain network.</p>
   <p>

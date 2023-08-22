@@ -120,7 +120,7 @@
   <form>
     <KeySelection
       component="SelectControlKey"
-      selectLabel="Key to Stake Fro m"
+      selectLabel="Key to Stake From"
       bind:selectedOption={selectedKey}
       {validAccounts}
       classOverrides="border-silver border-2 rounded-lg"
