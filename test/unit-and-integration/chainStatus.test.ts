@@ -14,7 +14,7 @@ describe("ChainStatus component", () => {
 
     const { container, getByText } = render(ChainStatus, { epochNumber, blockNumber, token, connected});
     expect(getByText('Connection status:')).toBeInTheDocument();
-    expect(getByText('Current block number:')).toBeInTheDocument();
+    expect(getByText('Current Block:')).toBeInTheDocument();
     expect(getByText('Epoch:')).toBeInTheDocument();
     expect(getByText('Token:')).toBeInTheDocument();
 
