@@ -13,6 +13,7 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
+  import Banner from '$components/Banner.svelte';
   import logo from '$lib/assets/logo.png';
   import topright from '$lib/assets/top-right-bars.png';
   import bottomleft from '$lib/assets/bottom-left-bars.png';
@@ -39,11 +40,7 @@
 </script>
 <img alt="decoration-top-left" src={topright} class="mt-0 absolute top right-8 -z-40"/>
 
-<div class="bg-header mt-8 h-24">
-  <img alt="The project logo" src={logo} class=""/>
-  <p class="text-aqua text-lg font-semibold tracking-wider pl-3">Provider Dashboard</p>
-</div>
-
+<Banner />
 <ChainStatus {blockNumber} {connected} {token} {epochNumber}/>
 <div class="flex justify-center">
   <Provider/>
@@ -64,4 +61,5 @@
   </form>
   <ProviderActions {validAccounts}/>
 </div>
+<Banner />
 <img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40"/>
