@@ -13,3 +13,5 @@ export const storeBlockNumber = writable(0n);
 export const storeCurrentAction = writable(ActionForms.NoForm);
 
 export const storeToken = writable('');
+
+export const storeChainInfo = writable({ connected: false, blockNumber: 0n, epochNumber: 0n, token: ''});

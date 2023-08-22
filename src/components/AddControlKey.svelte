@@ -91,11 +91,11 @@
   };
 </script>
 
-<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card basis-40">
-  <h3 class="font-semibold text-lg">
+<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card basis-1/2">
+  <p class="action-card-title">
     Add a Control Key to Provider Id {providerId}
-  </h3>
-  <ol class="list-decimal ml-8">
+  </p>
+  <ol class="list-decimal ml-4 mt-4 font-light">
     <li>
       Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.
@@ -103,14 +103,14 @@
     <li>If using a wallet, ensure the new control key is imported into your wallet.</li>
     <li>Select the new control key from the dropdown list below.</li>
     <li>Click 'Add It.'</li>
-    <li>This will require 3 signatures: two for the authorization payload, and one to send the transaction.</li>
-    <ul>
-      <li>Sign with the new control key</li>
-      <li>Sign with the current control key</li>
-      <li>Sign the transaction with the current control key</li>
+    <li>This requires 3 signatures: two for the authorization payload, and one to send the transaction.</li>
+    <ul class="list-disc ml-6">
+      <li>Sign with the new control key,</li>
+      <li>Sign with the current control key,</li>
+      <li>Sign the transaction with the current control key.</li>
     </ul>
   </ol>
-  <form>
+  <form class="mt-8">
     <KeySelection
       component="AddControlKey"
       selectLabel="Key to Add"
@@ -118,8 +118,10 @@
       {validAccounts}
       classOverrides="border-silver border-2 rounded-lg"
     />
-    <button on:click|preventDefault={addControlKey} class="btn-primary text-black"> Add It </button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black"> Cancel Add </button>
+    <div class="flex w-350 justify-between">
+      <button on:click|preventDefault={addControlKey} class="btn-primary action-btn-l">Add It</button>
+      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel Add </button>
+    </div>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

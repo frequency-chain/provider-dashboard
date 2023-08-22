@@ -15,7 +15,7 @@ describe('CreateMsa component', () => {
   });
   it('shows text + Cancel button', () => {
     const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
-    expect(getByRole('button', { name: 'Create MSA' })).toBeInTheDocument();
+    expect(getByRole('button', { name: 'Create an MSA' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
   it('clicking Cancel performs the callback', async () => {
@@ -49,7 +49,7 @@ describe('CreateMsa component', () => {
         })
     );
 
-    const btn = getByRole('button', { name: 'Create MSA' });
+    const btn = getByRole('button', { name: 'Create an MSA' });
     userEvent.click(btn);
     await waitFor(() => {
       expect(extrinsicWasCalled).toBe(true);

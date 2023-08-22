@@ -106,19 +106,18 @@
   }
 </script>
 
-<div class:hidden={false} class="action-card">
-  <h3 class="font-semibold text-lg">
+<div class:hidden={false} class="action-card basis-1/2">
+  <p class="action-card-title">
     Stake to Provider Id {providerId}
-  </h3>
+  </p>
   <div>
-    <p>Directions</p>
-    <ol class="list-decimal ml-8">
+    <ol class="list-decimal ml-4 mt-4 font-light">
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
       <li>This will require 1 signature to send the transaction.</li>
     </ol>
   </div>
-  <form>
+  <form class="mt-8">
     <KeySelection
       component="SelectControlKey"
       selectLabel="Key to Stake From"
@@ -126,13 +125,17 @@
       {validAccounts}
       classOverrides="border-silver border-2 rounded-lg"
     />
-    <label for="stakingInput">Amount to Stake in Tokens</label>
-    <div class="input-container">
-      <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
-      <span class="units">{token}</span>
+    <div class="mt-6">
+      <label for="stakingInput">Amount to Stake in <span class="units">{token}</span></label>
+      <div class="input-container mt-2">
+        <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
+
+      </div>
     </div>
-    <button on:click|preventDefault={stake} class="btn-primary text-black">Stake</button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
+    <div class="flex w-350 justify-between">
+      <button on:click|preventDefault={stake} class="btn-primary action-btn-l">Stake</button>
+      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+    </div>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

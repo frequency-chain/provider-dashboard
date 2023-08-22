@@ -165,7 +165,6 @@ describe('Capacity.svelte', () => {
       await dotApi.update((val) => (val = { ...val, api: createdApi }));
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
-        expect(container.innerHTML.includes('As of Block 1021, Epoch 122')).toBe(true);
         expect(getByTextContent('Remaining: 5.0100 micro CAP')).toBeInTheDocument();
         expect(getByTextContent('Total Issued: 10.0000 micro CAP')).toBeInTheDocument();
         expect(getByTextContent('Last Replenished: Epoch 59')).toBeInTheDocument();

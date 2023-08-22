@@ -60,25 +60,26 @@
       : ActionForms.CreateProvider;
     storeCurrentAction.set(currentAction);
   }
-  const actionButtonClasses = 'mt-6 ml-8 px-8 p-2 rounded-2xl text-white border-black bg-aqua';
 </script>
 
 {#if msaInfo?.isProvider}
-  <button on:click|preventDefault={showAddControlKey} class={actionButtonClasses}> Add control key </button>
-  <button on:click={showStake} class={actionButtonClasses}> Stake To Provider </button>
+  <div class="w-500 flex justify-between">
+    <button on:click|preventDefault={showAddControlKey} class='btn-primary mr-4 grow'> Add control key </button>
+    <button on:click={showStake} class='btn-primary ml-4 grow'> Stake To Provider </button>
+  </div>
 {:else if msaInfo?.msaId > 0}
   <button
     on:click|preventDefault={showCreateOrRequestProvider}
     class:hidden={signingAddress === ''}
-    class={actionButtonClasses}
+    class='btn-primary'
   >
     Become a Provider
   </button>
-{:else}
-  <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class={actionButtonClasses}>
+{:else if signingAddress !== ''}
+  <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
+  <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class='btn-primary'>
     Create an MSA
   </button>
-  <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
 {/if}
 
 <div class="flex">

@@ -10,6 +10,7 @@ import {
 } from '../../src/lib/stores';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
+import { getByTextContent } from "../helpers";
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -111,8 +112,8 @@ describe('Provider.svelte', () => {
 
       it('says you should create an msa', () => {
         const { container } = render(Provider);
-        const main = container.querySelector('p');
-        expect(main.innerHTML).toEqual('No Msa Id. Please create an MSA first.');
+        const result = getByTextContent('No Msa Id. Please create an MSA first.');
+        expect(result).toBeInTheDocument();
         expect(container.querySelector('button')).toBeNull();
       });
 
@@ -120,12 +121,12 @@ describe('Provider.svelte', () => {
         const createdApi = await mocks.ApiPromise.create();
 
         dotApi.update((val) => (val = { ...val, api: createdApi }));
-        const { getByText } = render(Provider);
+        render(Provider);
 
         await waitFor(() => {
-          expect(getByText('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
-          expect(getByText('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByText('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
         });
       });
     });
@@ -147,14 +148,14 @@ describe('Provider.svelte', () => {
         const createdApi = await mocks.ApiPromise.create();
 
         await dotApi.update((val) => (val = { ...val, api: createdApi }));
-        const { getByText } = render(Provider);
+        render(Provider);
 
-        expect(getByText('Transferable: 0')).toBeInTheDocument();
+        expect(getByTextContent('Transferable: 0')).toBeInTheDocument();
         await waitFor(() => {
           // these values are from the mocks
-          expect(getByText('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
-          expect(getByText('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
-          expect(getByText('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
         });
       });
     });
@@ -165,9 +166,9 @@ describe('Provider.svelte', () => {
       });
 
       it('Shows Provider Id and name', () => {
-        const { getByText } = render(Provider);
-        expect(getByText('Id: 11')).toBeInTheDocument();
-        expect(getByText('Name: Bobbay')).toBeInTheDocument();
+        render(Provider);
+        expect(getByTextContent('Id: 11')).toBeInTheDocument();
+        expect(getByTextContent('Name: Bobbay')).toBeInTheDocument();
       });
     });
   });
