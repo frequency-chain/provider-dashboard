@@ -110,7 +110,7 @@
       <li>Sign the transaction with the current control key.</li>
     </ul>
   </ol>
-  <form>
+  <form class="mt-8">
     <KeySelection
       component="AddControlKey"
       selectLabel="Key to Add"

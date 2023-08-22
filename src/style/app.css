@@ -7,13 +7,13 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply mt-6 px-8 p-3 rounded-full text-white bg-cobalt border-black shadow-md;
+    @apply mt-6 px-8 p-3 h-14 rounded-full text-white text-lg bg-cobalt border-black shadow-md;
   }
   .btn-cancel {
-    @apply mt-6 px-8 p-3 rounded-full text-white bg-silver border-black shadow-md;
+    @apply mt-6 px-8 p-3 rounded-full text-white text-lg bg-silver border-black shadow-md;
   }
   select {
-    @apply text-black px-6 py-2 rounded-md border-0 w-500 h-12;
+    @apply text-black px-6 py-2 rounded-md border-0 w-500 h-14 font-medium text-lg;
   }
   .action-card {
     @apply mt-8 p-8 shrink-0 rounded-lg bg-white-transparent text-white shadow-md;

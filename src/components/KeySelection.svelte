@@ -8,7 +8,7 @@
   export let classOverrides = '';
 </script>
 
-<p class="text-lg"><label for={`signing-address-${component}`}>{selectLabel}</label></p>
+<p class="text-2xl"><label for={`signing-address-${component}`}>{selectLabel}</label></p>
 <div class="{classOverrides} inline-block mt-2">
   <select id={`signing-address-${component}`}
           bind:value={selectedOption}

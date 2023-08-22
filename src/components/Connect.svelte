@@ -73,7 +73,7 @@
 </script>
 
 <div class="pt-8">
-  <h3 class="text-lg"><label for="provider-list">Select a Network</label></h3>
+  <p class="text-2xl"><label for="provider-list">Select a Network</label></p>
   <select
     id="provider-list"
     required
@@ -97,7 +97,7 @@
     on:click|preventDefault={async () => await connect()}
     id="connect-button"
     hidden={!canConnect}
-    class="btn-primary"
+    class="btn-primary ml-4"
   >
     Connect to {selectedProvider}
   </button>

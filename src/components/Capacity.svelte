@@ -77,19 +77,19 @@
     <table>
       <tr>
         <td>Remaining:</td>
-        <td class="pl-4">{balanceToHuman(capacityDetails?.remainingCapacity, 'CAP')}</td>
+        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.remainingCapacity, 'CAP')}</td>
       </tr>
       <tr>
         <td>Total Issued: </td>
-        <td class="pl-4">{balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP')}</td>
+        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP')}</td>
       </tr>
       <tr>
         <td>Last Replenished:</td>
-        <td class="pl-4">Epoch {capacityDetails?.lastReplenishedEpoch}</td>
+        <td class="pl-4 font-light">Epoch {capacityDetails?.lastReplenishedEpoch}</td>
       </tr>
       <tr>
         <td>Staked Token: </td>
-        <td class="pl-4">{balanceToHuman(capacityDetails?.totalCapacityIssued, token)}</td>
+        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.totalCapacityIssued, token)}</td>
       </tr>
     </table>
   {:else if signingAddress == ''}

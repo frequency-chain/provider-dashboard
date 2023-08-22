@@ -117,7 +117,7 @@
       <li>This will require 1 signature to send the transaction.</li>
     </ol>
   </div>
-  <form>
+  <form class="mt-8">
     <KeySelection
       component="SelectControlKey"
       selectLabel="Key to Stake From"
