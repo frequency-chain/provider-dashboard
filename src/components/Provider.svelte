@@ -1,13 +1,13 @@
 <script lang="ts">
-  import { dotApi, storeConnected, storeMsaInfo, storeToken, transactionSigningAddress } from '$lib/stores';
-  import type { MsaInfo } from '$lib/storeTypes';
-  import { balanceToHuman } from '$lib/utils';
-  import type { ApiPromise } from '@polkadot/api';
-  import { getBalances } from '$lib/polkadotApi';
-  import type { AccountBalances } from '$lib/polkadotApi';
+  import {dotApi, storeConnected, storeMsaInfo, storeToken, transactionSigningAddress} from '$lib/stores';
+  import type {MsaInfo} from '$lib/storeTypes';
+  import {balanceToHuman} from '$lib/utils';
+  import type {ApiPromise} from '@polkadot/api';
+  import {getBalances} from '$lib/polkadotApi';
+  import type {AccountBalances} from '$lib/polkadotApi';
 
   let msaInfo: MsaInfo;
-  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
+  let accountBalances: AccountBalances = {free: 0n, reserved: 0n, frozen: 0n};
 
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
@@ -35,27 +35,56 @@
   });
 </script>
 
-<div class="pl-6 ml-6">
-  <h3 class="text-aqua font-bold">Provider</h3>
-  {#if !connected}
-    <p>Not connected</p>
-  {:else if localSigningAddress === ''}
-    <p>No transaction signing address selected</p>
-  {:else}
-    {#if msaInfo?.msaId === 0}
-      <p>No Msa Id. Please create an MSA first.</p>
+<div
+  class="p-14 action-card w-500 min-w-fit font-semibold tracking-wider bg-gradient-to-br from-lilac to-periwinkle align-top"
+>
+  <table>
+    <tr>
+      <td colspan=2 class="text-2xl pb-6">Provider</td>
+    </tr>
+    {#if !connected}
+      <tr>
+        <td colspan=2>Not connected</td>
+      </tr>
+    {:else if localSigningAddress === ''}
+      <tr>
+        <td colspan=2>No transaction signing address selected</td>
+      </tr>
     {:else}
-      <p>Id: {msaInfo.msaId}</p>
+      {#if msaInfo?.msaId === 0}
+        <tr>
+          <td colspan=2>No Msa Id. Please create an MSA first.</td>
+        </tr>
+      {:else}
+        <tr>
+          <td>Id:</td>
+          <td class="pl-4 font-medium">{msaInfo.msaId}</td>
+        </tr>
+      {/if}
+      {#if msaInfo?.isProvider}
+        <tr>
+          <td>Name:</td>
+          <td class="pl-4 font-medium">{msaInfo.providerName}</td>
+        </tr>
+      {:else if msaInfo.msaId > 0}
+        <tr>
+          <td colspan=2>Selected Key is not associated with a Provider</td>
+        </tr>
+      {/if}
     {/if}
-    {#if msaInfo?.isProvider}
-      <p>Name: {msaInfo.providerName}</p>
-    {:else if msaInfo.msaId > 0}
-      <p>Selected Key is not associated with a Provider</p>
+    {#if localSigningAddress !== ''}
+      <tr>
+        <td>Total Balance:</td>
+        <td class="pl-4 font-light">{balanceToHuman(accountBalances.free + accountBalances.frozen, token)}</td>
+      </tr>
+      <tr>
+        <td>Transferable:</td>
+        <td class="pl-4 font-light"> {balanceToHuman(accountBalances.free, token)}</td>
+      </tr>
+      <tr>
+        <td>Locked:</td>
+        <td class="pl-4 font-light"> {balanceToHuman(accountBalances.frozen, token)}</td>
+      </tr>
     {/if}
-  {/if}
-  {#if localSigningAddress !== ''}
-    <p>Total Balance: {balanceToHuman(accountBalances.free + accountBalances.frozen, token)}</p>
-    <p>Transferable: {balanceToHuman(accountBalances.free, token)}</p>
-    <p>Locked: {balanceToHuman(accountBalances.frozen, token)}</p>
-  {/if}
+  </table>
 </div>

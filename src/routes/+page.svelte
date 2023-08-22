@@ -1,6 +1,6 @@
 <script lang="ts">
   import {
-    storeBlockNumber,
+    storeBlockNumber, storeChainInfo,
     storeConnected,
     storeMsaInfo,
     storeToken,
@@ -9,44 +9,49 @@
   } from '$lib/stores';
   import Connect from '$components/Connect.svelte';
   import Capacity from '$components/Capacity.svelte';
-  import Intro from '$components/Intro.svelte';
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
-  import ConnectionStatus from '$components/ConnectionStatus.svelte';
+  import ChainStatus from '$components/ChainStatus.svelte';
   import logo from '$lib/assets/logo.png';
   import topright from '$lib/assets/top-right-bars.png';
   import bottomleft from '$lib/assets/bottom-left-bars.png';
+  import type {ChainInfo, MsaInfo} from "$lib/storeTypes";
 
   let token = '';
   let blockNumber = 0n;
+  let epochNumber = 0n;
   let connected = false;
   let validAccounts = {};
-  let showDashboard = false;
 
+  // TODO: put all this in chainInfo and update how it's stored.
   storeBlockNumber.subscribe((val) => (blockNumber = val));
   storeToken.subscribe((val) => (token = val));
   storeConnected.subscribe((val) => (connected = val));
   storeValidAccounts.subscribe((val) => (validAccounts = val));
+  storeChainInfo.subscribe((info: ChainInfo) => (epochNumber = info.epochNumber));
 
   const onChangeTxnSigningAddress = (evt: Event) => {
     let option = evt.target as HTMLOptionElement;
-    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
+    storeMsaInfo.set({isProvider: false, msaId: 0, providerName: ''});
     transactionSigningAddress.set(option.value);
   };
 </script>
-<img alt="decoration-top-right" src={topright} class="float-right z-0"/>
-<img alt="The project logo" src={logo} />
-<h1 class="text-3xl font-bold">Welcome to Provider Dashboard</h1>
-<div id="status-bar" class="flex p-8 justify-start h-52 bg-white-transparent">
-  <div class="pr-8">Overview:</div>
-  <ConnectionStatus {blockNumber} {connected} {token} />
-  <Provider />
-  <Capacity bind:token />
+<img alt="decoration-top-left" src={topright} class="mt-0 absolute top right-8 -z-40"/>
+
+<div class="bg-header mt-8 h-24">
+  <img alt="The project logo" src={logo} class=""/>
+  <p class="text-aqua text-lg font-semibold tracking-wider pl-3">Provider Dashboard</p>
 </div>
-<div id="main-actions" class:hidden={!showDashboard} class="mt-8 text-white">
+
+<ChainStatus {blockNumber} {connected} {token} {epochNumber}/>
+<div class="flex justify-between items-start items-stretch">
+  <Provider/>
+  <Capacity bind:token/>
+</div>
+<div id="main-actions" class="mt-8 text-white">
   <form id="setupForm">
-    <Connect />
+    <Connect/>
     <div class={connected ? '' : 'hidden'}>
       <KeySelection
         component="TransactionSigningKey"
@@ -57,7 +62,6 @@
       />
     </div>
   </form>
-  <ProviderActions {validAccounts} />
+  <ProviderActions {validAccounts}/>
 </div>
-<Intro bind:dismissed={showDashboard} />
 <img alt="decoration-bottom-left" src={bottomleft} class="mt-20 sticky bottom left-8 -z-40"/>

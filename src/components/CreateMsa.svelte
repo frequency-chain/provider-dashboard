@@ -62,18 +62,19 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="create-msa" class="action-card">
-  <p class="text-black">
-    An MSA is required to become a provider. This is simply a call to the <code>create</code> transaction on the MSA pallet.
+<div id="create-msa" class="action-card basis-1/2">
+  <p>
+    An MSA (Message Source Account) is required to become a provider.
+    This action will create an MSA Id
+    that is controlled by the selected Transaction Signing Address above. It is
+    available only on Frequency Testnet.
   </p>
-  <p class="text-black">
-    This action will create an MSA Id that is controlled by the selected Transaction Signing Address above.
-  </p>
-  <form>
-    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary text-black">
-      Create MSA
+  <form class="flex w-350 justify-between">
+    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa}
+            class="btn-primary action-btn-l">
+      Create an MSA
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
+    <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

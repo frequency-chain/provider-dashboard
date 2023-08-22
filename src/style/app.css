@@ -7,19 +7,28 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply mt-6 px-8 p-3 rounded-full text-white bg-cobalt border-black;
+    @apply mt-6 px-8 p-3 rounded-full text-white bg-cobalt border-black shadow-md;
   }
   .btn-cancel {
-    @apply mt-6 px-8 p-2 rounded-2xl text-white bg-silver border-black;
+    @apply mt-6 px-8 p-3 rounded-full text-white bg-silver border-black shadow-md;
   }
   select {
     @apply text-black px-6 py-2 rounded-md border-0 w-500;
   }
   .action-card {
-    @apply mt-8 p-4 rounded-lg bg-white-transparent text-white drop-shadow-md;
+    @apply mt-8 p-8 shrink-0 rounded-lg bg-white-transparent text-white shadow-md;
   }
   .action-card input {
-    @apply border-silver rounded;
+    @apply border-silver rounded text-white bg-white-transparent;
+  }
+  .action-card-title {
+    @apply font-semibold text-2xl;
+  }
+  .action-btn-l {
+    @apply grow mr-3;
+  }
+  .action-btn-r {
+    @apply grow ml-3;
   }
 }
 

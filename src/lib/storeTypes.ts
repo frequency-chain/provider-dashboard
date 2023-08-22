@@ -30,3 +30,10 @@ export type MsaInfo = {
   msaId: number;
   providerName: string;
 };
+
+export type ChainInfo = {
+  blockNumber: bigint,
+  epochNumber: bigint,
+  connected: boolean,
+  token: string,
+}

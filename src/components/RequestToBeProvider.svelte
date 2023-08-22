@@ -89,7 +89,7 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="request-to-be-provider" class="action-card">
+<div id="request-to-be-provider" class="action-card basis-1/2">
   <h2>Request to Be a Provider</h2>
   <h3>What is a Provider?</h3>
   <p>A Provider is an MSA holder on Frequency with special permissions.</p>
@@ -109,10 +109,14 @@
   <form>
     <label for="providerNameRtB">Provider name</label>
     <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
-      Submit Request To Be Provider</button
-    >
-    <button on:click|preventDefault={cancelAction} class="btn-cancel text-black">Cancel</button>
+    <div class="flex w-350 justify-between">
+
+      <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn"
+              class="btn-primary action-btn-l">
+        Submit Request To Be Provider</button
+      >
+      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+    </div>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

@@ -22,20 +22,14 @@ describe('End to End Tests', () => {
 
   test('check connection status: not connected', async () => {
     const { container } = render(Page);
-    expect(container.querySelector('#connection-status h3')).toHaveTextContent('Connection status');
-    expect(container.querySelector('#connection-status p').innerHTML).toMatch('Not connected');
+    expect(container.querySelector('#connection-status-title')).toHaveTextContent('Connection status:');
+    expect(container.querySelector('#connection-status-value')).toHaveTextContent('Not connected');
   });
 
   test('connect to localhost', async () => {
     const { container, getByLabelText } = render(Page);
-    const ok = screen.getByText('Ok');
-    await fireEvent.click(ok);
-
-    await waitFor(() => {
-      const statusBar = container.querySelector('#status-bar');
-      expect(statusBar).toBeDefined();
-      expect(statusBar).not.toHaveClass('hidden');
-    });
+    const statusBar = container.querySelector('#chain-status');
+    expect(statusBar).toBeDefined();
     // Get the select box
     const select = getByLabelText('Select a Network');
 
