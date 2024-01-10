@@ -64,20 +64,20 @@
 
 {#if msaInfo?.isProvider}
   <div class="w-500 flex justify-between">
-    <button on:click|preventDefault={showAddControlKey} class='btn-primary mr-4 grow'> Add control key </button>
-    <button on:click={showStake} class='btn-primary ml-4 grow'> Stake To Provider </button>
+    <button on:click|preventDefault={showAddControlKey} class='btn-primary mr-4 grow select-none'> Add control key </button>
+    <button on:click={showStake} class='btn-primary ml-4 grow select-none'> Stake To Provider </button>
   </div>
 {:else if msaInfo?.msaId > 0}
   <button
     on:click|preventDefault={showCreateOrRequestProvider}
     class:hidden={signingAddress === ''}
-    class='btn-primary'
+    class='btn-primary select-none'
   >
     Become a Provider
   </button>
 {:else if signingAddress !== ''}
   <p class="mt-6 p-2">The selected signing address does not have an MSA. An MSA is required to become a Provider.</p>
-  <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class='btn-primary'>
+  <button on:click|preventDefault={showCreateMsa} class:hidden={signingAddress === ''} class='btn-primary select-none'>
     Create an MSA
   </button>
 {/if}
