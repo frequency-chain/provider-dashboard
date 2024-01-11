@@ -36,6 +36,14 @@ export default {
       backgroundImage: {
         topRight: 'url(/assets/top-right-bars.png)',
       },
+      fontSize: {
+        xs: '10px',
+        sm: '12px',
+        base: '14px',
+        l: '20px',
+        xl: '25px',
+        '2xl': '30px',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],

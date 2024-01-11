@@ -129,12 +129,11 @@
       <label for="stakingInput">Amount to Stake in <span class="units">{token}</span></label>
       <div class="input-container mt-2">
         <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
-
       </div>
     </div>
     <div class="flex w-350 justify-between">
-      <button on:click|preventDefault={stake} class="btn-primary action-btn-l">Stake</button>
-      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+      <button on:click|preventDefault={stake} class="btn-primary">Stake</button>
+      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>
   </form>
 </div>
