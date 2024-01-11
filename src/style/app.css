@@ -33,13 +33,15 @@
 
 }
 
-body {
+@layer base {
+ body {
   color: white;
   min-height: 100vh;
   margin: 2em;
   background: linear-gradient(to bottom right, #293B59, #007DA1);
-}
+ }
 
-button {
+ button {
   @apply select-none;
+ }
 }
