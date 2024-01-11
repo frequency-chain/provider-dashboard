@@ -30,6 +30,28 @@
   .action-btn-r {
     @apply grow ml-3;
   }
+
+  /* typeography */
+  /* headers */
+  .section-title {
+    @apply font-bold text-xl;
+  }
+  .label {
+    @apply font-bold text-base tracking-wide;
+  }
+  /* data */
+  .data-value-sm {
+    @apply font-data text-green text-sm;
+  }
+  .data-value-base {
+    @apply font-data text-green text-base;
+  }
+  .data-value-lg {
+    @apply font-data text-green text-lg;
+  }
+  .data-value-2xl {
+    @apply font-data text-green text-2xl;
+  }
 }
 
 @layer base {
