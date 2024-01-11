@@ -116,7 +116,7 @@
       selectLabel="Key to Add"
       bind:selectedOption={selectedKeyToAdd}
       {validAccounts}
-      classOverrides="border-silver border-2 rounded-lg"
+      classOverrides="border-2 rounded-lg"
     />
     <div class="flex w-350 justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary action-btn-l">Add It</button>
