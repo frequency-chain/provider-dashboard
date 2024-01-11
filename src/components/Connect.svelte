@@ -91,7 +91,7 @@
     bind:value={otherProvider}
     disabled={selectedProvider.toString() != 'Other'}
     class:hidden={selectedProvider.toString() != 'Other'}
-    class="w-500 border-silver rounded text-white bg-white-transparent"
+    class="w-500 rounded text-white"
   />
   <button
     on:click|preventDefault={async () => await connect()}
@@ -103,10 +103,10 @@
   </button>
 </div>
 <p class="text-sm pt-4 underline cursor-pointer font-light">
-    <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
+  <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
     >What's the difference between Mainnet and Testnet (Rococo)?</a
-    >
-  </p>
+  >
+</p>
 <div class:hidden={!showExplainer} class="pt-4">
   <p>The Frequency Mainnet is the production Frequency blockchain network.</p>
   <p>
@@ -116,10 +116,10 @@
   <h3 class="text-lg pt-4 pb-2">
     <strong>What about the other options?</strong>
   </h3>
-  <p>To connect to a node running on your desktop, choose <span class="font-bold text-aqua">Localhost.</span></p>
+  <p>To connect to a node running on your desktop, choose <span class="font-bold">Localhost.</span></p>
   <p>
-    To connect to a node that is not in the list, choose <span class="font-bold text-aqua">Other</span>, then type the
-    desired WebSocket address in the text field.
+    To connect to a node that is not in the list, choose <span class="font-bold">Other</span>, then type the desired
+    WebSocket address in the text field.
   </p>
   <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-primary">Okay</button>
 </div>

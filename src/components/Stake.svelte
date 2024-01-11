@@ -123,7 +123,7 @@
       selectLabel="Key to Stake From"
       bind:selectedOption={selectedKey}
       {validAccounts}
-      classOverrides="border-silver border-2 rounded-lg"
+      classOverrides="border-2 rounded-lg"
     />
     <div class="mt-6">
       <label for="stakingInput">Amount to Stake in <span class="units">{token}</span></label>

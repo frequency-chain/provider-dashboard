@@ -1,13 +1,13 @@
 <script lang="ts">
-  import {dotApi, storeConnected, storeMsaInfo, storeToken, transactionSigningAddress} from '$lib/stores';
-  import type {MsaInfo} from '$lib/storeTypes';
-  import {balanceToHuman} from '$lib/utils';
-  import type {ApiPromise} from '@polkadot/api';
-  import {getBalances} from '$lib/polkadotApi';
-  import type {AccountBalances} from '$lib/polkadotApi';
+  import { dotApi, storeConnected, storeMsaInfo, storeToken, transactionSigningAddress } from '$lib/stores';
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { balanceToHuman } from '$lib/utils';
+  import type { ApiPromise } from '@polkadot/api';
+  import { getBalances } from '$lib/polkadotApi';
+  import type { AccountBalances } from '$lib/polkadotApi';
 
   let msaInfo: MsaInfo;
-  let accountBalances: AccountBalances = {free: 0n, reserved: 0n, frozen: 0n};
+  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
   let connected = false;
   storeConnected.subscribe((val) => (connected = val));
@@ -35,25 +35,23 @@
   });
 </script>
 
-<div
-  class="p-14 action-card w-500 min-w-fit font-semibold tracking-wider bg-gradient-to-br from-lilac to-periwinkle align-top"
->
+<div class="p-14 action-card w-500 min-w-fit font-semibold tracking-wider bg-gradient-to-br align-top">
   <table>
     <tr>
-      <td colspan=2 class="text-2xl pb-6">Provider</td>
+      <td colspan="2" class="text-2xl pb-6">Provider</td>
     </tr>
     {#if !connected}
       <tr>
-        <td colspan=2>Not connected</td>
+        <td colspan="2">Not connected</td>
       </tr>
     {:else if localSigningAddress === ''}
       <tr>
-        <td colspan=2>No transaction signing address selected</td>
+        <td colspan="2">No transaction signing address selected</td>
       </tr>
     {:else}
       {#if msaInfo?.msaId === 0}
         <tr>
-          <td colspan=2>No Msa Id. Please create an MSA first.</td>
+          <td colspan="2">No Msa Id. Please create an MSA first.</td>
         </tr>
       {:else}
         <tr>
@@ -68,7 +66,7 @@
         </tr>
       {:else if msaInfo.msaId > 0}
         <tr>
-          <td colspan=2>Selected Key is not associated with a Provider</td>
+          <td colspan="2">Selected Key is not associated with a Provider</td>
         </tr>
       {/if}
     {/if}

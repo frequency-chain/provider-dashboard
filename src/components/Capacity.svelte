@@ -1,8 +1,15 @@
 <script lang="ts">
-  import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo, storeBlockNumber, storeChainInfo } from '$lib/stores';
+  import {
+    storeConnected,
+    transactionSigningAddress,
+    dotApi,
+    storeMsaInfo,
+    storeBlockNumber,
+    storeChainInfo,
+  } from '$lib/stores';
   import { getBlockNumber } from '$lib/connections';
   import type { ApiPromise } from '@polkadot/api';
-  import type {ChainInfo, MsaInfo} from '$lib/storeTypes';
+  import type { ChainInfo, MsaInfo } from '$lib/storeTypes';
   import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
   import { providerNameToHuman } from '$lib/utils';
   import { balanceToHuman } from '$lib/utils.js';
@@ -61,15 +68,13 @@
       msaInfo.isProvider = info?.msaInfo?.isProvider || false;
       capacityDetails = { ...defaultDetails, ...info.capacityDetails };
       epochNumber = info.epochNumber;
-      storeChainInfo.update((info: ChainInfo) => info = { ...info, epochNumber});
+      storeChainInfo.update((info: ChainInfo) => (info = { ...info, epochNumber }));
       storeMsaInfo.set(msaInfo);
     }
   });
 </script>
 
-<div
-  class="p-14 ml-8 w-500 action-card font-semibold tracking-wider bg-gradient-to-br from-teal-light to-teal-dark"
->
+<div class="p-14 ml-8 w-500 action-card font-semibold tracking-wider bg-gradient-to-br">
   <p class="text-2xl pb-6">Capacity</p>
   {#if !connected}
     <p>Not connected</p>
