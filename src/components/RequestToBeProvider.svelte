@@ -112,10 +112,10 @@
     <div class="flex w-350 justify-between">
 
       <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn"
-              class="btn-primary action-btn-l select-none">
+              class="btn-primary action-btn-l">
         Submit Request To Be Provider</button
       >
-      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r select-none">Cancel</button>
+      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
     </div>
   </form>
 </div>

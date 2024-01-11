@@ -19,5 +19,5 @@
       <li class="last:text-aqua mt-4 text-md font-light">{status}</li>
     {/each}
   </ul>
-  <button on:click|preventDefault={hideSelf} class="btn-primary select-none">Dismiss Status</button>
+  <button on:click|preventDefault={hideSelf} class="btn-primary">Dismiss Status</button>
 </div>

@@ -97,7 +97,7 @@
     on:click|preventDefault={async () => await connect()}
     id="connect-button"
     hidden={!canConnect}
-    class="btn-primary ml-4 select-none"
+    class="btn-primary ml-4"
   >
     Connect to {selectedProvider}
   </button>
@@ -121,7 +121,7 @@
     To connect to a node that is not in the list, choose <span class="font-bold text-aqua">Other</span>, then type the
     desired WebSocket address in the text field.
   </p>
-  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-primary select-none">Okay</button>
+  <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-primary">Okay</button>
 </div>
 
 <div class:hidden={connected} class="pt-8 color-inherit">
@@ -147,6 +147,6 @@
         </a>
       </li>
     </ol>
-    <button on:click|preventDefault={toggleFaucetInstructions} class="btn-primary ml-8 select-none"> I have token</button>
+    <button on:click|preventDefault={toggleFaucetInstructions} class="btn-primary ml-8"> I have token</button>
   </div>
 </div>
