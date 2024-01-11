@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -30,18 +30,17 @@
   .action-btn-r {
     @apply grow ml-3;
   }
-
 }
 
 @layer base {
- body {
-  color: white;
-  min-height: 100vh;
-  margin: 2em;
-  background: linear-gradient(to bottom right, #293B59, #007DA1);
- }
+  body {
+    color: white;
+    min-height: 100vh;
+    margin: 2em;
+    background: linear-gradient(to bottom right, #293b59, #007da1);
+  }
 
- button {
-  @apply select-none;
- }
+  button {
+    @apply select-none;
+  }
 }

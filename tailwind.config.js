@@ -5,6 +5,7 @@ export default {
   theme: {
     fontFamily: {
       sans: ['Poppins', 'sans-serif'],
+      data: ['Space Mono', 'sans-serif'],
     },
     colors: {
       transparent: 'transparent',
