@@ -49,7 +49,6 @@
   body {
     color: white;
     min-height: 100vh;
-    margin: 2em;
     background: linear-gradient(to top, #2c333d, #007da1);
   }
 
