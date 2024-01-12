@@ -119,8 +119,8 @@
       classOverrides="border-2 rounded-lg"
     />
     <div class="flex w-350 justify-between">
-      <button on:click|preventDefault={addControlKey} class="btn-primary action-btn-l">Add It</button>
-      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel Add </button>
+      <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
+      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
     </div>
   </form>
 </div>
