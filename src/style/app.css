@@ -44,7 +44,7 @@
   input,
   [type='text'],
   select {
-    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 px-2 border-none outline-none disabled:text-disabled;
+    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 px-2 border-none outline-none disabled:opacity-85 disabled:text-disabled;
   }
 
   ::placeholder {
