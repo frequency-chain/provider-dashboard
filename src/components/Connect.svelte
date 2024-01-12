@@ -74,12 +74,7 @@
 
 <div class="pt-8">
   <p class="text-2xl"><label for="provider-list">Select a Network</label></p>
-  <select
-    id="provider-list"
-    required
-    bind:value={selectedProvider}
-    class="text-left bg-green5 pr-8 pl-4 py-2 rounded-md border-0"
-  >
+  <select id="provider-list" required bind:value={selectedProvider}>
     {#each Object.keys(ProviderMap) as providerName}
       <option value={providerName} class="bg-base">{providerName}: {ProviderMap[providerName]}</option>
     {/each}
@@ -91,7 +86,6 @@
     bind:value={otherProvider}
     disabled={selectedProvider.toString() != 'Other'}
     class:hidden={selectedProvider.toString() != 'Other'}
-    class="w-500 rounded text-white"
   />
   <button
     on:click|preventDefault={async () => await connect()}

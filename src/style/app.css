@@ -12,13 +12,10 @@
   .btn-no-fill {
     @apply text-white underline text-sm;
   }
-  select {
-    @apply text-black px-6 py-2 rounded-md border-0 w-500 h-14 font-medium text-lg;
-  }
   .action-card {
     @apply mt-8 p-8 shrink-0 rounded-lg text-white shadow-md;
   }
-  .action-card input {
+  .action-card {
     @apply rounded text-white;
   }
   .action-card-title {
@@ -58,5 +55,15 @@
 
   button {
     @apply select-none;
+  }
+
+  input,
+  [type='text'],
+  select {
+    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 px-2 border-none outline-none disabled:opacity-85 disabled:text-disabled;
+  }
+
+  ::placeholder {
+    @apply text-disabled !important;
   }
 }

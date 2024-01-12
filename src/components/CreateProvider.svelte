@@ -19,7 +19,7 @@
   export let validAccounts = {};
   export let signingAddress = '';
   // a callback for when the user cancels this action
-  export let cancelAction;
+  export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
   export let txnFinished = () => {
     console.log('default txnFinished callback');
@@ -94,10 +94,9 @@
   </p>
   <form>
     <label for="providerNameCB">Provider name</label>
-    <input id="providerNameCB" required placeholder="Short name" maxlength="" bind:value={newProviderName} />
+    <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
     <div class="flex w-350 justify-between">
-      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider}
-              class="btn-primary">
+      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
         Create Provider
       </button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>

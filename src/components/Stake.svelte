@@ -128,7 +128,7 @@
     <div class="mt-6">
       <label for="stakingInput">Amount to Stake in <span class="units">{token}</span></label>
       <div class="input-container mt-2">
-        <input type="number" id="stakingInput" value="1" style="text-align: right;" on:input={handleInput} />
+        <input type="number" id="stakingInput" value="1" on:input={handleInput} />
       </div>
     </div>
     <div class="flex w-350 justify-between">
