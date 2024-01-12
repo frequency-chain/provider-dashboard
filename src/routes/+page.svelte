@@ -1,6 +1,7 @@
 <script lang="ts">
   import {
-    storeBlockNumber, storeChainInfo,
+    storeBlockNumber,
+    storeChainInfo,
     storeConnected,
     storeMsaInfo,
     storeToken,
@@ -13,11 +14,9 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
-  import Banner from '$components/Banner.svelte';
-  import logo from '$lib/assets/logo.png';
   import topright from '$lib/assets/top-right-bars.png';
   import bottomleft from '$lib/assets/bottom-left-bars.png';
-  import type {ChainInfo, MsaInfo} from "$lib/storeTypes";
+  import type { ChainInfo, MsaInfo } from '$lib/storeTypes';
 
   let token = '';
   let blockNumber = 0n;
@@ -34,21 +33,21 @@
 
   const onChangeTxnSigningAddress = (evt: Event) => {
     let option = evt.target as HTMLOptionElement;
-    storeMsaInfo.set({isProvider: false, msaId: 0, providerName: ''});
+    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
     transactionSigningAddress.set(option.value);
   };
 </script>
-<img alt="decoration-top-left" src={topright} class="mt-0 absolute top right-8 -z-40"/>
 
-<Banner />
-<ChainStatus {blockNumber} {connected} {token} {epochNumber}/>
+<img alt="decoration-top-left" src={topright} class="mt-0 absolute top right-8 -z-40" />
+
+<ChainStatus {blockNumber} {connected} {token} {epochNumber} />
 <div class="flex justify-center">
-  <Provider/>
-  <Capacity bind:token/>
+  <Provider />
+  <Capacity bind:token />
 </div>
 <div class="mt-8 text-white">
   <form id="setupForm">
-    <Connect/>
+    <Connect />
     <div class:hidden={!connected} class="mt-8">
       <KeySelection
         component="TransactionSigningKey"
@@ -59,7 +58,6 @@
       />
     </div>
   </form>
-  <ProviderActions {validAccounts}/>
+  <ProviderActions {validAccounts} />
 </div>
-<Banner />
-<img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40"/>
+<img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40" />

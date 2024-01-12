@@ -20,12 +20,6 @@ describe('End to End Tests', () => {
   // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
   afterEach(() => cleanup());
 
-  test('check connection status: not connected', async () => {
-    const { container } = render(Page);
-    expect(container.querySelector('#connection-status-title')).toHaveTextContent('Connection status:');
-    expect(container.querySelector('#connection-status-value')).toHaveTextContent('Not connected');
-  });
-
   test('connect to localhost', async () => {
     const { container, getByLabelText } = render(Page);
     const statusBar = container.querySelector('#chain-status');

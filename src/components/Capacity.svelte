@@ -16,7 +16,7 @@
 
   let signingAddress = ''; // eslint-disable-line no-unused-vars
   let epochNumber = 0n;
-  let connected;
+  let connected: boolean;
   storeConnected.subscribe((val) => (connected = val));
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
