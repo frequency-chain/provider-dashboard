@@ -7,10 +7,10 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply mt-6 px-8 p-3 h-14 rounded-full text-white text-lg bg-blue border-black shadow-md;
+    @apply w-[225px] h-10 rounded-full text-white bg-blue disabled:bg-disabled text-base font-bold;
   }
-  .btn-cancel {
-    @apply mt-6 px-8 p-3 rounded-full text-white text-lg border-black shadow-md;
+  .btn-no-fill {
+    @apply text-white underline text-sm;
   }
   select {
     @apply text-black px-6 py-2 rounded-md border-0 w-500 h-14 font-medium text-lg;
@@ -23,12 +23,6 @@
   }
   .action-card-title {
     @apply font-semibold text-2xl;
-  }
-  .action-btn-l {
-    @apply grow mr-3;
-  }
-  .action-btn-r {
-    @apply grow ml-3;
   }
 }
 
