@@ -40,7 +40,7 @@ export default {
         xs: '10px',
         sm: '12px',
         base: '14px',
-        l: '20px',
+        lg: '20px',
         xl: '25px',
         '2xl': '30px',
       },
