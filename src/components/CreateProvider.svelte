@@ -96,10 +96,10 @@
     <label for="providerNameCB">Provider name</label>
     <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
     <div class="flex w-350 justify-between">
-      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary action-btn-l">
+      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
         Create Provider
       </button>
-      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>
   </form>
 </div>

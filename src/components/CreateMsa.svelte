@@ -71,10 +71,10 @@
   </p>
   <form class="flex w-350 justify-between">
     <button id="create-msa-btn" on:click|preventDefault={doCreateMsa}
-            class="btn-primary action-btn-l">
+            class="btn-primary">
       Create an MSA
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+    <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

@@ -7,10 +7,10 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply mt-6 px-8 p-3 h-14 rounded-full text-white text-lg bg-blue border-black shadow-md;
+    @apply w-[225px] h-10 rounded-full text-white bg-blue disabled:bg-disabled text-base font-bold;
   }
-  .btn-cancel {
-    @apply mt-6 px-8 p-3 rounded-full text-white text-lg border-black shadow-md;
+  .btn-no-fill {
+    @apply text-white underline text-sm;
   }
   .action-card {
     @apply mt-8 p-8 shrink-0 rounded-lg text-white shadow-md;
@@ -21,11 +21,27 @@
   .action-card-title {
     @apply font-semibold text-2xl;
   }
-  .action-btn-l {
-    @apply grow mr-3;
+  
+  /* typeography */
+  /* headers */
+  .section-title {
+    @apply font-bold text-xl;
   }
-  .action-btn-r {
-    @apply grow ml-3;
+  .label {
+    @apply font-bold text-base tracking-wide;
+  }
+  /* data */
+  .data-value-sm {
+    @apply font-data text-green text-sm;
+  }
+  .data-value-base {
+    @apply font-data text-green text-base;
+  }
+  .data-value-lg {
+    @apply font-data text-green text-lg;
+  }
+  .data-value-2xl {
+    @apply font-data text-green text-2xl;
   }
 }
 
@@ -34,7 +50,7 @@
     color: white;
     min-height: 100vh;
     margin: 2em;
-    background: linear-gradient(to bottom right, #293b59, #007da1);
+    background: linear-gradient(to top, #2c333d, #007da1);
   }
 
   button {

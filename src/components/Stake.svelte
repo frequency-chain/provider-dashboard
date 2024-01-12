@@ -132,8 +132,8 @@
       </div>
     </div>
     <div class="flex w-350 justify-between">
-      <button on:click|preventDefault={stake} class="btn-primary action-btn-l">Stake</button>
-      <button on:click|preventDefault={cancelAction} class="btn-cancel action-btn-r">Cancel</button>
+      <button on:click|preventDefault={stake} class="btn-primary">Stake</button>
+      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>
   </form>
 </div>

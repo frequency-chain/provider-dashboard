@@ -35,7 +35,7 @@
   });
 </script>
 
-<div class="p-14 action-card w-500 min-w-fit font-semibold tracking-wider bg-gradient-to-br align-top">
+<div class="p-14 action-card flex-grow min-w-fit font-semibold tracking-wider bg-bg-black align-top">
   <table>
     <tr>
       <td colspan="2" class="text-2xl pb-6">Provider</td>
