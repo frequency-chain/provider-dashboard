@@ -7,7 +7,7 @@
 
 <div
   id="chain-status"
-  class=" p-8 h-fit shadow-md flex items-stretch bg-white-transparent rounded-xl font-semibold tracking-wider"
+  class="p-8 h-fit shadow-md flex items-stretch bg-bg-black rounded-xl font-semibold tracking-wider"
 >
   <div class="text-3xl self-center text-right border-r-2 pr-10 pl-4">
     <div class="height-fit">Overview:</div>

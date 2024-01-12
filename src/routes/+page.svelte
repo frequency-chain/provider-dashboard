@@ -14,8 +14,7 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
-  import topright from '$lib/assets/top-right-bars.png';
-  import bottomleft from '$lib/assets/bottom-left-bars.png';
+
   import type { ChainInfo, MsaInfo } from '$lib/storeTypes';
 
   let token = '';
@@ -38,8 +37,6 @@
   };
 </script>
 
-<img alt="decoration-top-left" src={topright} class="mt-0 absolute top right-8 -z-40" />
-
 <ChainStatus {blockNumber} {connected} {token} {epochNumber} />
 <div class="flex justify-center">
   <Provider />
@@ -60,4 +57,3 @@
   </form>
   <ProviderActions {validAccounts} />
 </div>
-<img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40" />

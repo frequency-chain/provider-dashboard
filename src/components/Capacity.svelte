@@ -74,7 +74,7 @@
   });
 </script>
 
-<div class="p-14 ml-8 w-500 action-card font-semibold tracking-wider bg-gradient-to-br">
+<div class="p-14 ml-8 flex-grow action-card font-semibold tracking-wider bg-bg-black">
   <p class="text-2xl pb-6">Capacity</p>
   {#if !connected}
     <p>Not connected</p>
