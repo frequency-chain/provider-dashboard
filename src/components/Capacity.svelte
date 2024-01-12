@@ -16,7 +16,7 @@
 
   let signingAddress = ''; // eslint-disable-line no-unused-vars
   let epochNumber = 0n;
-  let connected;
+  let connected: boolean;
   storeConnected.subscribe((val) => (connected = val));
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
@@ -74,7 +74,7 @@
   });
 </script>
 
-<div class="p-14 ml-8 w-500 action-card font-semibold tracking-wider bg-gradient-to-br">
+<div class="p-14 ml-8 flex-grow action-card font-semibold tracking-wider bg-bg-black">
   <p class="text-2xl pb-6">Capacity</p>
   {#if !connected}
     <p>Not connected</p>
