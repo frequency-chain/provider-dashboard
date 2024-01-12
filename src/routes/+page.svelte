@@ -14,12 +14,6 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
-<<<<<<< HEAD
-
-=======
-  import topright from '$lib/assets/top-right-bars.png';
-  import bottomleft from '$lib/assets/bottom-left-bars.png';
->>>>>>> 1b03c64 (header created)
   import type { ChainInfo, MsaInfo } from '$lib/storeTypes';
 
   let token = '';
