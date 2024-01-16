@@ -94,12 +94,9 @@ export async function loadAccounts(
     let foundProviderAccounts: AccountMap | MetaMap = {};
     for (let index in Object.keys(foundAccounts)) {
       const account = Object.values(foundAccounts)[index];
-      const msaInfo = await getMsaInfo(apiPromise, account.address);
-      if (msaInfo.isProvider) {
-        foundProviderAccounts[account.address] = account;
-      }
+      const { isProvider } = await getMsaInfo(apiPromise, account.address);
+      if (isProvider) foundProviderAccounts[account.address] = account;
     }
-    console.log('FOUND PROVIDER ACCOUNTS', foundProviderAccounts);
     storeProviderAccounts.update((val) => (val = foundProviderAccounts));
   }
 }
