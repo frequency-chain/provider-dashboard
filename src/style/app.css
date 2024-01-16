@@ -21,7 +21,7 @@
   .action-card-title {
     @apply font-semibold text-2xl;
   }
-  
+
   /* typeography */
   /* headers */
   .section-title {
@@ -59,7 +59,7 @@
   input,
   [type='text'],
   select {
-    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 px-2 border-none outline-none disabled:opacity-85 disabled:text-disabled;
+    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 pl-2 pr-7 border-none outline-none disabled:opacity-85 disabled:text-disabled overflow-ellipsis;
   }
 
   ::placeholder {

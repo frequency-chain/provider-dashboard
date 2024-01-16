@@ -1,6 +1,13 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { GENESIS_HASHES, getBlockNumber, getEpoch } from './connections';
-import { dotApi, storeBlockNumber, storeConnected, storeToken, storeValidAccounts } from './stores';
+import {
+  dotApi,
+  storeBlockNumber,
+  storeConnected,
+  storeToken,
+  storeValidAccounts,
+  storeProviderAccounts,
+} from './stores';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
@@ -51,7 +58,8 @@ export async function loadAccounts(
   selectedProviderURI: string,
   selectedProvider: string,
   thisWeb3Enable: typeof web3Enable,
-  thisWeb3Accounts: typeof web3Accounts
+  thisWeb3Accounts: typeof web3Accounts,
+  apiPromise: ApiPromise
 ) {
   // populating for localhost and for a parachain are different since with localhost, there is
   // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
@@ -82,6 +90,17 @@ export async function loadAccounts(
   // to avoid updating subscribers with an empty list
   if (Object.keys(foundAccounts).length > 0) {
     storeValidAccounts.update((val) => (val = foundAccounts));
+
+    let foundProviderAccounts: AccountMap | MetaMap = {};
+    for (let index in Object.keys(foundAccounts)) {
+      const account = Object.values(foundAccounts)[index];
+      const msaInfo = await getMsaInfo(apiPromise, account.address);
+      if (msaInfo.isProvider) {
+        foundProviderAccounts[account.address] = account;
+      }
+    }
+    console.log('FOUND PROVIDER ACCOUNTS', foundProviderAccounts);
+    storeProviderAccounts.update((val) => (val = foundProviderAccounts));
   }
 }
 
@@ -113,21 +132,31 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   };
 }
 
-export async function getMsaEpochAndCapacityInfo(
-  apiPromise: ApiPromise,
-  accountId: string
-): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
+export async function getMsaInfo(apiPromise: ApiPromise, accountId: string): Promise<MsaInfo> {
   const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(accountId)).unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received.toNumber();
-  const epochNumber = await getEpoch(apiPromise);
-  let capacityDetails;
   if (msaInfo.msaId > 0) {
     const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
       msaInfo.providerName = registryEntry.providerName;
+    }
+  }
+  return msaInfo;
+}
+
+export async function getMsaEpochAndCapacityInfo(
+  apiPromise: ApiPromise,
+  accountId: string
+): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
+  const msaInfo = await getMsaInfo(apiPromise, accountId);
+  const epochNumber = await getEpoch(apiPromise);
+  let capacityDetails;
+  if (msaInfo.msaId > 0) {
+    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
+    if (providerRegistry.isSome) {
       const details: any = (await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)).unwrapOrDefault();
       capacityDetails = {
         remainingCapacity: details.remainingCapacity.toBigInt(),
