@@ -12,8 +12,6 @@
     { name: 'Logout', href: '', isActive: false },
   ];
 
-  console.log(navItems);
-
   //TODO: logout in store once store created
   const logout = () => {};
 </script>
