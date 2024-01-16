@@ -19,7 +19,7 @@ export const storeChainInfo = writable({ connected: false, blockNumber: 0n, epoc
 export enum PageContent {
     Dashboard = 'dashboard',
     Login = 'login',
-    Register = 'register'
+    BecomeProvider = 'becomeProvider'
 }
 
 const createPageContentStore = () => {
@@ -29,7 +29,7 @@ const createPageContentStore = () => {
         subscribe,
         set,
         login: () => set(PageContent.Login),
-        register: () => set(PageContent.Register),
+        becomeProvider: () => set(PageContent.BecomeProvider),
         dashboard: () => set(PageContent.Dashboard)
     };
 }

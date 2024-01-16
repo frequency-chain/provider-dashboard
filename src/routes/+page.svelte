@@ -12,7 +12,7 @@
 <Dashboard />
 {:else if $pageContent === PageContent.Login}
 <Connect />
-{:else if $pageContent === PageContent.Register}
+{:else if $pageContent === PageContent.BecomeProvider}
 <RequestToBeProvider />
 {/if}
 <img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40"/>
