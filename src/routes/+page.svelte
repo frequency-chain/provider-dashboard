@@ -14,7 +14,6 @@
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
-
   import type { ChainInfo, MsaInfo } from '$lib/storeTypes';
 
   let token = '';
