@@ -2,16 +2,16 @@
   import bottomleft from '$lib/assets/bottom-left-bars.png';
   import Dashboard from '$components/Dashboard.svelte';
   import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
-  import Connect from '$components/Connect.svelte';
+  import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores';
 
-  $pageContent = PageContent.Dashboard;
+  $pageContent = PageContent.Login;
 </script>
 
 {#if $pageContent === PageContent.Dashboard}
 <Dashboard />
 {:else if $pageContent === PageContent.Login}
-<Connect />
+<ProviderLogin />
 {:else if $pageContent === PageContent.BecomeProvider}
 <RequestToBeProvider />
 {/if}
