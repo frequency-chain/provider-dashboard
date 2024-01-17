@@ -8,11 +8,6 @@
     export let onSelect = () => {};
     export let required = false;
     export let disabled = false;
-
-    function isDisabled() {
-	    return disabled;
-	}
-
   </script>
   
   <style>
