@@ -4,16 +4,19 @@
 
   let msaInfo: MsaInfo;
 
-  storeMsaInfo.subscribe((info: MsaInfo) => {
-    msaInfo = info;
+  storeMsaInfo.subscribe((info) => {
+    msaInfo = info as MsaInfo;
   });
 </script>
 
 <div class="flex items-center gap-4">
-  <div class="h-[90px] w-[90px] max-w-[90px] rounded-full bg-blue" />
+  <div
+    class="text-2xl text-bold h-[90px] w-[90px] max-w-[90px] rounded-full bg-gradient-to-r to-green from-blue flex items-center justify-center"
+  >
+    {msaInfo ? msaInfo.providerName.substring(0, 1) : ''}
+  </div>
   <div class="flex flex-col gap-1">
     <div class="data-value-lg">{msaInfo?.providerName}</div>
-    <div class="text-sm">@user_name</div>
-    <div class="text-xs">{msaInfo?.msaId}</div>
+    <div class="text-sm">{msaInfo?.msaId}</div>
   </div>
 </div>
