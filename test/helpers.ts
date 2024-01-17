@@ -2,7 +2,6 @@ import { screen } from '@testing-library/svelte';
 
 // Helper function to get text that is broken up into multiple elements (->stackExchange)
 export const getByTextContent = (text: string) => {
-  console.log('TEXT', text);
   // Passing custom matcher function to `getByText`
   return screen.getByText((_content, element) => {
     const hasText = (element) => element.textContent === text;
