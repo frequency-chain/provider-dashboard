@@ -5,7 +5,7 @@
   import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores';
 
-  $pageContent = PageContent.Login;
+  $pageContent = PageContent.Dashboard;
 </script>
 
 {#if $pageContent === PageContent.Dashboard}
@@ -15,4 +15,3 @@
 {:else if $pageContent === PageContent.BecomeProvider}
 <RequestToBeProvider />
 {/if}
-<img alt="decoration-bottom-left" src={bottomleft} class="mt-20 fixed bottom-0 left-8 -z-40"/>
