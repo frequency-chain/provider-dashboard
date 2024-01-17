@@ -1,27 +1,33 @@
 <script lang="ts">
-  export let label: string;
-  export let id: string;
-  export let options: Record<string, string>;
-  export let selected: string;
-  export let placeholder: string;
-  export let onChange = () => {};
-  export let onSelect = () => {};
-  export let required = false;
-</script>
+    export let label: string;
+    export let id: string = "";
+    export let options: Record<string, string>;
+    export let selected: string = "";
+    export let placeholder: string = "";
+    export let onChange = () => {};
+    export let onSelect = () => {};
+    export let required = false;
+    export let disabled = false;
 
-<style>
-    option[value=""][disabled] {
-      display: none;
-    }
-</style>
+    function isDisabled() {
+	    return disabled;
+	}
 
-<label class="section-title" for={id}>{label}</label>
-<div style="margin-bottom: 14px;"></div>
-<select {id} bind:value={selected} {required} on:change={onChange} on:select={onSelect} class="dropdown">
-  {#if placeholder}
-    <option value="" disabled selected>{placeholder}</option>
-  {/if}
-  {#each Object.keys(options) as option}
-    <option value={option} class="bg-base">{option}: {options[option]}</option>
-  {/each}
-</select>
+  </script>
+  
+  <style>
+      option[value=""][disabled] {
+        display: none;
+      }
+  </style>
+  
+  <label class="label block mb-3.5" for={id}>{label}</label>
+  <select {id} bind:value={selected} {required} {disabled} on:change={onChange} on:select={onSelect}>
+    {#if placeholder !== ""}
+        <option class="text-disabled" value="" disabled selected>{placeholder}</option>
+    {/if}
+    {#each Object.entries(options) as [key, value]}
+    <option value={key} class="bg-base">{key}: {value}</option>
+    {/each}
+  </select>
+  
