@@ -24,6 +24,7 @@ export default {
     },
     width: {
       500: '500px',
+      "single-block": '550px',
     },
     extend: {
       borderRadius: {

@@ -10,6 +10,7 @@
   export let disabled = false;
 </script>
 
+<div>
 <label class="label block mb-3.5" for={id}>{label}</label>
 <select {id} bind:value={selected} {required} {disabled} on:change={onChange} on:select={onSelect}>
   {#if placeholder !== ''}
@@ -19,6 +20,7 @@
     <option value={key} class="bg-base">{key}: {value}</option>
   {/each}
 </select>
+</div>
 
 <style>
   option[value=''][disabled] {

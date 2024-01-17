@@ -22,11 +22,21 @@
     @apply font-semibold text-2xl;
   }
   
-  /* typeography */
+  /* layout */
+  .content-block {
+    @apply bg-bg-black rounded-md p-7;
+  }
+
+  /* typography */
   /* headers */
   .section-title {
     @apply font-bold text-xl;
   }
+
+  .section-title-underlined {
+    @apply section-title pb-3 border-divider border-b;
+  }
+
   .label {
     @apply font-bold text-base tracking-wide;
   }
