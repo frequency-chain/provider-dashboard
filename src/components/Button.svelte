@@ -1,6 +1,6 @@
 <script lang="ts">
-  let title: string = '';
-  let action = () => {};
+  export let title: string = '';
+  export let action = () => {};
 </script>
 
 <div class="flex w-350 justify-between">
