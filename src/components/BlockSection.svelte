@@ -1,5 +1,5 @@
 <script lang="ts">
-  let title: string;
+  export let title: string;
 </script>
 
 <div class="content-block w-single-block flex flex-col gap-4">
