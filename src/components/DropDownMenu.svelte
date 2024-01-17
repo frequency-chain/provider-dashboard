@@ -9,10 +9,14 @@
   export let required = false;
 </script>
 
+<style>
+    option[value=""][disabled] {
+      display: none;
+    }
+</style>
+
 <label class="section-title" for={id}>{label}</label>
-
 <div style="margin-bottom: 14px;"></div>
-
 <select {id} bind:value={selected} {required} on:change={onChange} on:select={onSelect} class="dropdown">
   {#if placeholder}
     <option value="" disabled selected>{placeholder}</option>
