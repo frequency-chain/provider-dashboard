@@ -46,7 +46,7 @@ describe('End to End Tests', () => {
     });
     expect(hiddenButton).toBeNull();
 
-    const signer = screen.getByLabelText('Choose a Wallet Address');
+    const signer = screen.getByLabelText('Select a Provider Control Key');
     await fireEvent.change(signer, {
       target: {
         value: '//Alice: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY',
