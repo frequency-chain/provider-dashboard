@@ -14,4 +14,24 @@ export const storeCurrentAction = writable(ActionForms.NoForm);
 
 export const storeToken = writable('');
 
-export const storeChainInfo = writable({ connected: false, blockNumber: 0n, epochNumber: 0n, token: ''});
+export const storeChainInfo = writable({ connected: false, blockNumber: 0n, epochNumber: 0n, token: '' });
+
+export enum PageContent {
+    Dashboard = 'dashboard',
+    Login = 'login',
+    BecomeProvider = 'becomeProvider'
+}
+
+const createPageContentStore = () => {
+    const { subscribe, set, update } = writable(PageContent.Login);
+
+    return {
+        subscribe,
+        set,
+        login: () => set(PageContent.Login),
+        becomeProvider: () => set(PageContent.BecomeProvider),
+        dashboard: () => set(PageContent.Dashboard)
+    };
+}
+
+export const pageContent = createPageContentStore();
