@@ -6,11 +6,12 @@
   export let options: Record<string, string>;
   export let placeholder: string = '';
   export let selectedValue: string = "";
+  export let onChange = () => {};
 </script>
 
 <div>
   <label class="label block mb-3.5" for={id}>{label}</label>
-  <select bind:value={selectedValue} >
+  <select bind:value={selectedValue} {...$$restProps} on:change={onChange}>
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}
