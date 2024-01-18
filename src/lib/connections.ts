@@ -12,15 +12,15 @@ import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 
 export const ProviderMap: Record<string, string> = {
-  Rococo: 'wss://rpc.rococo.frequency.xyz',
-  Mainnet: 'wss://0.rpc.frequency.xyz',
+  TESTNET: 'wss://rpc.rococo.frequency.xyz',
+  MAINNET: 'wss://0.rpc.frequency.xyz',
   Localhost: 'ws://127.0.01:9944',
   Other: 'a custom endpoint',
 };
 
 export const GENESIS_HASHES: Record<string, string> = {
-  Rococo: '0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72',
-  Mainnet: '0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1',
+  TESTNET: '0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72',
+  MAINNET: '0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1',
   frequency: '0x4a587bf17a404e3572747add7aab7bbe56e805a5479c6c436f07f36fcc8d3ae1',
 };
 

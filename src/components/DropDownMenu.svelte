@@ -17,7 +17,7 @@
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}
     {#each Object.entries(options) as [key, value]}
-      <option value={key} class="bg-base">{key}: {value}</option>
+      <option value={key} class="bg-base">{value}</option>
     {/each}
   </select>
 </div>
