@@ -6,6 +6,7 @@
     storeMsaInfo,
     storeBlockNumber,
     storeChainInfo,
+    storeCurrentAction,
   } from '$lib/stores';
   import { getBlockNumber } from '$lib/connections';
   import type { ApiPromise } from '@polkadot/api';
@@ -13,6 +14,8 @@
   import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
   import { providerNameToHuman } from '$lib/utils';
   import { balanceToHuman } from '$lib/utils.js';
+  import ListCard from './ListCard.svelte';
+  import { ActionForms } from '$lib/storeTypes.js';
 
   let signingAddress = ''; // eslint-disable-line no-unused-vars
   let epochNumber = 0n;
@@ -20,8 +23,8 @@
   storeConnected.subscribe((val) => (connected = val));
 
   let msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
-  storeMsaInfo.subscribe((info: MsaInfo) => {
-    msaInfo = info;
+  storeMsaInfo.subscribe((info) => {
+    msaInfo = info as MsaInfo;
   });
 
   storeConnected.subscribe((val) => (connected = val));
@@ -34,7 +37,7 @@
   let blockNumber = 0n;
   storeBlockNumber.subscribe((val) => (blockNumber = val));
 
-  export let token;
+  export let token = '';
 
   type CapacityDetails = {
     remainingCapacity: bigint;
@@ -72,34 +75,19 @@
       storeMsaInfo.set(msaInfo);
     }
   });
+
+  function showStake() {
+    storeCurrentAction.update((val) => (val = ActionForms.Stake));
+  }
+
+  $: capacityList = [
+    { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
+    { label: 'Total Issued', value: balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP') },
+    { label: 'Last Replenished', value: `Epoch ${capacityDetails?.lastReplenishedEpoch}` },
+    { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, token) },
+  ];
 </script>
 
-<div class="p-14 ml-8 flex-grow action-card font-semibold tracking-wider bg-bg-black">
-  <p class="text-2xl pb-6">Capacity</p>
-  {#if !connected}
-    <p>Not connected</p>
-  {:else if msaInfo.isProvider}
-    <table>
-      <tr>
-        <td>Remaining:</td>
-        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.remainingCapacity, 'CAP')}</td>
-      </tr>
-      <tr>
-        <td>Total Issued: </td>
-        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP')}</td>
-      </tr>
-      <tr>
-        <td>Last Replenished:</td>
-        <td class="pl-4 font-light">Epoch {capacityDetails?.lastReplenishedEpoch}</td>
-      </tr>
-      <tr>
-        <td>Staked Token: </td>
-        <td class="pl-4 font-light">{balanceToHuman(capacityDetails?.totalCapacityIssued, token)}</td>
-      </tr>
-    </table>
-  {:else if signingAddress == ''}
-    <p>No transaction signing address selected</p>
-  {:else}
-    <p>Not a provider</p>
-  {/if}
-</div>
+<ListCard title="Capacity" list={capacityList} {connected} {msaInfo} {signingAddress}>
+  <button on:click={showStake} class="btn-primary">Stake To Provider</button>
+</ListCard>

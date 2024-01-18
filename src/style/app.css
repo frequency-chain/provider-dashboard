@@ -22,6 +22,11 @@
     @apply font-semibold text-2xl;
   }
 
+  /* layout */
+  .content-block {
+    @apply bg-bg-black rounded-md p-7;
+  }
+
   /* typeography */
   /* headers */
   .section-title {
