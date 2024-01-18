@@ -52,7 +52,13 @@
     storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
     try {
       await getApi(selectedProviderURI, thisDotApi, wsProvider);
-      await loadAccounts(selectedProviderURI, selectedProvider, thisWeb3Enable, thisWeb3Accounts);
+      await loadAccounts(
+        selectedProviderURI,
+        selectedProvider,
+        thisWeb3Enable,
+        thisWeb3Accounts,
+        thisDotApi.api as ApiPromise
+      );
       await updateConnectionStatus(thisDotApi.api as ApiPromise);
     } catch (e: any) {
       console.error('Error: ', e);

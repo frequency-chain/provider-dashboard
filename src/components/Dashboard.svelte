@@ -4,6 +4,7 @@
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
+  import DashboardHeader from '$components/DashboardHeader.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
   import type { ChainInfo } from '$lib/storeTypes';
 
@@ -38,23 +39,29 @@
   storeChainInfo.subscribe((info: ChainInfo) => (epochNumber = info.epochNumber));
 </script>
 
-<ChainStatus {blockNumber} {connected} {token} {epochNumber} />
-<div class="flex justify-center">
-  <Provider />
-  <Capacity bind:token />
-</div>
-<div class="mt-8 text-white">
-  <form id="setupForm">
-    <Connect />
-    <div class:hidden={!connected} class="mt-8">
-      <KeySelection
-        component="TransactionSigningKey"
-        selectLabel="Choose a Wallet Address"
-        selectedOption={''}
-        onSelect={onChangeTxnSigningAddress}
-        {validAccounts}
-      />
-    </div>
-  </form>
-  <ProviderActions {validAccounts} />
+<div class="flex flex-col gap-4">
+  <DashboardHeader />
+
+  <ChainStatus {blockNumber} {connected} {token} {epochNumber} />
+
+  <div class="flex justify-center gap-4">
+    <Provider />
+    <Capacity bind:token />
+  </div>
+
+  <div class="text-white">
+    <form id="setupForm">
+      <Connect />
+      <div class:hidden={!connected} class="mt-8">
+        <KeySelection
+          component="TransactionSigningKey"
+          selectLabel="Choose a Wallet Address"
+          selectedOption={''}
+          onSelect={onChangeTxnSigningAddress}
+          {validAccounts}
+        />
+      </div>
+    </form>
+    <ProviderActions {validAccounts} />
+  </div>
 </div>

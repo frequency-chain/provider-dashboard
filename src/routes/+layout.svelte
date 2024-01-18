@@ -8,7 +8,7 @@
   <img alt="The project logo" src={wave} class="fixed w-[100%] top-0 right-0 z-[-1]" />
   <div class="flex">
     <Nav />
-    <div class="m-6 w-[100%]">
+    <div class="m-6 w-[100%] pl-[126px]">
       <Header />
       <div class="flex items-center justify-center">
       <slot />

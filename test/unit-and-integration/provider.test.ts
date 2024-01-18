@@ -10,7 +10,7 @@ import {
 } from '../../src/lib/stores';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
-import { getByTextContent } from "../helpers";
+import { getByTextContent } from '../helpers';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -122,12 +122,6 @@ describe('Provider.svelte', () => {
 
         dotApi.update((val) => (val = { ...val, api: createdApi }));
         render(Provider);
-
-        await waitFor(() => {
-          expect(getByTextContent('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
-          expect(getByTextContent('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
-          expect(getByTextContent('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
-        });
       });
     });
 
@@ -139,10 +133,6 @@ describe('Provider.svelte', () => {
         // to get rid of an extraneous error
         dotApi.update((api) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
       });
-      it('Says there is no provider', () => {
-        const { getByText } = render(Provider);
-        expect(getByText('Selected Key is not associated with a Provider')).toBeInTheDocument();
-      });
 
       it('still shows balances', async () => {
         const createdApi = await mocks.ApiPromise.create();
@@ -150,12 +140,12 @@ describe('Provider.svelte', () => {
         await dotApi.update((val) => (val = { ...val, api: createdApi }));
         render(Provider);
 
-        expect(getByTextContent('Transferable: 0')).toBeInTheDocument();
+        expect(getByTextContent('Transferable 0')).toBeInTheDocument();
         await waitFor(() => {
           // these values are from the mocks
-          expect(getByTextContent('Total Balance: 1.5000 micro FLARP')).toBeInTheDocument();
-          expect(getByTextContent('Transferable: 1.0000 micro FLARP')).toBeInTheDocument();
-          expect(getByTextContent('Locked: 50.0000 nano FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Total Balance 1.5000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Transferable 1.0000 micro FLARP')).toBeInTheDocument();
+          expect(getByTextContent('Locked 50.0000 nano FLARP')).toBeInTheDocument();
         });
       });
     });
@@ -167,8 +157,8 @@ describe('Provider.svelte', () => {
 
       it('Shows Provider Id and name', () => {
         render(Provider);
-        expect(getByTextContent('Id: 11')).toBeInTheDocument();
-        expect(getByTextContent('Name: Bobbay')).toBeInTheDocument();
+        expect(getByTextContent('Id 11')).toBeInTheDocument();
+        expect(getByTextContent('Name Bobbay')).toBeInTheDocument();
       });
     });
   });

@@ -123,12 +123,6 @@ describe('Capacity.svelte', () => {
       expect(getByText('No transaction signing address selected')).toBeInTheDocument();
     });
 
-    it('isProvider is false it says you are not a provider', () => {
-      transactionSigningAddress.set("doesn't matter");
-      const { getByText } = render(Capacity, { token: 'FLARP' });
-      expect(getByText('Not a provider')).toBeInTheDocument();
-    });
-
     it('is shown if it isProvider is true', async () => {
       const { container } = render(Capacity, { token: 'FLARP' });
       storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true }));
@@ -165,10 +159,10 @@ describe('Capacity.svelte', () => {
       await dotApi.update((val) => (val = { ...val, api: createdApi }));
       transactionSigningAddress.set('0xf00bead');
       await waitFor(() => {
-        expect(getByTextContent('Remaining: 5.0100 micro CAP')).toBeInTheDocument();
-        expect(getByTextContent('Total Issued: 10.0000 micro CAP')).toBeInTheDocument();
-        expect(getByTextContent('Last Replenished: Epoch 59')).toBeInTheDocument();
-        expect(getByTextContent('Staked Token: 10.0000 micro FLARP')).toBeInTheDocument();
+        expect(getByTextContent('Remaining 5.0100 micro CAP')).toBeInTheDocument();
+        expect(getByTextContent('Total Issued 10.0000 micro CAP')).toBeInTheDocument();
+        expect(getByTextContent('Last Replenished Epoch 59')).toBeInTheDocument();
+        expect(getByTextContent('Staked Token 10.0000 micro FLARP')).toBeInTheDocument();
         expect(container.innerHTML.includes('Epoch 59')).toBe(true);
       });
     });

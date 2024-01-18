@@ -16,7 +16,7 @@
   const logout = () => {};
 </script>
 
-<div class="bg-bg-black w-[126px] min-w-[126px] h-screen flex flex-col justify-center items-center">
+<div class="bg-bg-black w-[126px] min-w-[126px] h-screen flex flex-col justify-center items-center fixed">
   <img alt="iconLogo" src={iconLogo} class="w-[57px] absolute top-7 left-6" />
   <div class="flex flex-col w-[100%]">
     {#each navItems as navItem}

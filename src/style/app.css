@@ -21,13 +21,13 @@
   .action-card-title {
     @apply font-semibold text-2xl;
   }
-  
+
   /* layout */
   .content-block {
     @apply bg-bg-black rounded-md p-7;
   }
 
-  /* typography */
+  /* typeography */
   /* headers */
   .section-title {
     @apply font-bold text-xl;
@@ -53,6 +53,11 @@
   .data-value-2xl {
     @apply font-data text-green text-2xl;
   }
+
+  /* layout */
+  .content-block {
+    @apply bg-bg-black rounded-md p-7;
+  }
 }
 
 @layer base {
@@ -69,7 +74,7 @@
   input,
   [type='text'],
   select {
-    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 px-2 border-none outline-none disabled:opacity-85 disabled:text-disabled;
+    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 pl-2 pr-7 border-none outline-none disabled:opacity-85 disabled:text-disabled overflow-ellipsis;
   }
 
   ::placeholder {
