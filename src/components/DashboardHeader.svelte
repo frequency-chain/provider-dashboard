@@ -3,7 +3,7 @@
   import ActivityLogPreview from '$components/ActivityLogPreview.svelte';
 </script>
 
-<div class="content-block flex justify-between mb-5">
+<div class="content-block flex justify-between">
   <Profile />
   <ActivityLogPreview />
 </div>
