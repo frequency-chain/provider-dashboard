@@ -1,18 +1,16 @@
 <script lang="ts">
+  import { logger } from "@polkadot/util";
+
   export let label: string;
   export let id: string = '';
   export let options: Record<string, string>;
-  export let selected: string = '';
   export let placeholder: string = '';
-  export let onChange = () => {};
-  export let onSelect = () => {};
-  export let required = false;
-  export let disabled = false;
+  export let selectedValue: string = "";
 </script>
 
 <div>
   <label class="label block mb-3.5" for={id}>{label}</label>
-  <select {id} bind:value={selected} {required} {disabled} on:change={onChange} on:select={onSelect}>
+  <select bind:value={selectedValue} >
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}
