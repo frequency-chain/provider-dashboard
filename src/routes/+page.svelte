@@ -1,5 +1,4 @@
 <script lang="ts">
-  import bottomleft from '$lib/assets/bottom-left-bars.png';
   import Dashboard from '$components/Dashboard.svelte';
   import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
   import ProviderLogin from '$components/ProviderLogin.svelte';
@@ -9,9 +8,9 @@
 </script>
 
 {#if $pageContent === PageContent.Dashboard}
-<Dashboard />
+  <Dashboard />
 {:else if $pageContent === PageContent.Login}
-<ProviderLogin />
+  <ProviderLogin />
 {:else if $pageContent === PageContent.BecomeProvider}
-<RequestToBeProvider />
+  <RequestToBeProvider />
 {/if}
