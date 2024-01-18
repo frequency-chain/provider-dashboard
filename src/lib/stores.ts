@@ -28,7 +28,7 @@ export enum PageContent {
 }
 
 const createPageContentStore = () => {
-  const { subscribe, set, update } = writable(PageContent.Login);
+  const { subscribe, set } = writable(PageContent.Login);
 
   return {
     subscribe,
