@@ -3,11 +3,11 @@
   import type { ApiPromise } from '@polkadot/api';
   import { submitAddControlKey } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
-  import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
   import TransactionStatus from './TransactionStatus.svelte';
+  import DropDownMenu from './DropDownMenu.svelte';
 
   let connected = false;
   let thisDotApi = defaultDotApi;
@@ -111,12 +111,11 @@
     </ul>
   </ol>
   <form class="mt-8">
-    <KeySelection
-      component="AddControlKey"
-      selectLabel="Key to Add"
-      bind:selectedOption={selectedKeyToAdd}
-      {validAccounts}
-      classOverrides="border-2 rounded-lg"
+    <DropDownMenu
+      id="AddControlKey"
+      label="Key to Add"
+      selected={selectedKeyToAdd}
+      options={validAccounts}
     />
     <div class="flex w-350 justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>

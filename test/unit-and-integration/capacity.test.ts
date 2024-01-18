@@ -123,12 +123,6 @@ describe('Capacity.svelte', () => {
       expect(getByText('No transaction signing address selected')).toBeInTheDocument();
     });
 
-    // it('isProvider is false it says you are not a provider', () => {
-    //   transactionSigningAddress.set("doesn't matter");
-    //   const { getByText } = render(Capacity, { token: 'FLARP' });
-    //   expect(getByText('Not a provider')).toBeInTheDocument();
-    // });
-
     it('is shown if it isProvider is true', async () => {
       const { container } = render(Capacity, { token: 'FLARP' });
       storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true }));

@@ -122,12 +122,6 @@ describe('Provider.svelte', () => {
 
         dotApi.update((val) => (val = { ...val, api: createdApi }));
         render(Provider);
-
-        // await waitFor(() => {
-        //   expect(getByTextContent('Transferable 1.0000 micro FLARP')).toBeInTheDocument();
-        //   expect(getByTextContent('Locked 50.0000 nano FLARP')).toBeInTheDocument();
-        //   expect(getByTextContent('Total Balance 1.5000 micro FLARP')).toBeInTheDocument();
-        // });
       });
     });
 
