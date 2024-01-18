@@ -43,6 +43,11 @@
   .data-value-2xl {
     @apply font-data text-green text-2xl;
   }
+
+  /* layout */
+  .content-block {
+    @apply bg-bg-black rounded-md p-7;
+  }
 }
 
 @layer base {

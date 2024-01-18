@@ -4,6 +4,7 @@
   import Provider from '$components/Provider.svelte';
   import KeySelection from '$components/KeySelection.svelte';
   import ProviderActions from '$components/ProviderActions.svelte';
+  import DashboardHeader from '$components/DashboardHeader.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
   import type { ChainInfo } from '$lib/storeTypes';
 
@@ -38,6 +39,7 @@
   storeChainInfo.subscribe((info: ChainInfo) => (epochNumber = info.epochNumber));
 </script>
 
+<DashboardHeader />
 <ChainStatus {blockNumber} {connected} {token} {epochNumber} />
 <div class="flex justify-center">
   <Provider />
