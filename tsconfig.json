@@ -6,6 +6,8 @@
 			"$components/*":["./src/components/*"],
 			"$lib":["./src/lib"],
 			"$lib/*":["./src/lib/*"],
+			"$routes":["./src/routes"],
+			"$routes/*":["./src/routes/*"],
 		},
 		"target": "ESNext",
 		"allowJs": true,

@@ -120,7 +120,7 @@
       placeholder=""
       options={providerAccounts}
     ></DropDownMenu>
-    <Button title="Connect" disabled={!canConnect} action={connect}></Button>
+    <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect}></Button>
   </BlockSection>
 
   <BlockSection title="Not a Provider?">
@@ -128,7 +128,7 @@
       Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
       aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
     </div>
-    <Button title="Become a Provider" action={becomeProvider}></Button>
+    <Button id="request-2b-provider-btn" title="Become a Provider" action={becomeProvider}></Button>
   </BlockSection>
 
   <div class="text-xs mt-24">
