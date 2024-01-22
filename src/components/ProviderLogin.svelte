@@ -51,7 +51,6 @@
       console.log('endpoint: ' + endpoint);
       try {
         await getApi(endpoint?.toString() ?? '', thisDotApi, wsProvider);
-        //await accountsForSelectedNetwork.fetch(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
         await fetchAccounts(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
         await updateConnectionStatus(thisDotApi.api as ApiPromise);
       } catch (e) {
@@ -89,8 +88,6 @@
     console.log('accountChanged');
     console.log('selectedAccountAsString: ' + selectedAccountAsString);
     transactionSigningAddress.set(selectedAccountAsString);
-
-    // $selectedAccount = selectedAccountAsString;
   }
 </script>
 

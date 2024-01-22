@@ -38,8 +38,9 @@ describe('End to End Tests', () => {
     const btn = container.querySelector('button#connect-button');
     await fireEvent.click(btn);
 
+    const connectionStatusValue = container.querySelector('#connection-status-value');
     await waitFor(() => {
-      expect(getByTextContent('Connected')).toBeInTheDocument();
+      expect(connectionStatusValue).toHaveTextContent('Connected');
     });
   });
 });

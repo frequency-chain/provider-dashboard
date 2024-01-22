@@ -4,6 +4,7 @@ import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import type { AccountMap, MetaMap } from '$lib/polkadotApi';
 import { getMsaInfo } from '$lib/polkadotApi';
 import { Network, networkToInfo } from '$lib/stores/networksStore';
+import { isFunction } from '@polkadot/util';
 
 //Only provider accounts
 export const storeProviderAccounts = writable({});
@@ -23,19 +24,22 @@ export async function fetchAccounts(selectedNetwork: Network, thisWeb3Enable: ty
         });
     }
     // If the Polkadot extension is installed, add the accounts to the list
-    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-    if (!extensions || !extensions.length) {
-        alert('Polkadot{.js} extension not found; please install it first.');
-        throw new Error('Polkadot{.js} extension not found; please install it first.');
-    }
+    if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
 
-    const allAccounts = await thisWeb3Accounts();
-    allAccounts.forEach((a) => {
-        // include only the accounts allowed for this chain
-        if (!a.meta.genesisHash || selectedNetworkInfo.genesisHash === a.meta.genesisHash) {
-            foundAccounts[a.address] = a;
+        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
+        if (!extensions || !extensions.length) {
+            alert('Polkadot{.js} extension not found; please install it first.');
+            throw new Error('Polkadot{.js} extension not found; please install it first.');
         }
-    });
+
+        const allAccounts = await thisWeb3Accounts();
+        allAccounts.forEach((a) => {
+            // include only the accounts allowed for this chain
+            if (!a.meta.genesisHash || selectedNetworkInfo.genesisHash === a.meta.genesisHash) {
+                foundAccounts[a.address] = a;
+            }
+        });
+    }
 
     let foundProviderAccounts: AccountMap | MetaMap = {};
     for (let index in Object.keys(foundAccounts)) {
