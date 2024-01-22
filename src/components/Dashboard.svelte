@@ -48,20 +48,4 @@
     <Provider />
     <Capacity bind:token />
   </div>
-
-  <div class="text-white">
-    <form id="setupForm">
-      <Connect />
-      <div class:hidden={!connected} class="mt-8">
-        <KeySelection
-          component="TransactionSigningKey"
-          selectLabel="Choose a Wallet Address"
-          selectedOption={''}
-          onSelect={onChangeTxnSigningAddress}
-          {validAccounts}
-        />
-      </div>
-    </form>
-    <ProviderActions {validAccounts} />
-  </div>
 </div>

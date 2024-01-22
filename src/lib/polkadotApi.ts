@@ -6,8 +6,8 @@ import {
   storeConnected,
   storeToken,
   storeValidAccounts,
-  storeProviderAccounts,
 } from './stores';
+import { storeProviderAccounts } from './stores/accountsStore';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
@@ -19,7 +19,7 @@ import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
-type MetaMap = Record<string, InjectedAccountWithMeta>;
+export type MetaMap = Record<string, InjectedAccountWithMeta>;
 
 export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, wsProvider: WsProvider) {
   if (!selectedProviderURI) {
@@ -54,6 +54,14 @@ export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, ws
   dotApi.update((currentApi) => (currentApi = initializedDotApi));
 }
 
+/**
+ * Loads accounts based on the selected provider URI and provider.
+ * @param selectedProviderURI - The URI of the selected provider.
+ * @param selectedProvider - The selected provider.
+ * @param thisWeb3Enable - The web3Enable function.
+ * @param thisWeb3Accounts - The web3Accounts function.
+ * @param apiPromise - The ApiPromise object.
+ */
 export async function loadAccounts(
   selectedProviderURI: string,
   selectedProvider: string,

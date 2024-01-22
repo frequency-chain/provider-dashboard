@@ -1,38 +1,39 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { storeConnected, dotApi, storeMsaInfo } from '$lib/stores';
-  import { defaultDotApi } from '$lib/storeTypes';
 
-  import type { ApiPromise, WsProvider } from '@polkadot/api';
+  import type { WsProvider, ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  let wsProvider: WsProvider;
-  let thisWeb3Enable: typeof web3Enable;
-  let thisWeb3Accounts: typeof web3Accounts;
+  import { dotApi, transactionSigningAddress } from '$lib/stores';
+
+  import { defaultDotApi } from '$lib/storeTypes';
 
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import BlockSection from '$components/BlockSection.svelte';
   import Button from '$components/Button.svelte';
-  import { ProviderMap } from '$lib/connections';
-  import { pageContent, storeProviderAccounts } from '$lib/stores';
+  import { pageContent } from '$lib/stores/pageContentStore';
+  import { Network, allNetworks, networkToInfo, selectedNetwork } from '$lib/stores/networksStore';
+  import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
+  import { fetchAccounts, storeProviderAccounts } from '$lib/stores/accountsStore';
 
-  const networks = Object.entries(ProviderMap).reduce((acc: Record<string, string>, [key, value]) => {
-    acc[key] = `${key}: ${value}`;
-    return acc;
-  }, {});
+  let wsProvider: WsProvider;
+  let thisWeb3Enable: typeof web3Enable;
+  let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedProvider: string = 'Rococo';
-  let otherProvider: string;
+  let networks = allNetworks();
 
-  let connected = false;
+  let selectedNetworkAsString: string = '';
+  let customNetwork: string = '';
+
   let thisDotApi = defaultDotApi;
-
-  // Add Reactive statement to enable/disable the connect button when the selectedProvider changes.
-  let canConnect = false;
-  $: canConnect = selectedProvider !== '' || otherProvider !== '';
-
-  storeConnected.subscribe((val) => (connected = val));
   dotApi.subscribe((api) => (thisDotApi = api));
 
+  let selectedAccountAsString: string = '';
+  let providerAccounts: Record<string, string> = {};
+
+  let canConnect = false;
+  $: canConnect = selectedNetworkAsString !== '' && selectedAccountAsString !== '';
+
+  // We need to access the user's wallet to get the accounts
   onMount(async () => {
     // This must be in onMount because the extension requires that you have a window to attach to.
     // Since this project is precompiled, there will be no window until onMount
@@ -41,25 +42,85 @@
     thisWeb3Accounts = polkadotExt.web3Accounts;
   });
 
+  selectedNetwork.subscribe(async (network) => {
+    console.log('selectedNetwork changed to ' + network);
+    if (network != undefined && network != Network.NONE) {
+      let info = networkToInfo[network];
+      console.dir(info);
+      let endpoint = networkToInfo[network].endpoint;
+      console.log('endpoint: ' + endpoint);
+      try {
+        await getApi(endpoint?.toString() ?? '', thisDotApi, wsProvider);
+        //await accountsForSelectedNetwork.fetch(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
+        await fetchAccounts(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
+        await updateConnectionStatus(thisDotApi.api as ApiPromise);
+      } catch (e) {
+        console.log(e);
+        alert(
+          `could not connect to ${
+            endpoint?.toString() || 'empty value'
+          }. Please enter a valid and reachable Websocket URL.`
+        );
+      }
+    }
+  });
+
+  storeProviderAccounts.subscribe((accounts) => {
+    console.log('storeProviderAccounts changed');
+    console.dir(accounts);
+    providerAccounts = Object.fromEntries(Object.entries(accounts).map(([key]) => [key, key]));
+  });
+
   function connect() {
-    console.log($storeProviderAccounts);
+    pageContent.dashboard();
   }
 
   function becomeProvider() {
     pageContent.becomeProvider();
   }
 
-  $: if (selectedProvider) {
-    console.log(selectedProvider);
+  function networkChanged() {
+    console.log('networkChanged');
+    console.log('selectedNetworkAsString: ' + selectedNetworkAsString);
+    $selectedNetwork = selectedNetworkAsString as Network;
+  }
+
+  function accountChanged() {
+    console.log('accountChanged');
+    console.log('selectedAccountAsString: ' + selectedAccountAsString);
+    transactionSigningAddress.set(selectedAccountAsString);
+
+    // $selectedAccount = selectedAccountAsString;
   }
 </script>
 
 <div class="content-block w-single-block flex flex-col gap-4">
   <BlockSection title="Provider Login">
-    <DropDownMenu label="Select a Network" bind:selectedValue={selectedProvider} placeholder="" options={networks}
+    <DropDownMenu
+      id="network"
+      label="Select a Network"
+      bind:action={selectedNetworkAsString}
+      onChange={networkChanged}
+      placeholder=""
+      options={networks}
     ></DropDownMenu>
-    <DropDownMenu label="Select a Provider Control Key" placeholder="" options={ProviderMap}></DropDownMenu>
-    <Button title="Connect" action={connect}></Button>
+    <input
+      type="text"
+      id="other-endpoint-url"
+      placeholder="wss://some.frequency.node"
+      bind:value={customNetwork}
+      disabled={$selectedNetwork != Network.CUSTOM}
+      class:hidden={$selectedNetwork != Network.CUSTOM}
+    />
+    <DropDownMenu
+      id="controlkeys"
+      label="Select a Provider Control Key"
+      bind:action={selectedAccountAsString}
+      onChange={accountChanged}
+      placeholder=""
+      options={providerAccounts}
+    ></DropDownMenu>
+    <Button title="Connect" disabled={!canConnect} action={connect}></Button>
   </BlockSection>
 
   <BlockSection title="Not a Provider?">

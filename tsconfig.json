@@ -1,6 +1,12 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
 	"compilerOptions": {
+		"paths": {
+			"$components":["./src/components"],
+			"$components/*":["./src/components/*"],
+			"$lib":["./src/lib"],
+			"$lib/*":["./src/lib/*"],
+		},
 		"target": "ESNext",
 		"allowJs": true,
 		"checkJs": true,
