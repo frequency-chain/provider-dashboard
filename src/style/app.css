@@ -67,16 +67,6 @@
     background: linear-gradient(to top, #2c333d, #007da1);
   }
 
-  .bg-green-success {
-    --tw-bg-opacity: 1;
-    background-color: rgb(0 255 0 / var(--tw-bg-opacity));
-  }
-  
-  .bg-red-error {
-    --tw-bg-opacity: 1;
-    background-color: rgb(255 0 0 / var(--tw-bg-opacity));
-  }
-
   button {
     @apply select-none;
   }
