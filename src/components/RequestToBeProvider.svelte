@@ -173,6 +173,8 @@
         placeholder=""
         options={providerAccounts}
       ></DropDownMenu>
+      <label for="providerNameRtB">Provider name</label>
+      <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
       <Button id="create-provider-button" title="Create Provider" disabled={!canConnect} action={createProvider}></Button>
       <div></div>
     </BlockSection>
