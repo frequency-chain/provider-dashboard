@@ -1,9 +1,6 @@
 <script lang="ts">
-  import Connect from '$components/Connect.svelte';
   import Capacity from '$components/Capacity.svelte';
   import Provider from '$components/Provider.svelte';
-  import KeySelection from '$components/KeySelection.svelte';
-  import ProviderActions from '$components/ProviderActions.svelte';
   import DashboardHeader from '$components/DashboardHeader.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
   import type { ChainInfo } from '$lib/storeTypes';

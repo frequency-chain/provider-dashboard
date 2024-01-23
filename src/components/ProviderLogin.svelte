@@ -3,7 +3,7 @@
 
   import type { WsProvider, ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import { dotApi, transactionSigningAddress } from '$lib/stores';
+  import { dotApi, isLoggedIn, transactionSigningAddress } from '$lib/stores';
 
   import { defaultDotApi } from '$lib/storeTypes';
 
@@ -71,6 +71,7 @@
   });
 
   function connect() {
+    $isLoggedIn = true;
     pageContent.dashboard();
   }
 
@@ -91,7 +92,7 @@
   }
 </script>
 
-<div class="content-block w-single-block flex flex-col gap-4">
+<div id="provider-login" class="content-block w-single-block flex flex-col gap-4">
   <BlockSection title="Provider Login">
     <DropDownMenu
       id="network"
