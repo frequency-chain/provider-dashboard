@@ -8,18 +8,21 @@
   import { isLocalhost, createMailto } from '$lib/utils';
   import { ApiPromise } from '@polkadot/api';
   import TransactionStatus from '$components/TransactionStatus.svelte';
+  import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
   let web3FromSource;
-  let web3Enable;
+  let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   export let txnStatuses: Array<string> = [];
   export let validAccounts = {};
   export let signingAddress = '';
   // a callback for when the user cancels this action
-  export let cancelAction;
+  export let cancelAction = () => {
+    console.log('default cancelAction callback');
+  }
   // a callback for when a transaction hits a final state
   export let txnFinished = () => {
     console.log('default txnFinished callback');
@@ -28,7 +31,7 @@
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
     web3FromSource = extension.web3FromSource;
-    web3Enable = extension.web3Enable;
+    thisWeb3Enable = extension.web3Enable;
   });
 
   transactionSigningAddress.subscribe((addr) => (signingAddress = addr));
@@ -58,8 +61,8 @@
         txnFinished
       );
     } else {
-      if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-        const extensions = await web3Enable('Frequency parachain provider dashboard: Proposing to be provider');
+      if (isFunction(web3FromSource) && isFunction(thisWeb3Enable)) {
+        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Proposing to be provider');
         if (extensions.length !== 0) {
           const injectedExtension = await web3FromSource(signingKeys.meta.source);
           await submitRequestToBeProvider(
@@ -77,7 +80,7 @@
         }
       } else {
         console.error('web3FromSource is function? ', isFunction(web3FromSource));
-        console.error('web3Enable is function? ', isFunction(web3Enable));
+        console.error('web3Enable is function? ', isFunction(thisWeb3Enable));
       }
     }
   };

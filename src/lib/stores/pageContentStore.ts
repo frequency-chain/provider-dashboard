@@ -4,6 +4,7 @@ export enum PageContent {
     Dashboard = 'dashboard',
     Login = 'login',
     BecomeProvider = 'becomeProvider',
+    Reconnect = 'reconnect',
   }
   
   const createPageContentStore = () => {
@@ -15,6 +16,7 @@ export enum PageContent {
       login: () => set(PageContent.Login),
       becomeProvider: () => set(PageContent.BecomeProvider),
       dashboard: () => set(PageContent.Dashboard),
+      reconnect: () => set(PageContent.Reconnect),
     };
   };
   

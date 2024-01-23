@@ -3,6 +3,7 @@
   import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
   import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores/pageContentStore';
+  import Connect from '$components/Connect.svelte';
 
   $pageContent = PageContent.Login;
 </script>
@@ -13,4 +14,6 @@
   <ProviderLogin />
 {:else if $pageContent === PageContent.BecomeProvider}
   <RequestToBeProvider />
+{:else if $pageContent === PageContent.Reconnect}
+  <Connect />
 {/if}

@@ -2,6 +2,7 @@
   import { Network, allNetworks, networkToInfo, selectedNetwork } from '$lib/stores/networksStore';
   import networkSwitchIcon from '$lib/assets/switch-network.svg';
   import { isLoggedIn } from '$lib/stores';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
   let networkName:string | undefined;
   let networkEndpointURL:string | undefined;
@@ -12,6 +13,7 @@
 
 function switchNetwork() {
   console.log('switchNetwork');
+  pageContent.reconnect();
 }
 
 </script>
