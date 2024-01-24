@@ -32,8 +32,8 @@ export type MsaInfo = {
 };
 
 export type ChainInfo = {
-  blockNumber: bigint,
-  epochNumber: bigint,
-  connected: boolean,
-  token: string,
-}
+  blockNumber: bigint;
+  epochNumber: bigint;
+  connected: boolean;
+  token: string;
+};

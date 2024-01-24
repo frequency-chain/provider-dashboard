@@ -109,10 +109,8 @@
   <form>
     <label for="providerNameRtB">Provider name</label>
     <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <div class="flex w-350 justify-between">
-
-      <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn"
-              class="btn-primary">
+    <div class="w-350 flex justify-between">
+      <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
         Submit Request To Be Provider</button
       >
       <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>

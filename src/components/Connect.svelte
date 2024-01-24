@@ -102,7 +102,7 @@
     Connect to {selectedProvider}
   </button>
 </div>
-<p class="text-sm pt-4 underline cursor-pointer font-light">
+<p class="cursor-pointer pt-4 text-sm font-light underline">
   <a id="here" href="#here" on:click|preventDefault={toggleExplain} on:keydown|preventDefault={toggleExplain}
     >What's the difference between Mainnet and Testnet (Rococo)?</a
   >
@@ -113,7 +113,7 @@
     The Frequency Rococo Testnet, which works with the Polkadot Rococo Testnet, is for developers to test and debug
     applications without risking real assets.
   </p>
-  <h3 class="text-lg pt-4 pb-2">
+  <h3 class="pb-2 pt-4 text-lg">
     <strong>What about the other options?</strong>
   </h3>
   <p>To connect to a node running on your desktop, choose <span class="font-bold">Localhost.</span></p>
@@ -124,9 +124,9 @@
   <button on:click={toggleExplain} on:keydown={toggleExplain} class="btn-primary">Okay</button>
 </div>
 
-<div class:hidden={connected} class="pt-8 color-inherit">
+<div class:hidden={connected} class="color-inherit pt-8">
   <div hidden={selectedProvider !== 'Rococo' || !showFaucetInstructions}>
-    <p class="pl-8 color-inherit">
+    <p class="color-inherit pl-8">
       To transact on Frequency as a provider you will need frequency utility tokens. On Frequency testnet, you can get
       tokens from the Testnet Faucet. To do that:
     </p>
