@@ -1,12 +1,6 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { GENESIS_HASHES, getBlockNumber, getEpoch } from './connections';
-import {
-  dotApi,
-  storeBlockNumber,
-  storeConnected,
-  storeToken,
-  storeValidAccounts,
-} from './stores';
+import { dotApi, storeBlockNumber, storeConnected, storeToken, storeValidAccounts } from './stores';
 import { storeProviderAccounts } from './stores/accountsStore';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
@@ -99,8 +93,8 @@ export async function loadAccounts(
   if (Object.keys(foundAccounts).length > 0) {
     storeValidAccounts.update((val) => (val = foundAccounts));
 
-    let foundProviderAccounts: AccountMap | MetaMap = {};
-    for (let index in Object.keys(foundAccounts)) {
+    const foundProviderAccounts: AccountMap | MetaMap = {};
+    for (const index in Object.keys(foundAccounts)) {
       const account = Object.values(foundAccounts)[index];
       const { isProvider } = await getMsaInfo(apiPromise, account.address);
       if (isProvider) foundProviderAccounts[account.address] = account;

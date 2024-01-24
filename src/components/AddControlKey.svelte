@@ -111,12 +111,7 @@
     </ul>
   </ol>
   <form class="mt-8">
-    <DropDownMenu
-      id="AddControlKey"
-      label="Key to Add"
-      selected={selectedKeyToAdd}
-      options={validAccounts}
-    />
+    <DropDownMenu id="AddControlKey" label="Key to Add" selected={selectedKeyToAdd} options={validAccounts} />
     <div class="flex w-350 justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>

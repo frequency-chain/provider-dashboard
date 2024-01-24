@@ -5,7 +5,6 @@ export const storeConnected = writable(false);
 //All accounts
 export const storeValidAccounts = writable({});
 
-
 export const transactionSigningAddress = writable('');
 
 export const storeMsaInfo: Writable<MsaInfo | undefined> = writable();

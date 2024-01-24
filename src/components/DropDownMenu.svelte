@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { logger } from "@polkadot/util";
-
   export let label: string;
   export let id: string = '';
   export let action: any;
@@ -11,7 +9,7 @@
 
 <div>
   <label class="label block mb-3.5" for={id}>{label}</label>
-  <select {...$$restProps} id={id} bind:value={action} on:change={onChange}>
+  <select {...$$restProps} {id} bind:value={action} on:change={onChange}>
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}

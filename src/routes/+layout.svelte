@@ -11,8 +11,8 @@
     <div class="m-6 w-[100%] pl-[126px]">
       <Header />
       <div class="flex items-center justify-center">
-      <slot />
-    </div>
+        <slot />
+      </div>
     </div>
   </div>
 </div>
