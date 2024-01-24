@@ -1,11 +1,6 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { GENESIS_HASHES, getBlockNumber, getEpoch } from './connections';
-import {
-  dotApi,
-  storeBlockNumber,
-  storeConnected,
-  storeToken,
-} from './stores';
+import { dotApi, storeBlockNumber, storeConnected, storeToken } from './stores';
 import { storeProviderAccounts, storeValidAccounts } from './stores/accountsStore';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';

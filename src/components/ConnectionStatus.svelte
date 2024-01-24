@@ -2,11 +2,11 @@
   export let connected = false;
 </script>
 
-<div class="flex gap-6 items-center">
+<div class="flex items-center gap-6">
   <!-- {#if connected} -->
   <!-- TODO: ADD REAL DATA WHEN STORE IS CONNECTED -->
-  <div class="flex gap-2 items-center">
-    <div class="bg-green-success h-1 w-1 p-1 rounded-full" />
+  <div class="flex items-center gap-2">
+    <div class="w-1 h-1 rounded-full bg-green-success p-1" />
     <p class="text-md uppercase">name_OF_NETWORK</p>
   </div>
   <p class="text-md">NETWORK_ENDPOINT_URL</p>

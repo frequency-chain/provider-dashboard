@@ -1,11 +1,5 @@
 <script lang="ts">
-  import {
-    dotApi,
-    storeCurrentAction,
-    storeMsaInfo,
-    storeToken,
-    transactionSigningAddress,
-  } from '$lib/stores';
+  import { dotApi, storeCurrentAction, storeMsaInfo, storeToken, transactionSigningAddress } from '$lib/stores';
   import { storeValidAccounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
@@ -111,7 +105,7 @@
     Stake to Provider Id {providerId}
   </p>
   <div>
-    <ol class="list-decimal ml-4 mt-4 font-light">
+    <ol class="ml-4 mt-4 list-decimal font-light">
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
       <li>This will require 1 signature to send the transaction.</li>
@@ -131,7 +125,7 @@
         <input type="number" id="stakingInput" value="1" on:input={handleInput} />
       </div>
     </div>
-    <div class="flex w-350 justify-between">
+    <div class="w-350 flex justify-between">
       <button on:click|preventDefault={stake} class="btn-primary">Stake</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>

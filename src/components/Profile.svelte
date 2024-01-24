@@ -4,7 +4,7 @@
 
 <div class="flex items-center gap-4">
   <div
-    class="text-2xl text-bold h-[90px] w-[90px] max-w-[90px] rounded-full bg-gradient-to-r to-green from-blue flex items-center justify-center"
+    class="text-bold flex h-[90px] w-[90px] max-w-[90px] items-center justify-center rounded-full bg-gradient-to-r from-blue to-green text-2xl"
   >
     {$storeMsaInfo ? $storeMsaInfo?.providerName.substring(0, 1) : ''}
   </div>

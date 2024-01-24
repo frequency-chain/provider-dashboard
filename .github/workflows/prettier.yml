@@ -1,36 +1,28 @@
 name: Prettier checks
 on:
-    push:
-    branches: [ "main", "feat/svelte-app" ]
+  push:
+    branches: ['main', 'feat/svelte-app']
   pull_request:
-    branches: [ "main", "feat/svelte-app" ]
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+    branches: ['main', 'feat/svelte-app']
 
 jobs:
   prettier:
     name: Prettier
-    
+
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [20]
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-    - name: Install Dependencies
-      run: npm ci
+      - name: Install Dependencies
+        run: npm ci
 
-    - name: Check formatting with Prettier
-        run: pnpm prettier:check:ci
+      - name: Check formatting with Prettier
+        run: npm run prettier:check:ci

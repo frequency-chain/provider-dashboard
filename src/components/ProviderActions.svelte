@@ -63,7 +63,7 @@
 </script>
 
 {#if msaInfo?.isProvider}
-  <div class="w-500 flex justify-between">
+  <div class="flex w-500 justify-between">
     <button on:click|preventDefault={showAddControlKey} class="btn-primary mr-4 grow"> Add control key </button>
     <button on:click={showStake} class="btn-primary ml-4 grow"> Stake To Provider </button>
   </div>

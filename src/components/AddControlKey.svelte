@@ -95,7 +95,7 @@
   <p class="action-card-title">
     Add a Control Key to Provider Id {providerId}
   </p>
-  <ol class="list-decimal ml-4 mt-4 font-light">
+  <ol class="ml-4 mt-4 list-decimal font-light">
     <li>
       Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.
@@ -104,7 +104,7 @@
     <li>Select the new control key from the dropdown list below.</li>
     <li>Click 'Add It.'</li>
     <li>This requires 3 signatures: two for the authorization payload, and one to send the transaction.</li>
-    <ul class="list-disc ml-6">
+    <ul class="ml-6 list-disc">
       <li>Sign with the new control key,</li>
       <li>Sign with the current control key,</li>
       <li>Sign the transaction with the current control key.</li>
@@ -112,7 +112,7 @@
   </ol>
   <form class="mt-8">
     <DropDownMenu id="AddControlKey" label="Key to Add" selected={selectedKeyToAdd} options={validAccounts} />
-    <div class="flex w-350 justify-between">
+    <div class="w-350 flex justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
     </div>
