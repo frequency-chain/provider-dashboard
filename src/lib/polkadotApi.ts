@@ -6,8 +6,8 @@ import {
   storeConnected,
   storeToken,
   storeValidAccounts,
-  storeProviderAccounts,
 } from './stores';
+import { storeProviderAccounts } from './stores/accountsStore';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
