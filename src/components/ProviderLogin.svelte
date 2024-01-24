@@ -102,6 +102,7 @@
       placeholder=""
       options={networks}
     />
+    {#if $selectedNetwork == Network.CUSTOM}
     <input
       type="text"
       id="other-endpoint-url"
@@ -110,6 +111,7 @@
       disabled={$selectedNetwork != Network.CUSTOM}
       class:hidden={$selectedNetwork != Network.CUSTOM}
     />
+    {/if}
     <DropDownMenu
       id="controlkeys"
       label="Select a Provider Control Key"

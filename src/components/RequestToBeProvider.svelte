@@ -179,8 +179,10 @@
     />
     <label for="providerNameRtB">Provider name</label>
     <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
+    <div class="flex justify-between align-bottom">
     <Button id="create-provider-button" title="Create Provider" disabled={!canConnect} action={createProvider} />
-    <div></div>
+    <button class="btn-no-fill" on:click={close}>Cancel</button>
+    </div>
   </BlockSection>
 
   <BlockSection title="More Info">
