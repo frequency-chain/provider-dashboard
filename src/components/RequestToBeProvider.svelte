@@ -156,7 +156,7 @@
         onChange={networkChanged}
         placeholder=""
         options={networks}
-      ></DropDownMenu>
+      />
       <input
         type="text"
         id="other-endpoint-url"
@@ -172,10 +172,10 @@
         onChange={accountChanged}
         placeholder=""
         options={providerAccounts}
-      ></DropDownMenu>
+      />
       <label for="providerNameRtB">Provider name</label>
       <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-      <Button id="create-provider-button" title="Create Provider" disabled={!canConnect} action={createProvider}></Button>
+      <Button id="create-provider-button" title="Create Provider" disabled={!canConnect} action={createProvider} />
       <div></div>
     </BlockSection>
   
@@ -185,37 +185,4 @@
         aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
       </div>
     </BlockSection>
-
-
-<!-- 
-  <h2>Request to Be a Provider</h2>
-  <h3>What is a Provider?</h3>
-  <p>A Provider is an MSA holder on Frequency with special permissions.</p>
-  <ol>
-    <li>They can pay for transactions with Capacity as well as Frequency token.</li>
-    <li>They can be permitted to post certain transactions on another MSA's behalf, also known as delegation.</li>
-    <li>An MSA can stake token to generate Capacity, and designate a Provider to receive that Capacity.</li>
-  </ol>
-  <p>Anyone with an MSA ID on Frequency's Mainnet who wants to become a Provider must follow this process:</p>
-  <ol>
-    <li>Submit an on-chain transaction to request be become a provider by filling in and submitting the form below.</li>
-    <li>
-      <a href={mailTo} class="underline"> Contact the Frequency Council </a>
-      and inform them that you have requested to become a Provider, and provide them with your MSA Id.
-    </li>
-  </ol>
-  <form>
-    <label for="providerNameRtB">Provider name</label>
-    <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <div class="flex w-350 justify-between">
-
-      <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn"
-              class="btn-primary">
-        Submit Request To Be Provider</button
-      >
-      <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
-    </div>
-  </form>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
-  -->
 </div>

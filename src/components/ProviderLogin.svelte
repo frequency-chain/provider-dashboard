@@ -101,7 +101,7 @@
       onChange={networkChanged}
       placeholder=""
       options={networks}
-    ></DropDownMenu>
+    />
     <input
       type="text"
       id="other-endpoint-url"
@@ -117,8 +117,8 @@
       onChange={accountChanged}
       placeholder=""
       options={providerAccounts}
-    ></DropDownMenu>
-    <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect}></Button>
+    />
+    <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>
 
   <BlockSection title="Not a Provider?">
@@ -126,7 +126,7 @@
       Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
       aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
     </div>
-    <Button id="request-2b-provider-btn" title="Become a Provider" action={becomeProvider}></Button>
+    <Button id="request-2b-provider-btn" title="Become a Provider" action={becomeProvider} />
   </BlockSection>
 
   <div class="text-xs mt-24">

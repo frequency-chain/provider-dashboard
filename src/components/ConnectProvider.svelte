@@ -101,7 +101,7 @@
       onChange={networkChanged}
       placeholder=""
       options={networks}
-    ></DropDownMenu>
+    />
     <input
       type="text"
       id="other-endpoint-url"
@@ -117,7 +117,7 @@
       onChange={accountChanged}
       placeholder=""
       options={providerAccounts}
-    ></DropDownMenu>
+    />
     <div class="flex justify-between items-end">
       <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect}></Button>
       <div
