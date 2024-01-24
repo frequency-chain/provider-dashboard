@@ -14,9 +14,9 @@
     storeConnected,
     storeMsaInfo,
     storeToken,
-    storeValidAccounts,
     transactionSigningAddress,
   } from '$lib/stores';
+  import { storeValidAccounts } from '$lib/stores/accountsStore';
 
   const onChangeTxnSigningAddress = (evt: Event) => {
     let option = evt.target as HTMLOptionElement;

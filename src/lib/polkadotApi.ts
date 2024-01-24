@@ -5,9 +5,8 @@ import {
   storeBlockNumber,
   storeConnected,
   storeToken,
-  storeValidAccounts,
 } from './stores';
-import { storeProviderAccounts } from './stores/accountsStore';
+import { storeProviderAccounts, storeValidAccounts } from './stores/accountsStore';
 import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
@@ -19,7 +18,7 @@ import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
-type MetaMap = Record<string, InjectedAccountWithMeta>;
+export type MetaMap = Record<string, InjectedAccountWithMeta>;
 
 export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, wsProvider: WsProvider) {
   if (!selectedProviderURI) {

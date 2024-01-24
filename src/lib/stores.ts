@@ -2,9 +2,6 @@ import { writable, type Writable } from 'svelte/store';
 import { ActionForms, defaultDotApi, type MsaInfo } from '$lib/storeTypes';
 export const storeConnected = writable(false);
 
-//All accounts
-export const storeValidAccounts = writable({});
-
 export const transactionSigningAddress = writable('');
 
 export const storeMsaInfo: Writable<MsaInfo | undefined> = writable();
