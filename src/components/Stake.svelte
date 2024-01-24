@@ -4,9 +4,9 @@
     storeCurrentAction,
     storeMsaInfo,
     storeToken,
-    storeValidAccounts,
     transactionSigningAddress,
   } from '$lib/stores';
+  import { storeValidAccounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
