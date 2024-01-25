@@ -3,10 +3,10 @@
   import ConnectionStatus from './ConnectionStatus.svelte';
 </script>
 
-<header class="flex items-start justify-between mb-14">
+<header class="mb-14 flex items-start justify-between">
   <div>
     <img alt="The project logo" src={logo} class="h-11" />
-    <p class="text-md font-semibold tracking-wider pl-3">Provider Dashboard</p>
+    <p class="text-md pl-3 font-semibold tracking-wider">Provider Dashboard</p>
   </div>
   <ConnectionStatus />
 </header>

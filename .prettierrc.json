@@ -1,8 +1,16 @@
 {
-  "trailingComma": "es5",
-  "tabWidth": 2,
+  "arrowParens": "always",
+  "bracketSpacing": true,
+  "endOfLine": "auto",
+  "jsxSingleQuote": false,
+  "plugins": ["prettier-plugin-svelte", "prettier-plugin-tailwindcss"],
+  "printWidth": 120,
+  "proseWrap": "always",
+  "quoteProps": "as-needed",
   "semi": true,
   "singleQuote": true,
-  "printWidth": 120,
-  "plugins": ["prettier-plugin-svelte"]
+  "tailwindFunctions": ["clsx", "cva"],
+  "tabWidth": 2,
+  "trailingComma": "es5",
+  "useTabs": false
 }

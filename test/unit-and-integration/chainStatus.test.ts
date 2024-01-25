@@ -3,16 +3,16 @@ import { render } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import ChainStatus from '../../src/components/ChainStatus.svelte';
 
-globalThis.alert=() => {};
+globalThis.alert = () => {};
 
-describe("ChainStatus component", () => {
-  it("renders correctly", () => {
+describe('ChainStatus component', () => {
+  it('renders correctly', () => {
     const epochNumber = 1234n;
     const blockNumber = 898989n;
-    const token="FLARP";
+    const token = 'FLARP';
     const connected = true;
 
-    const { container, getByText } = render(ChainStatus, { epochNumber, blockNumber, token, connected});
+    const { container, getByText } = render(ChainStatus, { epochNumber, blockNumber, token, connected });
     expect(getByText('Connection status:')).toBeInTheDocument();
     expect(getByText('Current Block:')).toBeInTheDocument();
     expect(getByText('Epoch:')).toBeInTheDocument();

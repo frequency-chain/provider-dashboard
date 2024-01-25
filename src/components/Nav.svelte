@@ -16,9 +16,9 @@
   const logout = () => {};
 </script>
 
-<div class="bg-bg-black w-[126px] min-w-[126px] h-screen flex flex-col justify-center items-center fixed">
-  <img alt="iconLogo" src={iconLogo} class="w-[57px] absolute top-7 left-6" />
-  <div class="flex flex-col w-[100%]">
+<div class="fixed flex h-screen w-[126px] min-w-[126px] flex-col items-center justify-center bg-bg-black">
+  <img alt="iconLogo" src={iconLogo} class="absolute left-6 top-7 w-[57px]" />
+  <div class="flex w-[100%] flex-col">
     {#each navItems as navItem}
       {#key navItems}
         <a
@@ -29,7 +29,7 @@
             navItems = items;
           }}
           href={navItem.href}
-          class={` h-[100px] flex items-center justify-center font-bold text-sm ${
+          class={` flex h-[100px] items-center justify-center text-sm font-bold ${
             navItem.isActive && 'bg-bg-black-active shadow-blue-border'
           }`}>{navItem.name}</a
         >

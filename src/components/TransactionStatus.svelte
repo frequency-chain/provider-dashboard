@@ -8,11 +8,11 @@
   };
 </script>
 
-<div class:hidden={!showSelf} id="transaction-status" class="ml-8 action-card basis-1/3 grow-1">
+<div class:hidden={!showSelf} id="transaction-status" class="action-card grow-1 ml-8 basis-1/3">
   <p class="action-card-title">Transaction status</p>
   <ul class="">
     {#each statuses as status}
-      <li class="mt-4 text-md font-light">{status}</li>
+      <li class="text-md mt-4 font-light">{status}</li>
     {/each}
   </ul>
   <button on:click|preventDefault={hideSelf} class="btn-primary">Dismiss Status</button>

@@ -64,16 +64,11 @@
 
 <div id="create-msa" class="action-card basis-1/2">
   <p>
-    An MSA (Message Source Account) is required to become a provider.
-    This action will create an MSA Id
-    that is controlled by the selected Transaction Signing Address above. It is
-    available only on Frequency Testnet.
+    An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
+    controlled by the selected Transaction Signing Address above. It is available only on Frequency Testnet.
   </p>
-  <form class="flex w-350 justify-between">
-    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa}
-            class="btn-primary">
-      Create an MSA
-    </button>
+  <form class="w-350 flex justify-between">
+    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary"> Create an MSA </button>
     <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
   </form>
 </div>
