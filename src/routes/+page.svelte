@@ -3,7 +3,6 @@
   import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
   import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores/pageContentStore';
-  import ConnectProvider from '$components/ConnectProvider.svelte';
 
   $pageContent = PageContent.Login;
 </script>

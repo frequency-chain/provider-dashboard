@@ -6,6 +6,8 @@ import { getMsaInfo } from '$lib/polkadotApi';
 import { Network, networkToInfo } from '$lib/stores/networksStore';
 import { isFunction } from '@polkadot/util';
 
+//All accounts
+export const storeValidAccounts = writable({});
 //Only provider accounts
 export const storeProviderAccounts = writable({});
 
