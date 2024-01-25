@@ -32,6 +32,9 @@
   .section-title {
     @apply text-xl font-bold;
   }
+  .section-title-underlined {
+    @apply section-title border-b border-divider pb-3;
+  }
   .label {
     @apply text-base font-bold tracking-wide;
   }

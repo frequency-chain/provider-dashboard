@@ -1,5 +1,8 @@
 <script lang="ts">
-  export let connected = false;
+  import switchIcon from '$lib/assets/switch.png';
+  import ConnectProvider from './ConnectProvider.svelte';
+
+  $: showConnectProvider = false;
 </script>
 
 <div class="flex items-center gap-6">
@@ -13,6 +16,14 @@
 
   <!-- TODO: CHANGE ICON WHEN APPROVED -->
   <!-- TODO: ADD ONCLICK WHEN BUILDING SWITCH MODAL -->
-  <button on:click={() => {}}>SWITCH_ICON</button>
+  <button
+    on:click={() => (showConnectProvider = true)}
+    class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
+    ><img src={switchIcon} alt="switch" class="w-[24px]" /></button
+  >
+
+  {#if showConnectProvider}
+    <ConnectProvider close={() => (showConnectProvider = false)} />
+  {/if}
   <!-- {/if} -->
 </div>

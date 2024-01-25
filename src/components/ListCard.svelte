@@ -9,7 +9,7 @@
 </script>
 
 <div class="content-block relative min-w-fit flex-grow">
-  <p class="section-title border-b border-divider pb-3">{title}</p>
+  <p class="section-title-underlined">{title}</p>
   {#if !connected}
     <div class="pt-3">Not connected</div>
   {:else if signingAddress === ''}

@@ -12,7 +12,15 @@
 
 <div>
   <label class="label mb-3.5 block" for={id}>{label}</label>
-  <select {id} bind:value={selected} {required} {disabled} on:change={onChange} on:select={onSelect}>
+  <select
+    {id}
+    bind:value={selected}
+    {required}
+    {disabled}
+    on:change={onChange}
+    on:select={onSelect}
+    class="cursor-pointer"
+  >
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}
