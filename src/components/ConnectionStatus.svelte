@@ -13,7 +13,6 @@
 
   function switchNetwork() {
     console.log('switchNetwork');
-    pageContent.reconnect();
   }
 </script>
 
