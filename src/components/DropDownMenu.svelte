@@ -1,10 +1,11 @@
 <script lang="ts">
   export let label: string;
   export let id: string = '';
-  export let options: Map<any, string>;
+  export let options: any[];
   export let selected: any;
   export let placeholder: string = '';
   export let onChange: () => void;
+  export let formatter: (value: any) => string = (value) => value.toString();
 </script>
 
 <div>
@@ -13,8 +14,8 @@
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}
-    {#each options.entries() as [key, value]}
-      <option value={key} class="bg-base">{value}</option>
+    {#each options as option}
+      <option value={option} class="bg-base">{formatter(option)}</option>
     {/each}
   </select>
 </div>

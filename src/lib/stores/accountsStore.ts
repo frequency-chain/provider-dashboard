@@ -7,9 +7,9 @@ import { isFunction } from '@polkadot/util';
 import type { NetworkInfo } from './networksStore';
 
 // All accounts
-export const storeValidAccounts = writable<Map<string, string>>(new Map<string, string>());
+export const storeValidAccounts = writable<string[]>([]);
 // Only provider accounts
-export const storeProviderAccounts = writable<Map<string, string>>(new Map<string, string>());
+export const storeProviderAccounts = writable<string[]>([]);
 
 export async function fetchAccounts(
   selectedNetwork: NetworkInfo,
@@ -48,15 +48,15 @@ export async function fetchAccounts(
   }
 
   // Segment into provider accounts and non-provider accounts
-  const regularAccounts: Map<string, string> = new Map();
-  const providerAccounts: Map<string, string> = new Map();
+  const regularAccounts: string[] = [];
+  const providerAccounts: string[] = [];
 
   for (const address in foundAccounts) {
     const { isProvider } = await getMsaInfo(apiPromise, address);
     if (isProvider) {
-      providerAccounts.set(address, address);
+      providerAccounts.push(address);
     } else {
-      regularAccounts.set(address, address);
+      regularAccounts.push(address);
     }
   }
 

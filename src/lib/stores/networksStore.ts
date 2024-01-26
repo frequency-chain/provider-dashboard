@@ -1,16 +1,15 @@
 import { writable } from 'svelte/store';
 
-
 /**
  * Represents information about a network.
  */
 export interface NetworkInfo {
-  name: string | undefined;
-  endpoint: URL | undefined;
-  genesisHash: string | undefined;
+  name?: string;
+  endpoint?: URL;
+  genesisHash?: string;
 }
 
-export const allNetworks: NetworkInfo[] = [
+export const allNetworks = writable<NetworkInfo[]>([
   {
     name: 'MAINNET',
     endpoint: new URL('wss://0.rpc.frequency.xyz'),
@@ -22,16 +21,8 @@ export const allNetworks: NetworkInfo[] = [
     genesisHash: '0x0c33dfffa907de5683ae21cc6b4af899b5c4de83f3794ed75b2dc74e1b088e72',
   },
   { name: 'LOCALHOST', endpoint: new URL('ws://127.0.0.1:9944'), genesisHash: undefined },
-  { name: 'CUSTOM', endpoint: undefined, genesisHash: undefined },
-];
-
-export const allNetworksMap: Map<NetworkInfo, string> = new Map(
-  allNetworks.map((network) => [
-    network,
-    `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`,
-  ])
-);
-
+  { name: 'CUSTOM', endpoint: new URL('ws://127.0.0.1:9944'), genesisHash: undefined },
+]);
 
 /**
  * The selected network.

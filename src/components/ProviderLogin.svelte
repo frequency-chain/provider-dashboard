@@ -11,7 +11,7 @@
   import BlockSection from '$components/BlockSection.svelte';
   import Button from '$components/Button.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { allNetworksMap, selectedNetwork } from '$lib/stores/networksStore';
+  import { allNetworks, selectedNetwork, type NetworkInfo } from '$lib/stores/networksStore';
   import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
   import { fetchAccounts, storeProviderAccounts } from '$lib/stores/accountsStore';
 
@@ -19,7 +19,7 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let customNetwork: string = '';
+  let customNetwork: string;
 
   let thisDotApi = defaultDotApi;
   dotApi.subscribe((api) => (thisDotApi = api));
@@ -27,7 +27,7 @@
   let selectedAccountPublicKey: string = '';
 
   let canConnect: boolean = false;
-  $: canConnect = $selectedNetwork != null && $selectedNetwork.name != 'NONE' && $storeProviderAccounts.size > 0 && selectedAccountPublicKey !== '';
+  $: canConnect = $selectedNetwork != null && $selectedNetwork.name != 'NONE' && $storeProviderAccounts.length > 0 && selectedAccountPublicKey !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -78,6 +78,29 @@
     $transactionSigningAddress = selectedAccountPublicKey;
   }
 
+  function isValidURL(url: string): boolean {
+    try {
+      new URL(url);
+      return true;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function customNetworkChanged() {
+    if (isValidURL(customNetwork)) {
+      const url = new URL(customNetwork);
+      if ($selectedNetwork != null) {
+        $selectedNetwork.endpoint = url;
+        $allNetworks = [...$allNetworks];
+      }
+    }
+  }
+
+  function formatNetwork(network: NetworkInfo): string {
+    return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
+  }
+
 </script>
 
 <div id="provider-login" class="content-block w-single-block flex flex-col gap-4">
@@ -87,17 +110,20 @@
       label="Select a Network"
       bind:selected={$selectedNetwork}
       placeholder=""
-      options={allNetworksMap}
+      options={$allNetworks}
       onChange={networkChanged}
+      formatter={formatNetwork}
     />
     {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
     <input
       type="text"
+      pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
       id="other-endpoint-url"
       placeholder="wss://some.frequency.node"
-      bind:value={$selectedNetwork.endpoint}
+      bind:value={customNetwork}
       disabled={$selectedNetwork.name != 'CUSTOM'}
       class:hidden={$selectedNetwork.name != 'CUSTOM'}
+      on:change={customNetworkChanged}
     />
     {/if}
     <DropDownMenu
