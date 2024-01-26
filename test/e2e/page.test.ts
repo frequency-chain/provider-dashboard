@@ -28,11 +28,11 @@ describe('End to End Tests', () => {
     const select = getByLabelText('Select a Network');
 
     // Change the select box value
-    await fireEvent.change(select, { target: { value: 'LOCALHOST' } });
+    await fireEvent.change(select, { target: { value: 'LOCALHOST: ws://127.0.0.1:9944' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
-      expect(select).toHaveValue('LOCALHOST');
+      expect(select).toHaveTextContent('LOCALHOST: ws://127.0.0.1:9944');
     });
 
     const btn = container.querySelector('button#connect-button');
