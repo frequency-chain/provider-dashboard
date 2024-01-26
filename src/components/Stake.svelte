@@ -1,10 +1,5 @@
 <script lang="ts">
-  import {
-    dotApi,
-    storeCurrentAction,
-    storeToken,
-    transactionSigningAddress,
-  } from '$lib/stores';
+  import { dotApi, storeCurrentAction, storeToken, transactionSigningAddress } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';

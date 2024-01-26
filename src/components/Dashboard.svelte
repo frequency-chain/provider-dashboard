@@ -5,12 +5,7 @@
   import ChainStatus from '$components/ChainStatus.svelte';
   import type { ChainInfo } from '$lib/storeTypes';
 
-  import {
-    storeBlockNumber,
-    storeChainInfo,
-    storeConnected,
-    storeToken,
-  } from '$lib/stores';
+  import { storeBlockNumber, storeChainInfo, storeConnected, storeToken } from '$lib/stores';
 
   let token = '';
 

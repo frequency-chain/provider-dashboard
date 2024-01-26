@@ -1,11 +1,6 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { getBlockNumber, getEpoch } from './connections';
-import {
-  dotApi,
-  storeBlockNumber,
-  storeConnected,
-  storeToken,
-} from './stores';
+import { dotApi, storeBlockNumber, storeConnected, storeToken } from './stores';
 import { options } from '@frequency-chain/api-augment';
 
 import type { DotApi, MsaInfo } from '$lib/storeTypes';

@@ -28,4 +28,3 @@ export const allNetworks = writable<NetworkInfo[]>([
  * The selected network.
  */
 export const selectedNetwork = writable<NetworkInfo | null>(null);
-

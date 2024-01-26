@@ -11,7 +11,7 @@ export const storeValidAccounts = writable<string[]>([]);
 // Only provider accounts
 export const storeProviderAccounts = writable<string[]>([]);
 
-export const storeSelectedAccount = writable<string>("");
+export const storeSelectedAccount = writable<string>('');
 
 export async function fetchAccounts(
   selectedNetwork: NetworkInfo,

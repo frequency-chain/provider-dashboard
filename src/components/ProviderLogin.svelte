@@ -146,7 +146,7 @@
     <Button id="request-2b-provider-btn" title="Become a Provider" action={becomeProvider} />
   </BlockSection>
 
-  <div class="text-xs mt-24">
+  <div class="mt-24 text-xs">
     To transact on Frequency as a provider you will need frequency utility tokens. On Frequency testnet, you can get
     tokens from the Testnet Faucet. To do that: Get XRQCY tokens for Frequency Testnet (Rococo) and follow the
     instructions using your desired wallet address to get XRQCY tokens. Once that succeeds, verify the tokens have made

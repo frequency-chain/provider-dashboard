@@ -81,18 +81,18 @@ export async function submitAddControlKey(
     const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
     useKeyring
       ? await submitExtrinsicWithKeyring(
-        extrinsic,
-        signingAccount as KeyringPair,
-        txnStatusCallback,
-        txnFinishedCallback
-      )
+          extrinsic,
+          signingAccount as KeyringPair,
+          txnStatusCallback,
+          txnFinishedCallback
+        )
       : await submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
   } else {
     console.debug('api is not available.');
   }
@@ -116,12 +116,12 @@ export async function submitStake(
     useKeyring
       ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, callback, txnFinishedCallback)
       : await submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        callback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          callback,
+          txnFinishedCallback
+        );
   } else {
     console.debug('api is not available.');
   }
@@ -274,12 +274,12 @@ export async function submitCreateProvider(
     useKeyring
       ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
       : submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
     return true;
   }
   return false;
@@ -301,12 +301,12 @@ export async function submitRequestToBeProvider(
     useKeyring
       ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
       : submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
     return true;
   }
   console.error('submit failed because api is', api);
@@ -329,12 +329,12 @@ export async function submitCreateMsa(
     useKeyring
       ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair, txnStatusCallback, txnFinishedCallback)
       : submitExtrinsicWithExtension(
-        extension as InjectedExtension,
-        extrinsic,
-        signingAccount.address,
-        txnStatusCallback,
-        txnFinishedCallback
-      );
+          extension as InjectedExtension,
+          extrinsic,
+          signingAccount.address,
+          txnStatusCallback,
+          txnFinishedCallback
+        );
     return true;
   }
   return false;
