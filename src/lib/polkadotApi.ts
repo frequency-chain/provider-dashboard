@@ -71,16 +71,21 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   };
 }
 
+export async function getProviderFromMsa(apiPromise: ApiPromise, msaId: number): Promise<any | undefined> {
+  const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+  if (providerRegistry.isSome) return providerRegistry.unwrap();
+}
+
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
-  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(publicKey)).unwrapOrDefault();
+  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(publicKey)).unwrapOrDefault();  
+
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received.toNumber();
   if (msaInfo.msaId > 0) {
-    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
-    if (providerRegistry.isSome) {
+    const provider = await getProviderFromMsa(apiPromise, msaInfo.msaId);
+    if (provider) {
       msaInfo.isProvider = true;
-      const registryEntry = providerRegistry.unwrap();
-      msaInfo.providerName = registryEntry.providerName;
+      msaInfo.providerName = provider.providerName;
     }
   }
   return msaInfo;

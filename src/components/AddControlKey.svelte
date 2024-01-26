@@ -1,25 +1,29 @@
 <script lang="ts">
-  import { dotApi, storeConnected, storeCurrentAction, transactionSigningAddress } from '$lib/stores';
+  import { dotApi, transactionSigningAddress, storeMsaInfo } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey } from '$lib/connections';
-  import { ActionForms, defaultDotApi } from '$lib/storeTypes';
+  import { submitAddControlKey, type SigningKey } from '$lib/connections';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
   import TransactionStatus from './TransactionStatus.svelte';
   import DropDownMenu from './DropDownMenu.svelte';
+  import Modal from './Modal.svelte';
+  import AddControlKeyRequirements from './AddControlKeyRequirements.svelte';
+  // should filter keys to make sure that they are not already associated with another account.
+  // to do that, you need to check that a key is not associated with an MSA.
+  // call it storeAvailableAccounts.
+  import { storeUnusedKeyAccounts } from '$lib/stores/accountsStore';
 
-  let connected = false;
-  let thisDotApi = defaultDotApi;
-  let signingAddress: string = '';
-  let showSelf: boolean = false;
-  let selectedKeyToAdd: string = '';
+  export let isOpen = false;
+  export let close = () => {};
+
+  let isLoading: boolean = false;
+  let selectedKeyToAdd: SigningKey;
   let web3FromSource;
   let web3Enable;
   let showTransactionStatus = false;
   let txnFinished = () => {};
   export let txnStatuses: Array<string> = [];
-  export let cancelAction;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -28,15 +32,6 @@
   });
 
   export let providerId = 0;
-  export let validAccounts = {};
-
-  storeConnected.subscribe((val) => (connected = val));
-  dotApi.subscribe((api) => {
-    thisDotApi = api;
-    selectedKeyToAdd = '';
-  });
-  transactionSigningAddress.subscribe((val) => (signingAddress = val));
-  storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.AddControlKey));
 
   const addNewTxnStatus = (txnStatus: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
@@ -45,31 +40,34 @@
 
   const addControlKey = async (evt: Event) => {
     clearTxnStatuses();
-    let endpointURI: string = thisDotApi.selectedEndpoint || '';
-    if (selectedKeyToAdd === '') {
+    let endpointURI: string = $dotApi.selectedEndpoint || '';
+    if (!selectedKeyToAdd) {
       alert('Please choose a key to add.');
     } else {
-      let newKeys = validAccounts[selectedKeyToAdd];
-      let signingKeys = validAccounts[signingAddress];
+      let newKeys = selectedKeyToAdd;
+      let signingKeys = $transactionSigningAddress;
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
+        isLoading = true;
         await submitAddControlKey(
-          thisDotApi.api as ApiPromise,
+          $dotApi.api as ApiPromise,
           undefined,
-          newKeys,
+          selectedKeyToAdd,
           signingKeys,
           providerId,
           endpointURI as string,
           addNewTxnStatus,
           txnFinished
         );
+        isLoading = false;
       } else {
         if (isFunction(web3FromSource) && isFunction(web3Enable)) {
           const extensions = await web3Enable('Frequency parachain provider dashboard: Adding Keys');
           if (extensions.length !== 0) {
+            isLoading = true;
             const injectedExtension = await web3FromSource(signingKeys.meta.source);
             await submitAddControlKey(
-              thisDotApi.api as ApiPromise,
+              $dotApi.api as ApiPromise,
               injectedExtension,
               newKeys,
               signingKeys,
@@ -78,6 +76,7 @@
               addNewTxnStatus,
               txnFinished
             );
+            isLoading = false;
           } else {
             console.error('found no extensions');
             return;
@@ -91,31 +90,25 @@
   };
 </script>
 
-<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card basis-1/2">
-  <p class="action-card-title">
-    Add a Control Key to Provider Id {providerId}
-  </p>
-  <ol class="ml-4 mt-4 list-decimal font-light">
-    <li>
-      Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
-      transactions.
-    </li>
-    <li>If using a wallet, ensure the new control key is imported into your wallet.</li>
-    <li>Select the new control key from the dropdown list below.</li>
-    <li>Click 'Add It.'</li>
-    <li>This requires 3 signatures: two for the authorization payload, and one to send the transaction.</li>
-    <ul class="ml-6 list-disc">
-      <li>Sign with the new control key,</li>
-      <li>Sign with the current control key,</li>
-      <li>Sign the transaction with the current control key.</li>
-    </ul>
-  </ol>
-  <form class="mt-8">
-    <DropDownMenu id="AddControlKey" label="Key to Add" selected={selectedKeyToAdd} options={validAccounts} />
-    <div class="w-350 flex justify-between">
-      <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
-      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
-    </div>
-  </form>
-</div>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
+<Modal id="add-control-key" {isOpen} {close}>
+  <h2 class="section-title-underlined">{`Add Control Key to MSA (${$storeMsaInfo?.msaId})`}</h2>
+
+  <DropDownMenu
+    id="AddControlKey"
+    label="Public Key"
+    selected={$transactionSigningAddress}
+    options={$storeUnusedKeyAccounts}
+    onChange={() => {}}
+  />
+
+  <div class="flex justify-between align-bottom">
+    <button class="btn-primary" on:click|preventDefault={addControlKey}>Add Key</button>
+    <button class="btn-no-fill" on:click|preventDefault={close}>Cancel</button>
+  </div>
+
+  <span class="min-w-full border-b border-b-divider" />
+
+  <AddControlKeyRequirements />
+
+  <TransactionStatus bind:isOpen={showTransactionStatus} statuses={txnStatuses} {isLoading} />
+</Modal>

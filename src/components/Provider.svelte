@@ -13,6 +13,7 @@
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
+  import AddControlKey from './AddControlKey.svelte';
   import { ActionForms } from '$lib/storeTypes.js';
 
   let msaInfo: MsaInfo;
@@ -43,9 +44,7 @@
     msaInfo = info as MsaInfo;
   });
 
-  function showAddControlKey() {
-    storeCurrentAction.set(ActionForms.AddControlKey);
-  }
+  $: showAddControlKey = false;
 
   $: providerList = [
     { label: 'Id', value: msaInfo?.msaId.toString() },
@@ -57,5 +56,6 @@
 </script>
 
 <ListCard title="Provider" list={providerList} {signingAddress} {msaInfo} {connected}>
-  <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
+  <button on:click|preventDefault={() => (showAddControlKey = true)} class="btn-primary">Add Control Key</button>
+  <AddControlKey isOpen={showAddControlKey} close={() => (showAddControlKey = false)} />
 </ListCard>

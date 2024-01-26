@@ -1,19 +1,23 @@
 <script lang="ts">
-  export let showSelf = false;
+  export let isLoading = false;
+  export let isOpen = false;
   export let statuses: Array<string> = [];
 
   const hideSelf = (evt: Event) => {
     evt.preventDefault();
-    showSelf = false;
+    isOpen = false;
   };
 </script>
 
-<div class:hidden={!showSelf} id="transaction-status" class="action-card grow-1 ml-8 basis-1/3">
+<div class:hidden={!isOpen} id="transaction-status" class="">
   <p class="action-card-title">Transaction status</p>
   <ul class="">
     {#each statuses as status}
-      <li class="text-md mt-4 font-light">{status}</li>
+      <li class="text-sm font-light">{status}</li>
     {/each}
   </ul>
+  {#if isLoading}
+    ...loading
+  {/if}
   <button on:click|preventDefault={hideSelf} class="btn-primary">Dismiss Status</button>
 </div>

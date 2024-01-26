@@ -30,6 +30,9 @@ export default {
       full: '100%',
     },
     extend: {
+      borderWidth: {
+        DEFAULT: '1px',
+      },
       borderRadius: {
         'rounded-3xl': '20px',
         'rounded-md': '5px',

@@ -61,18 +61,11 @@
   .data-value-2xl {
     @apply font-data text-2xl text-green;
   }
-
-  /* layout */
-  .content-block {
-    @apply rounded-md bg-bg-black p-7;
-  }
 }
 
 @layer base {
   body {
-    color: white;
-    min-height: 100vh;
-    background: linear-gradient(to top, #2c333d, #007da1);
+    @apply min-h-[100vh] bg-gradient-to-b from-[#2c333d] to-[#007da1] text-white;
   }
 
   button {
@@ -90,6 +83,6 @@
   }
 
   ::placeholder {
-    @apply text-disabled !important;
+    @apply text-disabled;
   }
 }

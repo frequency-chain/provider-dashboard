@@ -2,16 +2,15 @@ import { writable } from 'svelte/store';
 import { ApiPromise, Keyring } from '@polkadot/api';
 import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import type { AccountMap, MetaMap } from '$lib/polkadotApi';
-import { getMsaInfo } from '$lib/polkadotApi';
 import { isFunction } from '@polkadot/util';
 import type { NetworkInfo } from './networksStore';
+import { getMsaInfo } from '../polkadotApi';
 
-// All accounts
-export const storeValidAccounts = writable<string[]>([]);
 // Only provider accounts
 export const storeProviderAccounts = writable<string[]>([]);
-
 export const storeSelectedAccount = writable<string>('');
+//Only accounts not associated with an MSA Id. Used for adding keys to an MSA Id.
+export const storeUnusedKeyAccounts = writable({});
 
 export async function fetchAccounts(
   selectedNetwork: NetworkInfo,
@@ -49,19 +48,19 @@ export async function fetchAccounts(
     });
   }
 
-  // Segment into provider accounts and non-provider accounts
-  const regularAccounts: string[] = [];
-  const providerAccounts: string[] = [];
+  // Segment into provider accounts and unused key accounts
+  const unusedKeyAccounts: AccountMap | MetaMap = {};
+  const providerAccounts: AccountMap | MetaMap = {};
 
-  for (const address in foundAccounts) {
-    const { isProvider } = await getMsaInfo(apiPromise, address);
+  foundAccounts.forEach(async (account) => {
+    const { isProvider, msaId } = await getMsaInfo(apiPromise, account.address);
     if (isProvider) {
-      providerAccounts.push(address);
-    } else {
-      regularAccounts.push(address);
+      providerAccounts[account.address] = account;
+    } else if (msaId === 0) {
+      unusedKeyAccounts[account.address] = account;
     }
-  }
+  });
 
   storeProviderAccounts.set(providerAccounts);
-  storeValidAccounts.set(regularAccounts);
+  storeUnusedKeyAccounts.set(unusedKeyAccounts);
 }
