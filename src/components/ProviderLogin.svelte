@@ -91,14 +91,14 @@
       onChange={networkChanged}
     />
     {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
-    <!-- input
+    <input
       type="text"
       id="other-endpoint-url"
       placeholder="wss://some.frequency.node"
       bind:value={customNetwork}
       disabled={$selectedNetwork.name != 'CUSTOM'}
       class:hidden={$selectedNetwork.name != 'CUSTOM'}
-     -->
+    />
     {/if}
     <DropDownMenu
       id="controlkeys"
