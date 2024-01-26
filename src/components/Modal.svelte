@@ -7,10 +7,10 @@
   on:keyup={close}
   role="button"
   tabindex="0"
-  class="cursor-default fixed z-[100] w-[calc(100vw-126px)] h-[100vh] bg-overlay right-0 top-0 flex items-center justify-center"
+  class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-126px)] cursor-default items-center justify-center bg-overlay"
 >
   <div
-    class="cursor-default content-block w-modal"
+    class="content-block w-modal cursor-default"
     on:click|stopPropagation={() => {}}
     on:keyup|stopPropagation={() => {}}
     tabindex="0"

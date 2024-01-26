@@ -8,8 +8,8 @@
   export let msaInfo: MsaInfo;
 </script>
 
-<div class="content-block flex-grow min-w-fit relative">
-  <p class="section-title border-b border-divider pb-3">{title}</p>
+<div class="content-block relative min-w-fit flex-grow">
+  <p class="section-title-underlined">{title}</p>
   {#if !connected}
     <div class="pt-3">Not connected</div>
   {:else if signingAddress === ''}
@@ -19,7 +19,7 @@
   {:else}
     <div class="mb-16">
       {#each list as item}
-        <div class="flex justify-between items-center py-3 border-b border-divider">
+        <div class="flex items-center justify-between border-b border-divider py-3">
           <div class="label">{item.label}</div>
           <div class="data-value-base">{item.value}</div>
         </div>

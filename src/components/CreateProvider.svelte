@@ -95,7 +95,7 @@
   <form>
     <label for="providerNameCB">Provider name</label>
     <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
-    <div class="flex w-350 justify-between">
+    <div class="w-350 flex justify-between">
       <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
         Create Provider
       </button>

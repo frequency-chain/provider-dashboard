@@ -1,5 +1,6 @@
 <script lang="ts">
   import AddControlKey from '$components/AddControlKey.svelte';
+  import Modal from '$components/Modal.svelte';
   import CreateProvider from './CreateProvider.svelte';
   import RequestToBeProvider from './RequestToBeProvider.svelte';
   import Stake from './Stake.svelte';
@@ -63,7 +64,7 @@
 </script>
 
 {#if msaInfo?.isProvider}
-  <div class="w-500 flex justify-between">
+  <div class="flex w-[500px] justify-between">
     <button on:click|preventDefault={showAddControlKey} class="btn-primary mr-4 grow"> Add control key </button>
     <button on:click={showStake} class="btn-primary ml-4 grow"> Stake To Provider </button>
   </div>

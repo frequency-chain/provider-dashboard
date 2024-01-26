@@ -7,30 +7,33 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply w-[225px] h-10 rounded-full text-white bg-blue disabled:bg-disabled text-base font-bold;
+    @apply h-10 w-[225px] rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
   }
   .btn-no-fill {
-    @apply text-white underline text-sm;
+    @apply text-sm text-white underline;
   }
   .action-card {
-    @apply mt-8 p-8 shrink-0 rounded-lg text-white shadow-md;
+    @apply mt-8 shrink-0 rounded-lg p-8 text-white shadow-md;
   }
   .action-card {
     @apply rounded text-white;
   }
   .action-card-title {
-    @apply font-semibold text-2xl;
+    @apply text-2xl font-semibold;
   }
 
   /* layout */
   .content-block {
-    @apply bg-bg-black rounded-md p-7;
+    @apply rounded-md bg-bg-black p-7;
   }
 
   /* typeography */
   /* headers */
   .section-title {
-    @apply font-bold text-xl;
+    @apply text-xl font-bold;
+  }
+  .section-title-underlined {
+    @apply section-title border-b border-divider pb-3;
   }
 
   .section-title-underlined {
@@ -38,25 +41,25 @@
   }
 
   .label {
-    @apply font-bold text-base tracking-wide;
+    @apply text-base font-bold tracking-wide;
   }
   /* data */
   .data-value-sm {
-    @apply font-data text-green text-sm;
+    @apply font-data text-sm text-green;
   }
   .data-value-base {
-    @apply font-data text-green text-base;
+    @apply font-data text-base text-green;
   }
   .data-value-lg {
-    @apply font-data text-green text-lg;
+    @apply font-data text-lg text-green;
   }
   .data-value-2xl {
-    @apply font-data text-green text-2xl;
+    @apply font-data text-2xl text-green;
   }
 
   /* layout */
   .content-block {
-    @apply bg-bg-black rounded-md p-7;
+    @apply rounded-md bg-bg-black p-7;
   }
 }
 
@@ -74,7 +77,7 @@
   input,
   [type='text'],
   select {
-    @apply w-[320px] h-[30px] text-black rounded-md text-sm py-0 pl-2 pr-7 border-none outline-none disabled:opacity-85 disabled:text-disabled overflow-ellipsis;
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none py-0 pl-2 pr-7 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
   }
 
   ::placeholder {

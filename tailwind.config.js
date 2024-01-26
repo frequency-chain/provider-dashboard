@@ -23,8 +23,7 @@ export default {
       overlay: 'rgba(57, 52, 52, 0.75)',
     },
     width: {
-      500: '500px',
-      "single-block": '550px',
+      modal: '420px',
     },
     extend: {
       borderRadius: {

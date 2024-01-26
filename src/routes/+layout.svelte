@@ -5,7 +5,7 @@
 </script>
 
 <div>
-  <img alt="The project logo" src={wave} class="fixed w-[100%] top-0 right-0 z-[-1]" />
+  <img alt="The project logo" src={wave} class="fixed right-0 top-0 z-[-1] w-[100%]" />
   <div class="flex">
     <Nav />
     <div class="m-6 w-[100%] pl-[126px]">
