@@ -10,7 +10,7 @@
 
 <div>
   <label class="label mb-3.5 block" for={id}>{label}</label>
-  <select {...$$restProps} {id} bind:value={selected} on:change={onChange} class="cursor-pointer">
+  <select {...$$restProps} {id} bind:value={selected} on:change={onChange}>
     {#if placeholder !== ''}
       <option class="text-disabled" value="" disabled selected>{placeholder}</option>
     {/if}

@@ -21,15 +21,16 @@
 
   let customNetwork: string;
 
+  // Error messages
+  let networkErrorMsg: string = '';
+  let controlKeysErrorMsg: string = '';
+
   let thisDotApi = defaultDotApi;
   dotApi.subscribe((api) => (thisDotApi = api));
 
+  // Control whether or not the connect button is enabled or disabled
   let canConnect: boolean = false;
-  $: canConnect =
-    $selectedNetwork != null &&
-    $selectedNetwork.name != 'NONE' &&
-    $storeProviderAccounts.length > 0 &&
-    $storeSelectedAccount !== '';
+  $: canConnect = $selectedNetwork != null && $storeProviderAccounts.length > 0 && $storeSelectedAccount !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -40,23 +41,33 @@
     thisWeb3Accounts = polkadotExt.web3Accounts;
   });
 
-  selectedNetwork.subscribe(async (network) => {
-    console.log('selectedNetwork changed to ' + network);
-    if (network != null && network.name != 'NONE') {
+  $: if ($selectedNetwork != null) {
+    connectAndFetchAccounts($selectedNetwork);
+  }
+
+  async function connectAndFetchAccounts(network: NetworkInfo | null) {
+    if (network) {
       try {
+        networkErrorMsg = '';
+        controlKeysErrorMsg = '';
+        $storeProviderAccounts = [];
         await getApi(network.endpoint?.toString() ?? '', thisDotApi, wsProvider);
         await fetchAccounts(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
         await updateConnectionStatus(thisDotApi.api as ApiPromise);
       } catch (e) {
         console.log(e);
-        console.error(
-          `could not connect to ${
-            network.endpoint?.toString() || 'empty value'
-          }. Please enter a valid and reachable Websocket URL.`
-        );
+        networkErrorMsg = `Could not connect to ${
+          network.endpoint?.toString() || 'empty value'
+        }. Please enter a valid and reachable Websocket URL.`;
+        console.error(networkErrorMsg);
       }
-    }
-  });
+      for (const account of $storeProviderAccounts) {
+        console.log(`Found provider: ${account}`);
+      }
+      if (networkErrorMsg == '' && $storeProviderAccounts.length == 0) {
+        controlKeysErrorMsg = 'No provider accounts found.  Become a provider?';
+      }
+    }  }
 
   function connect() {
     $isLoggedIn = true;
@@ -88,17 +99,21 @@
     }
   }
 
-  function customNetworkChanged() {
-    if (isValidURL(customNetwork)) {
-      const url = new URL(customNetwork);
-      if ($selectedNetwork != null) {
-        $selectedNetwork.endpoint = url;
-        $allNetworks = [...$allNetworks];
+  function customNetworkChanged(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      if (isValidURL(customNetwork)) {
+        const url = new URL(customNetwork);
+        if ($selectedNetwork != null) {
+          $selectedNetwork.endpoint = url;
+        }
       }
     }
   }
 
   function formatNetwork(network: NetworkInfo): string {
+    if (network.name === 'CUSTOM') {
+      return network.name;
+    }
     return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
   }
 </script>
@@ -109,7 +124,7 @@
       id="network"
       label="Select a Network"
       bind:selected={$selectedNetwork}
-      placeholder=""
+      placeholder="Select a network"
       options={$allNetworks}
       onChange={networkChanged}
       formatter={formatNetwork}
@@ -123,18 +138,20 @@
         bind:value={customNetwork}
         disabled={$selectedNetwork.name != 'CUSTOM'}
         class:hidden={$selectedNetwork.name != 'CUSTOM'}
-        on:change={customNetworkChanged}
+        on:keydown={customNetworkChanged}
       />
     {/if}
+    <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
     <DropDownMenu
       id="controlkeys"
       label="Select a Provider Control Key"
       bind:selected={$storeSelectedAccount}
-      placeholder=""
+      placeholder="Select a provider"
       options={$storeProviderAccounts}
       onChange={accountChanged}
-      disabled={$selectedNetwork?.name === 'CUSTOM' && !isValidURL(customNetwork)}
+      disabled={$storeProviderAccounts.length == 0}
     />
+    <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>
 
