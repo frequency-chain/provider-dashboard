@@ -95,7 +95,7 @@
       type="text"
       id="other-endpoint-url"
       placeholder="wss://some.frequency.node"
-      bind:value={customNetwork}
+      bind:value={$selectedNetwork.endpoint}
       disabled={$selectedNetwork.name != 'CUSTOM'}
       class:hidden={$selectedNetwork.name != 'CUSTOM'}
     />
