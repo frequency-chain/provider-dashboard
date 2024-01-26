@@ -19,9 +19,3 @@
     {/each}
   </select>
 </div>
-
-<style>
-  option[value=''][disabled] {
-    display: none;
-  }
-</style>
