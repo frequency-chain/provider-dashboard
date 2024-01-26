@@ -4,7 +4,7 @@ import { writable } from 'svelte/store';
  * Represents information about a network.
  */
 export interface NetworkInfo {
-  name?: string;
+  name: string;
   endpoint?: URL;
   genesisHash?: string;
 }

@@ -18,7 +18,7 @@ export async function fetchAccounts(
   thisWeb3Enable: typeof web3Enable,
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
-) {
+): Promise<void> {
   console.log('fetchAccounts() - ', selectedNetwork);
   // populating for localhost and for a parachain are different since with localhost, there is
   // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
