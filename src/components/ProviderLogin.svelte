@@ -88,7 +88,7 @@
       bind:selected={$selectedNetwork}
       placeholder="test"
       options={allNetworksMap}
-      onChange={networkChanged}
+      on:change={networkChanged}
     />
     {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
     <!-- input
@@ -106,7 +106,7 @@
       bind:selected={selectedAccountPublicKey}
       placeholder=""
       options={$storeProviderAccounts}
-      onChange={accountChanged}
+      on:change={accountChanged}
     />
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>
