@@ -13,7 +13,9 @@
     <div class="w-1 h-1 rounded-full bg-green-success p-1" />
     <p class="text-md uppercase">{$selectedNetwork?.name}</p>
   </div>
-  <p class="text-md">{#if $selectedNetwork}{$selectedNetwork.endpoint?.toString().replace(/\/$/, '')}{/if}</p>
+  <p class="text-md">
+    {#if $selectedNetwork}{$selectedNetwork.endpoint?.toString().replace(/\/$/, '')}{/if}
+  </p>
 
   <!-- TODO: CHANGE ICON WHEN APPROVED -->
   <!-- TODO: ADD ONCLICK WHEN BUILDING SWITCH MODAL -->

@@ -67,7 +67,8 @@
       if (networkErrorMsg == '' && $storeProviderAccounts.length == 0) {
         controlKeysErrorMsg = 'No provider accounts found.  Become a provider?';
       }
-    }  }
+    }
+  }
 
   function connect() {
     $isLoggedIn = true;
@@ -118,7 +119,7 @@
   }
 </script>
 
-<div id="provider-login" class="content-block w-single-block flex flex-col gap-4">
+<div id="provider-login" class="content-block flex w-single-block flex-col gap-4">
   <BlockSection title="Provider Login">
     <DropDownMenu
       id="network"

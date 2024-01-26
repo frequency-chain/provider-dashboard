@@ -90,7 +90,7 @@
   }
 
   select {
-    @apply cursor-pointer
+    @apply cursor-pointer;
   }
 
   ::placeholder {
