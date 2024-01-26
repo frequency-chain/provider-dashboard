@@ -13,7 +13,7 @@
   import { pageContent } from '$lib/stores/pageContentStore';
   import { allNetworks, selectedNetwork, type NetworkInfo } from '$lib/stores/networksStore';
   import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
-  import { fetchAccounts, storeProviderAccounts } from '$lib/stores/accountsStore';
+  import { fetchAccounts, storeProviderAccounts, storeSelectedAccount } from '$lib/stores/accountsStore';
 
   let wsProvider: WsProvider;
   let thisWeb3Enable: typeof web3Enable;
@@ -24,10 +24,12 @@
   let thisDotApi = defaultDotApi;
   dotApi.subscribe((api) => (thisDotApi = api));
 
-  let selectedAccountPublicKey: string = '';
-
   let canConnect: boolean = false;
-  $: canConnect = $selectedNetwork != null && $selectedNetwork.name != 'NONE' && $storeProviderAccounts.length > 0 && selectedAccountPublicKey !== '';
+  $: canConnect =
+    $selectedNetwork != null &&
+    $selectedNetwork.name != 'NONE' &&
+    $storeProviderAccounts.length > 0 &&
+    $storeSelectedAccount !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -67,15 +69,14 @@
 
   function networkChanged() {
     console.log('networkChanged');
-    selectedAccountPublicKey = '';
+    $storeSelectedAccount = '';
     $transactionSigningAddress = '';
     canConnect = false;
   }
 
   function accountChanged() {
     console.log('accountChanged');
-    console.log('selectedAccountAsString: ' + selectedAccountPublicKey);
-    $transactionSigningAddress = selectedAccountPublicKey;
+    $transactionSigningAddress = $storeSelectedAccount;
   }
 
   function isValidURL(url: string): boolean {
@@ -100,7 +101,6 @@
   function formatNetwork(network: NetworkInfo): string {
     return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
   }
-
 </script>
 
 <div id="provider-login" class="content-block w-single-block flex flex-col gap-4">
@@ -115,24 +115,25 @@
       formatter={formatNetwork}
     />
     {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
-    <input
-      type="text"
-      pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
-      id="other-endpoint-url"
-      placeholder="wss://some.frequency.node"
-      bind:value={customNetwork}
-      disabled={$selectedNetwork.name != 'CUSTOM'}
-      class:hidden={$selectedNetwork.name != 'CUSTOM'}
-      on:change={customNetworkChanged}
-    />
+      <input
+        id="other-endpoint-url"
+        type="text"
+        pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
+        placeholder="wss://some.frequency.node"
+        bind:value={customNetwork}
+        disabled={$selectedNetwork.name != 'CUSTOM'}
+        class:hidden={$selectedNetwork.name != 'CUSTOM'}
+        on:change={customNetworkChanged}
+      />
     {/if}
     <DropDownMenu
       id="controlkeys"
       label="Select a Provider Control Key"
-      bind:selected={selectedAccountPublicKey}
+      bind:selected={$storeSelectedAccount}
       placeholder=""
       options={$storeProviderAccounts}
       onChange={accountChanged}
+      disabled={$selectedNetwork?.name === 'CUSTOM' && !isValidURL(customNetwork)}
     />
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>
