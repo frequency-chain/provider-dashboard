@@ -13,6 +13,4 @@
   <ProviderLogin />
 {:else if $pageContent === PageContent.BecomeProvider}
   <RequestToBeProvider />
-{:else if $pageContent === PageContent.Reconnect}
-  <ConnectProvider />
 {/if}

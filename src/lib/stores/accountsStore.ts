@@ -1,28 +1,28 @@
-import { writable, type Writable } from 'svelte/store';
+import { writable } from 'svelte/store';
 import { ApiPromise, Keyring } from '@polkadot/api';
 import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import type { AccountMap, MetaMap } from '$lib/polkadotApi';
 import { getMsaInfo } from '$lib/polkadotApi';
-import { Network, networkToInfo } from '$lib/stores/networksStore';
 import { isFunction } from '@polkadot/util';
+import type { NetworkInfo } from './networksStore';
 
-//All accounts
-export const storeValidAccounts = writable({});
-//Only provider accounts
-export const storeProviderAccounts = writable({});
+// All accounts
+export const storeValidAccounts = writable<Map<string, string>>(new Map<string, string>());
+// Only provider accounts
+export const storeProviderAccounts = writable<Map<string, string>>(new Map<string, string>());
 
 export async function fetchAccounts(
-  selectedNetwork: Network,
+  selectedNetwork: NetworkInfo,
   thisWeb3Enable: typeof web3Enable,
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
 ) {
   console.log('fetchAccounts() - ', selectedNetwork);
-  const selectedNetworkInfo = networkToInfo[selectedNetwork];
   // populating for localhost and for a parachain are different since with localhost, there is
   // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
   let foundAccounts: AccountMap | MetaMap = {}; // eslint-disable-line prefer-const
-  if (selectedNetwork === Network.LOCALHOST) {
+
+  if (selectedNetwork.name === 'LOCALHOST') {
     const keyring = new Keyring({ type: 'sr25519' });
 
     ['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach((accountName) => {
@@ -41,17 +41,25 @@ export async function fetchAccounts(
     const allAccounts = await thisWeb3Accounts();
     allAccounts.forEach((a) => {
       // include only the accounts allowed for this chain
-      if (!a.meta.genesisHash || selectedNetworkInfo.genesisHash === a.meta.genesisHash) {
+      if (!a.meta.genesisHash || selectedNetwork.genesisHash === a.meta.genesisHash) {
         foundAccounts[a.address] = a;
       }
     });
   }
 
-  const foundProviderAccounts: AccountMap | MetaMap = {};
-  for (const index in Object.keys(foundAccounts)) {
-    const account = Object.values(foundAccounts)[index];
-    const { isProvider } = await getMsaInfo(apiPromise, account.address);
-    if (isProvider) foundProviderAccounts[account.address] = account;
+  // Segment into provider accounts and non-provider accounts
+  const regularAccounts: Map<string, string> = new Map();
+  const providerAccounts: Map<string, string> = new Map();
+
+  for (const address in foundAccounts) {
+    const { isProvider } = await getMsaInfo(apiPromise, address);
+    if (isProvider) {
+      providerAccounts.set(address, address);
+    } else {
+      regularAccounts.set(address, address);
+    }
   }
-  storeProviderAccounts.set(foundProviderAccounts);
+
+  storeProviderAccounts.set(providerAccounts);
+  storeValidAccounts.set(regularAccounts);
 }

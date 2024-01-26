@@ -11,7 +11,7 @@
   import BlockSection from '$components/BlockSection.svelte';
   import Button from '$components/Button.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { Network, allNetworks, networkToInfo, selectedNetwork } from '$lib/stores/networksStore';
+  import { allNetworksMap, selectedNetwork } from '$lib/stores/networksStore';
   import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
   import { fetchAccounts, storeProviderAccounts } from '$lib/stores/accountsStore';
 
@@ -19,19 +19,15 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let networks = allNetworks();
-
-  let selectedNetworkAsString: string = '';
   let customNetwork: string = '';
 
   let thisDotApi = defaultDotApi;
   dotApi.subscribe((api) => (thisDotApi = api));
 
-  let selectedAccountAsString: string = '';
-  let providerAccounts: Record<string, string> = {};
+  let selectedAccountPublicKey: string = '';
 
-  let canConnect = false;
-  $: canConnect = selectedNetworkAsString !== '' && selectedAccountAsString !== '';
+  let canConnect: boolean = false;
+  $: canConnect = $selectedNetwork != null && $selectedNetwork.name != 'NONE' && $storeProviderAccounts.size > 0 && selectedAccountPublicKey !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -44,30 +40,20 @@
 
   selectedNetwork.subscribe(async (network) => {
     console.log('selectedNetwork changed to ' + network);
-    if (network != undefined && network != Network.NONE) {
-      let info = networkToInfo[network];
-      console.dir(info);
-      let endpoint = networkToInfo[network].endpoint;
-      console.log('endpoint: ' + endpoint);
+    if (network != null && network.name != 'NONE') {
       try {
-        await getApi(endpoint?.toString() ?? '', thisDotApi, wsProvider);
+        await getApi(network.endpoint?.toString() ?? '', thisDotApi, wsProvider);
         await fetchAccounts(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
         await updateConnectionStatus(thisDotApi.api as ApiPromise);
       } catch (e) {
         console.log(e);
-        alert(
+        console.error(
           `could not connect to ${
-            endpoint?.toString() || 'empty value'
+            network.endpoint?.toString() || 'empty value'
           }. Please enter a valid and reachable Websocket URL.`
         );
       }
     }
-  });
-
-  storeProviderAccounts.subscribe((accounts) => {
-    console.log('storeProviderAccounts changed');
-    console.dir(accounts);
-    providerAccounts = Object.fromEntries(Object.entries(accounts).map(([key]) => [key, key]));
   });
 
   function connect() {
@@ -81,15 +67,17 @@
 
   function networkChanged() {
     console.log('networkChanged');
-    console.log('selectedNetworkAsString: ' + selectedNetworkAsString);
-    $selectedNetwork = selectedNetworkAsString as Network;
+    selectedAccountPublicKey = '';
+    $transactionSigningAddress = '';
+    canConnect = false;
   }
 
   function accountChanged() {
     console.log('accountChanged');
-    console.log('selectedAccountAsString: ' + selectedAccountAsString);
-    transactionSigningAddress.set(selectedAccountAsString);
+    console.log('selectedAccountAsString: ' + selectedAccountPublicKey);
+    $transactionSigningAddress = selectedAccountPublicKey;
   }
+
 </script>
 
 <div id="provider-login" class="content-block w-single-block flex flex-col gap-4">
@@ -97,28 +85,28 @@
     <DropDownMenu
       id="network"
       label="Select a Network"
-      bind:action={selectedNetworkAsString}
+      bind:selected={$selectedNetwork}
+      placeholder="test"
+      options={allNetworksMap}
       onChange={networkChanged}
-      placeholder=""
-      options={networks}
     />
-    {#if $selectedNetwork == Network.CUSTOM}
-    <input
+    {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
+    <!-- input
       type="text"
       id="other-endpoint-url"
       placeholder="wss://some.frequency.node"
       bind:value={customNetwork}
-      disabled={$selectedNetwork != Network.CUSTOM}
-      class:hidden={$selectedNetwork != Network.CUSTOM}
-    />
+      disabled={$selectedNetwork.name != 'CUSTOM'}
+      class:hidden={$selectedNetwork.name != 'CUSTOM'}
+     -->
     {/if}
     <DropDownMenu
       id="controlkeys"
       label="Select a Provider Control Key"
-      bind:action={selectedAccountAsString}
-      onChange={accountChanged}
+      bind:selected={selectedAccountPublicKey}
       placeholder=""
-      options={providerAccounts}
+      options={$storeProviderAccounts}
+      onChange={accountChanged}
     />
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>

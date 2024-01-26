@@ -1,24 +1,19 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import { GENESIS_HASHES, getBlockNumber, getEpoch } from './connections';
+import { getBlockNumber, getEpoch } from './connections';
 import {
   dotApi,
   storeBlockNumber,
   storeConnected,
   storeToken,
 } from './stores';
-import { storeProviderAccounts, storeValidAccounts } from './stores/accountsStore';
-import { isLocalhost } from './utils';
 import { options } from '@frequency-chain/api-augment';
 
 import type { DotApi, MsaInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
-export type MetaMap = Record<string, InjectedAccountWithMeta>;
 
 export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, wsProvider: WsProvider) {
   if (!selectedProviderURI) {
@@ -53,61 +48,6 @@ export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, ws
   dotApi.update((currentApi) => (currentApi = initializedDotApi));
 }
 
-/**
- * Loads accounts based on the selected provider URI and provider.
- * @param selectedProviderURI - The URI of the selected provider.
- * @param selectedProvider - The selected provider.
- * @param thisWeb3Enable - The web3Enable function.
- * @param thisWeb3Accounts - The web3Accounts function.
- * @param apiPromise - The ApiPromise object.
- */
-export async function loadAccounts(
-  selectedProviderURI: string,
-  selectedProvider: string,
-  thisWeb3Enable: typeof web3Enable,
-  thisWeb3Accounts: typeof web3Accounts,
-  apiPromise: ApiPromise
-) {
-  // populating for localhost and for a parachain are different since with localhost, there is
-  // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
-  let foundAccounts: AccountMap | MetaMap = {}; // eslint-disable-line prefer-const
-  if (isLocalhost(selectedProviderURI)) {
-    const keyring = new Keyring({ type: 'sr25519' });
-
-    ['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach((accountName) => {
-      const account = { ...keyring.addFromUri(accountName), ...{ meta: { name: accountName } } };
-      foundAccounts[account.address] = account;
-    });
-  } else {
-    // Check that the polkadot extension is installed
-    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-    if (!extensions || !extensions.length) {
-      alert('Polkadot{.js} extension not found; please install it first.');
-      throw new Error('Polkadot{.js} extension not found; please install it first.');
-    }
-
-    const allAccounts = await thisWeb3Accounts();
-    allAccounts.forEach((a) => {
-      // display only the accounts allowed for this chain
-      if (!a.meta.genesisHash || GENESIS_HASHES[selectedProvider] === a.meta.genesisHash) {
-        foundAccounts[a.address] = a;
-      }
-    });
-  }
-  // to avoid updating subscribers with an empty list
-  if (Object.keys(foundAccounts).length > 0) {
-    storeValidAccounts.update((val) => (val = foundAccounts));
-
-    const foundProviderAccounts: AccountMap | MetaMap = {};
-    for (const index in Object.keys(foundAccounts)) {
-      const account = Object.values(foundAccounts)[index];
-      const { isProvider } = await getMsaInfo(apiPromise, account.address);
-      if (isProvider) foundProviderAccounts[account.address] = account;
-    }
-    storeProviderAccounts.update((val) => (val = foundProviderAccounts));
-  }
-}
-
 export function getToken(chain: ChainProperties) {
   const rawUnit = chain.tokenSymbol.toString();
   return rawUnit.slice(1, rawUnit.length - 1);
@@ -136,8 +76,8 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   };
 }
 
-export async function getMsaInfo(apiPromise: ApiPromise, accountId: string): Promise<MsaInfo> {
-  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(accountId)).unwrapOrDefault();
+export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
+  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(publicKey)).unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received.toNumber();
   if (msaInfo.msaId > 0) {

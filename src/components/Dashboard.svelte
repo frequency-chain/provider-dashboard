@@ -9,17 +9,8 @@
     storeBlockNumber,
     storeChainInfo,
     storeConnected,
-    storeMsaInfo,
     storeToken,
-    transactionSigningAddress,
   } from '$lib/stores';
-  import { storeValidAccounts } from '$lib/stores/accountsStore';
-
-  const onChangeTxnSigningAddress = (evt: Event) => {
-    let option = evt.target as HTMLOptionElement;
-    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
-    transactionSigningAddress.set(option.value);
-  };
 
   let token = '';
 
@@ -27,12 +18,10 @@
   let blockNumber = 0n;
   let epochNumber = 0n;
   let connected = false;
-  let validAccounts = {};
 
   // TODO: put all this in chainInfo and update how it's stored.
   storeBlockNumber.subscribe((val) => (blockNumber = val));
   storeConnected.subscribe((val) => (connected = val));
-  storeValidAccounts.subscribe((val) => (validAccounts = val));
   storeChainInfo.subscribe((info: ChainInfo) => (epochNumber = info.epochNumber));
 </script>
 

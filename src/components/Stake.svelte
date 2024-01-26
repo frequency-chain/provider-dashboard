@@ -2,15 +2,12 @@
   import {
     dotApi,
     storeCurrentAction,
-    storeMsaInfo,
     storeToken,
     transactionSigningAddress,
   } from '$lib/stores';
-  import { storeValidAccounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
-  import type { MsaInfo } from '$lib/storeTypes';
   import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -46,8 +43,6 @@
   dotApi.subscribe((api) => (thisDotApi = api));
   transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
-  storeMsaInfo.subscribe((info: MsaInfo) => (providerId = info.isProvider ? info.msaId : 0));
-  storeValidAccounts.subscribe((val) => (validAccounts = val));
   storeToken.subscribe((val) => (token = val));
 
   const addNewTxnStatus = (txnStatus: string) => {
