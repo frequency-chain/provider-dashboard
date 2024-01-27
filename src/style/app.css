@@ -9,15 +9,19 @@
   .btn-primary {
     @apply h-10 w-[225px] rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
   }
+
   .btn-no-fill {
     @apply text-sm text-white underline;
   }
+
   .action-card {
     @apply mt-8 shrink-0 rounded-lg p-8 text-white shadow-md;
   }
+
   .action-card {
     @apply rounded text-white;
   }
+
   .action-card-title {
     @apply text-2xl font-semibold;
   }
@@ -27,27 +31,37 @@
     @apply rounded-md bg-bg-black p-7;
   }
 
-  /* typeography */
+  /* typography */
   /* headers */
   .section-title {
     @apply text-xl font-bold;
   }
+
   .section-title-underlined {
     @apply section-title border-b border-divider pb-3;
   }
+
+  .section-title-underlined {
+    @apply section-title border-b border-divider pb-3;
+  }
+
   .label {
     @apply text-base font-bold tracking-wide;
   }
+
   /* data */
   .data-value-sm {
     @apply font-data text-sm text-green;
   }
+
   .data-value-base {
     @apply font-data text-base text-green;
   }
+
   .data-value-lg {
     @apply font-data text-lg text-green;
   }
+
   .data-value-2xl {
     @apply font-data text-2xl text-green;
   }
@@ -73,6 +87,10 @@
   [type='text'],
   select {
     @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none py-0 pl-2 pr-7 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
+  }
+
+  select {
+    @apply cursor-pointer;
   }
 
   ::placeholder {

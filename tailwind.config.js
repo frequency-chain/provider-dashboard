@@ -21,9 +21,11 @@ export default {
       'green-success': '#7CFA4D',
       divider: '#504D4D',
       overlay: 'rgba(57, 52, 52, 0.75)',
+      error: '#E70F0F',
     },
     width: {
       modal: '420px',
+      'single-block': '550px',
     },
     extend: {
       borderRadius: {

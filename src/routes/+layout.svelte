@@ -10,7 +10,9 @@
     <Nav />
     <div class="m-6 w-[100%] pl-[126px]">
       <Header />
-      <slot class="z-10" />
+      <div class="flex items-center justify-center">
+        <slot />
+      </div>
     </div>
   </div>
 </div>

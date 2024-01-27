@@ -18,7 +18,7 @@
   export let validAccounts = {};
   export let signingAddress = '';
   // a callback for when the user cancels this action
-  export let cancelAction;
+  export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
   export let txnFinished = () => {
     console.log('default txnFinished callback');

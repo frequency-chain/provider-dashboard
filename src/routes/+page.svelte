@@ -4,7 +4,7 @@
   import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores/pageContentStore';
 
-  $pageContent = PageContent.Dashboard;
+  $pageContent = PageContent.Login;
 </script>
 
 {#if $pageContent === PageContent.Dashboard}
