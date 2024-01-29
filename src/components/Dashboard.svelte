@@ -12,7 +12,7 @@
   storeToken.subscribe((val) => (token = val));
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="max-w-dashboard w-full flex flex-col gap-4">
   <DashboardHeader />
 
   <ChainStatus {blockNumber} {connected} {token} {epochNumber} />
