@@ -20,13 +20,14 @@
   <!-- TODO: CHANGE ICON WHEN APPROVED -->
   <!-- TODO: ADD ONCLICK WHEN BUILDING SWITCH MODAL -->
   <button
-    on:click={() => (showConnectProvider = true)}
+    on:click|preventDefault={() => {
+      showConnectProvider = true;
+      console.log('HERE');
+    }}
     class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
     ><img src={switchIcon} alt="switch" class="w-[24px]" /></button
   >
 
-  {#if showConnectProvider}
-    <ConnectProvider close={() => (showConnectProvider = false)} />
-  {/if}
+  <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
   <!-- {/if} -->
 </div>
