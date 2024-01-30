@@ -46,10 +46,6 @@
     thisWeb3Accounts = polkadotExt.web3Accounts;
   });
 
-  // $: if ($user && $user.network && $user.network.endpoint && isValidURL($user.network.endpoint.toString())) {
-  //   connectAndFetchAccounts($user.network);
-  // }
-
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
     if (network) {
       try {
