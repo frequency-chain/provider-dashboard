@@ -92,12 +92,7 @@
   function accountChanged() {
     console.log('accountChanged');
 
-    $user.address = selectedAccount.address;
-    $user.isProvider = selectedAccount.isProvider;
-    $user.msaId = selectedAccount.msaId;
-    $user.providerName = selectedAccount.providerName;
-    $user.signingKey = selectedAccount.signingKey;
-    $user.network = selectedAccount.network;
+    $user = selectedAccount;
   }
 
   function isValidURL(url: string): boolean {

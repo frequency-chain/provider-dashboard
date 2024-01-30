@@ -10,9 +10,6 @@
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
-  let token = '';
-  storeToken.subscribe((val) => (token = val.toString()));
-
   let api: ApiPromise;
   dotApi.subscribe(async (storeDotApi) => {
     if (storeConnected && storeDotApi.api) {
@@ -44,9 +41,9 @@
       providerList = [
         { label: 'Id', value: $user.msaId?.toString() },
         { label: 'Name', value: $user.providerName ?? '' },
-        { label: 'Total Balance', value: balanceToHuman(accountBalances.free + accountBalances.frozen, token) },
-        { label: 'Transferable', value: balanceToHuman(accountBalances.free, token) },
-        { label: 'Locked', value: balanceToHuman(accountBalances.frozen, token) },
+        { label: 'Total Balance', value: balanceToHuman(accountBalances.free + accountBalances.frozen, $storeToken) },
+        { label: 'Transferable', value: balanceToHuman(accountBalances.free, $storeToken) },
+        { label: 'Locked', value: balanceToHuman(accountBalances.frozen, $storeToken) },
       ];
     }
   }
