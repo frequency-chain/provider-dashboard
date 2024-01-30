@@ -38,7 +38,7 @@
 
   $: {
     if (!connected) {
-      emptyMessage = 'Not connected to the blockchain';
+      emptyMessage = 'Not connected';
     } else if (!$user.signingKey) {
       emptyMessage = 'No transaction signing address selected';
     } else if (!$user.msaId) {
