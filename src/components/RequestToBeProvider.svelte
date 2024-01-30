@@ -1,23 +1,23 @@
 <script lang="ts">
-  import { transactionSigningAddress, dotApi } from '$lib/stores';
+  import { dotApi } from '$lib/stores';
   import { submitRequestToBeProvider } from '$lib/connections';
   import { onMount } from 'svelte';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { DotApi } from '$lib/storeTypes';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost, createMailto } from '$lib/utils';
-  import { ApiPromise } from '@polkadot/api';
+  import type { ApiPromise } from '@polkadot/api';
   import TransactionStatus from '$components/TransactionStatus.svelte';
+  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+  import { user } from '$lib/stores/userStore';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
-  let web3FromSource;
-  let web3Enable;
+  let thisWeb3FromSource: typeof web3FromSource;
+  let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   export let txnStatuses: Array<string> = [];
-  export let validAccounts = {};
-  export let signingAddress = '';
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
@@ -27,11 +27,10 @@
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
-    web3FromSource = extension.web3FromSource;
-    web3Enable = extension.web3Enable;
+    thisWeb3FromSource = extension.web3FromSource;
+    thisWeb3Enable = extension.web3Enable;
   });
 
-  transactionSigningAddress.subscribe((addr) => (signingAddress = addr));
   dotApi.subscribe((api) => (localDotApi = api));
 
   const doProposeToBeProvider = async (_evt: Event) => {
@@ -45,7 +44,7 @@
     }
     clearTxnStatuses();
     let endpointURI: string = localDotApi.selectedEndpoint || '';
-    let signingKeys = validAccounts[signingAddress];
+    let signingKeys = $user.signingKey!;
     showTransactionStatus = true;
     if (isLocalhost(endpointURI)) {
       await submitRequestToBeProvider(
@@ -58,10 +57,10 @@
         txnFinished
       );
     } else {
-      if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-        const extensions = await web3Enable('Frequency parachain provider dashboard: Proposing to be provider');
+      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Proposing to be provider');
         if (extensions.length !== 0) {
-          const injectedExtension = await web3FromSource(signingKeys.meta.source);
+          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source!);
           await submitRequestToBeProvider(
             localDotApi.api as ApiPromise,
             injectedExtension,
@@ -76,8 +75,8 @@
           return;
         }
       } else {
-        console.error('web3FromSource is function? ', isFunction(web3FromSource));
-        console.error('web3Enable is function? ', isFunction(web3Enable));
+        console.error('web3FromSource is function? ', isFunction(thisWeb3FromSource));
+        console.error('web3Enable is function? ', isFunction(thisWeb3Enable));
       }
     }
   };

@@ -1,16 +1,12 @@
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import {
-  dotApi,
-  storeConnected,
-  storeCurrentAction,
-  storeMsaInfo,
-  storeToken,
-  transactionSigningAddress,
-} from '../../src/lib/stores';
+import { dotApi, storeConnected, storeCurrentAction, storeToken } from '../../src/lib/stores';
+import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
+import { KeyringPair } from '@polkadot/keyring/types';
+import Keyring from '@polkadot/keyring';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -80,7 +76,7 @@ vi.mock('@polkadot/api', async () => {
 describe('Provider.svelte', () => {
   beforeEach(() => {
     storeCurrentAction.set(ActionForms.NoForm);
-    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
+    user.set({ address: '', isProvider: false, msaId: 0, providerName: '' });
   });
   afterEach(() => cleanup());
 
@@ -105,14 +101,16 @@ describe('Provider.svelte', () => {
 
     describe("if they don't have an MSA", () => {
       beforeEach(() => {
-        transactionSigningAddress.set('0xabcd1234');
-        storeMsaInfo.set({ providerName: '', isProvider: false, msaId: 0 });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+
+        user.set({ address: '0xabcd1234', isProvider: false, msaId: 0, providerName: '', signingKey: keyRingPair });
         storeToken.set('FLARP');
       });
 
       it('says you should create an msa', () => {
         const { container } = render(Provider);
-        const result = getByTextContent('No Msa Id. Please create an MSA first.');
+        const result = getByTextContent('No MSA ID.  Please create one.');
         expect(result).toBeInTheDocument();
         expect(container.querySelector('button')).toBeNull();
       });
@@ -127,8 +125,11 @@ describe('Provider.svelte', () => {
 
     describe('if they are not a provider', () => {
       beforeEach(() => {
-        transactionSigningAddress.set('0xcoffee');
-        storeMsaInfo.set({ providerName: '', isProvider: false, msaId: 11 });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+
+        user.set({ address: '0xcoffee', isProvider: false, msaId: 11, providerName: '', signingKey: keyRingPair });
+
         storeToken.set('FLARP');
         // to get rid of an extraneous error
         dotApi.update((api) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
@@ -141,6 +142,7 @@ describe('Provider.svelte', () => {
         render(Provider);
 
         expect(getByTextContent('Transferable 0')).toBeInTheDocument();
+
         await waitFor(() => {
           // these values are from the mocks
           expect(getByTextContent('Total Balance 1.5000 micro FLARP')).toBeInTheDocument();
@@ -151,8 +153,15 @@ describe('Provider.svelte', () => {
     });
     describe('when they are a Provider', () => {
       beforeEach(() => {
-        transactionSigningAddress.set('anything');
-        storeMsaInfo.set({ providerName: 'Bobbay', isProvider: true, msaId: 11 });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+        user.set({
+          address: '0xdeadbeef',
+          isProvider: true,
+          msaId: 11,
+          providerName: 'Bobbay',
+          signingKey: keyRingPair,
+        });
       });
 
       it('Shows Provider Id and name', () => {

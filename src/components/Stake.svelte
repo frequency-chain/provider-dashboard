@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dotApi, storeCurrentAction, storeToken, transactionSigningAddress } from '$lib/stores';
+  import { dotApi, storeCurrentAction, storeToken } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
@@ -12,7 +12,6 @@
   import type { AccountMap } from '$lib/polkadotApi';
 
   let thisDotApi = defaultDotApi;
-  let signingAddress: string = ''; // eslint-disable-line no-unused-vars
   let showSelf: boolean = false; // eslint-disable-line no-unused-vars
   let selectedKey: string = '';
   let thisWeb3FromSource: typeof web3FromSource;
@@ -36,7 +35,6 @@
   export let txnFinished = () => {};
 
   dotApi.subscribe((api) => (thisDotApi = api));
-  transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
   storeToken.subscribe((val) => (token = val));
 

@@ -1,9 +1,4 @@
 import { writable } from 'svelte/store';
-import type { NetworkInfo } from './networksStore';
-import type { AccountInfo } from './accountsStore';
+import { Account } from './accountsStore';
 
-export interface UserInfo {
-  network: NetworkInfo;
-  account?: AccountInfo;
-}
-export const user = writable({});
+export const user = writable<Account>(new Account());

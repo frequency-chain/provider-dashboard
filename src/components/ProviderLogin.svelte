@@ -3,7 +3,7 @@
 
   import type { WsProvider, ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import { dotApi, isLoggedIn, transactionSigningAddress } from '$lib/stores';
+  import { dotApi, isLoggedIn } from '$lib/stores';
 
   import { defaultDotApi } from '$lib/storeTypes';
 
@@ -11,14 +11,18 @@
   import BlockSection from '$components/BlockSection.svelte';
   import Button from '$components/Button.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { allNetworks, selectedNetwork, type NetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
   import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
-  import { fetchAccounts, storeProviderAccounts, storeSelectedAccount } from '$lib/stores/accountsStore';
+  import { Account, fetchAccountsForNetwork, providerAccountsStore } from '$lib/stores/accountsStore';
+  import { user } from '$lib/stores/userStore';
 
   let wsProvider: WsProvider;
+
+  // Wallet access
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
+  let selectedAccount: Account;
   let customNetwork: string;
 
   // Error messages
@@ -30,7 +34,7 @@
 
   // Control whether or not the connect button is enabled or disabled
   let canConnect: boolean = false;
-  $: canConnect = $selectedNetwork != null && $storeProviderAccounts.length > 0 && $storeSelectedAccount !== '';
+  $: canConnect = $user?.network != null && $providerAccountsStore.size > 0 && $user?.address !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -41,18 +45,14 @@
     thisWeb3Accounts = polkadotExt.web3Accounts;
   });
 
-  $: if ($selectedNetwork && $selectedNetwork.endpoint && isValidURL($selectedNetwork.endpoint.toString())) {
-    connectAndFetchAccounts($selectedNetwork);
-  }
-
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
     if (network) {
       try {
         networkErrorMsg = '';
         controlKeysErrorMsg = '';
-        $storeProviderAccounts = [];
+        $providerAccountsStore.clear();
         await getApi(network.endpoint?.toString() ?? '', thisDotApi, wsProvider);
-        await fetchAccounts(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
+        await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
         await updateConnectionStatus(thisDotApi.api as ApiPromise);
       } catch (e) {
         console.log(e);
@@ -61,10 +61,10 @@
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }
-      for (const account of $storeProviderAccounts) {
+      for (const account of $providerAccountsStore) {
         console.log(`Found provider: ${account}`);
       }
-      if (networkErrorMsg == '' && $storeProviderAccounts.length == 0) {
+      if (networkErrorMsg == '' && $providerAccountsStore.size == 0) {
         controlKeysErrorMsg = 'No provider accounts found.  Become a provider?';
       }
     }
@@ -81,14 +81,17 @@
 
   function networkChanged() {
     console.log('networkChanged');
-    $storeSelectedAccount = '';
-    $transactionSigningAddress = '';
+    $user.address = '';
+    if ($user.network && $user.network.endpoint && isValidURL($user.network.endpoint.toString())) {
+      connectAndFetchAccounts($user.network);
+    }
     canConnect = false;
   }
 
   function accountChanged() {
     console.log('accountChanged');
-    $transactionSigningAddress = $storeSelectedAccount;
+
+    $user = selectedAccount;
   }
 
   function isValidURL(url: string): boolean {
@@ -104,8 +107,8 @@
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
         const url = new URL(customNetwork);
-        if ($selectedNetwork != null) {
-          $selectedNetwork.endpoint = url;
+        if ($user?.network) {
+          $user.network.endpoint = url;
         }
       }
     }
@@ -117,6 +120,10 @@
     }
     return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
   }
+
+  function formatAccount(account: Account): string {
+    return account.address;
+  }
 </script>
 
 <div id="provider-login" class="content-block flex w-single-block flex-col gap-4">
@@ -124,21 +131,21 @@
     <DropDownMenu
       id="network"
       label="Select a Network"
-      bind:selected={$selectedNetwork}
+      bind:selected={$user.network}
       placeholder="Select a network"
       options={$allNetworks}
       onChange={networkChanged}
       formatter={formatNetwork}
     />
-    {#if $selectedNetwork != null && $selectedNetwork.name == 'CUSTOM'}
+    {#if $user.network != null && $user.network.name == 'CUSTOM'}
       <input
         id="other-endpoint-url"
         type="text"
         pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
         placeholder="wss://some.frequency.node"
         bind:value={customNetwork}
-        disabled={$selectedNetwork.name != 'CUSTOM'}
-        class:hidden={$selectedNetwork.name != 'CUSTOM'}
+        disabled={$user.network.name != 'CUSTOM'}
+        class:hidden={$user.network.name != 'CUSTOM'}
         on:keydown={customNetworkChanged}
       />
     {/if}
@@ -146,11 +153,12 @@
     <DropDownMenu
       id="controlkeys"
       label="Select a Provider Control Key"
-      bind:selected={$storeSelectedAccount}
+      bind:selected={selectedAccount}
       placeholder="Select a provider"
-      options={$storeProviderAccounts}
+      options={Array.from($providerAccountsStore.values())}
       onChange={accountChanged}
-      disabled={$storeProviderAccounts.length == 0}
+      formatter={formatAccount}
+      disabled={$providerAccountsStore.size == 0}
     />
     <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />

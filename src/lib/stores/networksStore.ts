@@ -23,8 +23,3 @@ export const allNetworks = writable<NetworkInfo[]>([
   { name: 'LOCALHOST', endpoint: new URL('ws://127.0.0.1:9944') },
   { name: 'CUSTOM' },
 ]);
-
-/**
- * The selected network.
- */
-export const selectedNetwork = writable<NetworkInfo | null>(null);
