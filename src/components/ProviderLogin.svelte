@@ -34,8 +34,7 @@
 
   // Control whether or not the connect button is enabled or disabled
   let canConnect: boolean = false;
-  $: canConnect =
-    $user?.network != null && Array.from($providerAccountsStore.keys()).length > 0 && $user?.address !== '';
+  $: canConnect = $user?.network != null && $providerAccountsStore.size > 0 && $user?.address !== '';
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -159,7 +158,7 @@
       options={Array.from($providerAccountsStore.values())}
       onChange={accountChanged}
       formatter={formatAccount}
-      disabled={Array.from($providerAccountsStore.keys()).length == 0}
+      disabled={$providerAccountsStore.size == 0}
     />
     <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
