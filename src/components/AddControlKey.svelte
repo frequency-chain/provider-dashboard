@@ -1,21 +1,23 @@
 <script lang="ts">
-  import { dotApi, storeConnected, storeCurrentAction, transactionSigningAddress } from '$lib/stores';
+  import { dotApi, storeConnected, storeCurrentAction } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey } from '$lib/connections';
+  import { submitAddControlKey, type SigningKey } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
   import TransactionStatus from './TransactionStatus.svelte';
   import DropDownMenu from './DropDownMenu.svelte';
+  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+  import { user } from '$lib/stores/userStore';
 
   let connected = false;
   let thisDotApi = defaultDotApi;
-  let signingAddress: string = '';
   let showSelf: boolean = false;
   let selectedKeyToAdd: string = '';
-  let web3FromSource;
-  let web3Enable;
+  let thisWeb3FromSource: typeof web3FromSource;
+  let thisWeb3Enable: typeof web3Enable;
+
   let showTransactionStatus = false;
   let txnFinished = () => {};
   export let txnStatuses: Array<string> = [];
@@ -23,8 +25,8 @@
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
-    web3FromSource = extension.web3FromSource;
-    web3Enable = extension.web3Enable;
+    thisWeb3FromSource = extension.web3FromSource;
+    thisWeb3Enable = extension.web3Enable;
   });
 
   export let providerId = 0;
@@ -35,7 +37,6 @@
     thisDotApi = api;
     selectedKeyToAdd = '';
   });
-  transactionSigningAddress.subscribe((val) => (signingAddress = val));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.AddControlKey));
 
   const addNewTxnStatus = (txnStatus: string) => {
@@ -50,7 +51,7 @@
       alert('Please choose a key to add.');
     } else {
       let newKeys = validAccounts[selectedKeyToAdd];
-      let signingKeys = validAccounts[signingAddress];
+      let signingKeys: SigningKey = $user.signingKey!;
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
         await submitAddControlKey(
@@ -64,10 +65,10 @@
           txnFinished
         );
       } else {
-        if (isFunction(web3FromSource) && isFunction(web3Enable)) {
-          const extensions = await web3Enable('Frequency parachain provider dashboard: Adding Keys');
+        if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+          const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
           if (extensions.length !== 0) {
-            const injectedExtension = await web3FromSource(signingKeys.meta.source);
+            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source!);
             await submitAddControlKey(
               thisDotApi.api as ApiPromise,
               injectedExtension,
@@ -83,8 +84,8 @@
             return;
           }
         } else {
-          console.error('web3FromSource is function? ', isFunction(web3FromSource));
-          console.error('web3Enable is function? ', isFunction(web3Enable));
+          console.error('web3FromSource is function? ', isFunction(thisWeb3FromSource));
+          console.error('web3Enable is function? ', isFunction(thisWeb3Enable));
         }
       }
     }

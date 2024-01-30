@@ -1,6 +1,6 @@
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { storeConnected, transactionSigningAddress, dotApi } from '../../src/lib/stores';
+import { storeConnected, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
 import { getByTextContent } from '../helpers';
 import { user } from '../../src/lib/stores/userStore';
