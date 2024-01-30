@@ -56,15 +56,15 @@
   }
 
   let capacityList: { label: string; value: string }[] = [];
-  let emptyMessage: string = '';
+  let emptyMsg: string = '';
 
   $: {
     if (!$storeConnected) {
-      emptyMessage = 'Not connected';
+      emptyMsg = 'Not connected';
     } else if (!$user.signingKey) {
-      emptyMessage = 'No transaction signing address selected';
+      emptyMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
-      emptyMessage = 'No MSA ID.  Please create one.';
+      emptyMsg = 'No MSA ID.  Please create one.';
     } else {
       capacityList = [
         { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
@@ -76,6 +76,6 @@
   }
 </script>
 
-<ListCard title="Capacity" list={capacityList} {emptyMessage}>
+<ListCard title="Capacity" list={capacityList} emptyMessage={emptyMsg}>
   <button on:click={showStake} class="btn-primary">Stake To Provider</button>
 </ListCard>
