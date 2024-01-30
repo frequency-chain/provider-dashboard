@@ -18,18 +18,17 @@
     <p class="text-md">
       {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
     </p>
-
-    <!-- TODO: CHANGE ICON WHEN APPROVED -->
-    <!-- TODO: ADD ONCLICK WHEN BUILDING SWITCH MODAL -->
-    <button
-      on:click={() => (showConnectProvider = true)}
-      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
-      ><img src={switchIcon} alt="switch" class="w-[24px]" /></button
-    >
-
-    {#if showConnectProvider}
-      <ConnectProvider close={() => (showConnectProvider = false)} />
-    {/if}
-    <!-- {/if} -->
-  </div>
+  <!-- TODO: CHANGE ICON WHEN APPROVED -->
+  <!-- TODO: ADD ONCLICK WHEN BUILDING SWITCH MODAL -->
+  <button
+    on:click|preventDefault={() => {
+      showConnectProvider = true;
+      console.log('HERE');
+    }}
+    class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
+    ><img src={switchIcon} alt="switch" class="w-[24px]" />
+  </button>
+  <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
+  <!-- {/if} -->
+</div>
 {/if}
