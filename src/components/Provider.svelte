@@ -10,9 +10,6 @@
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
-  let connected = false;
-  storeConnected.subscribe((val) => (connected = val));
-
   let token = '';
   storeToken.subscribe((val) => (token = val.toString()));
 
@@ -37,7 +34,7 @@
   let emptyMessage: string = '';
 
   $: {
-    if (!connected) {
+    if (!$storeConnected) {
       emptyMessage = 'Not connected';
     } else if (!$user.signingKey) {
       emptyMessage = 'No transaction signing address selected';

@@ -11,7 +11,6 @@
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { user } from '$lib/stores/userStore';
 
-  let connected = false;
   let thisDotApi = defaultDotApi;
   let showSelf: boolean = false;
   let selectedKeyToAdd: string = '';
@@ -32,7 +31,6 @@
   export let providerId = 0;
   export let validAccounts = {};
 
-  storeConnected.subscribe((val) => (connected = val));
   dotApi.subscribe((api) => {
     thisDotApi = api;
     selectedKeyToAdd = '';
@@ -92,7 +90,7 @@
   };
 </script>
 
-<div id="add-control-key" class:hidden={!(connected && showSelf)} class="action-card basis-1/2">
+<div id="add-control-key" class:hidden={!($storeConnected && showSelf)} class="action-card basis-1/2">
   <p class="action-card-title">
     Add a Control Key to Provider Id {providerId}
   </p>

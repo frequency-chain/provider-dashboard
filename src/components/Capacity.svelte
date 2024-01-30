@@ -10,9 +10,7 @@
   import { ActionForms } from '$lib/storeTypes.js';
 
   let epochNumber = 0n;
-  let connected: boolean;
 
-  storeConnected.subscribe((val) => (connected = val));
   let apiPromise: ApiPromise | undefined;
   dotApi.subscribe((api) => {
     if (api?.api) {
@@ -40,11 +38,11 @@
   let capacityDetails: CapacityDetails = defaultDetails;
 
   user.subscribe(async (val) => {
-    if (connected && apiPromise) {
+    if ($storeConnected && apiPromise) {
       blockNumber = await getBlockNumber(apiPromise);
       $storeBlockNumber = blockNumber;
     }
-    if (connected && apiPromise?.query && $user.address) {
+    if ($storeConnected && apiPromise?.query && $user.address) {
       let info = await getMsaEpochAndCapacityInfo(apiPromise, $user.address);
 
       capacityDetails = { ...defaultDetails, ...info.capacityDetails };
@@ -61,7 +59,7 @@
   let emptyMessage: string = '';
 
   $: {
-    if (!connected) {
+    if (!$storeConnected) {
       emptyMessage = 'Not connected';
     } else if (!$user.signingKey) {
       emptyMessage = 'No transaction signing address selected';
