@@ -22,7 +22,6 @@ export class Account {
   }
 }
 
-export const allAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
 export const providerAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
 export const nonProviderAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
 
@@ -34,7 +33,6 @@ export async function fetchAccountsForNetwork(
 ): Promise<void> {
   console.log('fetchAccountsForNetwork() - ', selectedNetwork);
 
-  const accounts: Map<string, Account> = new Map<string, Account>();
   const providerAccounts: Map<string, Account> = new Map<string, Account>();
   const nonProviderAccounts: Map<string, Account> = new Map<string, Account>();
 
@@ -53,7 +51,6 @@ export async function fetchAccountsForNetwork(
         account.signingKey = keyRingPair;
         account.isProvider = msaInfo.isProvider;
         account.providerName = providerNameToHuman(msaInfo.providerName);
-        accounts.set(account.address, account);
         if (account.isProvider) {
           providerAccounts.set(account.address, account);
         } else {
@@ -84,7 +81,6 @@ export async function fetchAccountsForNetwork(
           account.msaId = msaInfo.msaId;
           account.isProvider = msaInfo.isProvider;
           account.providerName = providerNameToHuman(msaInfo.providerName);
-          accounts.set(account.address, account);
           if (account.isProvider) {
             providerAccounts.set(account.address, account);
           } else {
@@ -95,7 +91,6 @@ export async function fetchAccountsForNetwork(
     );
   }
 
-  allAccountsStore.set(accounts);
   providerAccountsStore.set(providerAccounts);
   nonProviderAccountsStore.set(nonProviderAccounts);
 }
