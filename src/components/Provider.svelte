@@ -12,13 +12,8 @@
 
   let api: ApiPromise;
   dotApi.subscribe(async (storeDotApi) => {
-    if (storeConnected && storeDotApi.api) {
+    if ($storeConnected && storeDotApi.api) {
       api = storeDotApi.api;
-    }
-  });
-
-  user.subscribe(async (val) => {
-    if (api) {
       accountBalances = await getBalances(api, $user.address);
     }
   });
