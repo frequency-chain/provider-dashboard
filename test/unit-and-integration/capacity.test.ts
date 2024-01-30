@@ -1,8 +1,7 @@
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { storeConnected, transactionSigningAddress, dotApi, storeMsaInfo } from '../../src/lib/stores';
+import { storeConnected, transactionSigningAddress, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
-import { MsaInfo } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
 
 const mocks = vi.hoisted(() => {

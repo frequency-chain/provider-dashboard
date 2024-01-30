@@ -1,10 +1,9 @@
-import { writable, type Writable } from 'svelte/store';
-import { ActionForms, defaultDotApi, type MsaInfo } from '$lib/storeTypes';
+import { writable } from 'svelte/store';
+import { ActionForms, defaultDotApi } from '$lib/storeTypes';
 export const storeConnected = writable(false);
 
 export const transactionSigningAddress = writable('');
 
-export const storeMsaInfo: Writable<MsaInfo | undefined> = writable();
 export const dotApi = writable(defaultDotApi);
 
 export const storeBlockNumber = writable(0n);

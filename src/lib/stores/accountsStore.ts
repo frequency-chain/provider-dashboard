@@ -1,38 +1,68 @@
 import { writable } from 'svelte/store';
-import { ApiPromise, Keyring } from '@polkadot/api';
+import { Keyring, type ApiPromise } from '@polkadot/api';
 import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-import type { AccountMap, MetaMap } from '$lib/polkadotApi';
 import { getMsaInfo } from '$lib/polkadotApi';
 import { isFunction } from '@polkadot/util';
 import type { NetworkInfo } from './networksStore';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import type { MsaInfo } from '$lib/storeTypes';
+import type { SigningKey } from '$lib/connections';
+import { providerNameToHuman } from '$lib/utils';
 
-// All accounts
-export const storeValidAccounts = writable<string[]>([]);
-// Only provider accounts
-export const storeProviderAccounts = writable<string[]>([]);
+export class Account {
+  network?: NetworkInfo;
+  address: string = '';
+  signingKey?: SigningKey;
+  msaId?: number;
+  isProvider: boolean = false;
+  providerName?: string;
 
-export const storeSelectedAccount = writable<string>('');
+  constructor() {
+    this.address = '';
+  }
+}
 
-export async function fetchAccounts(
+export const allAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
+export const providerAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
+export const nonProviderAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
+
+export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
   thisWeb3Enable: typeof web3Enable,
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
 ): Promise<void> {
-  console.log('fetchAccounts() - ', selectedNetwork);
-  // populating for localhost and for a parachain are different since with localhost, there is
-  // access to the Alice/Bob/Charlie accounts etc., and so won't use the extension.
-  let foundAccounts: AccountMap | MetaMap = {}; // eslint-disable-line prefer-const
+  console.log('fetchAccountsForNetwork() - ', selectedNetwork);
 
+  const accounts: Map<string, Account> = new Map<string, Account>();
+  const providerAccounts: Map<string, Account> = new Map<string, Account>();
+  const nonProviderAccounts: Map<string, Account> = new Map<string, Account>();
+
+  // If the network is localhost, add the default test accounts for the chain
   if (selectedNetwork.name === 'LOCALHOST') {
     const keyring = new Keyring({ type: 'sr25519' });
 
-    ['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].forEach((accountName) => {
-      const account = { ...keyring.addFromUri(accountName), ...{ meta: { name: accountName } } };
-      foundAccounts[account.address] = account;
-    });
+    await Promise.all(
+      ['//Alice', '//Bob', '//Charlie', '//Dave', '//Eve', '//Ferdie'].map(async (accountName) => {
+        const keyRingPair = { ...keyring.addFromUri(accountName), ...{ meta: { name: accountName } } };
+        const account = new Account();
+        account.network = selectedNetwork;
+        account.address = keyRingPair.address;
+        const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+        account.msaId = msaInfo.msaId;
+        account.signingKey = keyRingPair;
+        account.isProvider = msaInfo.isProvider;
+        account.providerName = providerNameToHuman(msaInfo.providerName);
+        accounts.set(account.address, account);
+        if (account.isProvider) {
+          providerAccounts.set(account.address, account);
+        } else {
+          nonProviderAccounts.set(account.address, account);
+        }
+      })
+    );
   }
-  // If the Polkadot extension is installed, add the accounts to the list
+  // Check if the Polkadot{.js} wallet extension is installed.
   if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
     const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
     if (!extensions || !extensions.length) {
@@ -40,28 +70,32 @@ export async function fetchAccounts(
       throw new Error('Polkadot{.js} extension not found; please install it first.');
     }
 
-    const allAccounts = await thisWeb3Accounts();
-    allAccounts.forEach((a) => {
-      // include only the accounts allowed for this chain
-      if (!a.meta.genesisHash || selectedNetwork.genesisHash === a.meta.genesisHash) {
-        foundAccounts[a.address] = a;
-      }
-    });
+    // If so, add the wallet accounts for the selected network (chain)
+    const walletAccounts = await thisWeb3Accounts();
+    await Promise.all(
+      walletAccounts.map(async (walletAccount: InjectedAccountWithMeta) => {
+        // include only the accounts allowed for this chain
+        if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
+          const account = new Account();
+          account.network = selectedNetwork;
+          account.address = walletAccount.address;
+          account.signingKey = walletAccount;
+          const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+          account.msaId = msaInfo.msaId;
+          account.isProvider = msaInfo.isProvider;
+          account.providerName = providerNameToHuman(msaInfo.providerName);
+          accounts.set(account.address, account);
+          if (account.isProvider) {
+            providerAccounts.set(account.address, account);
+          } else {
+            nonProviderAccounts.set(account.address, account);
+          }
+        }
+      })
+    );
   }
 
-  // Segment into provider accounts and non-provider accounts
-  const regularAccounts: string[] = [];
-  const providerAccounts: string[] = [];
-
-  for (const address in foundAccounts) {
-    const { isProvider } = await getMsaInfo(apiPromise, address);
-    if (isProvider) {
-      providerAccounts.push(address);
-    } else {
-      regularAccounts.push(address);
-    }
-  }
-
-  storeProviderAccounts.set(providerAccounts);
-  storeValidAccounts.set(regularAccounts);
+  allAccountsStore.set(accounts);
+  providerAccountsStore.set(providerAccounts);
+  nonProviderAccountsStore.set(nonProviderAccounts);
 }

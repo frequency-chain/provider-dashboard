@@ -1,13 +1,6 @@
 <script lang="ts">
-  import {
-    dotApi,
-    storeConnected,
-    storeMsaInfo,
-    storeToken,
-    transactionSigningAddress,
-    storeCurrentAction,
-  } from '$lib/stores';
-  import type { MsaInfo } from '$lib/storeTypes';
+  import { dotApi, storeConnected, storeToken, storeCurrentAction } from '$lib/stores';
+  import { user } from '$lib/stores/userStore';
   import { balanceToHuman } from '$lib/utils';
   import type { ApiPromise } from '@polkadot/api';
   import { getBalances } from '$lib/polkadotApi';
@@ -15,7 +8,6 @@
   import ListCard from './ListCard.svelte';
   import { ActionForms } from '$lib/storeTypes.js';
 
-  let msaInfo: MsaInfo;
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
   let connected = false;
@@ -25,22 +17,16 @@
   storeToken.subscribe((val) => (token = val.toString()));
 
   let api: ApiPromise;
-  dotApi.subscribe((storeDotApi) => {
+  dotApi.subscribe(async (storeDotApi) => {
     if (storeConnected && storeDotApi.api) {
       api = storeDotApi.api;
     }
   });
 
-  let signingAddress = ''; // eslint-disable-line no-unused-vars
-  transactionSigningAddress.subscribe(async (val) => {
-    signingAddress = val;
+  user.subscribe(async (val) => {
     if (api) {
-      accountBalances = await getBalances(api, val);
+      accountBalances = await getBalances(api, $user.address);
     }
-  });
-
-  storeMsaInfo.subscribe((info) => {
-    msaInfo = info as MsaInfo;
   });
 
   function showAddControlKey() {
@@ -48,14 +34,14 @@
   }
 
   $: providerList = [
-    { label: 'Id', value: msaInfo?.msaId.toString() },
-    { label: 'Name', value: msaInfo?.providerName },
+    { label: 'Id', value: $user.msaId?.toString() },
+    { label: 'Name', value: $user.providerName },
     { label: 'Total Balance', value: balanceToHuman(accountBalances.free + accountBalances.frozen, token) },
     { label: 'Transferable', value: balanceToHuman(accountBalances.free, token) },
     { label: 'Locked', value: balanceToHuman(accountBalances.frozen, token) },
   ];
 </script>
 
-<ListCard title="Provider" list={providerList} {signingAddress} {msaInfo} {connected}>
+<ListCard title="Provider" list={providerList} {connected}>
   <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
 </ListCard>

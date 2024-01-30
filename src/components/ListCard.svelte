@@ -1,20 +1,17 @@
 <script lang="ts">
-  import type { MsaInfo } from '$lib/storeTypes';
-
+  import { user } from '$lib/stores/userStore';
   export let title = '';
   export let list: { label: string; value: string }[] = [];
   export let connected = false;
-  export let signingAddress = '';
-  export let msaInfo: MsaInfo;
 </script>
 
 <div class="content-block relative min-w-fit flex-grow">
   <p class="section-title-underlined">{title}</p>
   {#if !connected}
     <div class="pt-3">Not connected</div>
-  {:else if signingAddress === ''}
+  {:else if !$user.address}
     <div class="pt-3">No transaction signing address selected</div>
-  {:else if msaInfo?.msaId === 0}
+  {:else if $user.msaId === 0}
     <div class="pt-3">No Msa Id. Please create an MSA first.</div>
   {:else}
     <div class="mb-16">
