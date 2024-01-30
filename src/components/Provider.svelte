@@ -33,15 +33,28 @@
     storeCurrentAction.set(ActionForms.AddControlKey);
   }
 
-  $: providerList = [
-    { label: 'Id', value: $user.msaId?.toString() },
-    { label: 'Name', value: $user.providerName },
-    { label: 'Total Balance', value: balanceToHuman(accountBalances.free + accountBalances.frozen, token) },
-    { label: 'Transferable', value: balanceToHuman(accountBalances.free, token) },
-    { label: 'Locked', value: balanceToHuman(accountBalances.frozen, token) },
-  ];
+  let providerList: { label: string; value: string }[] = [];
+  let emptyMessage: string = '';
+
+  $: {
+    if (!connected) {
+      emptyMessage = 'Not connected to the blockchain';
+    } else if (!$user.signingKey) {
+      emptyMessage = 'No transaction signing address selected';
+    } else if (!$user.msaId) {
+      emptyMessage = 'No MSA ID.  Please create one.';
+    } else {
+      providerList = [
+        { label: 'Id', value: $user.msaId?.toString() },
+        { label: 'Name', value: $user.providerName ?? '' },
+        { label: 'Total Balance', value: balanceToHuman(accountBalances.free + accountBalances.frozen, token) },
+        { label: 'Transferable', value: balanceToHuman(accountBalances.free, token) },
+        { label: 'Locked', value: balanceToHuman(accountBalances.frozen, token) },
+      ];
+    }
+  }
 </script>
 
-<ListCard title="Provider" list={providerList} {connected}>
+<ListCard title="Provider" list={providerList} {emptyMessage}>
   <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
 </ListCard>

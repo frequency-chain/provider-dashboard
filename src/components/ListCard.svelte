@@ -1,18 +1,13 @@
 <script lang="ts">
-  import { user } from '$lib/stores/userStore';
   export let title = '';
   export let list: { label: string; value: string }[] = [];
-  export let connected = false;
+  export let emptyMessage: string;
 </script>
 
 <div class="content-block relative min-w-fit flex-grow">
   <p class="section-title-underlined">{title}</p>
-  {#if !connected}
-    <div class="pt-3">Not connected</div>
-  {:else if !$user.address}
-    <div class="pt-3">No transaction signing address selected</div>
-  {:else if $user.msaId === 0}
-    <div class="pt-3">No Msa Id. Please create an MSA first.</div>
+  {#if emptyMessage}
+    <div class="pt-3">{emptyMessage}</div>
   {:else}
     <div class="mb-16">
       {#each list as item}

@@ -57,14 +57,27 @@
     storeCurrentAction.update((val) => (val = ActionForms.Stake));
   }
 
-  $: capacityList = [
-    { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
-    { label: 'Total Issued', value: balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP') },
-    { label: 'Last Replenished', value: `Epoch ${capacityDetails?.lastReplenishedEpoch}` },
-    { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, token) },
-  ];
+  let capacityList: { label: string; value: string }[] = [];
+  let emptyMessage: string = '';
+
+  $: {
+    if (!connected) {
+      emptyMessage = 'Not connected to the blockchain';
+    } else if (!$user.signingKey) {
+      emptyMessage = 'No transaction signing address selected';
+    } else if (!$user.msaId) {
+      emptyMessage = 'No MSA ID.  Please create one.';
+    } else {
+      capacityList = [
+        { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
+        { label: 'Total Issued', value: balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP') },
+        { label: 'Last Replenished', value: `Epoch ${capacityDetails?.lastReplenishedEpoch}` },
+        { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, token) },
+      ];
+    }
+  }
 </script>
 
-<ListCard title="Capacity" list={capacityList} {connected}>
+<ListCard title="Capacity" list={capacityList} {emptyMessage}>
   <button on:click={showStake} class="btn-primary">Stake To Provider</button>
 </ListCard>
