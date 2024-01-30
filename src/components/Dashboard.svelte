@@ -3,19 +3,17 @@
   import Provider from '$components/Provider.svelte';
   import DashboardHeader from '$components/DashboardHeader.svelte';
   import ChainStatus from '$components/ChainStatus.svelte';
-  import { storeBlockNumber, storeChainInfo, storeConnected, storeToken } from '$lib/stores';
+  import { storeBlockNumber, storeChainInfo, storeToken } from '$lib/stores';
 
   let blockNumber = $storeBlockNumber;
   let epochNumber = $storeChainInfo.epochNumber;
-  let connected = $storeConnected;
-  let token = '';
-  storeToken.subscribe((val) => (token = val));
+  let token = $storeToken;
 </script>
 
-<div class="max-w-dashboard w-full flex flex-col gap-4">
+<div class="max-w-dashboard flex w-full flex-col gap-4">
   <DashboardHeader />
 
-  <ChainStatus {blockNumber} {connected} {token} {epochNumber} />
+  <ChainStatus {blockNumber} {token} {epochNumber} />
 
   <div class="flex justify-center gap-4">
     <Provider />

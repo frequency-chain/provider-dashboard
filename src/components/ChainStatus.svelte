@@ -4,9 +4,9 @@
   export let epochNumber = 0n;
 
   const chainStatus = [
-    { label: 'Current Block', value: blockNumber },
-    { label: 'Epoch', value: epochNumber },
-    { label: 'Token', value: token },
+    { label: 'Current Block', value: blockNumber, id: 'block-number' },
+    { label: 'Epoch', value: epochNumber, id: 'epoch-number' },
+    { label: 'Token', value: token, id: 'token' },
   ];
 </script>
 
@@ -15,8 +15,8 @@
   <div class="flex justify-around">
     {#each chainStatus as status, index}
       <div class={`flex min-w-[30%] flex-col gap-6 p-5 ${index > 0 && 'border-l border-divider'}`}>
-        <p class="label" id="connection-status-title">{status.label}:</p>
-        <p class="data-value-2xl" id="connection-status-value">{status.value}</p>
+        <p class="label" id={`${status.id}-title`}>{status.label}:</p>
+        <p class="data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
       </div>
     {/each}
   </div>
