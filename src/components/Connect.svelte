@@ -151,4 +151,3 @@
     <button on:click|preventDefault={toggleFaucetInstructions} class="btn-primary ml-8"> I have token</button>
   </div>
 </div>
-

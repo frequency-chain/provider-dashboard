@@ -14,7 +14,7 @@
     {id}
   >
     <div
-      class="content-block w-modal flex cursor-default flex-col gap-7"
+      class="content-block flex w-modal cursor-default flex-col gap-7"
       on:click|stopPropagation={() => {}}
       on:keyup|stopPropagation={() => {}}
       tabindex="0"

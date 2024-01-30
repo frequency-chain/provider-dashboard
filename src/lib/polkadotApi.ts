@@ -77,7 +77,7 @@ export async function getProviderFromMsa(apiPromise: ApiPromise, msaId: number):
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
-  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(publicKey)).unwrapOrDefault();  
+  const received: u64 = (await apiPromise.query.msa.publicKeyToMsaId(publicKey)).unwrapOrDefault();
 
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received.toNumber();
