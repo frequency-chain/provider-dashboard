@@ -102,7 +102,7 @@ describe('Provider.svelte', () => {
     describe("if they don't have an MSA", () => {
       beforeEach(() => {
         const keyring = new Keyring({ type: 'sr25519' });
-        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
 
         user.set({ address: '0xabcd1234', isProvider: false, msaId: 0, providerName: '', signingKey: keyRingPair });
         storeToken.set('FLARP');
@@ -126,7 +126,7 @@ describe('Provider.svelte', () => {
     describe('if they are not a provider', () => {
       beforeEach(() => {
         const keyring = new Keyring({ type: 'sr25519' });
-        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
 
         user.set({ address: '0xcoffee', isProvider: false, msaId: 11, providerName: '', signingKey: keyRingPair });
 
@@ -154,8 +154,14 @@ describe('Provider.svelte', () => {
     describe('when they are a Provider', () => {
       beforeEach(() => {
         const keyring = new Keyring({ type: 'sr25519' });
-        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
-        user.set({ address: '0xdeadbeef', isProvider: true, msaId: 11, providerName: 'Bobbay', signingKey: keyRingPair });
+        const keyRingPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+        user.set({
+          address: '0xdeadbeef',
+          isProvider: true,
+          msaId: 11,
+          providerName: 'Bobbay',
+          signingKey: keyRingPair,
+        });
       });
 
       it('Shows Provider Id and name', () => {
