@@ -23,16 +23,17 @@
   }
 
   let providerList: { label: string; value: string }[] = [];
-  let emptyMsg: string;
+  let errMsg: string = '';
 
   $: {
     if (!$storeConnected) {
-      emptyMsg = 'Not connected';
+      errMsg = 'Not connected';
     } else if (!$user.signingKey) {
-      emptyMsg = 'No transaction signing address selected';
+      errMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
-      emptyMsg = 'No MSA ID.  Please create one.';
+      errMsg = 'No MSA ID.  Please create one.';
     } else {
+      errMsg = '';
       providerList = [
         { label: 'Id', value: $user.msaId?.toString() },
         { label: 'Name', value: $user.providerName ?? '' },
@@ -44,6 +45,6 @@
   }
 </script>
 
-<ListCard title="Provider" list={providerList} emptyMessage={emptyMsg}>
+<ListCard title="Provider" list={providerList} errorMessage={errMsg}>
   <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
 </ListCard>

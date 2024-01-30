@@ -5,6 +5,8 @@ import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
+import { KeyringPair } from '@polkadot/keyring/types';
+import Keyring from '@polkadot/keyring';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -99,7 +101,10 @@ describe('Provider.svelte', () => {
 
     describe("if they don't have an MSA", () => {
       beforeEach(() => {
-        user.set({ address: '0xabcd1234', isProvider: false, msaId: 0, providerName: '' });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
+
+        user.set({ address: '0xabcd1234', isProvider: false, msaId: 0, providerName: '', signingKey: keyRingPair });
         storeToken.set('FLARP');
       });
 
@@ -120,7 +125,11 @@ describe('Provider.svelte', () => {
 
     describe('if they are not a provider', () => {
       beforeEach(() => {
-        user.set({ address: '0xcoffee', isProvider: false, msaId: 11, providerName: '' });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
+
+        user.set({ address: '0xcoffee', isProvider: false, msaId: 11, providerName: '', signingKey: keyRingPair });
+
         storeToken.set('FLARP');
         // to get rid of an extraneous error
         dotApi.update((api) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
@@ -133,6 +142,7 @@ describe('Provider.svelte', () => {
         render(Provider);
 
         expect(getByTextContent('Transferable 0')).toBeInTheDocument();
+
         await waitFor(() => {
           // these values are from the mocks
           expect(getByTextContent('Total Balance 1.5000 micro FLARP')).toBeInTheDocument();
@@ -143,7 +153,9 @@ describe('Provider.svelte', () => {
     });
     describe('when they are a Provider', () => {
       beforeEach(() => {
-        user.set({ address: '0xdeadbeef', isProvider: true, msaId: 11, providerName: 'Bobbay' });
+        const keyring = new Keyring({ type: 'sr25519' });
+        const keyRingPair = { ...keyring.addFromUri("//Alice"), ...{ meta: { name: "//Alice" } } };
+        user.set({ address: '0xdeadbeef', isProvider: true, msaId: 11, providerName: 'Bobbay', signingKey: keyRingPair });
       });
 
       it('Shows Provider Id and name', () => {
