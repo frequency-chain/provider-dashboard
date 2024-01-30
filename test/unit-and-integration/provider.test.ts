@@ -4,10 +4,9 @@ import {
   dotApi,
   storeConnected,
   storeCurrentAction,
-  storeMsaInfo,
   storeToken,
-  transactionSigningAddress,
 } from '../../src/lib/stores';
+import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
@@ -80,7 +79,7 @@ vi.mock('@polkadot/api', async () => {
 describe('Provider.svelte', () => {
   beforeEach(() => {
     storeCurrentAction.set(ActionForms.NoForm);
-    storeMsaInfo.set({ isProvider: false, msaId: 0, providerName: '' });
+    user.set({ address: '', isProvider: false, msaId: 0, providerName: '' });
   });
   afterEach(() => cleanup());
 
@@ -105,8 +104,7 @@ describe('Provider.svelte', () => {
 
     describe("if they don't have an MSA", () => {
       beforeEach(() => {
-        transactionSigningAddress.set('0xabcd1234');
-        storeMsaInfo.set({ providerName: '', isProvider: false, msaId: 0 });
+        user.set({ address: '0xabcd1234', isProvider: false, msaId: 0, providerName: '' });
         storeToken.set('FLARP');
       });
 
@@ -127,8 +125,7 @@ describe('Provider.svelte', () => {
 
     describe('if they are not a provider', () => {
       beforeEach(() => {
-        transactionSigningAddress.set('0xcoffee');
-        storeMsaInfo.set({ providerName: '', isProvider: false, msaId: 11 });
+        user.set({ address: '0xcoffee', isProvider: false, msaId: 11, providerName: '' });
         storeToken.set('FLARP');
         // to get rid of an extraneous error
         dotApi.update((api) => (api = { ...api, selectedEndpoint: 'ws://localhost:9944' }));
@@ -151,8 +148,7 @@ describe('Provider.svelte', () => {
     });
     describe('when they are a Provider', () => {
       beforeEach(() => {
-        transactionSigningAddress.set('anything');
-        storeMsaInfo.set({ providerName: 'Bobbay', isProvider: true, msaId: 11 });
+        user.set({ address: '0xdeadbeef', isProvider: true, msaId: 11, providerName: 'Bobbay' });
       });
 
       it('Shows Provider Id and name', () => {

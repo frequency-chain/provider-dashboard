@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import { dotApi, storeConnected, storeMsaInfo } from '../../src/lib/stores';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
+import { user } from '../../src/lib/stores/userStore';
 
 const mocks = vi.hoisted(() => {
   const resolvedApi = {
@@ -24,7 +25,7 @@ vi.mock('@polkadot/api', async () => {
 
 describe('Stake.svelte Unit Tests', () => {
   beforeEach(() => {
-    storeMsaInfo.set({ isProvider: true, providerName: 'test', msaId: 1 });
+    user.set({ address: '', isProvider: true, msaId: 1, providerName: 'test' });
   });
   afterEach(() => cleanup());
 
