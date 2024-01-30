@@ -1,31 +1,23 @@
 <script lang="ts">
-  export let connected = false;
   export let token = 'none';
   export let blockNumber = 0n;
   export let epochNumber = 0n;
+
+  const chainStatus = [
+    { label: 'Current Block', value: blockNumber, id: 'block-number' },
+    { label: 'Epoch', value: epochNumber, id: 'epoch-number' },
+    { label: 'Token', value: token, id: 'token' },
+  ];
 </script>
 
-<div
-  id="chain-status"
-  class="flex h-fit items-stretch rounded-xl bg-bg-black p-8 font-semibold tracking-wider shadow-md"
->
-  <div class="self-center border-r-2 pl-4 pr-10 text-right text-3xl">
-    <div class="height-fit">Overview:</div>
-  </div>
-  <div class="shrink-0 grow border-r-2 px-8">
-    <p class="text-lg" id="connection-status-title">Connection status:</p>
-    <p class="text-aqua text-3xl" id="connection-status-value">{connected ? 'Connected' : 'Not connected'}</p>
-  </div>
-  <div class="basis-1/4 border-r-2 px-8">
-    <p class="text-lg" id="block-number-title">Current Block:</p>
-    <p class="text-aqua text-3xl" id="block-number-value">{blockNumber}</p>
-  </div>
-  <div class="basis-1/6 border-r-2 px-8">
-    <p class="text-lg" id="epoch-number-title">Epoch:</p>
-    <p class="text-aqua text-3xl" id="epoch-number-value">{epochNumber}</p>
-  </div>
-  <div class="basis-1/6 pl-8">
-    <p class="text-lg" id="token-title">Token:</p>
-    <p class="text-aqua text-3xl" id="token-value">{token}</p>
+<div id="chain-status" class="content-block">
+  <h3 class="section-title-underlined">Overview</h3>
+  <div class="flex justify-around">
+    {#each chainStatus as status, index}
+      <div class={`flex min-w-[30%] flex-col gap-6 p-5 ${index > 0 && 'border-l border-divider'}`}>
+        <p class="label" id={`${status.id}-title`}>{status.label}:</p>
+        <p class="data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
+      </div>
+    {/each}
   </div>
 </div>

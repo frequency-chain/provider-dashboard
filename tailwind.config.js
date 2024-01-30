@@ -26,6 +26,8 @@ export default {
     width: {
       modal: '420px',
       'single-block': '550px',
+      dashboard: '1010px',
+      full: '100%',
     },
     extend: {
       borderRadius: {
