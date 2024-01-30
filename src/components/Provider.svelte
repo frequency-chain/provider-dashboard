@@ -23,7 +23,7 @@
   }
 
   let providerList: { label: string; value: string }[] = [];
-  let emptyMsg: string = '';
+  let emptyMsg: string;
 
   $: {
     if (!$storeConnected) {
