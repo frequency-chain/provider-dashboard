@@ -124,7 +124,6 @@ describe('Capacity.svelte', () => {
 
     it('is shown if it isProvider is true', async () => {
       const { container } = render(Capacity, { token: 'FLARP' });
-      // storeMsaInfo.update((info: MsaInfo) => (info = { ...info, isProvider: true }));
       user.update((u) => (u = { ...u, isProvider: true }));
       await waitFor(() => {
         expect(container.querySelector('div div')).not.toHaveClass('hidden');
