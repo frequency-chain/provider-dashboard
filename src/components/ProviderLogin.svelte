@@ -65,7 +65,7 @@
       for (const account of $providerAccountsStore) {
         console.log(`Found provider: ${account}`);
       }
-      if (networkErrorMsg == '' && Array.from($providerAccountsStore.keys()).length == 0) {
+      if (networkErrorMsg == '' && $providerAccountsStore.size == 0) {
         controlKeysErrorMsg = 'No provider accounts found.  Become a provider?';
       }
     }
