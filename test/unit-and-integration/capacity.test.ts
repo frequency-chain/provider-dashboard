@@ -144,7 +144,7 @@ describe('Capacity.svelte', () => {
 
       // trigger changes as if user clicked Connect and such
       await dotApi.update((val) => (val = { ...val, api: createdApi }));
-      user.update((u) => (u = { ...u, address: '0xdeadbeef'}));
+      user.update((u) => (u = { ...u, address: '0xdeadbeef' }));
       await waitFor(() => {
         expect(container.querySelector('div div')).not.toHaveClass('hidden');
       });

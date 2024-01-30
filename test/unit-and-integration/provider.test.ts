@@ -1,11 +1,6 @@
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import {
-  dotApi,
-  storeConnected,
-  storeCurrentAction,
-  storeToken,
-} from '../../src/lib/stores';
+import { dotApi, storeConnected, storeCurrentAction, storeToken } from '../../src/lib/stores';
 import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
 import { ActionForms } from '../../src/lib/storeTypes';
