@@ -105,7 +105,7 @@ describe('Provider.svelte', () => {
 
       it('says you should create an msa', () => {
         const { container } = render(Provider);
-        const result = getByTextContent('No Msa Id. Please create an MSA first.');
+        const result = getByTextContent('No MSA ID.  Please create one.');
         expect(result).toBeInTheDocument();
         expect(container.querySelector('button')).toBeNull();
       });

@@ -44,6 +44,6 @@
   }
 </script>
 
-<ListCard title="Provider" list={providerList} {emptyMessage}>
+<ListCard title="Provider" list={providerList} emptyMessage={emptyMessage}>
   <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
 </ListCard>

@@ -10,6 +10,7 @@ import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
+import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 
 type AddKeyData = { msaId: string; expiration: string; newPublicKey: string };
 export type SigningKey = InjectedAccountWithMeta | KeyringPair;
@@ -65,7 +66,7 @@ export async function submitAddControlKey(
 
     const ownerKeyProof = { Sr25519: ownerKeySignature };
     const newKeyProof = { Sr25519: newKeySignature };
-    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload as PalletMsaAddKeyData);
     useKeyring
       ? await submitExtrinsicWithKeyring(
           extrinsic,

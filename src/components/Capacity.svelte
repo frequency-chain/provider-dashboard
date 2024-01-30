@@ -76,6 +76,6 @@
   }
 </script>
 
-<ListCard title="Capacity" list={capacityList} {emptyMessage}>
+<ListCard title="Capacity" list={capacityList} emptyMessage={emptyMessage}>
   <button on:click={showStake} class="btn-primary">Stake To Provider</button>
 </ListCard>
