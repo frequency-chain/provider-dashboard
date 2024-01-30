@@ -66,7 +66,12 @@ export async function submitAddControlKey(
 
     const ownerKeyProof = { Sr25519: ownerKeySignature };
     const newKeyProof = { Sr25519: newKeySignature };
-    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload as PalletMsaAddKeyData);
+    const extrinsic = api.tx.msa.addPublicKeyToMsa(
+      signingAccount.address,
+      ownerKeyProof,
+      newKeyProof,
+      newKeyPayload as PalletMsaAddKeyData
+    );
     useKeyring
       ? await submitExtrinsicWithKeyring(
           extrinsic,

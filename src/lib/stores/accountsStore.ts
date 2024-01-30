@@ -3,7 +3,7 @@ import { Keyring, type ApiPromise } from '@polkadot/api';
 import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { getMsaInfo } from '$lib/polkadotApi';
 import { isFunction } from '@polkadot/util';
-import type { NetworkInfo } from './networksStore';
+import type { NetworkInfo } from '$lib/stores/networksStore';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { MsaInfo } from '$lib/storeTypes';
 import type { SigningKey } from '$lib/connections';
