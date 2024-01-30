@@ -10,15 +10,12 @@ describe('ChainStatus component', () => {
     const epochNumber = 1234n;
     const blockNumber = 898989n;
     const token = 'FLARP';
-    const connected = true;
 
-    const { container, getByText } = render(ChainStatus, { epochNumber, blockNumber, token, connected });
-    expect(getByText('Connection status:')).toBeInTheDocument();
+    const { container, getByText } = render(ChainStatus, { epochNumber, blockNumber, token });
     expect(getByText('Current Block:')).toBeInTheDocument();
     expect(getByText('Epoch:')).toBeInTheDocument();
     expect(getByText('Token:')).toBeInTheDocument();
 
-    expect(container.querySelector('#connection-status-value')).toHaveTextContent('Connected');
     expect(container.querySelector('#block-number-value')).toHaveTextContent(blockNumber.toString());
     expect(container.querySelector('#epoch-number-value')).toHaveTextContent(epochNumber.toString());
     expect(container.querySelector('#token-value')).toHaveTextContent('FLARP');
