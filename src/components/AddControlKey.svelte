@@ -103,7 +103,7 @@
   </span>
 
   <svelte:fragment slot="body">
-    <form class="column gap-4">
+    <form class="column">
       <DropDownMenu
         id="AddControlKey"
         label="Key to Add"

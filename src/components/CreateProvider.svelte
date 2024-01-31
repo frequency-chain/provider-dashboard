@@ -1,8 +1,6 @@
 <script lang="ts">
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { dotApi } from '$lib/stores';
-  import type { DotApi } from '$lib/storeTypes';
-  import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider, type TxnFinishedCallback } from '$lib/connections';
@@ -13,29 +11,29 @@
   import { getMsaInfo } from '$lib/polkadotApi';
   import type { MsaInfo } from '$lib/storeTypes';
   import { pageContent } from '$lib/stores/pageContentStore';
+  import { isLoggedIn } from '$lib/stores';
 
-  let newProviderName = '';
-  let localDotApi: DotApi = defaultDotApi;
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
-  let showTransactionStatus = false;
+  export let beforeCreate: () => Promise<void>;
   export let txnStatuses: Array<string> = [];
-
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
-
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
     if (succeeded) {
-      const apiPromise = localDotApi.api as ApiPromise;
-      const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
+      const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
+      $isLoggedIn = true;
       pageContent.dashboard();
     }
   };
+
+  let newProviderName = '';
+  let thisWeb3FromSource: typeof web3FromSource;
+  let thisWeb3Enable: typeof web3Enable;
+  let showTransactionStatus = false;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -43,21 +41,25 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  dotApi.subscribe((api: DotApi) => (localDotApi = api));
-
   const doCreateProvider = async (_evt: Event) => {
+    await beforeCreate();
+
+    const endpointURI: string | undefined = $user.network?.endpoint?.origin;
+    if (!endpointURI) {
+      alert('Error connecting to endpoint.');
+      return;
+    }
     if (newProviderName === '') {
       alert('please enter a Provider Name');
       return;
     }
-    if (!localDotApi) {
+    if (!$dotApi.api) {
       alert('please reconnect to an endpoint');
       return;
     }
     clearTxnStatuses();
-    let endpointURI: string = localDotApi.selectedEndpoint || '';
     showTransactionStatus = true;
-    const apiPromise = localDotApi.api as ApiPromise;
+    const apiPromise = $dotApi.api as ApiPromise;
     if (isLocalhost(endpointURI)) {
       await submitCreateProvider(
         apiPromise,

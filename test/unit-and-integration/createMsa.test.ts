@@ -9,24 +9,25 @@ globalThis.alert = () => {};
 
 describe('CreateMsa component', () => {
   const mockCancelAction = vi.fn();
+  const mockBeforeCreate = vi.fn();
 
   beforeAll(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
+    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
     expect(getByRole('button', { name: 'Create an MSA' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
   it('clicking Cancel performs the callback', async () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
+    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
 
     const cancel = getByRole('button', { name: 'Cancel' });
     fireEvent.click(cancel);
     expect(mockCancelAction).toHaveBeenCalled();
   });
 
-  // TODO: we introduced create api to this component, which now breaks the test.
+  // TODO: we introduced create api into the parent component, which now breaks the test.
   // TODO: redo API structure or redo test.
 
   // it('clicking CreateMsa calls the extrinsic', async () => {
@@ -57,6 +58,7 @@ describe('CreateMsa component', () => {
   //   const btn = getByRole('button', { name: 'Create an MSA' });
   //   userEvent.click(btn);
   //   await waitFor(() => {
+  //     expect(mockCancelAction).toHaveBeenCalled();
   //     expect(extrinsicWasCalled).toBe(true);
   //     expect(container.querySelector('#transaction-status')).not.toHaveClass('hidden');
   //     expect(getByText('Transaction Status')).toBeInTheDocument();

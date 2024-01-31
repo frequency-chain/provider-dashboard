@@ -7,10 +7,10 @@
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import DropDownMenu from '$components/DropDownMenu.svelte';
-  import { isValidURL, formatAccount, formatNetwork } from '$lib/utils';
+  import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
 
-  export let selectedNetwork: NetworkInfo | undefined;
-  export let accountsStore: Map<string, Account>;
+  export let setNewValues: (account: Account) => void | undefined;
+  export let accounts: Map<string, Account>;
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
   export let noAccountsFoundErrorMsg: string = 'No accounts found.';
@@ -19,8 +19,11 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account;
+  let selectedAccount: Account | undefined;
+  let selectedNetwork: NetworkInfo | undefined = $user?.network;
   let customNetwork: string;
+  let isCustomNetwork: boolean;
+  let isLoading: boolean = false;
 
   // Error messages
   let networkErrorMsg: string = '';
@@ -51,46 +54,41 @@
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }
-      for (const account of accountsStore) {
-        console.log(`Found provider: ${account}`);
+      for (const account of accounts) {
+        // console.log(`Found provider: ${account}`);
       }
-      if (networkErrorMsg == '' && accountsStore.size == 0) {
+      if (networkErrorMsg == '' && accounts.size === 0) {
         controlKeysErrorMsg = noAccountsFoundErrorMsg;
       }
     }
   }
 
-  function networkChanged() {
-    console.log('networkChanged to ' + selectedNetwork?.name);
-    $user.address = '';
-    if (selectedNetwork?.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
-      $user.network = selectedNetwork;
-      connectAndFetchAccounts(selectedNetwork);
-    }
-    isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
+  function accountChanged() {
+    selectedAccount && setNewValues(selectedAccount);
   }
 
-  function accountChanged() {
-    console.log('accountChanged');
-
-    $user = selectedAccount;
+  async function networkChanged() {
+    isLoading = true;
+    accounts = new Map();
+    if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
+      await connectAndFetchAccounts(selectedNetwork!);
+    }
+    isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
+    setNewValues({ network: selectedNetwork!, address: '', isProvider: false });
+    isLoading = false;
   }
 
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
         const url = new URL(customNetwork);
-        if (selectedNetwork) {
-          selectedNetwork.endpoint = url;
-        }
+        selectedNetwork!.endpoint = url;
       }
     }
   }
-
-  let isCustomNetwork: boolean;
 </script>
 
-<div class="flex flex-col gap-4">
+<div class="column">
   <DropDownMenu
     id="network"
     label="Select a Network"
@@ -118,10 +116,10 @@
     label={accountSelectorTitle}
     bind:value={selectedAccount}
     placeholder={accountSelectorPlaceholder}
-    options={Array.from(accountsStore.values())}
+    options={Array.from(accounts.values())}
     onChange={accountChanged}
     formatter={formatAccount}
-    disabled={accountsStore.size == 0}
+    disabled={accounts.size === 0 || isLoading}
   />
   <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
 </div>
