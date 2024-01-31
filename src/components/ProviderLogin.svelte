@@ -126,7 +126,7 @@
   }
 </script>
 
-<div id="provider-login" class="content-block flex w-single-block flex-col gap-4">
+<div id="provider-login" class="content-block column w-single-block">
   <BlockSection title="Provider Login">
     <DropDownMenu
       id="network"

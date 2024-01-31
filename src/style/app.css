@@ -30,6 +30,12 @@
   .content-block {
     @apply rounded-md bg-bg-black p-7;
   }
+  .unordered-list {
+    @apply ml-6 list-disc;
+  }
+  .column {
+    @apply flex flex-col gap-4;
+  }
 
   /* typography */
   /* headers */

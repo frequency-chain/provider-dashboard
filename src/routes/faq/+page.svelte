@@ -1,13 +1,18 @@
 <script lang="ts">
+  import MainnetVsTestnet from '$components/FaqAnswers/MainnetVsTestnet.svelte';
+  import TransactAsProvider from '$components/FaqAnswers/TransactAsProvider.svelte';
+  import type { ComponentType } from 'svelte';
+
   let openItem: null | number = null;
-  const questions: { q: string; a: string }[] = [
+
+  const questions: { q: string; a: ComponentType }[] = [
     {
       q: 'What is the difference between Mainnet and Testnet (Rococo)?',
-      a: 'The Frequency Mainnet is the production Frequency blockchain network. The Frequency Rococo Testnet, which works with the Polkadot Rococo Testnet, is for developers to test and debug applications without risking real assets. <br /><br />What about the other options?<ul class="ml-6 list-disc"><li>To connect to a node running on your desktop, choose Localhost.</li><li>To connect to a node that is not in the list, choose Other, then type the desired WebSocket address in the text field.</li><ul>',
+      a: MainnetVsTestnet,
     },
     {
       q: 'How do I transact on Frequency as a provider?',
-      a: 'To transact on Frequency as a provider you will need frequency utility tokens. On Frequency testnet, you can get tokens from the Testnet Faucet. <br /><br />To do that: <ul class="ml-6 list-disc"><li><a href="https://faucet.rococo.frequency.xyz/" target="_blank" rel="noopener noreferrer" class="underline">Get XRQCY tokens for Frequency Testnet (Rococo)</a> and follow the instructions using your desired wallet address to get XRQCY tokens.</li><li>Once that succeeds, verify the tokens have made it to your wallet by selecting or re-selecting the address above. You may need to wait a minute.</li><li>For more information, you can also visit the <a href="https://cloudflare-ipfs.com/ipns/dotapps.io/#/accounts" target="_blank" rel="noopener noreferrer" class="underline">Rococo Accounts page via the Polkadot UI.</a>.</li><ul>',
+      a: TransactAsProvider,
     },
   ];
 </script>
@@ -38,7 +43,7 @@
       </svg>
     </button>
     <div id="faq-answer" class={`p-3 ${openItem === index ? 'block' : 'hidden'}`}>
-      {@html item.a}
+      <svelte:component this={item.a} />
     </div>
   {/each}
 </div>
