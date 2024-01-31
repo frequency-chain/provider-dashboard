@@ -9,6 +9,7 @@
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
+  import { user } from '$lib/stores/userStore';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -16,8 +17,7 @@
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   export let txnStatuses: Array<string> = [];
-  export let validAccounts = {};
-  export let signingAddress = '';
+
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
@@ -44,7 +44,6 @@
     }
     clearTxnStatuses();
     let endpointURI: string = localDotApi.selectedEndpoint || '';
-    let signingKeys = validAccounts[signingAddress];
     showTransactionStatus = true;
     const apiPromise = localDotApi.api as ApiPromise;
     if (isLocalhost(endpointURI)) {
@@ -52,7 +51,7 @@
         apiPromise,
         undefined,
         endpointURI,
-        signingKeys,
+        $user.signingKey!,
         newProviderName,
         addNewTxnStatus,
         txnFinished
@@ -61,12 +60,12 @@
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
         const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
         if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
+          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
           await submitCreateProvider(
             apiPromise,
             injectedExtension,
             endpointURI,
-            signingKeys,
+            $user.signingKey!,
             newProviderName,
             addNewTxnStatus,
             txnFinished
@@ -83,24 +82,16 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="create-provider" class="action-card basis-1/2">
-  <p>
-    For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
-    submit a <code>createProvider</code> transaction.
-  </p>
-  <p>
-    This action will register the MSA Id that is controlled by the selected Transaction Signing Address above. Any
-    control key for the MSA Id can submit the transaction.
-  </p>
-  <form>
-    <label for="providerNameCB">Provider name</label>
+<form id="create-provider" class="flex flex-col gap-4 text-sm">
+  <div>
+    <label for="providerNameCB" class="label mb-3.5 block">Provider name</label>
     <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
-    <div class="w-350 flex justify-between">
-      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
-        Create Provider
-      </button>
-      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
-    </div>
-  </form>
-</div>
+  </div>
+  <div class="w-350 flex items-end justify-between">
+    <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
+      Create Provider
+    </button>
+    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+  </div>
+</form>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

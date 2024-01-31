@@ -9,14 +9,14 @@
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
+  import { user } from '$lib/stores/userStore';
+  import BlockSection from './BlockSection.svelte';
 
   let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   export let txnStatuses: Array<string> = [];
-  export let validAccounts = {};
-  export let signingAddress = '';
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
@@ -39,17 +39,23 @@
     }
     clearTxnStatuses();
     let endpointURI: string = localDotApi.selectedEndpoint || '';
-    let signingKeys = validAccounts[signingAddress];
     showTransactionStatus = true;
     const apiPromise = localDotApi.api as ApiPromise;
     if (isLocalhost(endpointURI)) {
-      await submitCreateMsa(apiPromise, undefined, endpointURI, signingKeys, addNewTxnStatus, txnFinished);
+      await submitCreateMsa(apiPromise, undefined, endpointURI, $user.signingKey!, addNewTxnStatus, txnFinished);
     } else {
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
         const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
         if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
-          await submitCreateMsa(apiPromise, injectedExtension, endpointURI, signingKeys, addNewTxnStatus, txnFinished);
+          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
+          await submitCreateMsa(
+            apiPromise,
+            injectedExtension,
+            endpointURI,
+            $user.signingKey!,
+            addNewTxnStatus,
+            txnFinished
+          );
         }
       }
     }
@@ -62,14 +68,15 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="create-msa" class="action-card basis-1/2">
+<div id="create-msa" class="flex flex-col gap-3.5 text-sm">
+  <div class="label">Create MSA Id</div>
   <p>
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above. It is available only on Frequency Testnet.
   </p>
-  <form class="w-350 flex justify-between">
+  <form class="w-350 flex items-end justify-between">
     <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary"> Create an MSA </button>
-    <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
+    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </form>
 </div>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

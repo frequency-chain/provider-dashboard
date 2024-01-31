@@ -12,7 +12,9 @@
   import BlockSection from './BlockSection.svelte';
   import { user } from '$lib/stores/userStore';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
+  import CreateMsa from './CreateMsa.svelte';
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
+  import CreateProvider from './CreateProvider.svelte';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -91,7 +93,7 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="request-to-be-provider" class="action-card basis-1/2">
+<div id="request-to-be-provider" class="content-block flex w-single-block flex-col gap-4">
   <BlockSection title="Become a provider">
     <form class="flex w-[320px] flex-col gap-4">
       <SelectNetworkAndAccount
@@ -99,14 +101,15 @@
         accountSelectorTitle="Wallet Address"
         accountSelectorPlaceholder="Select a wallet address"
       ></SelectNetworkAndAccount>
-      <label for="providerNameRtB" class="label">Provider name</label>
-      <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-      <div class="w-350 flex justify-between">
-        <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary"
-          >Create Provider</button
-        >
-        <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
-      </div>
+      {#if $user.address !== ''}
+        {#if $user.msaId === 0}
+          <CreateMsa />
+        {:else}
+          <CreateProvider />
+        {/if}
+      {:else}
+        <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Cancel</button>
+      {/if}
     </form>
   </BlockSection>
   <BlockSection title="More Info">
