@@ -4,7 +4,7 @@
   import type { DotApi } from '$lib/storeTypes';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
-  import { isLocalhost } from '$lib/utils';
+  import { isLocalhost, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider, type TxnFinishedCallback } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
@@ -32,7 +32,7 @@
     if (succeeded) {
       const apiPromise = localDotApi.api as ApiPromise;
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
-      $user.providerName = msaInfo.providerName;
+      $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
       pageContent.dashboard();
     }
