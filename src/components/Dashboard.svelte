@@ -10,7 +10,7 @@
   let token = $storeToken;
 </script>
 
-<div class="max-w-dashboard flex w-full flex-col gap-4">
+<div class="max-w-dashboard column w-full">
   <DashboardHeader />
 
   <ChainStatus {blockNumber} {token} {epochNumber} />
