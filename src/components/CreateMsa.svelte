@@ -5,12 +5,11 @@
   import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost } from '$lib/utils';
-  import { submitCreateMsa } from '$lib/connections';
+  import { submitCreateMsa, type TxnFinishedCallback } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
-  import BlockSection from './BlockSection.svelte';
 
   let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
@@ -20,7 +19,7 @@
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
-  export let txnFinished = () => {
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
     console.log('default txnFinished callback');
   };
 

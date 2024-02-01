@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dotApi, storeConnected, storeCurrentAction } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey, type SigningKey } from '$lib/connections';
+  import { submitAddControlKey, type SigningKey, type TxnFinishedCallback } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -18,9 +18,9 @@
   let thisWeb3Enable: typeof web3Enable;
 
   let showTransactionStatus = false;
-  let txnFinished = () => {};
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
   export let txnStatuses: Array<string> = [];
-  export let cancelAction;
+  export let cancelAction = () => {};
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');

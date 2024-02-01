@@ -5,7 +5,7 @@
   import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost } from '$lib/utils';
-  import { submitCreateProvider } from '$lib/connections';
+  import { submitCreateProvider, type TxnFinishedCallback } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
@@ -21,7 +21,7 @@
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
-  export let txnFinished = () => {
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
     console.log('default txnFinished callback');
   };
 
