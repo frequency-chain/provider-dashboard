@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { dotApi } from '$lib/stores';
-  import type { DotApi } from '$lib/storeTypes';
+  import type { DotApi, MsaInfo } from '$lib/storeTypes';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost } from '$lib/utils';
@@ -10,6 +10,7 @@
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
+  import { getMsaInfo } from '$lib/polkadotApi';
 
   let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
@@ -19,8 +20,13 @@
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
+  export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
     console.log('default txnFinished callback');
+    if (succeeded) {
+      const apiPromise = localDotApi.api as ApiPromise;
+      const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
+      $user.msaId = msaInfo.msaId;
+    }
   };
 
   onMount(async () => {

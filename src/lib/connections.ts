@@ -152,7 +152,7 @@ export async function parseChainEvent(
           showExtrinsicStatus('Transaction failed. See chain explorer for details.', txnStatusCallback);
         }
       });
-      txnFinishedCallback(succeeded);
+      await txnFinishedCallback(succeeded);
       return;
     } else if (status.isInBlock) {
       statusStr = `Transaction is included in blockHash ${status.asInBlock.toHex()}`;
