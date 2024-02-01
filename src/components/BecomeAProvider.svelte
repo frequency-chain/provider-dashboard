@@ -16,7 +16,6 @@
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import CreateProvider from './CreateProvider.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { page } from '$app/stores';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
