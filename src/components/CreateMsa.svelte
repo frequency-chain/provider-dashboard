@@ -11,6 +11,7 @@
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
   let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
@@ -18,7 +19,10 @@
   let showTransactionStatus = false;
   export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
+  export let cancelAction = () => {
+    pageContent.login();
+  };
+
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
     console.log('default txnFinished callback');

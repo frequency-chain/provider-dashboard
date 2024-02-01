@@ -15,6 +15,8 @@
   import CreateMsa from './CreateMsa.svelte';
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import CreateProvider from './CreateProvider.svelte';
+  import { pageContent } from '$lib/stores/pageContentStore';
+  import { page } from '$app/stores';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -25,7 +27,9 @@
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
+  export let cancelAction = () => {
+    pageContent.login();
+  };
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
     console.log('default txnFinished callback');

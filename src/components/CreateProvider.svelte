@@ -10,6 +10,10 @@
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
+  import { getMsaInfo } from '$lib/polkadotApi';
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { nonProviderAccountsStore, providerAccountsStore } from '$lib/stores/accountsStore';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -19,10 +23,20 @@
   export let txnStatuses: Array<string> = [];
 
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
+  export let cancelAction = () => {
+    pageContent.login();
+  };
+  
   // a callback for when a transaction hits a final state
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
-    console.log('default txnFinished callback');
+  export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
+    if (succeeded) {
+      const apiPromise = localDotApi.api as ApiPromise;
+      const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
+      $user.providerName = msaInfo.providerName;
+      $user.isProvider = msaInfo.isProvider;
+      $providerAccountsStore = $providerAccountsStore;
+      $nonProviderAccountsStore = $nonProviderAccountsStore;
+    }
   };
 
   onMount(async () => {
@@ -85,7 +99,7 @@
 <form id="create-provider" class="flex flex-col gap-4 text-sm">
   <div>
     <label for="providerNameCB" class="label mb-3.5 block">Provider name</label>
-    <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
+    <input id="providerNameCB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
   </div>
   <div class="w-350 flex items-end justify-between">
     <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
