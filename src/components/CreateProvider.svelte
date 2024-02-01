@@ -14,6 +14,7 @@
   import type { MsaInfo } from '$lib/storeTypes';
   import { nonProviderAccountsStore, providerAccountsStore } from '$lib/stores/accountsStore';
   import { pageContent } from '$lib/stores/pageContentStore';
+  import { page } from '$app/stores';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -24,7 +25,7 @@
 
   // a callback for when the user cancels this action
   export let cancelAction = () => {
-    pageContent.login();
+    pageContent.dashboard();
   };
 
   // a callback for when a transaction hits a final state
@@ -34,8 +35,7 @@
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
       $user.providerName = msaInfo.providerName;
       $user.isProvider = msaInfo.isProvider;
-      $providerAccountsStore = $providerAccountsStore;
-      $nonProviderAccountsStore = $nonProviderAccountsStore;
+      pageContent.dashboard();
     }
   };
 
