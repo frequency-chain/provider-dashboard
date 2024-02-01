@@ -103,6 +103,7 @@
         accountsStore={$nonProviderAccountsStore}
         accountSelectorTitle="Wallet Address"
         accountSelectorPlaceholder="Select a wallet address"
+        noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
       ></SelectNetworkAndAccount>
       {#if $user.address !== ''}
         {#if $user.msaId === 0}

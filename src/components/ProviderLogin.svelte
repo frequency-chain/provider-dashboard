@@ -35,6 +35,7 @@
       accountsStore={$providerAccountsStore}
       accountSelectorTitle="Select a Provider Control Key"
       accountSelectorPlaceholder="Select a provider control key"
+      noAccountsFoundErrorMsg="No provider accounts found.  Become a provider?"
     ></SelectNetworkAndAccount>
     <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
   </BlockSection>

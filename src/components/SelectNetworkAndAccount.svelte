@@ -13,6 +13,7 @@
   export let accountsStore: Map<string, Account>;
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
+  export let noAccountsFoundErrorMsg: string = 'No accounts found.';
 
   let wsProvider: WsProvider;
 
@@ -59,7 +60,7 @@
         console.log(`Found provider: ${account}`);
       }
       if (networkErrorMsg == '' && accountsStore.size == 0) {
-        controlKeysErrorMsg = 'No provider accounts found.  Become a provider?';
+        controlKeysErrorMsg = noAccountsFoundErrorMsg;
       }
     }
   }
