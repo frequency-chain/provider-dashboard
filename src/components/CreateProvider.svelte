@@ -14,7 +14,6 @@
   import type { MsaInfo } from '$lib/storeTypes';
   import { nonProviderAccountsStore, providerAccountsStore } from '$lib/stores/accountsStore';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { page } from '$app/stores';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
