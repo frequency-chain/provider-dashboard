@@ -26,7 +26,7 @@
   export let cancelAction = () => {
     pageContent.login();
   };
-  
+
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
     if (succeeded) {
