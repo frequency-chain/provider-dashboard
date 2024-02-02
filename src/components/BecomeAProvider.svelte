@@ -10,7 +10,7 @@
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import CreateMsa from './CreateMsa.svelte';
   import CreateProvider from './CreateProvider.svelte';
-  import RequestProviderViaMail from './RequestProviderViaMail.svelte';
+  import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
 
   let localDotApi: DotApi = defaultDotApi;
@@ -41,7 +41,7 @@
         noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
       ></SelectNetworkAndAccount>
       {#if $user.network != null && $user.network.name == 'MAINNET'}
-        <RequestProviderViaMail />
+        <EmailProviderRequest />
       {:else if $user.address !== ''}
         {#if $user.msaId === 0}
           <CreateMsa />
