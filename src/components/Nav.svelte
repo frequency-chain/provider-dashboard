@@ -20,20 +20,18 @@
   <img alt="iconLogo" src={iconLogo} class="absolute left-6 top-7 w-[57px]" />
   <div class="flex w-[100%] flex-col">
     {#each navItems as navItem}
-      {#key navItems}
-        <a
-          on:click={() => {
-            const items = navItems.map((item) => {
-              return { ...item, isActive: item.name === navItem.name };
-            });
-            navItems = items;
-          }}
-          href={navItem.href}
-          class={` flex h-[100px] items-center justify-center text-sm font-bold ${
-            navItem.isActive && 'bg-bg-black-active shadow-blue-border'
-          }`}>{navItem.name}</a
-        >
-      {/key}
+      <a
+        on:click={() => {
+          const items = navItems.map((item) => {
+            return { ...item, isActive: item.name === navItem.name };
+          });
+          navItems = items;
+        }}
+        href={navItem.href}
+        class={` flex h-[100px] items-center justify-center text-sm font-bold ${
+          navItem.isActive && 'bg-bg-black-active shadow-blue-border'
+        }`}>{navItem.name}</a
+      >
     {/each}
   </div>
 </div>
