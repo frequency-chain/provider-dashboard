@@ -71,6 +71,7 @@
     console.log('networkChanged to ' + selectedNetwork?.name);
     $user.address = '';
     if (selectedNetwork && selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
+      $user.network = selectedNetwork;
       connectAndFetchAccounts(selectedNetwork);
     }
     isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
