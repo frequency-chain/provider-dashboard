@@ -31,7 +31,7 @@
   dotApi.subscribe((api) => (localDotApi = api));
 </script>
 
-<div id="become-a-provider" class="content-block flex w-single-block flex-col gap-4">
+<div id="become-a-provider" class="content-block column w-single-block">
   <BlockSection title="Become a provider">
     <form class="flex w-[320px] flex-col gap-4">
       <SelectNetworkAndAccount
@@ -41,7 +41,7 @@
         accountSelectorPlaceholder="Select a wallet address"
         noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
       ></SelectNetworkAndAccount>
-      {#if $user.network != null && $user.network.name == 'MAINNET'}
+      {#if $user.network != null && $user.network.name === 'MAINNET'}
         <EmailProviderRequest />
       {:else if $user.address !== ''}
         {#if $user.msaId === 0}
