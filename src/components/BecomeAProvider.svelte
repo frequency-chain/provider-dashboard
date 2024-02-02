@@ -32,7 +32,7 @@
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
-  <BlockSection title="Become a provider">
+  <BlockSection title="Become a Provider">
     <form class="column w-[320px]">
       <SelectNetworkAndAccount
         selectedNetwork={$user.network}
