@@ -83,7 +83,7 @@
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above. It is available only on Frequency Testnet.
   </p>
-  <form class="w-350 flex items-end justify-between">
+  <form class="flex w-[350px] items-end justify-between">
     <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary"> Create an MSA </button>
     <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </form>

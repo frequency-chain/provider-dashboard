@@ -37,13 +37,6 @@
     @apply flex flex-col gap-4;
   }
 
-  .unordered-list {
-    @apply ml-6 list-disc;
-  }
-  .column {
-    @apply flex flex-col gap-4;
-  }
-
   /* typography */
   /* headers */
   .section-title {

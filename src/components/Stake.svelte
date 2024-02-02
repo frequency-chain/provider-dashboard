@@ -119,7 +119,7 @@
         <input type="number" id="stakingInput" value="1" on:input={handleInput} />
       </div>
     </div>
-    <div class="w-350 flex justify-between">
+    <div class="flex w-[350px] justify-between">
       <button on:click|preventDefault={stake} class="btn-primary">Stake</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>
