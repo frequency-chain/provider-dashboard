@@ -10,6 +10,7 @@
   import { defaultDotApi } from '$lib/storeTypes';
   import { dotApi } from '$lib/stores';
 
+  export let selectedNetwork: NetworkInfo | undefined;
   export let accountsStore: Map<string, Account>;
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
@@ -21,7 +22,6 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedNetwork: NetworkInfo | undefined = $user.network;
   let selectedAccount: Account;
   let customNetwork: string;
 

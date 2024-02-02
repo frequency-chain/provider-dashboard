@@ -35,6 +35,7 @@
   <BlockSection title="Become a provider">
     <form class="flex w-[320px] flex-col gap-4">
       <SelectNetworkAndAccount
+        selectedNetwork={$user.network}
         accountsStore={$nonProviderAccountsStore}
         accountSelectorTitle="Wallet Address"
         accountSelectorPlaceholder="Select a wallet address"
