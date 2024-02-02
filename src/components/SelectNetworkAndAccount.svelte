@@ -9,6 +9,7 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { defaultDotApi } from '$lib/storeTypes';
   import { dotApi } from '$lib/stores';
+  import { isValidURL } from '$lib/utils';
 
   export let selectedNetwork: NetworkInfo | undefined;
   export let accountsStore: Map<string, Account>;
@@ -78,15 +79,6 @@
     console.log('accountChanged');
 
     $user = selectedAccount;
-  }
-
-  function isValidURL(url: string): boolean {
-    try {
-      new URL(url);
-      return true;
-    } catch (_) {
-      return false;
-    }
   }
 
   function customNetworkChanged(event: KeyboardEvent) {

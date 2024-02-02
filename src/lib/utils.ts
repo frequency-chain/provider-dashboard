@@ -44,6 +44,15 @@ export function isMainnet(url: string): boolean {
   }
 }
 
+export function isValidURL(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
 // create a URL-encoded mailto URL string using the provided parameters.
 export function createMailto(to: string, subject?: string, body?: string): string {
   // this regex is not at all rigourous, it's just for preventing blatant errors

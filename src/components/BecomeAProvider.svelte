@@ -33,7 +33,7 @@
 
 <div id="become-a-provider" class="content-block column w-single-block">
   <BlockSection title="Become a provider">
-    <form class="flex w-[320px] flex-col gap-4">
+    <form class="column w-[320px]">
       <SelectNetworkAndAccount
         selectedNetwork={$user.network}
         accountsStore={$nonProviderAccountsStore}
