@@ -53,7 +53,14 @@ export function createMailto(to: string, subject?: string, body?: string): strin
     throw `to is not an email address: ${to}`;
   }
 
-  const mailtoUrl = ['mailto:', to, '?subject=', encodeURIComponent(subject || ''), '&body=', encodeURIComponent(body || '')];
+  const mailtoUrl = [
+    'mailto:',
+    to,
+    '?subject=',
+    encodeURIComponent(subject || ''),
+    '&body=',
+    encodeURIComponent(body || ''),
+  ];
   return mailtoUrl.join('');
 }
 
