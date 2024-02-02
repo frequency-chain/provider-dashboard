@@ -113,15 +113,14 @@
         <button class="btn-no-fill" on:click|preventDefault={close}>Cancel</button>
       </div>
     </form>
-      <span class="min-w-full border-b border-b-divider" />
-      <div>
-        <div class="label mb-2">Requirements</div>
-        <ol class="ml-3.5 list-decimal text-xs">1. Ensure the control key has a FRQCY balance.</ol>
-        <ol class="ml-3.5 list-decimal text-xs">2. Click 'Stake'</ol>
-        <ol class="ml-3.5 list-decimal text-xs">3. This will require 1 signature to send the transaction.</ol>
-      </div>
-    </BlockSection
-  >
+    <span class="min-w-full border-b border-b-divider" />
+    <div>
+      <div class="label mb-2">Requirements</div>
+      <ol class="ml-3.5 list-decimal text-xs">1. Ensure the control key has a FRQCY balance.</ol>
+      <ol class="ml-3.5 list-decimal text-xs">2. Click 'Stake'</ol>
+      <ol class="ml-3.5 list-decimal text-xs">3. This will require 1 signature to send the transaction.</ol>
+    </div>
+  </BlockSection>
 </Modal>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
 
