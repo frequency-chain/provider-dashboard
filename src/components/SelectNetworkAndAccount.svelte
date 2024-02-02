@@ -68,11 +68,13 @@
   }
 
   function networkChanged() {
-    console.log('networkChanged');
+    console.log('networkChanged to ' + selectedNetwork?.name);
     $user.address = '';
     if (selectedNetwork && selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
       connectAndFetchAccounts(selectedNetwork);
     }
+    isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
+
   }
 
   function accountChanged() {
@@ -91,6 +93,9 @@
       }
     }
   }
+
+  let isCustomNetwork: boolean;
+
 </script>
 
 <div class="flex flex-col gap-4">
@@ -103,15 +108,15 @@
     onChange={networkChanged}
     formatter={formatNetwork}
   />
-  {#if selectedNetwork != null && selectedNetwork.name == 'CUSTOM'}
+  {#if isCustomNetwork}
     <input
       id="other-endpoint-url"
       type="text"
       pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
       placeholder="wss://some.frequency.node"
       bind:value={customNetwork}
-      disabled={selectedNetwork.name != 'CUSTOM'}
-      class:hidden={selectedNetwork.name != 'CUSTOM'}
+      disabled={!isCustomNetwork}
+      class:hidden={!isCustomNetwork}
       on:keydown={customNetworkChanged}
     />
   {/if}
