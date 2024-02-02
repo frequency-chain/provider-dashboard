@@ -71,7 +71,6 @@
     if ($user.network && $user.network.endpoint && isValidURL($user.network.endpoint.toString())) {
       connectAndFetchAccounts($user.network);
     }
-    // canConnect = false;
   }
 
   function accountChanged() {
