@@ -74,7 +74,6 @@
       connectAndFetchAccounts(selectedNetwork);
     }
     isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
-
   }
 
   function accountChanged() {
@@ -95,7 +94,6 @@
   }
 
   let isCustomNetwork: boolean;
-
 </script>
 
 <div class="flex flex-col gap-4">
