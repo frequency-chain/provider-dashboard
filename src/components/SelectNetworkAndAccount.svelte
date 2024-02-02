@@ -73,6 +73,7 @@
     if (selectedNetwork && selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
       connectAndFetchAccounts(selectedNetwork);
     }
+    $user.network = selectedNetwork;
   }
 
   function accountChanged() {
@@ -115,7 +116,7 @@
       on:keydown={customNetworkChanged}
     />
   {/if}
-  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+  <div id="network-error-msg" class="text-error text-sm">{networkErrorMsg}</div>
   <DropDownMenu
     id="controlkeys"
     label={accountSelectorTitle}
@@ -126,5 +127,5 @@
     formatter={formatAccount}
     disabled={accountsStore.size == 0}
   />
-  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+  <div id="controlkey-error-msg" class="text-error text-sm">{controlKeysErrorMsg}</div>
 </div>
