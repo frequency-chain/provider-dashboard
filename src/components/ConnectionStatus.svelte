@@ -20,6 +20,13 @@
     <p class="text-md">
       {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
     </p>
+    <button
+      on:click|preventDefault={() => {
+        showConnectProvider = true;
+      }}
+      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
+      ><img src={switchIcon} alt="switch" class="w-[24px]" />
+    </button>
     <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
   </div>
 {/if}

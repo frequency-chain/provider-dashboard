@@ -84,7 +84,7 @@
     controlled by the selected Transaction Signing Address above. It is available only on Frequency Testnet.
   </p>
   <form class="flex w-[350px] items-end justify-between">
-    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary"> Create an MSA </button>
+    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} class="btn-primary">Create an MSA</button>
     <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </form>
 </div>
