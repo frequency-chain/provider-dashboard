@@ -32,6 +32,7 @@
 <div id="provider-login" class="content-block column w-single-block">
   <BlockSection title="Provider Login">
     <SelectNetworkAndAccount
+      selectedNetwork={$user?.network}
       accountsStore={$providerAccountsStore}
       accountSelectorTitle="Select a Provider Control Key"
       accountSelectorPlaceholder="Select a provider control key"
