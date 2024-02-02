@@ -9,7 +9,7 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { defaultDotApi } from '$lib/storeTypes';
   import { dotApi } from '$lib/stores';
-  import { isValidURL } from '$lib/utils';
+  import { isValidURL, formatAccount, formatNetwork } from '$lib/utils';
 
   export let selectedNetwork: NetworkInfo | undefined;
   export let accountsStore: Map<string, Account>;
@@ -90,17 +90,6 @@
         }
       }
     }
-  }
-
-  function formatNetwork(network: NetworkInfo): string {
-    if (network.name === 'CUSTOM') {
-      return network.name;
-    }
-    return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
-  }
-
-  function formatAccount(account: Account): string {
-    return account.address;
   }
 </script>
 
