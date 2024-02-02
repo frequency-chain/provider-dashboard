@@ -1,37 +1,25 @@
 <script lang="ts">
   import { dotApi } from '$lib/stores';
-  import { submitRequestToBeProvider, type TxnFinishedCallback } from '$lib/connections';
   import { onMount } from 'svelte';
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { DotApi } from '$lib/storeTypes';
-  import { isFunction } from '@polkadot/util';
-  import { isLocalhost, createMailto } from '$lib/utils';
-  import type { ApiPromise } from '@polkadot/api';
-  import TransactionStatus from '$components/TransactionStatus.svelte';
-  import BlockSection from './BlockSection.svelte';
   import { user } from '$lib/stores/userStore';
+  import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
+  import BlockSection from './BlockSection.svelte';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import CreateMsa from './CreateMsa.svelte';
-  import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import CreateProvider from './CreateProvider.svelte';
+  import RequestProviderViaMail from './RequestProviderViaMail.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
 
-  let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
 
-  let showTransactionStatus = false;
-  let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
-  export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
-  };
-  // a callback for when a transaction hits a final state
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
-    console.log('default txnFinished callback');
   };
 
   onMount(async () => {
@@ -41,62 +29,9 @@
   });
 
   dotApi.subscribe((api) => (localDotApi = api));
-
-  const doProposeToBeProvider = async (_evt: Event) => {
-    if (newProviderName === '') {
-      alert('please enter a Provider Name');
-      return;
-    }
-    if (!localDotApi) {
-      alert('please reconnect to an endpoint');
-      return;
-    }
-    clearTxnStatuses();
-    let endpointURI: string = localDotApi.selectedEndpoint || '';
-    showTransactionStatus = true;
-    if (isLocalhost(endpointURI)) {
-      await submitRequestToBeProvider(
-        localDotApi.api as ApiPromise,
-        undefined,
-        endpointURI,
-        $user.signingKey!,
-        newProviderName,
-        addNewTxnStatus,
-        txnFinished
-      );
-    } else {
-      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Proposing to be provider');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
-          await submitRequestToBeProvider(
-            localDotApi.api as ApiPromise,
-            injectedExtension,
-            endpointURI,
-            $user.signingKey!,
-            newProviderName,
-            addNewTxnStatus,
-            txnFinished
-          );
-        } else {
-          console.error('found no extensions');
-          return;
-        }
-      } else {
-        console.error('web3FromSource is function? ', isFunction(thisWeb3FromSource));
-        console.error('web3Enable is function? ', isFunction(thisWeb3Enable));
-      }
-    }
-  };
-
-  const addNewTxnStatus = (txnStatus: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-    return;
-  };
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="request-to-be-provider" class="content-block flex w-single-block flex-col gap-4">
+<div id="become-a-provider" class="content-block flex w-single-block flex-col gap-4">
   <BlockSection title="Become a provider">
     <form class="flex w-[320px] flex-col gap-4">
       <SelectNetworkAndAccount
@@ -105,7 +40,9 @@
         accountSelectorPlaceholder="Select a wallet address"
         noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
       ></SelectNetworkAndAccount>
-      {#if $user.address !== ''}
+      {#if $user.network != null && $user.network.name == 'MAINNET'}
+        <RequestProviderViaMail />
+      {:else if $user.address !== ''}
         {#if $user.msaId === 0}
           <CreateMsa />
         {:else}
@@ -126,4 +63,3 @@
     </div>
   </BlockSection>
 </div>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
