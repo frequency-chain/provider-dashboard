@@ -24,7 +24,7 @@
 
   // a callback for when the user cancels this action
   export let cancelAction = () => {
-    pageContent.dashboard();
+    pageContent.login();
   };
 
   // a callback for when a transaction hits a final state
