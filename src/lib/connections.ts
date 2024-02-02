@@ -263,7 +263,7 @@ export async function submitCreateProvider(
   txnFinishedCallback: TxnFinishedCallback
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
-    const extrinsic = api.tx.msa.createProvider(providerName);
+    const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
     const useKeyring: boolean = isLocalhost(endpointURL);
 
     useKeyring

@@ -4,6 +4,7 @@ import { storeChainInfo, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
 import { user } from '../../src/lib/stores/userStore';
 import { ChainInfo } from '../../src/lib/storeTypes';
+import { vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
