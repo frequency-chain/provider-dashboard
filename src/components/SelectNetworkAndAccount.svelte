@@ -21,6 +21,7 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
+  let selectedNetwork: NetworkInfo | undefined = $user.network;
   let selectedAccount: Account;
   let customNetwork: string;
 
@@ -68,8 +69,8 @@
   function networkChanged() {
     console.log('networkChanged');
     $user.address = '';
-    if ($user.network && $user.network.endpoint && isValidURL($user.network.endpoint.toString())) {
-      connectAndFetchAccounts($user.network);
+    if (selectedNetwork && selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
+      connectAndFetchAccounts(selectedNetwork);
     }
   }
 
@@ -92,8 +93,8 @@
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
         const url = new URL(customNetwork);
-        if ($user?.network) {
-          $user.network.endpoint = url;
+        if (selectedNetwork) {
+          selectedNetwork.endpoint = url;
         }
       }
     }
@@ -115,21 +116,21 @@
   <DropDownMenu
     id="network"
     label="Select a Network"
-    bind:selected={$user.network}
+    bind:selected={selectedNetwork}
     placeholder="Select a network"
     options={$allNetworks}
     onChange={networkChanged}
     formatter={formatNetwork}
   />
-  {#if $user.network != null && $user.network.name == 'CUSTOM'}
+  {#if selectedNetwork != null && selectedNetwork.name == 'CUSTOM'}
     <input
       id="other-endpoint-url"
       type="text"
       pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
       placeholder="wss://some.frequency.node"
       bind:value={customNetwork}
-      disabled={$user.network.name != 'CUSTOM'}
-      class:hidden={$user.network.name != 'CUSTOM'}
+      disabled={selectedNetwork.name != 'CUSTOM'}
+      class:hidden={selectedNetwork.name != 'CUSTOM'}
       on:keydown={customNetworkChanged}
     />
   {/if}
