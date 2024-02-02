@@ -1,6 +1,6 @@
 <script lang="ts">
   import { dotApi } from '$lib/stores';
-  import { submitRequestToBeProvider } from '$lib/connections';
+  import { submitRequestToBeProvider, type TxnFinishedCallback } from '$lib/connections';
   import { onMount } from 'svelte';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { DotApi } from '$lib/storeTypes';
@@ -21,7 +21,7 @@
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
   // a callback for when a transaction hits a final state
-  export let txnFinished = () => {
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
     console.log('default txnFinished callback');
   };
 
@@ -108,7 +108,7 @@
   <form>
     <label for="providerNameRtB">Provider name</label>
     <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <div class="w-350 flex justify-between">
+    <div class="flex w-[350px] justify-between">
       <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
         Submit Request To Be Provider</button
       >

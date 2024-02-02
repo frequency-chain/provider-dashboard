@@ -2,7 +2,7 @@
   import switchIcon from '$lib/assets/switch.png';
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
-  import { isLoggedIn } from '$lib/stores';
+  import { isLoggedIn, storeConnected } from '$lib/stores';
 
   $: showConnectProvider = false;
 </script>
@@ -10,7 +10,11 @@
 {#if $isLoggedIn}
   <div class="flex items-center gap-6">
     <div class="flex items-center gap-2">
-      <div class="w-1 h-1 rounded-full bg-green-success p-1" />
+      {#if $storeConnected}
+        <div class="w-1 h-1 rounded-full bg-green-success p-1" />
+      {:else}
+        <div class="w-1 bg-red-error h-1 rounded-full p-1" />
+      {/if}
       <p class="text-md uppercase">{$user.network?.name}</p>
     </div>
     <p class="text-md">

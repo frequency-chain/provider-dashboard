@@ -1,4 +1,6 @@
 import { formatBalance, hexToString } from '@polkadot/util';
+import type { NetworkInfo } from './stores/networksStore';
+import type { Account } from './stores/accountsStore';
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -44,6 +46,26 @@ export function isMainnet(url: string): boolean {
   }
 }
 
+export function isValidURL(url: string): boolean {
+  try {
+    new URL(url);
+    return true;
+  } catch (_) {
+    return false;
+  }
+}
+
+export function formatNetwork(network: NetworkInfo): string {
+  if (network.name === 'CUSTOM') {
+    return network.name;
+  }
+  return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
+}
+
+export function formatAccount(account: Account): string {
+  return account.address;
+}
+
 // create a URL-encoded mailto URL string using the provided parameters.
 export function createMailto(to: string, subject?: string, body?: string): string {
   // this regex is not at all rigourous, it's just for preventing blatant errors
@@ -53,7 +75,14 @@ export function createMailto(to: string, subject?: string, body?: string): strin
     throw `to is not an email address: ${to}`;
   }
 
-  const mailtoUrl = ['mailto:', to, '?subject=', encodeURIComponent(subject), '&body=', encodeURIComponent(body)];
+  const mailtoUrl = [
+    'mailto:',
+    to,
+    '?subject=',
+    encodeURIComponent(subject || ''),
+    '&body=',
+    encodeURIComponent(body || ''),
+  ];
   return mailtoUrl.join('');
 }
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dotApi, storeCurrentAction, storeToken } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { DOLLARS, submitStake } from '$lib/connections';
+  import { DOLLARS, submitStake, type TxnFinishedCallback } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
@@ -32,7 +32,7 @@
   export let providerId = 0;
   export let validAccounts: AccountMap = {};
   export let cancelAction = () => {};
-  export let txnFinished = () => {};
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
   dotApi.subscribe((api) => (thisDotApi = api));
   storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
@@ -119,7 +119,7 @@
         <input type="number" id="stakingInput" value="1" on:input={handleInput} />
       </div>
     </div>
-    <div class="w-350 flex justify-between">
+    <div class="flex w-[350px] justify-between">
       <button on:click|preventDefault={stake} class="btn-primary">Stake</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
     </div>

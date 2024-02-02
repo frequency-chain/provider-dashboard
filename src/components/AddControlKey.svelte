@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dotApi, storeConnected, storeCurrentAction } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey, type SigningKey } from '$lib/connections';
+  import { submitAddControlKey, type SigningKey, type TxnFinishedCallback } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -18,9 +18,9 @@
   let thisWeb3Enable: typeof web3Enable;
 
   let showTransactionStatus = false;
-  let txnFinished = () => {};
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
   export let txnStatuses: Array<string> = [];
-  export let cancelAction;
+  export let cancelAction = () => {};
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -111,7 +111,7 @@
   </ol>
   <form class="mt-8">
     <DropDownMenu id="AddControlKey" label="Key to Add" selected={selectedKeyToAdd} options={validAccounts} />
-    <div class="w-350 flex justify-between">
+    <div class="flex w-[350px] justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
     </div>

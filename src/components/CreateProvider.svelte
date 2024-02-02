@@ -4,11 +4,16 @@
   import type { DotApi } from '$lib/storeTypes';
   import { defaultDotApi } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
-  import { isLocalhost } from '$lib/utils';
-  import { submitCreateProvider } from '$lib/connections';
+  import { isLocalhost, providerNameToHuman } from '$lib/utils';
+  import { submitCreateProvider, type TxnFinishedCallback } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
+  import { user } from '$lib/stores/userStore';
+  import { getMsaInfo } from '$lib/polkadotApi';
+  import type { MsaInfo } from '$lib/storeTypes';
+  import { nonProviderAccountsStore, providerAccountsStore } from '$lib/stores/accountsStore';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
@@ -16,13 +21,21 @@
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
   export let txnStatuses: Array<string> = [];
-  export let validAccounts = {};
-  export let signingAddress = '';
+
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
+  export let cancelAction = () => {
+    pageContent.login();
+  };
+
   // a callback for when a transaction hits a final state
-  export let txnFinished = () => {
-    console.log('default txnFinished callback');
+  export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
+    if (succeeded) {
+      const apiPromise = localDotApi.api as ApiPromise;
+      const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
+      $user.providerName = providerNameToHuman(msaInfo.providerName);
+      $user.isProvider = msaInfo.isProvider;
+      pageContent.dashboard();
+    }
   };
 
   onMount(async () => {
@@ -44,7 +57,6 @@
     }
     clearTxnStatuses();
     let endpointURI: string = localDotApi.selectedEndpoint || '';
-    let signingKeys = validAccounts[signingAddress];
     showTransactionStatus = true;
     const apiPromise = localDotApi.api as ApiPromise;
     if (isLocalhost(endpointURI)) {
@@ -52,7 +64,7 @@
         apiPromise,
         undefined,
         endpointURI,
-        signingKeys,
+        $user.signingKey!,
         newProviderName,
         addNewTxnStatus,
         txnFinished
@@ -61,12 +73,12 @@
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
         const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
         if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source);
+          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
           await submitCreateProvider(
             apiPromise,
             injectedExtension,
             endpointURI,
-            signingKeys,
+            $user.signingKey!,
             newProviderName,
             addNewTxnStatus,
             txnFinished
@@ -83,24 +95,16 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
-<div id="create-provider" class="action-card basis-1/2">
-  <p>
-    For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
-    submit a <code>createProvider</code> transaction.
-  </p>
-  <p>
-    This action will register the MSA Id that is controlled by the selected Transaction Signing Address above. Any
-    control key for the MSA Id can submit the transaction.
-  </p>
-  <form>
-    <label for="providerNameCB">Provider name</label>
-    <input id="providerNameCB" required placeholder="Short name" maxlength={100} bind:value={newProviderName} />
-    <div class="w-350 flex justify-between">
-      <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
-        Create Provider
-      </button>
-      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
-    </div>
-  </form>
-</div>
+<form id="create-provider" class="column text-sm">
+  <div>
+    <label for="providerNameCB" class="label mb-3.5 block">Provider name</label>
+    <input id="providerNameCB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+  </div>
+  <div class="flex w-[350px] items-end justify-between">
+    <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
+      Create Provider
+    </button>
+    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+  </div>
+</form>
 <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

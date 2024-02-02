@@ -120,8 +120,8 @@ export async function submitStake(
   }
 }
 
-type TxnStatusCallback = (txnStatus: string) => void;
-type TxnFinishedCallback = () => void;
+export type TxnStatusCallback = (txnStatus: string) => void;
+export type TxnFinishedCallback = (succeeded: boolean) => void;
 
 // log and call the callback with the status.
 function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
@@ -142,15 +142,17 @@ export async function parseChainEvent(
     } else if (status.isBroadcast) {
       statusStr = `Transaction is Broadcast`;
     } else if (status.isFinalized) {
+      let succeeded: boolean = true;
       showExtrinsicStatus(`Transaction is finalized in block hash ${status.asFinalized.toHex()}`, txnStatusCallback);
       events.forEach(({ event }) => {
         if (event.method === 'ExtrinsicSuccess') {
           showExtrinsicStatus('Transaction succeeded', txnStatusCallback);
         } else if (event.method === 'ExtrinsicFailed') {
+          succeeded = false;
           showExtrinsicStatus('Transaction failed. See chain explorer for details.', txnStatusCallback);
         }
       });
-      txnFinishedCallback();
+      await txnFinishedCallback(succeeded);
       return;
     } else if (status.isInBlock) {
       statusStr = `Transaction is included in blockHash ${status.asInBlock.toHex()}`;
