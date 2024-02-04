@@ -94,7 +94,7 @@
   <p class="action-card-title">
     Add a Control Key to Provider Id {providerId}
   </p>
-  <ol class="ml-4 mt-4 list-decimal font-light">
+  <ol class="ordered-list mt-4 font-light">
     <li>
       Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.

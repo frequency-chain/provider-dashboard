@@ -99,7 +99,7 @@
     Stake to Provider Id {providerId}
   </p>
   <div>
-    <ol class="ml-4 mt-4 list-decimal font-light">
+    <ol class="ordered-list mt-4 font-light">
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
       <li>This will require 1 signature to send the transaction.</li>
