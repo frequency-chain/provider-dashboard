@@ -10,7 +10,7 @@ describe('ChainStatus component', () => {
     const epochNumber = 1234n;
     const blockNumber = 898989n;
     const token = 'FLARP';
-    storeChainInfo.update((val) => val = {...val, epochNumber, blockNumber, token});
+    storeChainInfo.update((val) => (val = { ...val, epochNumber, blockNumber, token }));
 
     const { container, getByText } = render(ChainStatus);
     expect(getByText('Current Block:')).toBeInTheDocument();
