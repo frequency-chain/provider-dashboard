@@ -9,9 +9,11 @@ import type { MsaInfo } from '$lib/storeTypes';
 import type { SigningKey } from '$lib/connections';
 import { providerNameToHuman } from '$lib/utils';
 
+export type SS58Address = string;
+
 export class Account {
   network?: NetworkInfo;
-  address: string = '';
+  address: SS58Address = '';
   signingKey?: SigningKey;
   msaId?: number;
   isProvider: boolean = false;
@@ -22,8 +24,10 @@ export class Account {
   }
 }
 
-export const providerAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
-export const nonProviderAccountsStore = writable<Map<string, Account>>(new Map<string, Account>());
+export type Accounts = Map<SS58Address, Readonly<Account>>;
+
+export const providerAccountsStore = writable<Accounts>(new Map<SS58Address, Readonly<Account>>());
+export const nonProviderAccountsStore = writable<Accounts>(new Map<SS58Address, Readonly<Account>>());
 
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
@@ -33,8 +37,8 @@ export async function fetchAccountsForNetwork(
 ): Promise<void> {
   console.log('fetchAccountsForNetwork() - ', selectedNetwork);
 
-  const providerAccounts: Map<string, Account> = new Map<string, Account>();
-  const nonProviderAccounts: Map<string, Account> = new Map<string, Account>();
+  const providerAccounts: Accounts = new Map<SS58Address, Account>();
+  const nonProviderAccounts: Accounts = new Map<SS58Address, Account>();
 
   // If the network is localhost, add the default test accounts for the chain
   if (selectedNetwork.name === 'LOCALHOST') {
