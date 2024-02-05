@@ -1,9 +1,9 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { getBlockNumber, getEpoch } from './connections';
-import { dotApi, storeBlockNumber, storeConnected, storeToken } from './stores';
+import { dotApi, storeChainInfo } from './stores';
 import { options } from '@frequency-chain/api-augment';
 
-import type { DotApi, MsaInfo } from '$lib/storeTypes';
+import type { DotApi, MsaInfo, ChainInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
@@ -52,9 +52,8 @@ export async function updateConnectionStatus(apiPromise: ApiPromise) {
   const chain = await apiPromise.rpc.system.properties();
   const token = getToken(chain);
   const blockNumber = (await getBlockNumber(apiPromise)) as bigint;
-  storeConnected.update((val) => (val = apiPromise.isConnected));
-  storeToken.update((val) => (val = token));
-  storeBlockNumber.update((val) => (val = blockNumber));
+  const epochNumber = await getEpoch(apiPromise);
+  storeChainInfo.update((info: ChainInfo) => (info = { connected: true, blockNumber, epochNumber, token }));
 }
 
 export type AccountBalances = {
