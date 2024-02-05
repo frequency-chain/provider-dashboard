@@ -14,7 +14,7 @@
   import BlockSection from './BlockSection.svelte';
   import { storeChainInfo } from '$lib/stores';
 
-  export let isOpen = true;
+  export let isOpen = false;
   export let close = () => {};
 
   let selectedAccount: Account;
@@ -25,7 +25,7 @@
   export let stakeAmount: bigint = 1n;
   export let txnStatuses: Array<string> = [];
 
-  $: stakeAmountInDollars = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
+  $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -51,7 +51,7 @@
         undefined,
         $user.signingKey!,
         providerId,
-        stakeAmountInDollars,
+        stakeAmountInPlancks,
         endpointURI as string,
         addNewTxnStatus,
         txnFinished
@@ -66,7 +66,7 @@
             injectedExtension,
             $user.signingKey!,
             providerId,
-            stakeAmountInDollars,
+            stakeAmountInPlancks,
             endpointURI as string,
             addNewTxnStatus,
             txnFinished

@@ -5,7 +5,7 @@
   import DropDownMenu from './DropDownMenu.svelte';
 </script>
 
-<Modal id="conntect-provider" {close} {isOpen}>
+<Modal id="connect-provider" {close} {isOpen}>
   <div class="flex flex-col gap-7">
     <h2 class="section-title-underlined">Connect Provider</h2>
     <!-- Select a network dropdown goes here -->

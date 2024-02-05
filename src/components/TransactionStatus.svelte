@@ -12,7 +12,7 @@
   <p class="label">Transaction Status</p>
   <ul class="unordered-list break-words text-sm">
     {#each statuses as status}
-      <li class="">{status}</li>
+      <li>{status}</li>
     {/each}
   </ul>
   <button on:click|preventDefault={hideSelf} class="btn-no-fill mt-4 justify-end">Dismiss Status</button>
