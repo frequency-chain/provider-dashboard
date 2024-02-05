@@ -59,7 +59,7 @@ describe('Stake.svelte Unit Tests', () => {
 
   it('Stake button submits transaction', async () => {
     const createdApi = await mocks.ApiPromise.create();
-    storeChainInfo.update((val) => val = {...val, connected: true});
+    storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
     const { getByText } = render(Stake);
     await dotApi.update((val) => (val = { ...val, api: createdApi }));
