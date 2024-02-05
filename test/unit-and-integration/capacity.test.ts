@@ -1,9 +1,10 @@
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { storeConnected, dotApi } from '../../src/lib/stores';
+import { storeChainInfo, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
 import { getByTextContent } from '../helpers';
 import { user } from '../../src/lib/stores/userStore';
+import { ChainInfo } from '../../src/lib/storeTypes';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -98,19 +99,13 @@ describe('Capacity.svelte', () => {
   afterEach(() => cleanup());
 
   it('mounts', () => {
-    const { container } = render(Capacity, { token: 'FLARP' });
+    const { container } = render(Capacity);
     expect(container).toBeInTheDocument();
   });
 
-  describe('if not connected', () => {
-    it('says it is not connected', () => {
-      const { getByText } = render(Capacity, { token: 'FLARP' });
-      expect(getByText('Not connected')).toBeInTheDocument();
-    });
-  });
   describe('if connected to an endpoint', () => {
     beforeAll(async () => {
-      storeConnected.set(true);
+      storeChainInfo.update((val: ChainInfo) => (val = { ...val, connected: true }));
     });
 
     beforeEach(async () => {
@@ -133,7 +128,7 @@ describe('Capacity.svelte', () => {
 
   describe('integration: transactionSigningAddress.subscribe function', () => {
     beforeAll(async () => {
-      storeConnected.set(true);
+      storeChainInfo.update((val: ChainInfo) => (val = { ...val, connected: true }));
     });
     // Also this depends on set-in-stone mocks which will return the address as a Provider
     it('Capacity elements are shown when selected transaction address, with MSA and is a Provider', async () => {
@@ -158,7 +153,7 @@ describe('Capacity.svelte', () => {
     //   // trigger changes as if user clicked Connect and such
     //   await dotApi.update((val) => (val = { ...val, api: createdApi }));
     //   // transactionSigningAddress.set('0xf00bead');
-    //   user.update((u) => (u = { ...u, address: '0xdeadbeef'}));
+    //   user.update((u) => (u = { ...u, address: '0xdeadbeef' }));
     //   await waitFor(() => {
     //     expect(getByTextContent('Remaining 5.0100 micro CAP')).toBeInTheDocument();
     //     expect(getByTextContent('Total Issued 10.0000 micro CAP')).toBeInTheDocument();

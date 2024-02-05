@@ -1,4 +1,4 @@
-import { dotApi, storeConnected } from '../../src/lib/stores';
+import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import CreateMsa from '../../src/components/CreateMsa.svelte';
 
@@ -11,7 +11,7 @@ describe('CreateMsa component', () => {
   const mockCancelAction = vi.fn();
 
   beforeAll(() => {
-    storeConnected.set(true);
+    storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
     const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
