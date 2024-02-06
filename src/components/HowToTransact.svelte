@@ -4,7 +4,7 @@
 
 <div class={`column ${additionalStyles}`}>
   <p>
-    To transact on Frequency as a provider you will need frequency utility tokens. On Frequency testnet, you can get
+    To transact on Frequency as a provider you will need Frequency utility tokens. On Frequency Testnet, you can get
     tokens from the Testnet Faucet.
   </p>
   <p>To do that:</p>
