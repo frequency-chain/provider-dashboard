@@ -14,13 +14,14 @@
     class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-126px)] cursor-default items-center justify-center overflow-y-auto bg-overlay"
   >
     <div
-      class="content-block w-modal cursor-default"
+      class="content-block flex w-modal cursor-default flex-col gap-7"
       on:click|stopPropagation={() => {}}
       on:keyup|stopPropagation={() => {}}
       tabindex="0"
       role="button"
     >
-      <slot />
+      <h2 class="section-title-underlined"><slot name="title" /></h2>
+      <slot name="body" />
     </div>
   </div>
 {/if}

@@ -58,7 +58,7 @@ describe('Stake.svelte Unit Tests', () => {
     const createdApi = await mocks.ApiPromise.create();
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
-    const { getByText } = render(Stake);
+    const { getByText } = render(Stake, { isOpen: true });
     await dotApi.update((val) => (val = { ...val, api: createdApi }));
 
     const button = screen.getByRole('button', { name: 'Stake' });

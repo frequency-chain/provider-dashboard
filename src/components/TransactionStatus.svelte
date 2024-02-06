@@ -15,5 +15,5 @@
       <li>{status}</li>
     {/each}
   </ul>
-  <button on:click|preventDefault={hideSelf} class="btn-no-fill mt-4 justify-end">Dismiss Status</button>
+  <button on:click|preventDefault={hideSelf} class="btn-no-fill mt-4">Dismiss Status</button>
 </div>
