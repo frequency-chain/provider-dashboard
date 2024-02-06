@@ -113,12 +113,12 @@ describe('Capacity.svelte', () => {
     });
 
     it('if address is not selected it says so', () => {
-      const { getByText } = render(Capacity, { token: 'FLARP' });
+      const { getByText } = render(Capacity);
       expect(getByText('No transaction signing address selected')).toBeInTheDocument();
     });
 
     it('is shown if it isProvider is true', async () => {
-      const { container } = render(Capacity, { token: 'FLARP' });
+      const { container } = render(Capacity);
       user.update((u) => (u = { ...u, isProvider: true }));
       await waitFor(() => {
         expect(container.querySelector('div div')).not.toHaveClass('hidden');
@@ -134,7 +134,7 @@ describe('Capacity.svelte', () => {
     it('Capacity elements are shown when selected transaction address, with MSA and is a Provider', async () => {
       // render component first
       const createdApi = await mocks.ApiPromise.create();
-      const { container } = render(Capacity, { token: 'FLARP' });
+      const { container } = render(Capacity);
 
       // trigger changes as if user clicked Connect and such
       await dotApi.update((val) => (val = { ...val, api: createdApi }));
