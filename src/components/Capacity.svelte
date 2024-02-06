@@ -2,12 +2,11 @@
   import { dotApi, storeChainInfo, storeCurrentAction } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
   import type { ApiPromise } from '@polkadot/api';
-  import type { ChainInfo } from '$lib/storeTypes';
   import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
   import { ActionForms } from '$lib/storeTypes.js';
-  import { afterUpdate } from 'svelte';
+  import { onMount } from 'svelte';
 
   type CapacityDetails = {
     remainingCapacity: bigint;
@@ -24,10 +23,9 @@
 
   let capacityDetails: CapacityDetails = defaultDetails;
 
-  afterUpdate(async () => {
-    let capacityInfo = await getMsaEpochAndCapacityInfo($dotApi.api as ApiPromise, $user.address);
-    capacityDetails = { ...defaultDetails, ...capacityInfo.capacityDetails };
-    storeChainInfo.update((info: ChainInfo) => (info = { ...info, ...capacityInfo }));
+  onMount(async () => {
+    let { capacityDetails } = await getMsaEpochAndCapacityInfo($dotApi.api as ApiPromise, $user.address);
+    capacityDetails = { ...defaultDetails, ...capacityDetails };
   });
 
   function showStake() {

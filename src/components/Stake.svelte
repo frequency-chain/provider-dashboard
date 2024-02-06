@@ -60,7 +60,7 @@
         if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
           const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
           if (extensions.length !== 0) {
-            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source.toString());
+            const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source!.toString());
             await submitStake(
               $dotApi.api as ApiPromise,
               injectedExtension,

@@ -1,8 +1,5 @@
 <script lang="ts">
-  import type { WsProvider } from '@polkadot/api';
-  import { dotApi, isLoggedIn } from '$lib/stores';
-  import { defaultDotApi } from '$lib/storeTypes';
-
+  import { isLoggedIn } from '$lib/stores';
   import BlockSection from '$components/BlockSection.svelte';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import Button from '$components/Button.svelte';
@@ -10,17 +7,14 @@
   import { pageContent } from '$lib/stores/pageContentStore';
   import { providerAccountsStore } from '$lib/stores/accountsStore';
   import { user } from '$lib/stores/userStore';
-
-  let wsProvider: WsProvider;
-
-  let thisDotApi = defaultDotApi;
-  dotApi.subscribe((api) => (thisDotApi = api));
+  import { createAndConnectToApi } from '$lib/polkadotApi';
 
   // Control whether or not the connect button is enabled or disabled
   let canConnect: boolean = false;
   $: canConnect = $user?.network != null && $providerAccountsStore.size > 0 && $user?.address !== '';
 
-  function connect() {
+  async function connect() {
+    await createAndConnectToApi($user.network?.endpoint?.toString()!);
     $isLoggedIn = true;
     pageContent.dashboard();
   }
