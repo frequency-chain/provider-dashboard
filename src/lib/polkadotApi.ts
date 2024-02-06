@@ -19,16 +19,14 @@ async function updateChainInfo(api: ApiPromise) {
 }
 
 export async function createAndConnectToApi(networkEndpoint: string) {
-  dotApi.subscribe(async (apiState: DotApi) => await apiState.api?.disconnect());
-
-  let initializedDotApi = await createApi(networkEndpoint);
-  dotApi.set((currentApi: DotApi) => (currentApi = initializedDotApi));
-
-  await updateChainInfo(initializedDotApi.api!);
+  const initializedDotApi = await createApi(networkEndpoint);
+  dotApi.set(initializedDotApi);
+  await updateChainInfo(initializedDotApi.api);
 }
 
 export async function createApi(networkEndpoint: string): Promise<DotApi> {
   const wsProvider = new WsProvider(networkEndpoint);
+
   const apiPromise = await ApiPromise.create({
     provider: wsProvider,
     throwOnConnect: true,
@@ -45,7 +43,6 @@ export async function createApi(networkEndpoint: string): Promise<DotApi> {
     selectedEndpoint: networkEndpoint,
     options,
   };
-
   return initializedDotApi;
 }
 
@@ -83,24 +80,32 @@ export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Pro
   return msaInfo;
 }
 
-export async function getMsaEpochAndCapacityInfo(
-  apiPromise: ApiPromise,
-  accountId: string
-): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
-  const msaInfo = await getMsaInfo(apiPromise, accountId);
-  const epochNumber = await getEpoch(apiPromise);
-  let capacityDetails;
-  if (msaInfo.msaId > 0) {
-    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
-    if (providerRegistry.isSome) {
-      const details: any = (await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)).unwrapOrDefault();
-      capacityDetails = {
-        remainingCapacity: details.remainingCapacity.toBigInt(),
-        totalTokensStaked: details.totalTokensStaked.toBigInt(),
-        totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-        lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
-      };
-    }
+export type CapacityDetails = {
+  remainingCapacity: bigint;
+  totalTokensStaked: bigint;
+  totalCapacityIssued: bigint;
+  lastReplenishedEpoch: bigint;
+};
+
+export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
+  let capacityDetails: CapacityDetails = {
+    remainingCapacity: 0n,
+    totalCapacityIssued: 0n,
+    totalTokensStaked: 0n,
+    lastReplenishedEpoch: 0n,
+  };
+
+  const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+
+  if (providerRegistry.isSome) {
+    const details: any = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();
+    capacityDetails = {
+      remainingCapacity: details.remainingCapacity.toBigInt(),
+      totalTokensStaked: details.totalTokensStaked.toBigInt(),
+      totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
+      lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
+    };
   }
-  return { msaInfo, epochNumber, capacityDetails };
+
+  return capacityDetails;
 }

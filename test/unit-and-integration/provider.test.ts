@@ -1,4 +1,4 @@
-import { cleanup, render, waitFor } from '@testing-library/svelte';
+import { cleanup, render } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import { dotApi, storeCurrentAction, storeChainInfo } from '../../src/lib/stores';
 import { user } from '../../src/lib/stores/userStore';

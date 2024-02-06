@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { navigating } from '$app/stores';
   import { onMount } from 'svelte';
   import iconLogo from '$lib/assets/icon-logo.png';
 

@@ -1,9 +1,4 @@
 <script lang="ts">
-  import { dotApi } from '$lib/stores';
-  import { onMount } from 'svelte';
-  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
-  import { defaultDotApi } from '$lib/storeTypes';
-  import type { DotApi } from '$lib/storeTypes';
   import { user } from '$lib/stores/userStore';
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import BlockSection from './BlockSection.svelte';
@@ -13,22 +8,10 @@
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
 
-  let localDotApi: DotApi = defaultDotApi;
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
-
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
-
-  onMount(async () => {
-    const extension = await import('@polkadot/extension-dapp');
-    thisWeb3FromSource = extension.web3FromSource;
-    thisWeb3Enable = extension.web3Enable;
-  });
-
-  dotApi.subscribe((api) => (localDotApi = api));
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">

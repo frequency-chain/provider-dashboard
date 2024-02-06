@@ -40,13 +40,14 @@
       try {
         networkErrorMsg = '';
         controlKeysErrorMsg = '';
-        const curApi = await createApi(network.endpoint!?.toString());
+        if (!network.endpoint) throw new Error('Undefined endpoint.');
+        const curApi = await createApi(network.endpoint?.origin);
         await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
         await curApi.api?.disconnect();
       } catch (e) {
         console.log(e);
         networkErrorMsg = `Could not connect to ${
-          network.endpoint?.toString() || 'empty value'
+          network.endpoint?.origin || 'empty value'
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }

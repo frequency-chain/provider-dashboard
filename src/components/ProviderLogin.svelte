@@ -14,7 +14,12 @@
   $: canConnect = $user?.network != null && $providerAccountsStore.size > 0 && $user?.address !== '';
 
   async function connect() {
-    await createAndConnectToApi($user.network?.endpoint?.toString()!);
+    if (!$user.network?.endpoint?.origin) {
+      alert('Error connecting to endpoint.');
+      return;
+    }
+    console.log('HERE USER', $user);
+    await createAndConnectToApi($user.network?.endpoint?.origin);
     $isLoggedIn = true;
     pageContent.dashboard();
   }
