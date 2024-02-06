@@ -1,4 +1,4 @@
-import { dotApi, storeConnected } from '../../src/lib/stores';
+import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import RequestToBeProvider from '../../src/components/RequestToBeProvider.svelte';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
@@ -10,7 +10,7 @@ describe('RequestToBeProvider component', () => {
   const mockCancelAction = vi.fn();
 
   beforeEach(() => {
-    storeConnected.set(true);
+    storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
 
   it('shows text + Cancel button', () => {

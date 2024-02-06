@@ -1,12 +1,10 @@
 <script lang="ts">
-  export let token = 'none';
-  export let blockNumber = 0n;
-  export let epochNumber = 0n;
+  import { storeChainInfo } from '$lib/stores';
 
-  const chainStatus = [
-    { label: 'Current Block', value: blockNumber, id: 'block-number' },
-    { label: 'Epoch', value: epochNumber, id: 'epoch-number' },
-    { label: 'Token', value: token, id: 'token' },
+  $: chainStatus = [
+    { label: 'Current Block', value: $storeChainInfo.blockNumber, id: 'block-number' },
+    { label: 'Epoch', value: $storeChainInfo.epochNumber, id: 'epoch-number' },
+    { label: 'Token', value: $storeChainInfo.token, id: 'token' },
   ];
 </script>
 
