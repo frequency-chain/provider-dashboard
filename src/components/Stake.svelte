@@ -1,8 +1,7 @@
 <script lang="ts">
-  import { dotApi, storeCurrentAction, storeToken } from '$lib/stores';
+  import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake, type TxnFinishedCallback } from '$lib/connections';
-  import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import KeySelection from './KeySelection.svelte';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
@@ -11,12 +10,11 @@
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import type { AccountMap } from '$lib/polkadotApi';
 
-  let thisDotApi = defaultDotApi;
-  let showSelf: boolean = false; // eslint-disable-line no-unused-vars
   let selectedKey: string = '';
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
+
   export let stakeAmount: bigint = 1n;
   let token = '';
   export let txnStatuses: Array<string> = [];
@@ -34,10 +32,6 @@
   export let cancelAction = () => {};
   export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
-  dotApi.subscribe((api) => (thisDotApi = api));
-  storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.Stake));
-  storeToken.subscribe((val) => (token = val));
-
   const addNewTxnStatus = (txnStatus: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
   };
@@ -45,7 +39,7 @@
 
   const stake = async (evt: Event) => {
     clearTxnStatuses();
-    let endpointURI: string = thisDotApi.selectedEndpoint || '';
+    let endpointURI: string = $dotApi.selectedEndpoint || '';
     if (selectedKey === '') {
       alert('Please choose a key to stake from.');
     } else {
@@ -53,7 +47,7 @@
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
         await submitStake(
-          thisDotApi.api as ApiPromise,
+          $dotApi.api as ApiPromise,
           undefined,
           signingKeys,
           providerId,
@@ -68,7 +62,7 @@
           if (extensions.length !== 0) {
             const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source.toString());
             await submitStake(
-              thisDotApi.api as ApiPromise,
+              $dotApi.api as ApiPromise,
               injectedExtension,
               signingKeys,
               providerId,
@@ -99,7 +93,7 @@
     Stake to Provider Id {providerId}
   </p>
   <div>
-    <ol class="ml-4 mt-4 list-decimal font-light">
+    <ol class="ordered-list mt-4 font-light">
       <li>Ensure the control key has a FRQCY balance.</li>
       <li>Click 'Stake'</li>
       <li>This will require 1 signature to send the transaction.</li>

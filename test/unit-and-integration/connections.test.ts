@@ -115,7 +115,7 @@ describe('submitAddControlKey', async () => {
     const callback = vi.fn();
     const providerId = 4;
     const endpointURL = 'ws://localhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback);
+    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback, callback);
     expect(callback).toHaveBeenCalled();
   });
   it('calls the callback when not localhost', async () => {
@@ -124,7 +124,7 @@ describe('submitAddControlKey', async () => {
     const callback = vi.fn();
     const providerId = 4;
     const endpointURL = 'ws://someotherhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback);
+    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback, callback);
     expect(callback).toHaveBeenCalled();
   });
 });

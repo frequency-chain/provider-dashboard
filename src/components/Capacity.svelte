@@ -1,26 +1,13 @@
 <script lang="ts">
-  import { storeConnected, dotApi, storeBlockNumber, storeChainInfo, storeCurrentAction } from '$lib/stores';
+  import { dotApi, storeChainInfo, storeCurrentAction } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
-  import { getBlockNumber } from '$lib/connections';
   import type { ApiPromise } from '@polkadot/api';
   import type { ChainInfo } from '$lib/storeTypes';
   import { getMsaEpochAndCapacityInfo } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
   import { ActionForms } from '$lib/storeTypes.js';
-
-  let epochNumber = 0n;
-
-  let apiPromise: ApiPromise | undefined;
-  dotApi.subscribe((api) => {
-    if (api?.api) {
-      apiPromise = api.api;
-    }
-  });
-  let blockNumber = 0n;
-  storeBlockNumber.subscribe((val) => (blockNumber = val));
-
-  export let token = '';
+  import { afterUpdate } from 'svelte';
 
   type CapacityDetails = {
     remainingCapacity: bigint;
@@ -37,18 +24,10 @@
 
   let capacityDetails: CapacityDetails = defaultDetails;
 
-  user.subscribe(async (val) => {
-    if ($storeConnected && apiPromise) {
-      blockNumber = await getBlockNumber(apiPromise);
-      $storeBlockNumber = blockNumber;
-    }
-    if ($storeConnected && apiPromise?.query && $user.address) {
-      let info = await getMsaEpochAndCapacityInfo(apiPromise, $user.address);
-
-      capacityDetails = { ...defaultDetails, ...info.capacityDetails };
-      epochNumber = info.epochNumber;
-      storeChainInfo.update((info: ChainInfo) => (info = { ...info, epochNumber }));
-    }
+  afterUpdate(async () => {
+    let capacityInfo = await getMsaEpochAndCapacityInfo($dotApi.api as ApiPromise, $user.address);
+    capacityDetails = { ...defaultDetails, ...capacityInfo.capacityDetails };
+    storeChainInfo.update((info: ChainInfo) => (info = { ...info, ...capacityInfo }));
   });
 
   function showStake() {
@@ -59,9 +38,7 @@
   let errMsg: string = '';
 
   $: {
-    if (!$storeConnected) {
-      errMsg = 'Not connected';
-    } else if (!$user.signingKey) {
+    if (!$user.signingKey) {
       errMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
       errMsg = 'No MSA ID.  Please create one.';
@@ -71,7 +48,7 @@
         { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
         { label: 'Total Issued', value: balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP') },
         { label: 'Last Replenished', value: `Epoch ${capacityDetails?.lastReplenishedEpoch}` },
-        { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, token) },
+        { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, $storeChainInfo.token) },
       ];
     }
   }

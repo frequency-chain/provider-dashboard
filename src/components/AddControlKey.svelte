@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dotApi, storeConnected, storeCurrentAction } from '$lib/stores';
+  import { dotApi, storeCurrentAction } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { submitAddControlKey, type SigningKey, type TxnFinishedCallback } from '$lib/connections';
   import { ActionForms, defaultDotApi } from '$lib/storeTypes';
@@ -91,11 +91,11 @@
   };
 </script>
 
-<div id="add-control-key" class:hidden={!($storeConnected && showSelf)} class="action-card basis-1/2">
+<div id="add-control-key" class:hidden={!showSelf} class="action-card basis-1/2">
   <p class="action-card-title">
     Add a Control Key to Provider Id {providerId}
   </p>
-  <ol class="ml-4 mt-4 list-decimal font-light">
+  <ol class="ordered-list mt-4 font-light">
     <li>
       Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.

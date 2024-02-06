@@ -33,6 +33,9 @@
   .unordered-list {
     @apply ml-6 list-disc;
   }
+  .ordered-list {
+    @apply ml-6 list-decimal;
+  }
   .column {
     @apply flex flex-col gap-4;
   }
