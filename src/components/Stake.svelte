@@ -52,7 +52,7 @@
         $user.signingKey!,
         providerId,
         stakeAmountInPlancks,
-        endpointURI as string,
+        endpointURI,
         addNewTxnStatus,
         txnFinished
       );
@@ -67,7 +67,7 @@
             $user.signingKey!,
             providerId,
             stakeAmountInPlancks,
-            endpointURI as string,
+            endpointURI,
             addNewTxnStatus,
             txnFinished
           );

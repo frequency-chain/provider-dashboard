@@ -3,7 +3,7 @@ import { getBlockNumber, getEpoch } from './connections';
 import { dotApi, storeChainInfo } from './stores';
 import { options } from '@frequency-chain/api-augment';
 
-import type { DotApi, MsaInfo } from '$lib/storeTypes';
+import type { DotApi, MsaInfo, ChainInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';

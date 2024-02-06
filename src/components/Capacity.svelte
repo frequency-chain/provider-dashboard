@@ -1,28 +1,21 @@
 <script lang="ts">
-  import { dotApi, storeChainInfo, storeCurrentAction } from '$lib/stores';
+  import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
   import type { ApiPromise } from '@polkadot/api';
   import { getCapacityInfo, type CapacityDetails } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
   import Stake from './Stake.svelte';
-  import { ActionForms } from '$lib/storeTypes.js';
   import { afterUpdate } from 'svelte';
 
-  $: showStakeToProvider = false;
-
   let capacityDetails: CapacityDetails;
-
   afterUpdate(async () => {
     if ($user?.msaId && $user?.msaId > 0) {
       capacityDetails = await getCapacityInfo($dotApi.api as ApiPromise, $user.msaId);
     }
   });
 
-  function showStake() {
-    storeCurrentAction.update((val) => (val = ActionForms.Stake));
-  }
-
+  let showStakeToProvider = false;
   let capacityList: { label: string; value: string }[] = [];
   let errMsg: string = '';
 

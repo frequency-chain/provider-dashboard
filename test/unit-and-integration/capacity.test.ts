@@ -5,6 +5,7 @@ import Capacity from '$components/Capacity.svelte';
 import { user } from '../../src/lib/stores/userStore';
 import { ChainInfo } from '../../src/lib/storeTypes';
 import { vi } from 'vitest';
+import { type ChainInfo } from '../../src/lib/storeTypes';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {

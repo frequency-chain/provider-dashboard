@@ -1,5 +1,4 @@
 import { dotApi, storeChainInfo } from '../../src/lib/stores';
-import { user } from '../../src/lib/stores/userStore';
 import '@testing-library/jest-dom';
 import CreateMsa from '../../src/components/CreateMsa.svelte';
 
