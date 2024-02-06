@@ -1,18 +1,18 @@
-<script lang="ts">
+<script lang="ts" generics="T">
   export let label: string;
   export let id: string = '';
-  export let options: any[];
-  export let selected: any;
+  export let options: T[];
+  export let value: T | null = null;
   export let placeholder: string = '';
-  export let onChange: () => void;
+  export let onChange: (() => void) | undefined = undefined;
   export let formatter: (value: any) => string = (value) => value.toString();
 </script>
 
 <div>
   <label class="label mb-3.5 block" for={id}>{label}</label>
-  <select {...$$restProps} {id} bind:value={selected} on:change={onChange}>
+  <select {...$$restProps} {id} bind:value on:change={onChange}>
     {#if placeholder !== ''}
-      <option class="text-disabled" value="" disabled selected>{placeholder}</option>
+      <option class="text-disabled" value={null} disabled selected>{placeholder}</option>
     {/if}
     {#each options as option}
       <option value={option} class="bg-base">{formatter(option)}</option>

@@ -101,7 +101,7 @@
   <DropDownMenu
     id="network"
     label="Select a Network"
-    bind:selected={selectedNetwork}
+    bind:value={selectedNetwork}
     placeholder="Select a network"
     options={$allNetworks}
     onChange={networkChanged}
@@ -123,7 +123,7 @@
   <DropDownMenu
     id="controlkeys"
     label={accountSelectorTitle}
-    bind:selected={selectedAccount}
+    bind:value={selectedAccount}
     placeholder={accountSelectorPlaceholder}
     options={Array.from(accountsStore.values())}
     onChange={accountChanged}

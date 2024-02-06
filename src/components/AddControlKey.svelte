@@ -10,6 +10,7 @@
   import DropDownMenu from './DropDownMenu.svelte';
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { user } from '$lib/stores/userStore';
+  import type { Accounts } from '$lib/stores/accountsStore';
 
   let thisDotApi = defaultDotApi;
   let showSelf: boolean = false;
@@ -29,7 +30,7 @@
   });
 
   export let providerId = 0;
-  export let validAccounts = {};
+  export let validAccounts: Accounts;
 
   dotApi.subscribe((api) => {
     thisDotApi = api;
@@ -110,7 +111,7 @@
     </ul>
   </ol>
   <form class="mt-8">
-    <DropDownMenu id="AddControlKey" label="Key to Add" selected={selectedKeyToAdd} options={validAccounts} />
+    <DropDownMenu id="AddControlKey" label="Key to Add" value={selectedKeyToAdd} options={validAccounts} />
     <div class="flex w-[350px] justify-between">
       <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
       <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
