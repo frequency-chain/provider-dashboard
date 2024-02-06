@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { dotApi, storeConnected, storeMsaInfo } from '../../src/lib/stores';
+import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
 import { user } from '../../src/lib/stores/userStore';
 
@@ -59,7 +59,7 @@ describe('Stake.svelte Unit Tests', () => {
 
   it('Stake button submits transaction', async () => {
     const createdApi = await mocks.ApiPromise.create();
-    storeConnected.set(true);
+    storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
     const { getByText } = render(Stake);
     await dotApi.update((val) => (val = { ...val, api: createdApi }));
