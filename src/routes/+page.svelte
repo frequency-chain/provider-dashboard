@@ -5,6 +5,16 @@
   import { pageContent, PageContent } from '$lib/stores/pageContentStore';
 
   $pageContent = PageContent.Login;
+
+  onMount(() => {
+    await createAndConnectToApi(defaultApi);
+  })
+  useEffect(() => {
+    if(user.endpoint !== api.endpoint) {
+      //disconnect first from old api
+      await createAndConnectToApi(newEndpoint);
+    }
+  }, [user.endpoint])
 </script>
 
 {#if $pageContent === PageContent.Dashboard}

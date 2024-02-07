@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { dotApi } from '$lib/stores';
-  import type { DotApi, MsaInfo } from '$lib/storeTypes';
-  import { defaultDotApi } from '$lib/storeTypes';
+  import type { MsaInfo } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost } from '$lib/utils';
   import { submitCreateMsa, type TxnFinishedCallback } from '$lib/connections';
@@ -39,16 +38,14 @@
   });
 
   const doCreateMsa = async (_evt: Event) => {
-    console.log('USER', $user);
     const endpoint: string = $user.network?.endpoint?.origin || '';
+    
     if (!endpoint) {
       alert('Error connecting to endpoint.');
       return;
     }
-    await createAndConnectToApi(endpoint);
-
+    
     clearTxnStatuses();
-    console.log('endpointURI:', endpoint);
     showTransactionStatus = true;
     const apiPromise = $dotApi.api as ApiPromise;
     if (isLocalhost(endpoint)) {

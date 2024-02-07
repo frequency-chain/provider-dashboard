@@ -51,12 +51,14 @@ describe('CreateProvider component', () => {
     const input = getByLabelText('Provider name');
     expect(input).toBeInTheDocument();
 
+    //failure case
     const btn = getByRole('button', { name: 'Create Provider' });
     userEvent.click(btn);
     await waitFor(() => {
       expect(extrinsicWasCalled).toBe(false);
     });
 
+    //success case
     await user.type(input, 'Bobbay');
     expect(input).toHaveValue('Bobbay');
     userEvent.click(btn);
