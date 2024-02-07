@@ -26,7 +26,7 @@
 
   let showTransactionStatus = false;
 
-  $: isDisabled = selectedAccount?.signingKey == null || showTransactionStatus;
+  $: isSubmitDisabled = selectedAccount?.signingKey == null || showTransactionStatus;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -40,11 +40,14 @@
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
   const addControlKey = async () => {
-    if (!$user.msaId || !$user.signingKey) throw new Error('Provider MSA Id not connected.');
     clearTxnStatuses();
+
     let endpointURI: string = $dotApi.selectedEndpoint || '';
-    if (!selectedAccount.signingKey) {
+
+    if (!selectedAccount || !selectedAccount.signingKey) {
       alert('Please choose a key to add.');
+    } else if (!$user.msaId || !$user.signingKey) {
+      alert('Invalid provider.');
     } else {
       let newKeys: SigningKey = selectedAccount.signingKey;
       let signingKeys: SigningKey = $user.signingKey;
@@ -111,12 +114,12 @@
         formatter={formatAccount}
       />
       {#if $unusedKeyAccountsStore.size === 0}
-        <div id="network-error-msg" class="text-sm text-error">
+        <div id="network-error-msg" class="text-error text-sm">
           No available keys. Create a new account without an MSA Id.
         </div>
       {/if}
       <div class="flex w-[350px] justify-between">
-        <button on:click|preventDefault={addControlKey} class="btn-primary" disabled={isDisabled}>Add Key</button>
+        <button on:click|preventDefault={addControlKey} class="btn-primary" disabled={isSubmitDisabled}>Add Key</button>
         <button on:click|preventDefault={onCancel} class="btn-no-fill">Cancel</button>
       </div>
     </form>
