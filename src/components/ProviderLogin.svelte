@@ -18,7 +18,6 @@
       alert('Error connecting to endpoint.');
       return;
     }
-    console.log('HERE USER', $user);
     await createAndConnectToApi($user.network?.endpoint?.origin);
     $isLoggedIn = true;
     pageContent.dashboard();

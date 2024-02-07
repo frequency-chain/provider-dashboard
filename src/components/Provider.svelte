@@ -11,7 +11,6 @@
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
   onMount(async () => {
-    console.log($dotApi.selectedEndpoint);
     if ($dotApi.api) {
       accountBalances = await getBalances($dotApi.api, $user.address);
     }

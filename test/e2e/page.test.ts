@@ -1,10 +1,20 @@
-import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import Page from '$routes/+page.svelte';
 
 // global.alert = () => {};
 // vitest mocking
 globalThis.alert = () => {};
+
+const getByTextContent = (text) => {
+  // Passing function to `getByText`
+  return screen.getByText((content, element) => {
+    const hasText = (element) => element.textContent === text;
+    const elementHasText = hasText(element);
+    const childrenDontHaveText = Array.from(element?.children || []).every((child) => !hasText(child));
+    return elementHasText && childrenDontHaveText;
+  });
+};
 
 describe('End to End Tests', () => {
   // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
