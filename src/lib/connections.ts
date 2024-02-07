@@ -125,7 +125,7 @@ export type TxnFinishedCallback = (succeeded: boolean) => void;
 
 // log and call the callback with the status.
 function showExtrinsicStatus(txnStatus: string, cb: TxnStatusCallback) {
-  console.debug('Transaction status: ', txnStatus);
+  console.debug('Transaction Status: ', txnStatus);
   cb(txnStatus);
 }
 
