@@ -40,7 +40,7 @@ export async function submitAddControlKey(
   extension: InjectedExtension | undefined,
   newAccount: SigningKey,
   signingAccount: SigningKey,
-  providerId: number,
+  msaId: number,
   endpointURL: string,
   txnStatusCallback: TxnStatusCallback,
   txnFinishedCallback: TxnFinishedCallback
@@ -48,7 +48,7 @@ export async function submitAddControlKey(
   const blockNumber = (await getBlockNumber(api)) as bigint;
   if (api && (await api.isReady)) {
     const rawPayload: AddKeyData = {
-      msaId: providerId.toString(),
+      msaId: msaId.toString(),
       expiration: (blockNumber + 100n).toString(),
       newPublicKey: newAccount.address,
     };

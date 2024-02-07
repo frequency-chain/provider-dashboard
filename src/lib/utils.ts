@@ -63,7 +63,7 @@ export function formatNetwork(network: NetworkInfo): string {
 }
 
 export function formatAccount(account: Account): string {
-  return account.address;
+  return `${account.providerName}${account.providerName && ':'} ${account.address}`;
 }
 
 // create a URL-encoded mailto URL string using the provided parameters.

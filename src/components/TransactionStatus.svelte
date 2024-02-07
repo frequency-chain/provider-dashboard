@@ -8,12 +8,12 @@
   };
 </script>
 
-<div class:hidden={!showSelf} id="transaction-status" class="action-card grow-1 ml-8 basis-1/3">
-  <p class="action-card-title">Transaction status</p>
-  <ul class="">
+<div class:hidden={!showSelf} id="transaction-status" class="">
+  <p class="label">Transaction Status</p>
+  <ul class="unordered-list break-words text-sm">
     {#each statuses as status}
-      <li class="text-md mt-4 font-light">{status}</li>
+      <li class="">{status}</li>
     {/each}
   </ul>
-  <button on:click|preventDefault={hideSelf} class="btn-primary">Dismiss Status</button>
+  <button on:click|preventDefault={hideSelf} class="btn-no-fill mt-4 justify-end">Dismiss Status</button>
 </div>

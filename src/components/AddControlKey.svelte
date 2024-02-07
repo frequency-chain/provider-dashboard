@@ -1,27 +1,32 @@
 <script lang="ts">
-  import { dotApi, storeCurrentAction } from '$lib/stores';
+  import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { submitAddControlKey, type SigningKey, type TxnFinishedCallback } from '$lib/connections';
-  import { ActionForms, defaultDotApi } from '$lib/storeTypes';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
   import TransactionStatus from './TransactionStatus.svelte';
+  import AddKeyRequirements from './AddKeyRequirements.svelte';
+  import Modal from './Modal.svelte';
   import DropDownMenu from './DropDownMenu.svelte';
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { user } from '$lib/stores/userStore';
-  import type { Accounts } from '$lib/stores/accountsStore';
+  import { type Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore';
+  import { formatAccount } from '$lib/utils';
 
-  let thisDotApi = defaultDotApi;
-  let showSelf: boolean = false;
-  let selectedKeyToAdd: string = '';
+  export let isOpen: boolean;
+  export let close: () => void;
+
+  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
+  export let txnStatuses: Array<string> = [];
+
+  let selectedAccount: Account | null;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
 
   let showTransactionStatus = false;
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
-  export let txnStatuses: Array<string> = [];
-  export let cancelAction = () => {};
+
+  $: isDisabled = selectedAccount?.signingKey == null || showTransactionStatus;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -29,36 +34,28 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  export let providerId = 0;
-  export let validAccounts: Accounts;
-
-  dotApi.subscribe((api) => {
-    thisDotApi = api;
-    selectedKeyToAdd = '';
-  });
-  storeCurrentAction.subscribe((val) => (showSelf = val == ActionForms.AddControlKey));
-
   const addNewTxnStatus = (txnStatus: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
   };
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
-  const addControlKey = async (evt: Event) => {
+  const addControlKey = async () => {
+    if (!$user.msaId || !$user.signingKey) throw new Error('Provider MSA Id not connected.');
     clearTxnStatuses();
-    let endpointURI: string = thisDotApi.selectedEndpoint || '';
-    if (selectedKeyToAdd === '') {
+    let endpointURI: string = $dotApi.selectedEndpoint || '';
+    if (!selectedAccount.signingKey) {
       alert('Please choose a key to add.');
     } else {
-      let newKeys = validAccounts[selectedKeyToAdd];
-      let signingKeys: SigningKey = $user.signingKey!;
+      let newKeys: SigningKey = selectedAccount.signingKey;
+      let signingKeys: SigningKey = $user.signingKey;
       showTransactionStatus = true;
       if (isLocalhost(endpointURI)) {
         await submitAddControlKey(
-          thisDotApi.api as ApiPromise,
+          $dotApi.api as ApiPromise,
           undefined,
           newKeys,
           signingKeys,
-          providerId,
+          $user.msaId,
           endpointURI as string,
           addNewTxnStatus,
           txnFinished
@@ -69,11 +66,11 @@
           if (extensions.length !== 0) {
             const injectedExtension = await thisWeb3FromSource(signingKeys.meta.source!);
             await submitAddControlKey(
-              thisDotApi.api as ApiPromise,
+              $dotApi.api as ApiPromise,
               injectedExtension,
               newKeys,
               signingKeys,
-              providerId,
+              $user.msaId,
               endpointURI as string,
               addNewTxnStatus,
               txnFinished
@@ -89,33 +86,49 @@
       }
     }
   };
+
+  function onCancel() {
+    selectedAccount = null;
+    showTransactionStatus = false;
+    close();
+  }
 </script>
 
-<div id="add-control-key" class:hidden={!showSelf} class="action-card basis-1/2">
-  <p class="action-card-title">
-    Add a Control Key to Provider Id {providerId}
-  </p>
-  <ol class="ordered-list mt-4 font-light">
-    <li>
-      Ensure the new control key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
-      transactions.
-    </li>
-    <li>If using a wallet, ensure the new control key is imported into your wallet.</li>
-    <li>Select the new control key from the dropdown list below.</li>
-    <li>Click 'Add It.'</li>
-    <li>This requires 3 signatures: two for the authorization payload, and one to send the transaction.</li>
-    <ul class="unordered-list">
-      <li>Sign with the new control key,</li>
-      <li>Sign with the current control key,</li>
-      <li>Sign the transaction with the current control key.</li>
-    </ul>
-  </ol>
-  <form class="mt-8">
-    <DropDownMenu id="AddControlKey" label="Key to Add" value={selectedKeyToAdd} options={validAccounts} />
-    <div class="flex w-[350px] justify-between">
-      <button on:click|preventDefault={addControlKey} class="btn-primary">Add It</button>
-      <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel Add </button>
-    </div>
-  </form>
-</div>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
+<Modal id="add-control-key" {isOpen} close={onCancel}>
+  <div class="column gap-7">
+    <h3 class="section-title-underlined">
+      Add a Key to MSA (<span class="font-light">{$user.msaId}</span>)
+    </h3>
+
+    <form class="column gap-4">
+      <DropDownMenu
+        id="AddControlKey"
+        label="Key to Add"
+        placeholder="Select Key..."
+        bind:value={selectedAccount}
+        options={Array.from($unusedKeyAccountsStore.values()) || []}
+        disabled={$unusedKeyAccountsStore.size === 0}
+        formatter={formatAccount}
+      />
+      {#if $unusedKeyAccountsStore.size === 0}
+        <div id="network-error-msg" class="text-error text-sm">
+          No available keys. Create a new account without an MSA Id.
+        </div>
+      {/if}
+      <div class="flex w-[350px] justify-between">
+        <button on:click|preventDefault={addControlKey} class="btn-primary" disabled={isDisabled}>Add Key</button>
+        <button on:click|preventDefault={onCancel} class="btn-no-fill">Cancel</button>
+      </div>
+    </form>
+
+    <span class="border-1 border-b border-divider" />
+
+    <AddKeyRequirements />
+
+    {#if showTransactionStatus}
+      <span class="border-1 border-b border-divider" />
+    {/if}
+
+    <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
+  </div>
+</Modal>
