@@ -1,14 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
-  import { getApi, updateConnectionStatus } from '$lib/polkadotApi';
+  import { createApi } from '$lib/polkadotApi';
   import { Account, fetchAccountsForNetwork } from '$lib/stores/accountsStore';
   import { user } from '$lib/stores/userStore';
-  import type { WsProvider, ApiPromise } from '@polkadot/api';
+  import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import DropDownMenu from '$components/DropDownMenu.svelte';
-  import { defaultDotApi } from '$lib/storeTypes';
-  import { dotApi } from '$lib/stores';
   import { isValidURL, formatAccount, formatNetwork } from '$lib/utils';
 
   export let selectedNetwork: NetworkInfo | undefined;
@@ -16,8 +14,6 @@
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
   export let noAccountsFoundErrorMsg: string = 'No accounts found.';
-
-  let wsProvider: WsProvider;
 
   // Wallet access
   let thisWeb3Enable: typeof web3Enable;
@@ -29,9 +25,6 @@
   // Error messages
   let networkErrorMsg: string = '';
   let controlKeysErrorMsg: string = '';
-
-  let thisDotApi = defaultDotApi;
-  dotApi.subscribe((api) => (thisDotApi = api));
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -47,14 +40,14 @@
       try {
         networkErrorMsg = '';
         controlKeysErrorMsg = '';
-        accountsStore.clear();
-        await getApi(network.endpoint?.toString() ?? '', thisDotApi, wsProvider);
-        await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, thisDotApi.api as ApiPromise);
-        await updateConnectionStatus(thisDotApi.api as ApiPromise);
+        if (!network.endpoint) throw new Error('Undefined endpoint.');
+        const curApi = await createApi(network.endpoint?.origin);
+        await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
+        await curApi.api?.disconnect();
       } catch (e) {
         console.log(e);
         networkErrorMsg = `Could not connect to ${
-          network.endpoint?.toString() || 'empty value'
+          network.endpoint?.origin || 'empty value'
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }
@@ -70,7 +63,7 @@
   function networkChanged() {
     console.log('networkChanged to ' + selectedNetwork?.name);
     $user.address = '';
-    if (selectedNetwork && selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
+    if (selectedNetwork?.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
       $user.network = selectedNetwork;
       connectAndFetchAccounts(selectedNetwork);
     }

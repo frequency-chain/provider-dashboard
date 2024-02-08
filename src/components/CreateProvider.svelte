@@ -12,7 +12,6 @@
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
   import type { MsaInfo } from '$lib/storeTypes';
-  import { nonProviderAccountsStore, providerAccountsStore } from '$lib/stores/accountsStore';
   import { pageContent } from '$lib/stores/pageContentStore';
 
   let newProviderName = '';

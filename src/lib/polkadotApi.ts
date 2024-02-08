@@ -3,28 +3,30 @@ import { getBlockNumber, getEpoch } from './connections';
 import { dotApi, storeChainInfo } from './stores';
 import { options } from '@frequency-chain/api-augment';
 
-import type { DotApi, MsaInfo, ChainInfo } from '$lib/storeTypes';
+import type { DotApi, MsaInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 
-export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, wsProvider: WsProvider) {
-  if (!selectedProviderURI) {
-    throw new Error('Empty providerURI');
-  }
-  // Handle disconnects
-  if (selectedProviderURI) {
-    if (thisDotApi?.api) {
-      await thisDotApi.api.disconnect();
-    } else if (wsProvider) {
-      await wsProvider.disconnect();
-    }
-  }
+async function updateChainInfo(api: ApiPromise) {
+  const chain = await api.rpc.system.properties();
+  const token = getToken(chain);
+  const blockNumber = (await getBlockNumber(api)) as bigint;
+  const epochNumber = await getEpoch(api);
+  storeChainInfo.set({ connected: true, blockNumber, epochNumber, token });
+}
 
-  // Singleton Provider because it starts trying to connect here.
-  wsProvider = new WsProvider(selectedProviderURI);
+export async function createAndConnectToApi(networkEndpoint: string) {
+  const initializedDotApi = await createApi(networkEndpoint);
+  dotApi.set(initializedDotApi);
+  await updateChainInfo(initializedDotApi.api);
+}
+
+export async function createApi(networkEndpoint: string): Promise<DotApi> {
+  const wsProvider = new WsProvider(networkEndpoint);
+
   const apiPromise = await ApiPromise.create({
     provider: wsProvider,
     throwOnConnect: true,
@@ -33,27 +35,20 @@ export async function getApi(selectedProviderURI: string, thisDotApi: DotApi, ws
   });
 
   await apiPromise.isReady;
+
   const initializedDotApi: DotApi = {
     wsProvider: wsProvider,
     api: apiPromise,
     keyring: new Keyring(),
-    selectedEndpoint: selectedProviderURI,
+    selectedEndpoint: networkEndpoint,
     options,
   };
-  dotApi.update((currentApi) => (currentApi = initializedDotApi));
+  return initializedDotApi;
 }
 
 export function getToken(chain: ChainProperties) {
   const rawUnit = chain.tokenSymbol.toString();
   return rawUnit.slice(1, rawUnit.length - 1);
-}
-
-export async function updateConnectionStatus(apiPromise: ApiPromise) {
-  const chain = await apiPromise.rpc.system.properties();
-  const token = getToken(chain);
-  const blockNumber = (await getBlockNumber(apiPromise)) as bigint;
-  const epochNumber = await getEpoch(apiPromise);
-  storeChainInfo.update((info: ChainInfo) => (info = { connected: true, blockNumber, epochNumber, token }));
 }
 
 export type AccountBalances = {
@@ -85,24 +80,32 @@ export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Pro
   return msaInfo;
 }
 
-export async function getMsaEpochAndCapacityInfo(
-  apiPromise: ApiPromise,
-  accountId: string
-): Promise<{ epochNumber: bigint; msaInfo: MsaInfo; capacityDetails: any }> {
-  const msaInfo = await getMsaInfo(apiPromise, accountId);
-  const epochNumber = await getEpoch(apiPromise);
-  let capacityDetails;
-  if (msaInfo.msaId > 0) {
-    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
-    if (providerRegistry.isSome) {
-      const details: any = (await apiPromise.query.capacity.capacityLedger(msaInfo.msaId)).unwrapOrDefault();
-      capacityDetails = {
-        remainingCapacity: details.remainingCapacity.toBigInt(),
-        totalTokensStaked: details.totalTokensStaked.toBigInt(),
-        totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-        lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
-      };
-    }
+export type CapacityDetails = {
+  remainingCapacity: bigint;
+  totalTokensStaked: bigint;
+  totalCapacityIssued: bigint;
+  lastReplenishedEpoch: bigint;
+};
+
+export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
+  let capacityDetails: CapacityDetails = {
+    remainingCapacity: 0n,
+    totalCapacityIssued: 0n,
+    totalTokensStaked: 0n,
+    lastReplenishedEpoch: 0n,
+  };
+
+  const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+
+  if (providerRegistry.isSome) {
+    const details: any = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();
+    capacityDetails = {
+      remainingCapacity: details.remainingCapacity.toBigInt(),
+      totalTokensStaked: details.totalTokensStaked.toBigInt(),
+      totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
+      lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
+    };
   }
-  return { msaInfo, epochNumber, capacityDetails };
+
+  return capacityDetails;
 }

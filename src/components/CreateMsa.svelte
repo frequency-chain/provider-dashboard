@@ -1,8 +1,7 @@
 <script lang="ts">
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { dotApi } from '$lib/stores';
-  import type { DotApi, MsaInfo } from '$lib/storeTypes';
-  import { defaultDotApi } from '$lib/storeTypes';
+  import type { MsaInfo } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost } from '$lib/utils';
   import { submitCreateMsa, type TxnFinishedCallback } from '$lib/connections';
@@ -10,10 +9,10 @@
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
-  import { getMsaInfo } from '$lib/polkadotApi';
+  import { getMsaInfo, createAndConnectToApi } from '$lib/polkadotApi';
   import { pageContent } from '$lib/stores/pageContentStore';
 
-  let localDotApi: DotApi = defaultDotApi;
+  // let localDotApi: DotApi = defaultDotApi;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
@@ -25,9 +24,8 @@
 
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
-    console.log('default txnFinished callback');
     if (succeeded) {
-      const apiPromise = localDotApi.api as ApiPromise;
+      const apiPromise = $dotApi.api as ApiPromise;
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
       $user.msaId = msaInfo.msaId;
     }
@@ -39,19 +37,20 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  dotApi.subscribe((api: DotApi) => (localDotApi = api));
-
   const doCreateMsa = async (_evt: Event) => {
-    if (!localDotApi) {
-      alert('please reconnect to an endpoint');
+    const endpoint: string = $user.network?.endpoint?.origin || '';
+    if (!endpoint) {
+      alert('Error connecting to endpoint.');
       return;
     }
+
+    await createAndConnectToApi(endpoint);
+
     clearTxnStatuses();
-    let endpointURI: string = localDotApi.selectedEndpoint || '';
     showTransactionStatus = true;
-    const apiPromise = localDotApi.api as ApiPromise;
-    if (isLocalhost(endpointURI)) {
-      await submitCreateMsa(apiPromise, undefined, endpointURI, $user.signingKey!, addNewTxnStatus, txnFinished);
+    const apiPromise = $dotApi.api as ApiPromise;
+    if (isLocalhost(endpoint)) {
+      await submitCreateMsa(apiPromise, undefined, endpoint, $user.signingKey!, addNewTxnStatus, txnFinished);
     } else {
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
         const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
@@ -60,7 +59,7 @@
           await submitCreateMsa(
             apiPromise,
             injectedExtension,
-            endpointURI,
+            endpoint,
             $user.signingKey!,
             addNewTxnStatus,
             txnFinished

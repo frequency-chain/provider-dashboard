@@ -6,11 +6,11 @@
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
   import { ActionForms } from '$lib/storeTypes.js';
-  import { afterUpdate } from 'svelte';
+  import { onMount } from 'svelte';
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
 
-  afterUpdate(async () => {
+  onMount(async () => {
     if ($dotApi.api) {
       accountBalances = await getBalances($dotApi.api, $user.address);
     }

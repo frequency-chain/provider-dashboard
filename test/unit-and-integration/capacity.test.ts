@@ -2,7 +2,6 @@ import { cleanup, render, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import { storeChainInfo, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
-import { getByTextContent } from '../helpers';
 import { user } from '../../src/lib/stores/userStore';
 import { ChainInfo } from '../../src/lib/storeTypes';
 
