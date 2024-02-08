@@ -9,7 +9,7 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
 
-  export let setNewValues: (account: Account) => void | undefined;
+  export let newUser: Account | undefined;
   export let accounts: Map<string, Account>;
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
@@ -19,8 +19,8 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | undefined;
-  let selectedNetwork: NetworkInfo | undefined = $user?.network;
+  let selectedAccount: Account | undefined = newUser;
+  let selectedNetwork: NetworkInfo | undefined = newUser?.network;
   let customNetwork: string;
   let isCustomNetwork: boolean;
   let isLoading: boolean = false;
@@ -64,7 +64,7 @@
   }
 
   function accountChanged() {
-    selectedAccount && setNewValues(selectedAccount);
+    if (selectedAccount) newUser = selectedAccount;
   }
 
   async function networkChanged() {
@@ -74,7 +74,7 @@
       await connectAndFetchAccounts(selectedNetwork!);
     }
     isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
-    setNewValues({ network: selectedNetwork!, address: '', isProvider: false });
+    newUser = { network: selectedNetwork!, address: '', isProvider: false };
     isLoading = false;
   }
 
@@ -110,7 +110,7 @@
       on:keydown={customNetworkChanged}
     />
   {/if}
-  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+  <div id="network-error-msg" class="text-error text-sm">{networkErrorMsg}</div>
   <DropDownMenu
     id="controlkeys"
     label={accountSelectorTitle}
@@ -121,5 +121,5 @@
     formatter={formatAccount}
     disabled={accounts.size === 0 || isLoading}
   />
-  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+  <div id="controlkey-error-msg" class="text-error text-sm">{controlKeysErrorMsg}</div>
 </div>

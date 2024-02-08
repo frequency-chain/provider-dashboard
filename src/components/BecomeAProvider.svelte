@@ -17,10 +17,6 @@
     pageContent.login();
   };
 
-  function setNewValues(account: Account) {
-    newUser = account;
-  }
-
   async function updateApiAndUser() {
     if (!newUser) {
       alert('Invalid form values');
@@ -43,7 +39,7 @@
   <BlockSection title="Become a Provider">
     <form class="column w-[320px]">
       <SelectNetworkAndAccount
-        {setNewValues}
+        bind:newUser
         accounts={$nonProviderAccountsStore}
         accountSelectorTitle="Wallet Address"
         accountSelectorPlaceholder="Select a wallet address"

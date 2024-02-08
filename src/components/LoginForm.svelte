@@ -8,7 +8,7 @@
   export let onConnect: () => void = () => {};
   export let onCancel: (() => void) | undefined = undefined;
 
-  let newUser: Account | undefined;
+  let newUser: Account | undefined = $user;
 
   $: canConnect = newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
 
@@ -28,14 +28,10 @@
     $user = newUser;
     onConnect();
   }
-
-  function setNewValues(account: Account) {
-    newUser = account;
-  }
 </script>
 
 <SelectNetworkAndAccount
-  {setNewValues}
+  bind:newUser
   accounts={$providerAccountsStore}
   accountSelectorTitle="Select a Provider Control Key"
   accountSelectorPlaceholder="Select a provider control key"
