@@ -5,20 +5,17 @@
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
-  import { ActionForms } from '$lib/storeTypes.js';
   import { onMount } from 'svelte';
+  import AddControlKey from './AddControlKey.svelte';
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
+  let isAddKeyOpen: boolean = false;
 
   onMount(async () => {
     if ($dotApi.api) {
       accountBalances = await getBalances($dotApi.api, $user.address);
     }
   });
-
-  function showAddControlKey() {
-    storeCurrentAction.set(ActionForms.AddControlKey);
-  }
 
   let providerList: { label: string; value: string }[] = [];
   let errMsg: string = '';
@@ -47,5 +44,6 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <button on:click|preventDefault={showAddControlKey} class="btn-primary">Add control key</button>
+  <button on:click|preventDefault={() => (isAddKeyOpen = true)} class="btn-primary">Add control key</button>
+  <AddControlKey isOpen={isAddKeyOpen} close={() => (isAddKeyOpen = false)} />
 </ListCard>

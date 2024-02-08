@@ -66,6 +66,6 @@ describe('Stake.svelte Unit Tests', () => {
 
     const button = screen.getByRole('button', { name: 'Stake' });
     await fireEvent.click(button);
-    expect(getByText('Transaction status')).toBeInTheDocument();
+    expect(getByText('Transaction Status')).toBeInTheDocument();
   });
 });

@@ -28,6 +28,7 @@ export type Accounts = Map<SS58Address, Readonly<Account>>;
 
 export const providerAccountsStore = writable<Accounts>(new Map<SS58Address, Readonly<Account>>());
 export const nonProviderAccountsStore = writable<Accounts>(new Map<SS58Address, Readonly<Account>>());
+export const unusedKeyAccountsStore = writable<Accounts>(new Map<SS58Address, Readonly<Account>>());
 
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
@@ -39,6 +40,7 @@ export async function fetchAccountsForNetwork(
 
   const providerAccounts: Accounts = new Map<SS58Address, Account>();
   const nonProviderAccounts: Accounts = new Map<SS58Address, Account>();
+  const unusedKeyAccounts: Accounts = new Map<SS58Address, Account>();
 
   // If the network is localhost, add the default test accounts for the chain
   if (selectedNetwork.name === 'LOCALHOST') {
@@ -58,6 +60,9 @@ export async function fetchAccountsForNetwork(
         if (account.isProvider) {
           providerAccounts.set(account.address, account);
         } else {
+          if (account.msaId === 0) {
+            unusedKeyAccounts.set(account.address, account);
+          }
           nonProviderAccounts.set(account.address, account);
         }
       })
@@ -88,6 +93,9 @@ export async function fetchAccountsForNetwork(
           if (account.isProvider) {
             providerAccounts.set(account.address, account);
           } else {
+            if (account.msaId === 0) {
+              unusedKeyAccounts.set(account.address, account);
+            }
             nonProviderAccounts.set(account.address, account);
           }
         }
@@ -97,4 +105,5 @@ export async function fetchAccountsForNetwork(
 
   providerAccountsStore.set(providerAccounts);
   nonProviderAccountsStore.set(nonProviderAccounts);
+  unusedKeyAccountsStore.set(unusedKeyAccounts);
 }

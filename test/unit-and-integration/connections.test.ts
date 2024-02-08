@@ -113,18 +113,18 @@ describe('submitAddControlKey', async () => {
     const api = await ApiPromise.create();
     const extension = undefined;
     const callback = vi.fn();
-    const providerId = 4;
+    const msaId = 4;
     const endpointURL = 'ws://localhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback, callback);
+    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
     expect(callback).toHaveBeenCalled();
   });
   it('calls the callback when not localhost', async () => {
     const api = await ApiPromise.create();
     const extension = undefined;
     const callback = vi.fn();
-    const providerId = 4;
+    const msaId = 4;
     const endpointURL = 'ws://someotherhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, providerId, endpointURL, callback, callback);
+    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
     expect(callback).toHaveBeenCalled();
   });
 });

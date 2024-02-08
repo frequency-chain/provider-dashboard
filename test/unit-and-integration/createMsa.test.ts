@@ -60,7 +60,7 @@ describe('CreateMsa component', () => {
   //   await waitFor(() => {
   //     expect(extrinsicWasCalled).toBe(true);
   //     expect(container.querySelector('#transaction-status')).not.toHaveClass('hidden');
-  //     expect(getByText('Transaction status')).toBeInTheDocument();
+  //     expect(getByText('Transaction Status')).toBeInTheDocument();
   //     expect(getByText('Submitting transaction')).toBeInTheDocument();
   //   });
   // });
