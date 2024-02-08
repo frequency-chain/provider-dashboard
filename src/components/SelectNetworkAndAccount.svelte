@@ -54,9 +54,6 @@
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }
-      for (const account of accounts) {
-        // console.log(`Found provider: ${account}`);
-      }
       if (networkErrorMsg == '' && accounts.size === 0) {
         controlKeysErrorMsg = noAccountsFoundErrorMsg;
       }
