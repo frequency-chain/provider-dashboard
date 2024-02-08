@@ -110,7 +110,7 @@
       on:keydown={customNetworkChanged}
     />
   {/if}
-  <div id="network-error-msg" class="text-error text-sm">{networkErrorMsg}</div>
+  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
   <DropDownMenu
     id="controlkeys"
     label={accountSelectorTitle}
@@ -121,5 +121,5 @@
     formatter={formatAccount}
     disabled={accounts.size === 0 || isLoading}
   />
-  <div id="controlkey-error-msg" class="text-error text-sm">{controlKeysErrorMsg}</div>
+  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
 </div>
