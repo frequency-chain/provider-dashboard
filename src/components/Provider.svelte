@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { dotApi, storeChainInfo, storeCurrentAction } from '$lib/stores';
+  import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
   import { balanceToHuman } from '$lib/utils';
   import { getBalances } from '$lib/polkadotApi';

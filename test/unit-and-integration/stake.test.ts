@@ -3,13 +3,16 @@ import '@testing-library/jest-dom';
 import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
 import { user } from '../../src/lib/stores/userStore';
+import { KeyringPair } from '@polkadot/keyring/types';
+import Keyring from '@polkadot/keyring';
+import { vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
   const resolvedApi = {
     isReady: vi.fn().mockResolvedValue(true),
   };
 
-  const mockApiPromise = vi.fn();
+  const mockApiPromise: any = vi.fn();
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedApi);
 
   const mockWeb3FromSource = vi.fn();
@@ -25,7 +28,10 @@ vi.mock('@polkadot/api', async () => {
 
 describe('Stake.svelte Unit Tests', () => {
   beforeEach(() => {
-    user.set({ address: '', isProvider: true, msaId: 1, providerName: 'test' });
+    const keyring = new Keyring({ type: 'sr25519' });
+    const keyRingPair: KeyringPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+
+    user.set({ address: '', isProvider: true, msaId: 1, providerName: 'test', signingKey: keyRingPair });
   });
   afterEach(() => cleanup());
 
@@ -36,6 +42,7 @@ describe('Stake.svelte Unit Tests', () => {
 
   it('Stake input is converted to number', async () => {
     render(Stake);
+
     const input = screen.queryByRole('input');
     if (input) {
       await fireEvent.input(input, { target: { value: '1' } });
@@ -47,24 +54,15 @@ describe('Stake.svelte Unit Tests', () => {
     }
   });
 
-  it('Shows alert if no staking key is selected', async () => {
-    const mockAlert = vi.fn();
-    window.alert = mockAlert;
-
-    render(Stake);
-    const button = screen.getByRole('button', { name: 'Stake' });
-    await fireEvent.click(button);
-    expect(mockAlert).toBeCalledWith('Please choose a key to stake from.');
-  });
-
   it('Stake button submits transaction', async () => {
     const createdApi = await mocks.ApiPromise.create();
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
-    const { getByText } = render(Stake);
+    const { getByText } = render(Stake, { isOpen: true });
     await dotApi.update((val) => (val = { ...val, api: createdApi }));
 
     const button = screen.getByRole('button', { name: 'Stake' });
+
     await fireEvent.click(button);
     expect(getByText('Transaction Status')).toBeInTheDocument();
   });

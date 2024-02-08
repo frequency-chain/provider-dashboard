@@ -98,11 +98,11 @@
 </script>
 
 <Modal id="add-control-key" {isOpen} close={onCancel}>
-  <div class="column gap-7">
-    <h3 class="section-title-underlined">
-      Add a Key to MSA (<span class="font-light">{$user.msaId}</span>)
-    </h3>
+  <span slot="title">
+    Add a Key to MSA (<span class="font-light">{$user.msaId}</span>)
+  </span>
 
+  <svelte:fragment slot="body">
     <form class="column gap-4">
       <DropDownMenu
         id="AddControlKey"
@@ -133,5 +133,5 @@
     {/if}
 
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
-  </div>
+  </svelte:fragment>
 </Modal>
