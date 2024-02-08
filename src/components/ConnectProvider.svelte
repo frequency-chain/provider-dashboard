@@ -1,24 +1,11 @@
 <script lang="ts">
+  import Modal from '../components/Modal.svelte';
+  import LoginForm from './LoginForm.svelte';
   export let close = () => {};
   export let isOpen: boolean = false;
-  import Modal from '../components/Modal.svelte';
-  import DropDownMenu from './DropDownMenu.svelte';
 </script>
 
-<Modal id="connect-provider" {close} {isOpen}>
+<Modal id="conntect-provider" {close} {isOpen}>
   <span slot="title">Connect Provider</span>
-  <svelte:fragment slot="body">
-    <!-- Select a network dropdown goes here -->
-    <!-- Should default to current network -->
-    <DropDownMenu label="Select a Network" options={['option1']} />
-
-    <!-- Select a control provider key goes here -->
-    <!-- Should default to current key -->
-    <DropDownMenu label="Select a Control Provider Key" options={['option1', 'option2']} />
-
-    <div class="flex justify-between align-bottom">
-      <button class="btn-primary" on:click={close}>Connect</button>
-      <button class="btn-no-fill" on:click={close}>Cancel</button>
-    </div>
-  </svelte:fragment>
+  <LoginForm slot="body" onConnect={close} onCancel={close} />
 </Modal>

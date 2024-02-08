@@ -9,19 +9,15 @@
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
-  import { getMsaInfo, createAndConnectToApi } from '$lib/polkadotApi';
+  import { getMsaInfo } from '$lib/polkadotApi';
   import { pageContent } from '$lib/stores/pageContentStore';
 
-  // let localDotApi: DotApi = defaultDotApi;
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
-  let showTransactionStatus = false;
+  export let beforeCreate: () => Promise<void>;
   export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
-
   // a callback for when a transaction hits a final state
   export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
     if (succeeded) {
@@ -31,6 +27,10 @@
     }
   };
 
+  let thisWeb3FromSource: typeof web3FromSource;
+  let thisWeb3Enable: typeof web3Enable;
+  let showTransactionStatus = false;
+
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
     thisWeb3FromSource = extension.web3FromSource;
@@ -38,13 +38,13 @@
   });
 
   const doCreateMsa = async (_evt: Event) => {
-    const endpoint: string = $user.network?.endpoint?.origin || '';
+    await beforeCreate();
+
+    const endpoint: string | undefined = $user.network?.endpoint?.origin;
     if (!endpoint) {
       alert('Error connecting to endpoint.');
       return;
     }
-
-    await createAndConnectToApi(endpoint);
 
     clearTxnStatuses();
     showTransactionStatus = true;
