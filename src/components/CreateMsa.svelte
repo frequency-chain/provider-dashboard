@@ -39,12 +39,13 @@
 
   const doCreateMsa = async (_evt: Event) => {
     const endpoint: string = $user.network?.endpoint?.origin || '';
-    
     if (!endpoint) {
       alert('Error connecting to endpoint.');
       return;
     }
-    
+
+    await createAndConnectToApi(endpoint);
+
     clearTxnStatuses();
     showTransactionStatus = true;
     const apiPromise = $dotApi.api as ApiPromise;
