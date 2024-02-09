@@ -11,7 +11,6 @@
   import { getMsaInfo } from '$lib/polkadotApi';
   import type { MsaInfo } from '$lib/storeTypes';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { isLoggedIn } from '$lib/stores';
 
   export let beforeCreate: () => Promise<void>;
   export let txnStatuses: Array<string> = [];
@@ -25,7 +24,6 @@
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
-      $isLoggedIn = true;
       pageContent.dashboard();
     }
   };
@@ -44,7 +42,7 @@
   const doCreateProvider = async (_evt: Event) => {
     await beforeCreate();
 
-    const endpointURI: string | undefined = $user.network?.endpoint?.origin;
+    const endpointURI: string | undefined = $user.network?.endpoint;
     if (!endpointURI) {
       alert('Error connecting to endpoint.');
       return;

@@ -5,17 +5,16 @@
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
-  import { onMount } from 'svelte';
   import AddControlKey from './AddControlKey.svelte';
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
   let isAddKeyOpen: boolean = false;
 
-  onMount(async () => {
+  $: {
     if ($dotApi.api) {
-      accountBalances = await getBalances($dotApi.api, $user.address);
+      getBalances($dotApi.api, $user.address).then((info) => (accountBalances = info));
     }
-  });
+  }
 
   let providerList: { label: string; value: string }[] = [];
   let errMsg: string = '';

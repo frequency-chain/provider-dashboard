@@ -1,6 +1,4 @@
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import { getBlockNumber, getEpoch } from './connections';
-import { dotApi, storeChainInfo } from './stores';
 import { options } from '@frequency-chain/api-augment';
 
 import type { DotApi, MsaInfo } from '$lib/storeTypes';
@@ -9,20 +7,6 @@ import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
 
 export type AccountMap = Record<string, KeyringPair>;
-
-async function updateChainInfo(api: ApiPromise) {
-  const chain = await api.rpc.system.properties();
-  const token = getToken(chain);
-  const blockNumber = (await getBlockNumber(api)) as bigint;
-  const epochNumber = await getEpoch(api);
-  storeChainInfo.set({ connected: true, blockNumber, epochNumber, token });
-}
-
-export async function createAndConnectToApi(networkEndpoint: string) {
-  const initializedDotApi = await createApi(networkEndpoint);
-  dotApi.set(initializedDotApi);
-  await updateChainInfo(initializedDotApi.api);
-}
 
 export async function createApi(networkEndpoint: string): Promise<DotApi> {
   const wsProvider = new WsProvider(networkEndpoint);

@@ -7,8 +7,6 @@
   import CreateProvider from './CreateProvider.svelte';
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
-  import { dotApi } from '$lib/stores';
-  import { createAndConnectToApi } from '$lib/polkadotApi';
 
   let newUser: Account | undefined;
 
@@ -17,20 +15,11 @@
     pageContent.login();
   };
 
-  async function updateApiAndUser() {
+  async function updateUser() {
     if (!newUser) {
       alert('Invalid form values');
       return;
     }
-
-    const endpoint = newUser.network?.endpoint?.origin;
-    if (!endpoint) {
-      alert('Error connecting to endpoint.');
-      return;
-    }
-
-    if ($dotApi.api?.isConnected) $dotApi.api?.disconnect();
-    await createAndConnectToApi(endpoint);
     $user = newUser;
   }
 </script>
@@ -49,9 +38,9 @@
         <EmailProviderRequest />
       {:else if newUser && newUser?.address !== ''}
         {#if newUser?.msaId === 0}
-          <CreateMsa beforeCreate={updateApiAndUser} />
+          <CreateMsa beforeCreate={updateUser} />
         {:else}
-          <CreateProvider beforeCreate={updateApiAndUser} />
+          <CreateProvider beforeCreate={updateUser} />
         {/if}
       {:else}
         <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Cancel</button>

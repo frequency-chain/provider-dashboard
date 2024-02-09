@@ -2,6 +2,10 @@
   import Header from '../components/Header.svelte';
   import Nav from '../components/Nav.svelte';
   import wave from '$lib/assets/bg-wave.png';
+  import { logInPromise, storeChainInfoPromise } from '$lib/stores';
+
+  $: $logInPromise;
+  $: $storeChainInfoPromise;
 </script>
 
 <div>

@@ -1,19 +1,18 @@
 <script lang="ts">
   import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
-  import type { ApiPromise } from '@polkadot/api';
   import { getCapacityInfo, type CapacityDetails } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
   import Stake from './Stake.svelte';
-  import { afterUpdate } from 'svelte';
 
   let capacityDetails: CapacityDetails;
-  afterUpdate(async () => {
-    if ($user?.msaId && $user?.msaId > 0) {
-      capacityDetails = await getCapacityInfo($dotApi.api as ApiPromise, $user.msaId);
+
+  $: {
+    if ($user?.msaId && $user.msaId !== 0 && $dotApi.api) {
+      getCapacityInfo($dotApi.api, $user.msaId).then((info) => (capacityDetails = info));
     }
-  });
+  }
 
   let showStakeToProvider = false;
   let capacityList: { label: string; value: string }[] = [];

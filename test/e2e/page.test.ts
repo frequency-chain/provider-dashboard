@@ -36,7 +36,7 @@ describe('End to End Tests', () => {
     });
 
     const btn = container.querySelector('button#connect-button');
-    await fireEvent.click(btn);
+    if (btn) await fireEvent.click(btn);
 
     // const connectionStatusValue = container.querySelector('#connection-status-value');
     // await waitFor(() => {

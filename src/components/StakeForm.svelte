@@ -82,6 +82,7 @@
     }
     isLoading = false;
   };
+  console.log('allAccountsStore', $allAccountsStore);
 </script>
 
 <form class="column">
