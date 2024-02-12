@@ -1,10 +1,10 @@
 import { writable } from 'svelte/store';
-import { browser } from '$app/environment';
+import { BROWSER } from 'esm-env';
 
 export function storable<T>(key: string, data?: T) {
   const store = writable(data);
   const { subscribe, set, update } = store;
-  const storage = browser ? window.localStorage : null;
+  const storage = BROWSER ? window.localStorage : null;
 
   if (storage) {
     const storageValue = storage.getItem(key);

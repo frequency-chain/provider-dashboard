@@ -28,7 +28,7 @@
   }
 </script>
 
-<div class="max-w-dashboard column w-full">
+<div class="max-w-dashboard column w-full" id="dashboard">
   <DashboardHeader />
 
   <ChainStatus />

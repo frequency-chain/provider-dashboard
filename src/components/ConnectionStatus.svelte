@@ -15,7 +15,7 @@
       {:else}
         <div class="w-1 bg-red-error h-1 rounded-full p-1" />
       {/if}
-      <p class="text-md uppercase">{$user.network?.name}</p>
+      <p id="connected-network" class="text-md uppercase">{$user.network?.name}</p>
     </div>
     <p class="text-md">
       {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}

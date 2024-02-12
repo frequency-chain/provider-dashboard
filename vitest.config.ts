@@ -1,12 +1,10 @@
-import { defineConfig } from 'vitest/config'
-import { svelte } from '@sveltejs/vite-plugin-svelte'
-import { resolve } from 'path'
+import { defineConfig } from 'vitest/config';
+import { svelte } from '@sveltejs/vite-plugin-svelte';
+import { resolve } from 'path';
 
 // Why do the alias not work in vite.config.ts?
 export default defineConfig({
-  plugins: [
-    svelte({ hot: !process.env.VITEST }),
-  ],
+  plugins: [svelte({ hot: !process.env.VITEST })],
   resolve: {
     alias: {
       $lib: resolve(__dirname, 'src/lib'),
@@ -20,6 +18,6 @@ export default defineConfig({
     },
     environment: 'jsdom',
     globals: true,
-    reporters: "basic",
+    reporters: 'basic',
   },
-})
+});
