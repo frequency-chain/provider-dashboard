@@ -1,9 +1,8 @@
 import { cleanup, render } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { dotApi, storeCurrentAction, storeChainInfo } from '../../src/lib/stores';
+import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
-import { ActionForms } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
 import { KeyringPair } from '@polkadot/keyring/types';
 import Keyring from '@polkadot/keyring';
@@ -75,7 +74,6 @@ vi.mock('@polkadot/api', async () => {
 
 describe('Provider.svelte', () => {
   beforeEach(() => {
-    storeCurrentAction.set(ActionForms.NoForm);
     user.set({ address: '', isProvider: false, msaId: 0, providerName: '' });
   });
   afterEach(() => cleanup());
