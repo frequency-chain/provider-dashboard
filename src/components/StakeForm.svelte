@@ -18,7 +18,7 @@
   export let providerId = 0;
   export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
-  let selectedAccount: Account = $user;
+  let selectedAccount: Account;
   let isLoading: boolean = false;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
@@ -27,6 +27,7 @@
     const extension = await import('@polkadot/extension-dapp');
     thisWeb3FromSource = extension.web3FromSource;
     thisWeb3Enable = extension.web3Enable;
+    selectedAccount = $allAccountsStore.get($user.address) as Account;
   });
 
   $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
@@ -82,7 +83,6 @@
     }
     isLoading = false;
   };
-  console.log('allAccountsStore', $allAccountsStore);
 </script>
 
 <form class="column">

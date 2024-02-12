@@ -22,10 +22,22 @@ describe('End to End Tests', () => {
 
   test('connect to localhost', async () => {
     const { container, getByLabelText } = render(Page);
+    // Is logged in
     const statusBar = container.querySelector('#chain-status');
     expect(statusBar).toBeDefined();
-    // Get the select box
-    const select = getByLabelText('Select a Network');
+
+    // Logout
+    const logoutBtn = container.querySelector('#logout-button');
+    expect(logoutBtn).toBeDefined();
+
+    logoutBtn && fireEvent.click(logoutBtn);
+
+    // Get the select box to log back in
+    const select = await getByLabelText('Select a Network');
+
+    await waitFor(() => {
+      expect(select).toHaveTextContent('LOCALHOST: ws://127.0.0.1:9944');
+    });
 
     // Change the select box value
     await fireEvent.change(select, { target: { value: 'LOCALHOST: ws://127.0.0.1:9944' } });

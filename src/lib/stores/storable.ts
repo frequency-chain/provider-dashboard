@@ -8,7 +8,7 @@ export function storable<T>(key: string, data?: T) {
 
   if (storage) {
     const storageValue = storage.getItem(key);
-    if (!!storageValue) {
+    if (storageValue) {
       set(storageValue ? JSON.parse(storageValue) : data);
     }
   }

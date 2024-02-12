@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { isLoggedIn } from '$lib/stores';
   import BlockSection from '$components/BlockSection.svelte';
   import LoginForm from './LoginForm.svelte';
   import Button from '$components/Button.svelte';

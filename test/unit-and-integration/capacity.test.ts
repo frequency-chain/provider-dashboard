@@ -78,7 +78,7 @@ const mocks = vi.hoisted(() => {
     tx: { msa: { addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined) } },
   };
 
-  const mockApiPromise = vi.fn();
+  const mockApiPromise: any = vi.fn();
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
 
   const mockWeb3FromSource = vi.fn();

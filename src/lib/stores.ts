@@ -13,15 +13,11 @@ export const isLoggedIn = storable<boolean>('isLoggedIn', false);
 
 export const logInPromise = derived([user], ([$user]) =>
   (async () => {
-    let endpoint = $user?.network?.endpoint;
-    if (endpoint) {
-      dotApi.set(await createApi(endpoint));
+    if ($user?.network?.endpoint) {
+      dotApi.set(await createApi($user?.network?.endpoint));
       isLoggedIn.set(true);
       if ($user.isProvider) {
         pageContent.dashboard();
-        //TODO: NEED TO ADD SOMETHING TO GET THE ACCOUNTS.
-        //CURRENTLY, WHEN YOU GO TO STEAK, THERE IS NO ACCOUNT OPTIONS
-        //WORKS IN CONNECT PROVIDER BECAUSE WE GET ACCOUNTS IN THE COMPONENT.
       }
     }
   })()

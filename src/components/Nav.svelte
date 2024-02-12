@@ -15,7 +15,7 @@
     <NavItem href="/" isActive={url === '/'}>Home</NavItem>
     <NavItem href="/faq" isActive={url === '/faq'}>FAQ's</NavItem>
     {#if $isLoggedIn === true}
-      <NavItem href="/" onClick={logout}>Logout</NavItem>
+      <NavItem id="logout-button" href="/" onClick={logout}>Logout</NavItem>
     {:else}
       <NavItem />
     {/if}
