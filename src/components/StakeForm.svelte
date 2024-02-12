@@ -100,7 +100,7 @@
     <input type="number" id="stakingInput" min="0" value="1" on:input={handleInput} />
   </div>
 
-  <div class="flex w-[350px] items-end justify-between">
+  <div class="flex w-[320px] items-end justify-between">
     <button on:click|preventDefault={stake} class="btn-primary" aria-label="Stake" disabled={isLoading}>Stake</button>
     <button class="btn-no-fill" on:click|preventDefault={close}>Cancel</button>
   </div>

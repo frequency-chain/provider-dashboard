@@ -13,7 +13,7 @@
 
   async function connect() {
     if (!newUser) {
-      alert('Invalid form values.');
+      alert('Invalid form values');
       return;
     }
     $user = newUser;

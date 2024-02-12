@@ -31,6 +31,10 @@
       </ol>
     </div>
 
+    {#if showTransactionStatus}
+      <span class="min-w-full border-b border-b-divider" />
+    {/if}
+
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </svelte:fragment>
 </Modal>

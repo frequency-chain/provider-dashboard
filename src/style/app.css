@@ -92,7 +92,7 @@
   [type='text'],
   [type='number'],
   select {
-    @apply h-[30px] w-[350px] overflow-ellipsis rounded-md border-none py-0 pl-2 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none py-0 pl-2 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
   }
 
   select {

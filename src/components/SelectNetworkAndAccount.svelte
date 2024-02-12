@@ -24,8 +24,6 @@
   let isCustomNetwork: boolean;
   let isLoading: boolean = false;
 
-  console.log('selectedNetwork', selectedNetwork);
-
   // Error messages
   let networkErrorMsg: string = '';
   let controlKeysErrorMsg: string = '';
