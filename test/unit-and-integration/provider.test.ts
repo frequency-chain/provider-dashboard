@@ -7,6 +7,8 @@ import { ActionForms } from '../../src/lib/storeTypes';
 import { getByTextContent } from '../helpers';
 import { KeyringPair } from '@polkadot/keyring/types';
 import Keyring from '@polkadot/keyring';
+import { vi } from 'vitest';
+import { waitReady } from '@polkadot/wasm-crypto';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -59,7 +61,8 @@ const mocks = vi.hoisted(() => {
     },
   };
 
-  const mockApiPromise = vi.fn();
+  waitReady();
+  const mockApiPromise: any = vi.fn();
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedApi);
 
   const mockWeb3FromSource = vi.fn();

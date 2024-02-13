@@ -11,7 +11,6 @@ import { Keyring } from '@polkadot/keyring';
 import { stringToU8a } from '@polkadot/util';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { vi } from 'vitest';
-import { waitReady } from '@polkadot/wasm-crypto';
 
 const mocks = vi.hoisted(() => {
   // this has to be inside here because otherwise the error will be

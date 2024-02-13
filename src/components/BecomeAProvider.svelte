@@ -15,7 +15,7 @@
     pageContent.login();
   };
 
-  async function updateUser() {
+  function updateUser() {
     if (!newUser) {
       alert('Invalid form values');
       return;
