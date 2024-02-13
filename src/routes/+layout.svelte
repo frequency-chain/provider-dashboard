@@ -5,6 +5,7 @@
   import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
+  import { listenToEvents } from '$lib/stores/activityLogStore';
 
   $: $logInPromise;
 
@@ -21,6 +22,9 @@
           });
       }
     });
+
+  $: {
+    if ($dotApi?.api) listenToEvents($dotApi.api);
   }
 </script>
 
