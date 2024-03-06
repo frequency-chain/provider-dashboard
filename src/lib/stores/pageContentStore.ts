@@ -7,7 +7,7 @@ export enum PageContent {
 }
 
 const createPageContentStore = () => {
-  const { subscribe, set } = storable(PageContent.Login);
+  const { subscribe, set } = storable('pageContent', PageContent.Login);
 
   return {
     subscribe,
