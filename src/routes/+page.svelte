@@ -3,10 +3,6 @@
   import BecomeAProvider from '$components/BecomeAProvider.svelte';
   import ProviderLogin from '$components/ProviderLogin.svelte';
   import { pageContent, PageContent } from '$lib/stores/pageContentStore';
-
-  $: {
-    console.log('pageConents', $pageContent);
-  }
 </script>
 
 {#if $pageContent === PageContent.Dashboard}
