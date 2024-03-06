@@ -128,10 +128,6 @@
 
     <AddKeyRequirements />
 
-    {#if showTransactionStatus}
-      <span class="border-1 border-b border-divider" />
-    {/if}
-
     <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </svelte:fragment>
 </Modal>
