@@ -40,7 +40,7 @@
   const doCreateMsa = async (_evt: Event) => {
     await beforeCreate();
 
-    const endpoint: string | undefined = $user.network?.endpoint?.origin;
+    const endpoint: string | undefined = $user.network?.endpoint;
     if (!endpoint) {
       alert('Error connecting to endpoint.');
       return;

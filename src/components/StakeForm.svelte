@@ -18,7 +18,7 @@
   export let providerId = 0;
   export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
-  let selectedAccount: Account = $user;
+  let selectedAccount: Account;
   let isLoading: boolean = false;
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
@@ -27,6 +27,7 @@
     const extension = await import('@polkadot/extension-dapp');
     thisWeb3FromSource = extension.web3FromSource;
     thisWeb3Enable = extension.web3Enable;
+    selectedAccount = $allAccountsStore.get($user.address) as Account;
   });
 
   $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
@@ -99,7 +100,7 @@
     <input type="number" id="stakingInput" min="0" value="1" on:input={handleInput} />
   </div>
 
-  <div class="flex w-[350px] items-end justify-between">
+  <div class="flex w-[320px] items-end justify-between">
     <button on:click|preventDefault={stake} class="btn-primary" aria-label="Stake" disabled={isLoading}>Stake</button>
     <button class="btn-no-fill" on:click|preventDefault={close}>Cancel</button>
   </div>

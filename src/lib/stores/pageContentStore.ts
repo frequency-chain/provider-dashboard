@@ -1,4 +1,4 @@
-import { writable } from 'svelte/store';
+import { storable } from './storable';
 
 export enum PageContent {
   Dashboard = 'dashboard',
@@ -7,7 +7,7 @@ export enum PageContent {
 }
 
 const createPageContentStore = () => {
-  const { subscribe, set } = writable(PageContent.Login);
+  const { subscribe, set } = storable('pageContent', PageContent.Login);
 
   return {
     subscribe,

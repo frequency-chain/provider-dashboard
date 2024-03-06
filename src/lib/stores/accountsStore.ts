@@ -59,6 +59,7 @@ export async function fetchAccountsForNetwork(
         account.signingKey = keyRingPair;
         account.isProvider = msaInfo.isProvider;
         account.providerName = providerNameToHuman(msaInfo.providerName);
+        allAccounts.set(account.address, account);
         if (account.isProvider) {
           providerAccounts.set(account.address, account);
         } else {

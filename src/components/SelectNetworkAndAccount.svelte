@@ -2,15 +2,14 @@
   import { onMount } from 'svelte';
   import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
   import { createApi } from '$lib/polkadotApi';
-  import { Account, fetchAccountsForNetwork } from '$lib/stores/accountsStore';
-  import { user } from '$lib/stores/userStore';
+  import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
 
   export let newUser: Account | undefined;
-  export let accounts: Map<string, Account>;
+  export let accounts: Accounts;
   export let accountSelectorTitle: string = 'Select an account';
   export let accountSelectorPlaceholder: string = 'Select an account';
   export let noAccountsFoundErrorMsg: string = 'No accounts found.';
@@ -44,13 +43,13 @@
         networkErrorMsg = '';
         controlKeysErrorMsg = '';
         if (!network.endpoint) throw new Error('Undefined endpoint.');
-        const curApi = await createApi(network.endpoint?.origin);
+        const curApi = await createApi(network.endpoint);
         await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
         await curApi.api?.disconnect();
       } catch (e) {
         console.log(e);
         networkErrorMsg = `Could not connect to ${
-          network.endpoint?.origin || 'empty value'
+          network.endpoint || 'empty value'
         }. Please enter a valid and reachable Websocket URL.`;
         console.error(networkErrorMsg);
       }
@@ -78,8 +77,7 @@
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
-        const url = new URL(customNetwork);
-        selectedNetwork!.endpoint = url;
+        selectedNetwork!.endpoint = customNetwork;
       }
     }
   }

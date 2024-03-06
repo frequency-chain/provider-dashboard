@@ -1,6 +1,8 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import Page from '$routes/+page.svelte';
+import { user } from '../../src/lib/stores/userStore';
+import { pageContent } from '../../src/lib/stores/pageContentStore';
 
 // global.alert = () => {};
 // vitest mocking
@@ -16,19 +18,43 @@ const getByTextContent = (text) => {
   });
 };
 
+describe('displays correct component', () => {
+  it('renders Dashboard component when $pageContent is PageContent.Dashboard', async () => {
+    pageContent.dashboard();
+    const { container } = render(Page);
+    expect(container.querySelector('#dashboard') as HTMLElement).toBeInTheDocument();
+  });
+
+  it('renders ProviderLogin component when $pageContent is PageContent.Login', async () => {
+    pageContent.login();
+    const { container } = render(Page);
+    expect(container.querySelector('#provider-login') as HTMLElement).toBeInTheDocument();
+  });
+
+  it('renders BecomeAProvider component when $pageContent is PageContent.BecomeProvider', async () => {
+    pageContent.becomeProvider();
+    const { container } = render(Page);
+    expect(container.querySelector('#become-a-provider') as HTMLElement).toBeInTheDocument();
+  });
+});
+
 describe('End to End Tests', () => {
   // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
   afterEach(() => cleanup());
 
-  test('connect to localhost', async () => {
-    const { container, getByLabelText } = render(Page);
-    const statusBar = container.querySelector('#chain-status');
-    expect(statusBar).toBeDefined();
-    // Get the select box
-    const select = getByLabelText('Select a Network');
+  test('connect to localhost from login', async () => {
+    pageContent.login();
+
+    const { container, getByText } = render(Page);
+    expect(getByText('Provider Login')).toBeInTheDocument();
+    expect(getByText('Select a Network')).toBeInTheDocument();
+
+    // Get the select box to log back in
+    const select = container.querySelector('#network');
+    expect(select).not.toBeNull();
 
     // Change the select box value
-    await fireEvent.change(select, { target: { value: 'LOCALHOST: ws://127.0.0.1:9944' } });
+    await fireEvent.change(select!, { target: { value: 'LOCALHOST: ws://127.0.0.1:9944' } });
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
@@ -36,11 +62,22 @@ describe('End to End Tests', () => {
     });
 
     const btn = container.querySelector('button#connect-button');
-    await fireEvent.click(btn);
+    if (btn) await fireEvent.click(btn);
 
-    // const connectionStatusValue = container.querySelector('#connection-status-value');
-    // await waitFor(() => {
-    //   expect(connectionStatusValue).toHaveTextContent('Connected');
-    // });
+    waitFor(() => {
+      expect(container.querySelector('#dashboard') as HTMLElement).toBeInTheDocument();
+      const connectedNetwork = container.querySelector('#connected-network');
+      expect(connectedNetwork).toEqual('LOCALHOST');
+    });
+  });
+
+  test('values persist on reload', async () => {
+    const { container } = render(Page);
+
+    waitFor(() => {
+      expect(container.querySelector('#dashboard') as HTMLElement).toBeInTheDocument();
+      const connectedNetwork = container.querySelector('#connected-network');
+      expect(connectedNetwork).toEqual('LOCALHOST');
+    });
   });
 });

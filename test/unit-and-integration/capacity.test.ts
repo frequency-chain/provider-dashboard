@@ -5,7 +5,6 @@ import Capacity from '$components/Capacity.svelte';
 import { user } from '../../src/lib/stores/userStore';
 import { ChainInfo } from '../../src/lib/storeTypes';
 import { vi } from 'vitest';
-import { type ChainInfo } from '../../src/lib/storeTypes';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {
@@ -78,7 +77,7 @@ const mocks = vi.hoisted(() => {
     tx: { msa: { addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined) } },
   };
 
-  const mockApiPromise = vi.fn();
+  const mockApiPromise: any = vi.fn();
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
 
   const mockWeb3FromSource = vi.fn();

@@ -3,12 +3,11 @@
   import { user } from '$lib/stores/userStore';
   import Button from './Button.svelte';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
-  import { createAndConnectToApi } from '$lib/polkadotApi';
 
   export let onConnect: () => void = () => {};
   export let onCancel: (() => void) | undefined = undefined;
 
-  let newUser: Account | undefined = $user;
+  let newUser: Account | undefined = $providerAccountsStore.get($user.address);
 
   $: canConnect = newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
 
@@ -17,14 +16,6 @@
       alert('Invalid form values');
       return;
     }
-
-    const endpoint = newUser.network?.endpoint?.toString();
-    if (!endpoint) {
-      alert('Error connecting to endpoint.');
-      return;
-    }
-
-    await createAndConnectToApi(endpoint);
     $user = newUser;
     onConnect();
   }

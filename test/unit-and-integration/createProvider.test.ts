@@ -1,7 +1,7 @@
 import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import CreateProvider from '../../src/components/CreateProvider.svelte';
-
+import { vi } from 'vitest';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 

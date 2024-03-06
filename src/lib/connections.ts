@@ -1,5 +1,4 @@
-// @ts-ignore
-import { ApiPromise } from '@polkadot/api/promise';
+import type { ApiPromise } from '@polkadot/api/promise';
 // @ts-ignore
 // import { SignerResult } from "@polkadot/types";
 import { isLocalhost, waitFor } from '$lib/utils';

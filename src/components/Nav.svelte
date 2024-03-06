@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { logout } from '$lib/stores/userStore';
+  import { logout } from '$lib/stores';
   import { isLoggedIn } from '$lib/stores';
   import iconLogo from '$lib/assets/icon-logo.png';
   import { onMount } from 'svelte';
@@ -14,8 +14,10 @@
   <div class="flex w-[100%] flex-col">
     <NavItem href="/" isActive={url === '/'}>Home</NavItem>
     <NavItem href="/faq" isActive={url === '/faq'}>FAQ's</NavItem>
-    {#if $isLoggedIn}
-      <NavItem href="/" onClick={logout}>Logout</NavItem>
+    {#if $isLoggedIn === true}
+      <NavItem id="logout-button" href="/" onClick={logout}>Logout</NavItem>
+    {:else}
+      <NavItem />
     {/if}
   </div>
 </div>
