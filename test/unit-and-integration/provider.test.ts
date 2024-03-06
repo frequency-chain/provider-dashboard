@@ -10,6 +10,8 @@ import Keyring from '@polkadot/keyring';
 import { vi } from 'vitest';
 import { waitReady } from '@polkadot/wasm-crypto';
 
+await waitReady();
+
 const mocks = vi.hoisted(() => {
   class TestCodec {
     value: number;
@@ -61,7 +63,6 @@ const mocks = vi.hoisted(() => {
     },
   };
 
-  waitReady();
   const mockApiPromise: any = vi.fn();
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedApi);
 

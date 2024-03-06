@@ -6,6 +6,7 @@ import { user } from '../../src/lib/stores/userStore';
 import { KeyringPair } from '@polkadot/keyring/types';
 import Keyring from '@polkadot/keyring';
 import { vi } from 'vitest';
+import { waitReady } from '@polkadot/wasm-crypto';
 
 const mocks = vi.hoisted(() => {
   const resolvedApi = {
@@ -27,6 +28,10 @@ vi.mock('@polkadot/api', async () => {
 });
 
 describe('Stake.svelte Unit Tests', () => {
+  beforeAll(async () => {
+    await waitReady(); // Ensure WASM interface is ready before running tests
+  });
+
   beforeEach(() => {
     const keyring = new Keyring({ type: 'sr25519' });
     const keyRingPair: KeyringPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
