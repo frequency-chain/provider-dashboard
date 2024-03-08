@@ -5,13 +5,12 @@
   import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
-  import { listenToEvents } from '$lib/stores/activityLogStore';
 
   $: $logInPromise;
 
   $: {
     $dotApi?.api?.rpc.system.properties().then((chain) => {
-      if ($dotApi?.api && chain) {
+      if ($dotApi?.api && chain) {       
         const token = getToken(chain);
         Promise.all([getBlockNumber($dotApi.api), getEpoch($dotApi.api)])
           .then(([blockNumber, epochNumber]) => {
@@ -22,9 +21,6 @@
           });
       }
     });
-
-  $: {
-    if ($dotApi?.api) listenToEvents($dotApi.api);
   }
 </script>
 

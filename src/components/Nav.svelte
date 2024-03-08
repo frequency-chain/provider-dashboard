@@ -13,6 +13,9 @@
   <img alt="iconLogo" src={iconLogo} class="absolute left-6 top-7 w-[57px]" />
   <div class="flex w-[100%] flex-col">
     <NavItem href="/" isActive={url === '/'}>Home</NavItem>
+    {#if $isLoggedIn === true}
+      <NavItem href="/activity-log" isActive={url === '/activity-log'}>Activity Log</NavItem>
+    {/if}
     <NavItem href="/faq" isActive={url === '/faq'}>FAQ's</NavItem>
     {#if $isLoggedIn === true}
       <NavItem id="logout-button" href="/" onClick={logout}>Logout</NavItem>

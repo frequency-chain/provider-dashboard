@@ -3,7 +3,7 @@
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { isLocalhost, providerNameToHuman } from '$lib/utils';
-  import { submitCreateProvider, type TxnFinishedCallback } from '$lib/connections';
+  import { submitCreateProvider } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
   import { isFunction } from '@polkadot/util';
   import { onMount } from 'svelte';
@@ -11,27 +11,32 @@
   import { getMsaInfo } from '$lib/polkadotApi';
   import type { MsaInfo } from '$lib/storeTypes';
   import { pageContent } from '$lib/stores/pageContentStore';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
-  export let beforeCreate: () => Promise<void>;
+  export let updateUser: () => void;
   export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
   // a callback for when a transaction hits a final state
-  export let txnFinished: TxnFinishedCallback = async (succeeded: boolean) => {
+  //TODO
+  let createProviderTxnFinished = async (succeeded: boolean, txnId: string) => {
     if (succeeded) {
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
+      updateUser();
       pageContent.dashboard();
     }
+    isInProgress = false;
   };
 
   let newProviderName = '';
   let thisWeb3FromSource: typeof web3FromSource;
   let thisWeb3Enable: typeof web3Enable;
   let showTransactionStatus = false;
+  let isInProgress = false;
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -40,7 +45,7 @@
   });
 
   const doCreateProvider = async (_evt: Event) => {
-    await beforeCreate();
+    updateUser();
 
     const endpointURI: string | undefined = $user.network?.endpoint;
     if (!endpointURI) {
@@ -57,6 +62,7 @@
     }
     clearTxnStatuses();
     showTransactionStatus = true;
+    isInProgress = true;
     const apiPromise = $dotApi.api as ApiPromise;
     if (isLocalhost(endpointURI)) {
       await submitCreateProvider(
@@ -65,8 +71,6 @@
         endpointURI,
         $user.signingKey!,
         newProviderName,
-        addNewTxnStatus,
-        txnFinished
       );
     } else {
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
@@ -79,18 +83,17 @@
             endpointURI,
             $user.signingKey!,
             newProviderName,
-            addNewTxnStatus,
-            txnFinished
           );
         }
       }
     }
   };
 
-  const addNewTxnStatus = (txnStatus: string) => {
+  const createProviderAddNewTxnStatus = (txnStatus: string, txnId: string) => {
     txnStatuses = [...txnStatuses, txnStatus];
     return;
   };
+
   const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
@@ -100,8 +103,17 @@
     <input id="providerNameCB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
   </div>
   <div class="flex w-[350px] items-end justify-between">
-    <button id="create-provider-btn" on:click|preventDefault={doCreateProvider} class="btn-primary">
-      Create Provider
+    <button
+      id="create-provider-btn"
+      on:click|preventDefault={doCreateProvider}
+      disabled={isInProgress}
+      class="btn-primary"
+    >
+      {#if isInProgress}
+        <LoadingIcon />
+      {:else}
+        Create Provider
+      {/if}
     </button>
     <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </div>

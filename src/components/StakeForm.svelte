@@ -3,7 +3,7 @@
   import { storeChainInfo } from '$lib/stores';
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { DOLLARS, submitStake, type TxnFinishedCallback } from '$lib/connections';
+  import { DOLLARS, submitStake } from '$lib/connections';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { formatAccount, isLocalhost } from '$lib/utils';
@@ -12,11 +12,8 @@
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
 
   export let close: () => void;
-  export let showTransactionStatus: boolean = false;
-  export let txnStatuses: Array<string> = [];
   export let stakeAmount: bigint = 1n;
   export let providerId = 0;
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
   let selectedAccount: Account;
   let isLoading: boolean = false;
@@ -32,11 +29,6 @@
 
   $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
 
-  const addNewTxnStatus = (txnStatus: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-  };
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
-
   function handleInput(evt: Event) {
     const target = evt.target as HTMLInputElement;
     if (target !== null && target.value === '') {
@@ -48,10 +40,9 @@
   }
 
   const stake = async (evt: Event) => {
+    close();
     isLoading = true;
-    clearTxnStatuses();
     let endpointURI: string = $dotApi.selectedEndpoint || '';
-    showTransactionStatus = true;
     if (isLocalhost(endpointURI)) {
       await submitStake(
         $dotApi.api as ApiPromise,
@@ -59,9 +50,7 @@
         $user.signingKey!,
         providerId,
         stakeAmountInPlancks,
-        endpointURI,
-        addNewTxnStatus,
-        txnFinished
+        endpointURI
       );
     } else {
       if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
@@ -74,9 +63,7 @@
             $user.signingKey!,
             providerId,
             stakeAmountInPlancks,
-            endpointURI,
-            addNewTxnStatus,
-            txnFinished
+            endpointURI
           );
         }
       }

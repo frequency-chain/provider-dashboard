@@ -7,7 +7,7 @@
 /*  */
 @layer components {
   .btn-primary {
-    @apply h-10 w-[225px] rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
+    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
   }
 
   .btn-no-fill {

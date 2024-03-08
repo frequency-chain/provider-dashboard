@@ -38,9 +38,9 @@
         <EmailProviderRequest />
       {:else if newUser && newUser?.address !== ''}
         {#if newUser?.msaId === 0}
-          <CreateMsa beforeCreate={updateUser} />
+          <CreateMsa {updateUser} />
         {:else}
-          <CreateProvider beforeCreate={updateUser} />
+          <CreateProvider {updateUser} />
         {/if}
       {:else}
         <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Cancel</button>

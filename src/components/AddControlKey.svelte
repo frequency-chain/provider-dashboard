@@ -1,11 +1,10 @@
 <script lang="ts">
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey, type SigningKey, type TxnFinishedCallback } from '$lib/connections';
+  import { submitAddControlKey, type SigningKey } from '$lib/connections';
   import { onMount } from 'svelte';
   import { isFunction } from '@polkadot/util';
   import { isLocalhost } from '$lib/utils';
-  import TransactionStatus from './TransactionStatus.svelte';
   import AddKeyRequirements from './AddKeyRequirements.svelte';
   import Modal from './Modal.svelte';
   import DropDownMenu from './DropDownMenu.svelte';
@@ -16,9 +15,6 @@
 
   export let isOpen: boolean;
   export let close: () => void;
-
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
-  export let txnStatuses: Array<string> = [];
 
   let selectedAccount: Account | null;
   let thisWeb3FromSource: typeof web3FromSource;
@@ -34,14 +30,7 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  const addNewTxnStatus = (txnStatus: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-  };
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
-
   const addControlKey = async () => {
-    clearTxnStatuses();
-
     let endpointURI: string = $dotApi.selectedEndpoint || '';
 
     if (!selectedAccount || !selectedAccount.signingKey) {
@@ -59,9 +48,7 @@
           newKeys,
           signingKeys,
           $user.msaId,
-          endpointURI as string,
-          addNewTxnStatus,
-          txnFinished
+          endpointURI as string
         );
       } else {
         if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
@@ -74,9 +61,7 @@
               newKeys,
               signingKeys,
               $user.msaId,
-              endpointURI as string,
-              addNewTxnStatus,
-              txnFinished
+              endpointURI as string
             );
           } else {
             console.error('found no extensions');
@@ -127,6 +112,5 @@
     <span class="border-1 border-b border-divider" />
 
     <AddKeyRequirements />
-    <TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
   </svelte:fragment>
 </Modal>

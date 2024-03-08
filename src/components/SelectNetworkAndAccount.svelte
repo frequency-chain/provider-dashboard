@@ -1,12 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
-  import { createApi } from '$lib/polkadotApi';
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
+  import { createApi } from '../hooks.client';
 
   export let newUser: Account | undefined;
   export let accounts: Accounts;
