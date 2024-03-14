@@ -6,15 +6,16 @@ import { isFunction } from '@polkadot/util';
 import type { NetworkInfo } from '$lib/stores/networksStore';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { MsaInfo } from '$lib/storeTypes';
-import type { SigningKey } from '$lib/connections';
 import { providerNameToHuman } from '$lib/utils';
+import type { KeyringPair } from '@polkadot/keyring/types';
 
 export type SS58Address = string;
 
 export class Account {
   network?: NetworkInfo;
   address: SS58Address = '';
-  signingKey?: SigningKey;
+  keyringPair?: KeyringPair;
+  injectedAccount?: InjectedAccountWithMeta;
   msaId?: number;
   isProvider: boolean = false;
   providerName?: string;
@@ -56,7 +57,7 @@ export async function fetchAccountsForNetwork(
         account.address = keyRingPair.address;
         const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
         account.msaId = msaInfo.msaId;
-        account.signingKey = keyRingPair;
+        account.keyringPair = keyRingPair;
         account.isProvider = msaInfo.isProvider;
         account.providerName = providerNameToHuman(msaInfo.providerName);
         allAccounts.set(account.address, account);
@@ -88,7 +89,7 @@ export async function fetchAccountsForNetwork(
           const account = new Account();
           account.network = selectedNetwork;
           account.address = walletAccount.address;
-          account.signingKey = walletAccount;
+          account.injectedAccount = walletAccount;
           const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
           account.msaId = msaInfo.msaId;
           account.isProvider = msaInfo.isProvider;

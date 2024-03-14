@@ -1,18 +1,18 @@
 import type { ApiPromise } from '@polkadot/api/promise';
 // @ts-ignore
 // import { SignerResult } from "@polkadot/types";
-import { isLocalhost, waitFor } from '$lib/utils';
+import { waitFor } from '$lib/utils';
 
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
+import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 
 type AddKeyData = { msaId: string; expiration: string; newPublicKey: string };
-export type SigningKey = InjectedAccountWithMeta | KeyringPair;
 
 export const CENTS: bigint = 1000000n;
 export const DOLLARS: bigint = 100n * CENTS;
@@ -37,10 +37,9 @@ export async function getEpoch(api: ApiPromise): Promise<bigint> {
 export async function submitAddControlKey(
   api: ApiPromise,
   extension: InjectedExtension | undefined,
-  newAccount: SigningKey,
-  signingAccount: SigningKey,
-  msaId: number,
-  endpointURL: string
+  newAccount: Account,
+  signingAccount: Account,
+  msaId: number
 ) {
   const blockNumber = (await getBlockNumber(api)) as bigint;
   if (api && (await api.isReady)) {
@@ -51,15 +50,9 @@ export async function submitAddControlKey(
     };
 
     const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
-    const useKeyring: boolean = isLocalhost(endpointURL);
 
-    const ownerKeySignature = useKeyring
-      ? signPayloadWithKeyring(signingAccount as KeyringPair, newKeyPayload)
-      : await signPayloadWithExtension(extension as InjectedExtension, signingAccount.address, newKeyPayload);
-
-    const newKeySignature = useKeyring
-      ? signPayloadWithKeyring(newAccount as KeyringPair, newKeyPayload)
-      : await signPayloadWithExtension(extension as InjectedExtension, newAccount.address, newKeyPayload);
+    const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
+    const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
 
     const ownerKeyProof = { Sr25519: ownerKeySignature };
     const newKeyProof = { Sr25519: newKeySignature };
@@ -69,9 +62,7 @@ export async function submitAddControlKey(
       newKeyProof,
       newKeyPayload as PalletMsaAddKeyData
     );
-    useKeyring
-      ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair)
-      : await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address);
+    submitExtinsic(extrinsic, signingAccount, extension);
   } else {
     console.debug('api is not available.');
   }
@@ -81,23 +72,26 @@ export async function submitAddControlKey(
 export async function submitStake(
   api: ApiPromise,
   extension: InjectedExtension | undefined,
-  signingAccount: SigningKey,
+  signingAccount: Account,
   providerId: number,
-  stakeAmount: bigint,
-  endpointURL: string
+  stakeAmount: bigint
 ) {
   if (api && (await api.isReady)) {
-    const useKeyring: boolean = isLocalhost(endpointURL);
-
-    setTimeout(async () => {
-      const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
-      useKeyring
-        ? await submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair)
-        : await submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address);
-    }, 0);
+    const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
+    submitExtinsic(extrinsic, signingAccount, extension);
   } else {
     console.debug('api is not available.');
   }
+}
+
+function submitExtinsic(
+  extrinsic: SubmittableExtrinsic,
+  account: Account,
+  extension: InjectedExtension | undefined
+): Promise<void> {
+  if (account.keyringPair) return submitExtrinsicWithKeyring(extrinsic, account.keyringPair);
+  if (extension) return submitExtrinsicWithExtension(extension, extrinsic, account.address);
+  throw new Error('Unable to find wallet extension');
 }
 
 // use the Polkadot extension the user selected to submit the provided extrinsic
@@ -132,6 +126,12 @@ async function submitExtrinsicWithKeyring(extrinsic: SubmittableExtrinsic, signi
   } catch (e: any) {
     handleTxnError(extrinsic.hash.toString(), e.toString());
   }
+}
+
+async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
+  if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
+  if (extension) return await signPayloadWithExtension(extension, account.address, payload);
+  throw new Error('Unable to find wallet extension');
 }
 
 // Use the user's selected Polkadot extension to sign some data
@@ -177,24 +177,19 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
 //   api: ApiPromise,
 //   extension: InjectedExtension | undefined,
 //   endpointURL: string,
-//   signingAccount: SigningKey,
+//   signingAccount: Account,
 //   providerName: number,
 //   txnStatusCallback: (statusStr: string) => void
 //   txnFinishedCallback: () => void
 export async function submitCreateProvider(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
-  endpointURL: string,
-  signingAccount: SigningKey,
+  signingAccount: Account,
   providerName: string
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
     const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
-    const useKeyring: boolean = isLocalhost(endpointURL);
-
-    useKeyring
-      ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair)
-      : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address);
+    submitExtinsic(extrinsic, signingAccount, extension);
     return true;
   }
   return false;
@@ -203,17 +198,12 @@ export async function submitCreateProvider(
 export async function submitRequestToBeProvider(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
-  endpointURL: string,
-  signingAccount: SigningKey,
+  signingAccount: Account,
   providerName: string
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
-    const useKeyring: boolean = isLocalhost(endpointURL);
-
     const extrinsic = api.tx.msa.proposeToBeProvider(providerName);
-    useKeyring
-      ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair)
-      : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address);
+    submitExtinsic(extrinsic, signingAccount, extension);
     return true;
   }
   console.error('submit failed because api is', api);
@@ -224,16 +214,11 @@ export async function submitRequestToBeProvider(
 export async function submitCreateMsa(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
-  endpointURL: string,
-  signingAccount: SigningKey
+  signingAccount: Account
 ): Promise<boolean> {
   if (api && (await api.isReady)) {
     const extrinsic = api.tx.msa.create();
-    const useKeyring: boolean = isLocalhost(endpointURL);
-
-    useKeyring
-      ? submitExtrinsicWithKeyring(extrinsic, signingAccount as KeyringPair)
-      : submitExtrinsicWithExtension(extension as InjectedExtension, extrinsic, signingAccount.address);
+    submitExtinsic(extrinsic, signingAccount, extension);
     return true;
   }
   return false;

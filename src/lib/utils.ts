@@ -1,9 +1,7 @@
 import { formatBalance, hexToString } from '@polkadot/util';
 import type { NetworkInfo } from './stores/networksStore';
 import type { Account } from './stores/accountsStore';
-import { activityLog } from './stores/activityLogStore';
-import type { TxnFinishedCallback } from './connections';
-import { TxnStatus, type Activity } from './storeTypes';
+import { isFunction } from '@polkadot/util';
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -96,4 +94,17 @@ export const providerNameToHuman = (name: any): string => {
 
 export const balanceToHuman = (balance: bigint, token: string): string => {
   return formatBalance(balance, { withSiFull: true, withUnit: token, withZero: true, decimals: 8 });
+};
+
+export const getExtension = async (account: Account) => {
+  const extension = await import('@polkadot/extension-dapp');
+  const thisWeb3FromSource = extension.web3FromSource;
+  const thisWeb3Enable = extension.web3Enable;
+  if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
+    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
+    if (extensions.length !== 0 && account.injectedAccount?.meta.source) {
+      return await thisWeb3FromSource(account.injectedAccount.meta.source);
+    }
+  }
+  return undefined;
 };

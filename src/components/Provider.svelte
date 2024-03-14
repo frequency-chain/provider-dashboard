@@ -22,7 +22,7 @@
   $: {
     if (!$storeChainInfo.connected) {
       errMsg = 'Not connected';
-    } else if (!$user.signingKey) {
+    } else if (!$user.injectedAccount) {
       errMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
       errMsg = 'No MSA ID.  Please create one.';

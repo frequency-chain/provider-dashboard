@@ -5,8 +5,7 @@
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { onMount } from 'svelte';
-  import { isFunction } from '@polkadot/util';
-  import { formatAccount, isLocalhost } from '$lib/utils';
+  import { formatAccount, getExtension } from '$lib/utils';
   import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
@@ -42,32 +41,13 @@
   const stake = async (evt: Event) => {
     close();
     isLoading = true;
-    let endpointURI: string = $dotApi.selectedEndpoint || '';
-    if (isLocalhost(endpointURI)) {
-      await submitStake(
-        $dotApi.api as ApiPromise,
-        undefined,
-        $user.signingKey!,
-        providerId,
-        stakeAmountInPlancks,
-        endpointURI
-      );
-    } else {
-      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
-          await submitStake(
-            $dotApi.api as ApiPromise,
-            injectedExtension,
-            $user.signingKey!,
-            providerId,
-            stakeAmountInPlancks,
-            endpointURI
-          );
-        }
-      }
-    }
+    await submitStake(
+      $dotApi.api as ApiPromise,
+      await getExtension($user),
+      selectedAccount,
+      providerId,
+      stakeAmountInPlancks
+    );
     isLoading = false;
   };
 </script>

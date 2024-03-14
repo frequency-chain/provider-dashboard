@@ -1,12 +1,7 @@
 <script lang="ts">
-  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import { dotApi } from '$lib/stores';
-  import type { ApiPromise } from '@polkadot/api';
-  import { isLocalhost, providerNameToHuman } from '$lib/utils';
+  import { getExtension, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider } from '$lib/connections';
-  import TransactionStatus from '$components/TransactionStatus.svelte';
-  import { isFunction } from '@polkadot/util';
-  import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
   import type { MsaInfo } from '$lib/storeTypes';
@@ -14,7 +9,6 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   export let updateUser: () => void;
-  export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
@@ -33,16 +27,7 @@
   };
 
   let newProviderName = '';
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
-  let showTransactionStatus = false;
   let isInProgress = false;
-
-  onMount(async () => {
-    const extension = await import('@polkadot/extension-dapp');
-    thisWeb3FromSource = extension.web3FromSource;
-    thisWeb3Enable = extension.web3Enable;
-  });
 
   const doCreateProvider = async (_evt: Event) => {
     updateUser();
@@ -60,41 +45,11 @@
       alert('please reconnect to an endpoint');
       return;
     }
-    clearTxnStatuses();
     showTransactionStatus = true;
     isInProgress = true;
-    const apiPromise = $dotApi.api as ApiPromise;
-    if (isLocalhost(endpointURI)) {
-      await submitCreateProvider(
-        apiPromise,
-        undefined,
-        endpointURI,
-        $user.signingKey!,
-        newProviderName,
-      );
-    } else {
-      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
-          await submitCreateProvider(
-            apiPromise,
-            injectedExtension,
-            endpointURI,
-            $user.signingKey!,
-            newProviderName,
-          );
-        }
-      }
-    }
+    await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
+    // createProviderTxnFinished
   };
-
-  const createProviderAddNewTxnStatus = (txnStatus: string, txnId: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-    return;
-  };
-
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 </script>
 
 <form id="create-provider" class="column text-sm">
@@ -118,4 +73,3 @@
     <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </div>
 </form>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />

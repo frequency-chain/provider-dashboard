@@ -3,11 +3,9 @@
   import { dotApi } from '$lib/stores';
   import type { MsaInfo } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
-  import { isLocalhost } from '$lib/utils';
+  import { getExtension } from '$lib/utils';
   import { submitCreateMsa } from '$lib/connections';
   import TransactionStatus from '$components/TransactionStatus.svelte';
-  import { isFunction } from '@polkadot/util';
-  import { onMount } from 'svelte';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
   import { pageContent } from '$lib/stores/pageContentStore';
@@ -31,37 +29,12 @@
     isInProgress = false;
   };
 
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
-  let isInProgress = false;
-
-  onMount(async () => {
-    const extension = await import('@polkadot/extension-dapp');
-    thisWeb3FromSource = extension.web3FromSource;
-    thisWeb3Enable = extension.web3Enable;
-  });
-
   const doCreateMsa = async (_evt: Event) => {
     updateUser();
 
-    const endpoint: string | undefined = $user.network?.endpoint;
-    if (!endpoint) {
-      alert('Error connecting to endpoint.');
-      return;
-    }
     isInProgress = true;
-    const apiPromise = $dotApi.api as ApiPromise;
-    if (isLocalhost(endpoint)) {
-      await submitCreateMsa(apiPromise, undefined, endpoint, $user.signingKey!);
-    } else {
-      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Creating provider');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
-          await submitCreateMsa(apiPromise, injectedExtension, endpoint, $user.signingKey!);
-        }
-      }
-    }
+    await submitCreateMsa($dotApi.api, await getExtension($user), $user);
+    // createMsaTxnFinished()
   };
 </script>
 
