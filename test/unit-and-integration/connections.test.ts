@@ -12,6 +12,7 @@ import { stringToU8a } from '@polkadot/util';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { vi } from 'vitest';
 import { waitReady } from '@polkadot/wasm-crypto';
+import { Account } from '../../src/lib/stores/accountsStore';
 
 await waitReady();
 
@@ -108,9 +109,8 @@ describe('getBlockNumber', () => {
   });
 });
 describe('submitAddControlKey', async () => {
-  const keyring = new Keyring({ type: 'sr25519' });
-  const alice = keyring.addFromUri('//Alice');
-  const bob = keyring.addFromUri('//Bob');
+  const alice = new Account();
+  const bob = new Account();
 
   // TODO: probably separate this into a different file so can mock signPayloadWith(Keyring|Extension)
   it('calls the callback when localhost', async () => {
@@ -119,7 +119,7 @@ describe('submitAddControlKey', async () => {
     const callback = vi.fn();
     const msaId = 4;
     const endpointURL = 'ws://localhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
+    await submitAddControlKey(api, extension, bob, alice, msaId);
     expect(callback).toHaveBeenCalled();
   });
   it('calls the callback when not localhost', async () => {
@@ -128,7 +128,7 @@ describe('submitAddControlKey', async () => {
     const callback = vi.fn();
     const msaId = 4;
     const endpointURL = 'ws://someotherhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
+    await submitAddControlKey(api, extension, bob, alice, msaId);
     expect(callback).toHaveBeenCalled();
   });
 });

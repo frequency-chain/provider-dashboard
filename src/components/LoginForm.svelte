@@ -1,6 +1,6 @@
 <script lang="ts">
   import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
-  import { writableActivityLog } from '$lib/stores/activityLogStore';
+  import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
   import Button from './Button.svelte';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
@@ -17,7 +17,7 @@
       alert('Invalid form values');
       return;
     }
-    if ($user.network) $writableActivityLog = [];
+    if ($user.network) clearLog();
     $user = newUser;
     onConnect();
   }

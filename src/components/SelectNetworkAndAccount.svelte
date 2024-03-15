@@ -6,7 +6,7 @@
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
-  import { createApi } from '../hooks.client';
+  import { createApi } from '$lib/polkadotApi';
 
   export let newUser: Account | undefined;
   export let accounts: Accounts;

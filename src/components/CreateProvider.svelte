@@ -15,29 +15,32 @@
     pageContent.login();
   };
   // a callback for when a transaction hits a final state
-  //TODO
   let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
-      pageContent.dashboard();
+      isInProgress = false;
+      setTimeout(() => {
+        pageContent.dashboard();
+      }, 1500);
     }
   };
 
   let newProviderName = '';
   let isInProgress = false;
-  let recentActivityItem: Activity;
+  let recentActivityItem: Activity | undefined;
+  let recentTxnId: Activity['txnId'] | undefined;
+
+  const checkIsFinished = async () => {
+    if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
+      await createProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
+    }
+  };
 
   $: {
-    if (isInProgress) {
-      recentActivityItem = $activityLog[0];
-      if (recentActivityItem.txnStatus !== TxnStatus.LOADING) {
-        createProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS).then(() => {
-          isInProgress = false;
-        });
-      }
-    }
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    checkIsFinished();
   }
 
   const doCreateProvider = async (_evt: Event) => {
@@ -55,8 +58,8 @@
       return;
     }
     isInProgress = true;
-    await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
-    // createProviderTxnFinished
+    recentTxnId = await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
 </script>
 

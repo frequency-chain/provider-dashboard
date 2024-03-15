@@ -1,20 +1,22 @@
 import { TxnStatus, type Activity } from '$lib/storeTypes';
 import { storable } from './storable';
-import { derived, readonly } from 'svelte/store';
+import { readonly } from 'svelte/store';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
-import { user } from './userStore';
+import type { ISubmittableResult } from '@polkadot/types/types';
 
 //writableActivityLog: Oldest to Newest
-export const writableActivityLog = storable<Activity[]>('ActivityLog', []);
+const writableActivityLog = storable<Activity[]>('ActivityLog', []);
 export const activityLog = readonly(writableActivityLog);
 
-export const handleResult = (txnId: string) => async (result: any) => {
+export const handleResult = async (result: ISubmittableResult) => {
+  const txnId = result.txHash.toString();
+  console.log('handleResult', txnId);
   const activity: Activity = parseActivity(txnId, result);
   addNewTxnStatus(activity);
 };
 
 export const handleTxnError = (txnId: string, errorMsg: string) => {
-  addNewTxnStatus({ txnId, txnStatusItems: [`Error: ${errorMsg}`], txnStatus: TxnStatus.FAILURE });
+  addNewTxnStatus({ txnId, txnStatusItems: [`${errorMsg}`], txnStatus: TxnStatus.FAILURE });
 };
 
 const addNewTxnStatus = (activity: Activity) => {
@@ -24,7 +26,7 @@ const addNewTxnStatus = (activity: Activity) => {
       curActivity.txnStatus = activity.txnStatus;
       curActivity.txnStatusItems = curActivity.txnStatusItems.concat(activity.txnStatusItems);
     } else {
-      activities.push(activity);
+      activities = [activity, ...activities];
     }
     return activities;
   });
@@ -66,6 +68,11 @@ export function parseActivity(
     }
   } catch (e: any) {
     txnStatusItems.push('Error: ' + e.toString());
+    txnStatus = TxnStatus.FAILURE;
   }
   return { txnStatusItems, txnStatus, txnId };
 }
+
+export const clearLog = () => {
+  writableActivityLog.set([]);
+};

@@ -6,7 +6,7 @@ describe('ActivityLogPreview', () => {
   afterEach(() => cleanup());
 
   it('mounts', () => {
-    const { container } = render(ActivityLogPreview);
+    const { container } = render(ActivityLogPreview, { showSelf: true, statuses: [] });
     expect(container).toBeInTheDocument();
   });
 });

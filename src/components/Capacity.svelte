@@ -37,5 +37,5 @@
 
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
   <button on:click|preventDefault={() => (showStakeToProvider = true)} class="btn-primary">Stake to Provider</button>
-  <Stake providerId={$user.msaId} isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
+  <Stake isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
 </ListCard>

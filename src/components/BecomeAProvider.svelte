@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from '$lib/stores/userStore';
-  import { nonProviderAccountsStore, type Account } from '$lib/stores/accountsStore';
+  import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import BlockSection from './BlockSection.svelte';
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import CreateMsa from './CreateMsa.svelte';

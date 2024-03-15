@@ -16,7 +16,8 @@
     pageContent.login();
   };
 
-  let recentActivityItem: Activity;
+  let recentActivityItem: Activity | undefined;
+  let recentTxnId: Activity['txnId'] | undefined;
   let isInProgress = false;
 
   // a callback for when a transaction hits a final state
@@ -24,24 +25,30 @@
     if (succeeded) {
       const apiPromise = $dotApi.api as ApiPromise;
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
-      $user.msaId = msaInfo.msaId;
+      isInProgress = false;
+      setTimeout(() => {
+        $user.msaId = msaInfo.msaId;
+      }, 1500);
+      return;
+    }
+    isInProgress = false;
+  };
+
+  const checkIsFinished = async () => {
+    if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
+      await createMsaTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
     }
   };
 
   $: {
-    if (isInProgress) {
-      recentActivityItem = $activityLog[0];
-      if (recentActivityItem.txnStatus !== TxnStatus.LOADING) {
-        createMsaTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS).then(() => {
-          isInProgress = false;
-        });
-      }
-    }
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    checkIsFinished();
   }
 
   const doCreateMsa = async (_evt: Event) => {
     isInProgress = true;
-    await submitCreateMsa($dotApi.api, await getExtension($user), $user);
+    recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
 </script>
 

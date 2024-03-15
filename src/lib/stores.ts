@@ -4,8 +4,8 @@ import { storable } from './stores/storable';
 import { derived } from 'svelte/store';
 import { user } from './stores/userStore';
 import { pageContent } from './stores/pageContentStore';
-import { createApi } from '../hooks.client';
-import { writableActivityLog } from './stores/activityLogStore';
+import { clearLog } from './stores/activityLogStore';
+import { createApi } from './polkadotApi';
 
 export const dotApi = writable<DotApi>(defaultDotApi);
 
@@ -29,7 +29,7 @@ export const logout = () => {
   dotApi.set(defaultDotApi);
   storeChainInfo.set({ connected: false, blockNumber: 0n, epochNumber: 0n, token: '' });
   pageContent.login();
-  writableActivityLog.set([]);
+  clearLog();
 };
 
 export const storeChainInfo = storable('storeChainInfo', {

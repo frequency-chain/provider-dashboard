@@ -2,27 +2,25 @@
   import { dotApi } from '$lib/stores';
   import { submitRequestToBeProvider } from '$lib/connections';
   import { defaultDotApi } from '$lib/storeTypes';
-  import type { DotApi } from '$lib/storeTypes';
+  import type { Activity, DotApi } from '$lib/storeTypes';
   import { getExtension, createMailto } from '$lib/utils';
   import type { ApiPromise } from '@polkadot/api';
-  import TransactionStatus from '$components/TransactionStatus.svelte';
   import { user } from '$lib/stores/userStore';
+  import { activityLog } from '$lib/stores/activityLogStore';
+  import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
 
+  let isInProgress = false;
+  let recentActivityItem: Activity;
   let newProviderName = '';
   let localDotApi: DotApi = defaultDotApi;
-  let showTransactionStatus = false;
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
-  export let txnStatuses: Array<string> = [];
   // a callback for when the user cancels this action
   export let cancelAction = () => {};
-  // a callback for when a transaction hits a final state
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {
-    console.log('default txnFinished callback');
-  };
 
   dotApi.subscribe((api) => (localDotApi = api));
 
   const doProposeToBeProvider = async (_evt: Event) => {
+    isInProgress = true;
     if (newProviderName === '') {
       alert('please enter a Provider Name');
       return;
@@ -31,17 +29,15 @@
       alert('please reconnect to an endpoint');
       return;
     }
-    clearTxnStatuses();
-    showTransactionStatus = true;
-
     await submitRequestToBeProvider(localDotApi.api as ApiPromise, await getExtension($user), $user, newProviderName);
+    isInProgress = false;
   };
 
-  const addNewTxnStatus = (txnStatus: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-    return;
-  };
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
+  $: {
+    if (isInProgress) {
+      recentActivityItem = $activityLog[0];
+    }
+  }
 </script>
 
 <div id="request-to-be-provider" class="action-card basis-1/2">
@@ -72,4 +68,6 @@
     </div>
   </form>
 </div>
-<TransactionStatus bind:showSelf={showTransactionStatus} statuses={txnStatuses} />
+{#if recentActivityItem}
+  <ActivityLogPreviewItem activity={recentActivityItem} />
+{/if}

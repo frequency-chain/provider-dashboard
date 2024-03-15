@@ -1,11 +1,34 @@
-import type { ApiPromise } from '@polkadot/api';
-
 import type { MsaInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { Option, u64 } from '@polkadot/types';
+import type { DotApi } from '$lib/storeTypes';
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
+import { options } from '@frequency-chain/api-augment';
 
 export type AccountMap = Record<string, KeyringPair>;
+
+export async function createApi(networkEndpoint: string): Promise<DotApi> {
+  const wsProvider = new WsProvider(networkEndpoint);
+
+  const apiPromise = await ApiPromise.create({
+    provider: wsProvider,
+    throwOnConnect: true,
+    throwOnUnknown: true,
+    ...options,
+  });
+
+  await apiPromise.isReady;
+
+  const initializedDotApi: DotApi = {
+    wsProvider: wsProvider,
+    api: apiPromise,
+    keyring: new Keyring(),
+    selectedEndpoint: networkEndpoint,
+    options,
+  };
+  return initializedDotApi;
+}
 
 export function getToken(chain: ChainProperties) {
   const rawUnit = chain.tokenSymbol.toString();

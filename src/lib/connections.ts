@@ -77,7 +77,7 @@ export async function submitStake(
   stakeAmount: bigint
 ) {
   if (api && (await api.isReady)) {
-    const extrinsic = api.tx.capacity.stake(providerId, stakeAmount);
+    const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
     submitExtinsic(extrinsic, signingAccount, extension);
   } else {
     console.debug('api is not available.');
@@ -88,7 +88,7 @@ function submitExtinsic(
   extrinsic: SubmittableExtrinsic,
   account: Account,
   extension: InjectedExtension | undefined
-): Promise<void> {
+): Promise<string> {
   if (account.keyringPair) return submitExtrinsicWithKeyring(extrinsic, account.keyringPair);
   if (extension) return submitExtrinsicWithExtension(extension, extrinsic, account.address);
   throw new Error('Unable to find wallet extension');
@@ -99,15 +99,12 @@ async function submitExtrinsicWithExtension(
   extension: InjectedExtension,
   extrinsic: SubmittableExtrinsic,
   signingAddress: string
-): Promise<void> {
-  let currentTxDone = false; // eslint-disable-line prefer-const
+): Promise<string> {
+  // let currentTxDone = false; // eslint-disable-line prefer-const
   try {
-    await extrinsic.signAndSend(
-      signingAddress,
-      { signer: extension.signer, nonce: -1 },
-      handleResult(extrinsic.hash.toString())
-    );
-    await waitFor(() => currentTxDone);
+    await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, handleResult);
+    console.log('AFTER SIGN AND SEND', extrinsic.hash.toString());
+    // await waitFor(() => currentTxDone);
   } catch (e: any) {
     const message: string = e.toString();
     console.debug('caught exception:', message);
@@ -115,17 +112,20 @@ async function submitExtrinsicWithExtension(
       handleTxnError(extrinsic.hash.toString(), message);
     }
   }
+  return extrinsic.hash.toString();
 }
 
 // Use the built-in test accounts to submit an extrinsic
-async function submitExtrinsicWithKeyring(extrinsic: SubmittableExtrinsic, signingAccount: KeyringPair): Promise<void> {
+async function submitExtrinsicWithKeyring(
+  extrinsic: SubmittableExtrinsic,
+  signingAccount: KeyringPair
+): Promise<string> {
   try {
-    // TODO
-    // txnStatusCallback('Submitting transaction', extrinsic.hash.toString());
-    await extrinsic.signAndSend(signingAccount, { nonce: -1 }, handleResult(extrinsic.hash.toString()));
+    await extrinsic.signAndSend(signingAccount, { nonce: -1 }, handleResult);
   } catch (e: any) {
     handleTxnError(extrinsic.hash.toString(), e.toString());
   }
+  return extrinsic.hash.toString();
 }
 
 async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
@@ -186,13 +186,12 @@ export async function submitCreateProvider(
   extension: InjectedExtension | undefined,
   signingAccount: Account,
   providerName: string
-): Promise<boolean> {
+): Promise<string | undefined> {
   if (api && (await api.isReady)) {
     const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
-    submitExtinsic(extrinsic, signingAccount, extension);
-    return true;
+    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
+    return txnId;
   }
-  return false;
 }
 
 export async function submitRequestToBeProvider(
@@ -200,14 +199,13 @@ export async function submitRequestToBeProvider(
   extension: InjectedExtension | undefined,
   signingAccount: Account,
   providerName: string
-): Promise<boolean> {
+): Promise<string | undefined> {
   if (api && (await api.isReady)) {
     const extrinsic = api.tx.msa.proposeToBeProvider(providerName);
-    submitExtinsic(extrinsic, signingAccount, extension);
-    return true;
+    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
+    return txnId;
   }
   console.error('submit failed because api is', api);
-  return false;
 }
 
 //Use the current api and signing account to create an MSA for this account
@@ -215,11 +213,10 @@ export async function submitCreateMsa(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
   signingAccount: Account
-): Promise<boolean> {
+): Promise<string | undefined> {
   if (api && (await api.isReady)) {
     const extrinsic = api.tx.msa.create();
-    submitExtinsic(extrinsic, signingAccount, extension);
-    return true;
+    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
+    return txnId;
   }
-  return false;
 }

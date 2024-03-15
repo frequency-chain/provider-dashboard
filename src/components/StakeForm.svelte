@@ -6,23 +6,16 @@
   import { DOLLARS, submitStake } from '$lib/connections';
   import { onMount } from 'svelte';
   import { formatAccount, getExtension } from '$lib/utils';
-  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
 
   export let close: () => void;
   export let stakeAmount: bigint = 1n;
-  export let providerId = 0;
 
   let selectedAccount: Account;
   let isLoading: boolean = false;
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
 
   onMount(async () => {
-    const extension = await import('@polkadot/extension-dapp');
-    thisWeb3FromSource = extension.web3FromSource;
-    thisWeb3Enable = extension.web3Enable;
     selectedAccount = $allAccountsStore.get($user.address) as Account;
   });
 
@@ -39,13 +32,14 @@
   }
 
   const stake = async (evt: Event) => {
+    if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     close();
     isLoading = true;
     await submitStake(
       $dotApi.api as ApiPromise,
       await getExtension($user),
       selectedAccount,
-      providerId,
+      $user.msaId,
       stakeAmountInPlancks
     );
     isLoading = false;

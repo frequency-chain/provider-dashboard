@@ -7,7 +7,7 @@
   export let activity: Activity;
 </script>
 
-<div class="flex gap-2 text-wrap border-b border-divider py-2 text-sm">
+<div class="break-anywhere flex gap-2 text-wrap border-b border-divider py-2 text-sm">
   {#if activity.txnStatus === TxnStatus.LOADING}
     <LoadingIcon />
   {:else if activity.txnStatus === TxnStatus.SUCCESS}
@@ -16,7 +16,7 @@
     <FailureIcon />
   {/if}
 
-  <div>
+  <div class="text-wrap break-words">
     <div>Hash: {activity.txnId}</div>
     <ul class="unordered-list break-words text-sm">
       {#each activity.txnStatusItems as item}

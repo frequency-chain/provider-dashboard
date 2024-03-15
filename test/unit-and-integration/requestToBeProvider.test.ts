@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import RequestToBeProvider from '../../src/components/RequestToBeProvider.svelte';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
+import { vi } from 'vitest';
 
 globalThis.alert = () => {};
 
@@ -66,9 +67,6 @@ describe('RequestToBeProvider component', () => {
     userEvent.click(btn);
     await waitFor(() => {
       expect(extrinsicWasCalled).toBe(true);
-      expect(container.querySelector('#transaction-status')).not.toHaveClass('hidden');
-      expect(getByText('Transaction Status')).toBeInTheDocument();
-      expect(getByText('Submitting transaction')).toBeInTheDocument();
     });
   });
 });
