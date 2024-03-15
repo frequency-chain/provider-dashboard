@@ -4,34 +4,43 @@
   import { submitCreateProvider } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
-  import type { MsaInfo } from '$lib/storeTypes';
+  import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import { pageContent } from '$lib/stores/pageContentStore';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
+  import { activityLog } from '$lib/stores/activityLogStore';
+  import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
 
-  export let updateUser: () => void;
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
   // a callback for when a transaction hits a final state
   //TODO
-  let createProviderTxnFinished = async (succeeded: boolean, txnId: string) => {
+  let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
-      updateUser();
       pageContent.dashboard();
     }
-    isInProgress = false;
   };
 
   let newProviderName = '';
   let isInProgress = false;
+  let recentActivityItem: Activity;
+
+  $: {
+    if (isInProgress) {
+      recentActivityItem = $activityLog[0];
+      if (recentActivityItem.txnStatus !== TxnStatus.LOADING) {
+        createProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS).then(() => {
+          isInProgress = false;
+        });
+      }
+    }
+  }
 
   const doCreateProvider = async (_evt: Event) => {
-    updateUser();
-
     const endpointURI: string | undefined = $user.network?.endpoint;
     if (!endpointURI) {
       alert('Error connecting to endpoint.');
@@ -45,7 +54,6 @@
       alert('please reconnect to an endpoint');
       return;
     }
-    showTransactionStatus = true;
     isInProgress = true;
     await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
     // createProviderTxnFinished
@@ -73,3 +81,6 @@
     <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
   </div>
 </form>
+{#if recentActivityItem}
+  <ActivityLogPreviewItem activity={recentActivityItem} />
+{/if}

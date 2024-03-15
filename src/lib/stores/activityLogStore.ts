@@ -1,15 +1,16 @@
 import { TxnStatus, type Activity } from '$lib/storeTypes';
 import { storable } from './storable';
-import { readonly } from 'svelte/store';
+import { derived, readonly } from 'svelte/store';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
+import { user } from './userStore';
 
 //writableActivityLog: Oldest to Newest
-const writableActivityLog = storable<Activity[]>('ActivityLog', []);
+export const writableActivityLog = storable<Activity[]>('ActivityLog', []);
 export const activityLog = readonly(writableActivityLog);
 
 export const handleResult = (txnId: string) => async (result: any) => {
   const activity: Activity = parseActivity(txnId, result);
-    addNewTxnStatus(activity);
+  addNewTxnStatus(activity);
 };
 
 export const handleTxnError = (txnId: string, errorMsg: string) => {

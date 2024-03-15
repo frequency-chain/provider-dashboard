@@ -7,7 +7,7 @@
   let activityItems: Activity[];
 
   $: {
-    activityItems = $activityLog.reverse();
+    activityItems = $activityLog;
   }
 </script>
 

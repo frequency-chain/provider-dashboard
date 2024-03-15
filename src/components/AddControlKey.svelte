@@ -15,9 +15,7 @@
 
   let selectedAccount: Account | null;
 
-  let showTransactionStatus = false;
-
-  $: isSubmitDisabled = selectedAccount?.injectedAccount == null || showTransactionStatus;
+  $: isSubmitDisabled = selectedAccount?.injectedAccount == null;
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -25,7 +23,7 @@
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
-      showTransactionStatus = true;
+      close();
       await submitAddControlKey(
         $dotApi.api as ApiPromise,
         await getExtension($user),
@@ -38,7 +36,6 @@
 
   function onCancel() {
     selectedAccount = null;
-    showTransactionStatus = false;
     close();
   }
 </script>

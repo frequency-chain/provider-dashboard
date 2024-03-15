@@ -10,7 +10,7 @@
 
   $: {
     $dotApi?.api?.rpc.system.properties().then((chain) => {
-      if ($dotApi?.api && chain) {       
+      if ($dotApi?.api && chain) {
         const token = getToken(chain);
         Promise.all([getBlockNumber($dotApi.api), getEpoch($dotApi.api)])
           .then(([blockNumber, epochNumber]) => {

@@ -8,42 +8,32 @@
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
 
-  let newUser: Account | undefined;
-
   // a callback for when the user cancels this action
   export let cancelAction = () => {
     pageContent.login();
   };
-
-  function updateUser() {
-    if (!newUser) {
-      alert('Invalid form values');
-      return;
-    }
-    $user = newUser;
-  }
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
   <BlockSection title="Become a Provider">
     <form class="column w-[320px]">
       <SelectNetworkAndAccount
-        bind:newUser
+        bind:newUser={$user}
         accounts={$nonProviderAccountsStore}
         accountSelectorTitle="Wallet Address"
         accountSelectorPlaceholder="Select a wallet address"
         noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
       />
-      {#if newUser?.network != null && newUser.network.name === 'MAINNET'}
+      {#if $user?.network != null && $user.network.name === 'MAINNET'}
         <EmailProviderRequest />
-      {:else if newUser && newUser?.address !== ''}
-        {#if newUser?.msaId === 0}
-          <CreateMsa {updateUser} />
+      {:else if $user && $user?.address !== ''}
+        {#if $user?.msaId === 0}
+          <CreateMsa />
         {:else}
-          <CreateProvider {updateUser} />
+          <CreateProvider />
         {/if}
       {:else}
-        <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Cancel</button>
+        <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Back</button>
       {/if}
     </form>
   </BlockSection>

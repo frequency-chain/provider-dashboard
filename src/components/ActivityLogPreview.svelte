@@ -6,7 +6,7 @@
   let recentActivityItem: Activity;
 
   $: {
-    recentActivityItem = $activityLog[$activityLog.length - 1];
+    recentActivityItem = $activityLog[0];
   }
 </script>
 
