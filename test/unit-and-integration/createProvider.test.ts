@@ -33,9 +33,9 @@ describe('CreateProvider component', () => {
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);
-    const mockExtrinsic = vi.fn().mockImplementation(() => {
+    const mockExtrinsic = vi.fn(() => {
       extrinsicWasCalled = true;
-      return { signAndSend: vi.fn() };
+      return { signAndSend: vi.fn(), hash: '0x123456' };
     });
     dotApi.update(
       (val) =>

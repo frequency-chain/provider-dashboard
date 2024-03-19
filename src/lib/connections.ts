@@ -103,7 +103,6 @@ async function submitExtrinsicWithExtension(
   // let currentTxDone = false; // eslint-disable-line prefer-const
   try {
     await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, handleResult);
-    console.log('AFTER SIGN AND SEND', extrinsic.hash.toString());
     // await waitFor(() => currentTxDone);
   } catch (e: any) {
     const message: string = e.toString();

@@ -11,6 +11,11 @@ import { waitReady } from '@polkadot/wasm-crypto';
 const mocks = vi.hoisted(() => {
   const resolvedApi = {
     isReady: vi.fn().mockResolvedValue(true),
+    tx: {
+      capacity: {
+        stake: vi.fn(() => ({ signAndSend: vi.fn(), hash: '0x123456' })),
+      },
+    },
   };
 
   const mockApiPromise: any = vi.fn();

@@ -10,7 +10,6 @@ export const activityLog = readonly(writableActivityLog);
 
 export const handleResult = async (result: ISubmittableResult) => {
   const txnId = result.txHash.toString();
-  console.log('handleResult', txnId);
   const activity: Activity = parseActivity(txnId, result);
   addNewTxnStatus(activity);
 };

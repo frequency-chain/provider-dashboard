@@ -4,6 +4,9 @@ import RequestToBeProvider from '../../src/components/RequestToBeProvider.svelte
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
+import { user } from '../../src/lib/stores/userStore';
+import { Account } from '../../src/lib/stores/accountsStore';
+import Keyring from '@polkadot/keyring';
 
 globalThis.alert = () => {};
 
@@ -12,6 +15,13 @@ describe('RequestToBeProvider component', () => {
 
   beforeEach(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
+
+    const keyring = new Keyring({ type: 'sr25519' });
+    const keyRingPair = keyring.addFromUri('//Alice');
+    const account = new Account();
+    account.address = keyRingPair.address;
+    account.keyringPair = keyRingPair;
+    user.set(account);
   });
 
   it('shows text + Cancel button', () => {
@@ -38,9 +48,9 @@ describe('RequestToBeProvider component', () => {
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);
-    const mockExtrinsic = vi.fn().mockImplementation(() => {
+    const mockExtrinsic = vi.fn(() => {
       extrinsicWasCalled = true;
-      return { signAndSend: vi.fn() };
+      return { signAndSend: vi.fn(), hash: '0x123456' };
     });
     dotApi.update(
       (val) =>
