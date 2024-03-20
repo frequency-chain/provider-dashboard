@@ -1,64 +1,65 @@
+# yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
 name: Svelte TypeScript CI
 
 on:
   push:
-    branches: [ "main", "feat/svelte-app" ]
+    branches: ['main']
   pull_request:
-    branches: [ "main", "feat/svelte-app" ]
+    branches: ['main']
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
-    - name: Install Dependencies
-      run: npm ci
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - name: Install Dependencies
+        run: npm ci
 
-    - name: Build
-      env:
-        BASE_PATH: ''
-      run: |
-        npm run build
-        touch build/.nojekyll
+      - name: Build
+        env:
+          BASE_PATH: ''
+        run: |
+          npm run build
+          touch build/.nojekyll
 
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
           path: ./build
 
-    - name: CI Unit Tests
-      run: npm run test:ci
+      - name: CI Unit Tests
+        run: npm run test:ci
 
   e2e:
     runs-on: ubuntu-latest
     services:
       frequency-instant:
-        image: "frequencychain/instant-seal-node:latest"
+        image: 'frequencychain/instant-seal-node:latest'
         ports:
-          - "9944:9944" # ws and rpc port
+          - '9944:9944' # ws and rpc port
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-    - name: Use Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: 20
-        cache: 'npm'
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-    - name: Install Dependencies
-      run: npm ci
-    - name: "E2E Tests"
-      run: npm run test:e2e
+      - name: Install Dependencies
+        run: npm ci
+      - name: 'E2E Tests'
+        run: npm run test:e2e
 
   # Preview PRs when actions/deploy-pages preview option is in public
   # https://github.com/actions/deploy-pages/issues/180
