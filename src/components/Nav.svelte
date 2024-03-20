@@ -1,7 +1,6 @@
 <script lang="ts">
   import { logout } from '$lib/stores';
   import { isLoggedIn } from '$lib/stores';
-  import iconLogo from '$lib/assets/icon-logo.png';
   import NavItem from '$components/NavItem.svelte';
 
   $: url = window.location.pathname;
