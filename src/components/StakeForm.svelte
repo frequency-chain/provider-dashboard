@@ -3,39 +3,23 @@
   import { storeChainInfo } from '$lib/stores';
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { DOLLARS, submitStake, type TxnFinishedCallback } from '$lib/connections';
+  import { DOLLARS, submitStake } from '$lib/connections';
   import { onMount } from 'svelte';
-  import { isFunction } from '@polkadot/util';
-  import { formatAccount, isLocalhost } from '$lib/utils';
-  import type { web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+  import { formatAccount, getExtension } from '$lib/utils';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
 
   export let close: () => void;
-  export let showTransactionStatus: boolean = false;
-  export let txnStatuses: Array<string> = [];
   export let stakeAmount: bigint = 1n;
-  export let providerId = 0;
-  export let txnFinished: TxnFinishedCallback = (succeeded: boolean) => {};
 
   let selectedAccount: Account;
   let isLoading: boolean = false;
-  let thisWeb3FromSource: typeof web3FromSource;
-  let thisWeb3Enable: typeof web3Enable;
 
   onMount(async () => {
-    const extension = await import('@polkadot/extension-dapp');
-    thisWeb3FromSource = extension.web3FromSource;
-    thisWeb3Enable = extension.web3Enable;
     selectedAccount = $allAccountsStore.get($user.address) as Account;
   });
 
   $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
-
-  const addNewTxnStatus = (txnStatus: string) => {
-    txnStatuses = [...txnStatuses, txnStatus];
-  };
-  const clearTxnStatuses = () => (txnStatuses = new Array<string>());
 
   function handleInput(evt: Event) {
     const target = evt.target as HTMLInputElement;
@@ -48,39 +32,16 @@
   }
 
   const stake = async (evt: Event) => {
+    if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
+    close();
     isLoading = true;
-    clearTxnStatuses();
-    let endpointURI: string = $dotApi.selectedEndpoint || '';
-    showTransactionStatus = true;
-    if (isLocalhost(endpointURI)) {
-      await submitStake(
-        $dotApi.api as ApiPromise,
-        undefined,
-        $user.signingKey!,
-        providerId,
-        stakeAmountInPlancks,
-        endpointURI,
-        addNewTxnStatus,
-        txnFinished
-      );
-    } else {
-      if (isFunction(thisWeb3FromSource) && isFunction(thisWeb3Enable)) {
-        const extensions = await thisWeb3Enable('Frequency parachain provider dashboard: Adding Keys');
-        if (extensions.length !== 0) {
-          const injectedExtension = await thisWeb3FromSource($user.signingKey!.meta.source!);
-          await submitStake(
-            $dotApi.api as ApiPromise,
-            injectedExtension,
-            $user.signingKey!,
-            providerId,
-            stakeAmountInPlancks,
-            endpointURI,
-            addNewTxnStatus,
-            txnFinished
-          );
-        }
-      }
-    }
+    await submitStake(
+      $dotApi.api as ApiPromise,
+      await getExtension($user),
+      selectedAccount,
+      $user.msaId,
+      stakeAmountInPlancks
+    );
     isLoading = false;
   };
 </script>

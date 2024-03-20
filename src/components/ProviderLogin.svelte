@@ -13,8 +13,9 @@
 
   <BlockSection title="Not a Provider?">
     <div class="text-sm">
-      Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
-      aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+      <a href="https://docs.frequency.xyz/Delegation/Providers.html" target="_blank" rel="no-referrer" class="underline"
+        >Want to learn more about providers?
+      </a>
     </div>
     <Button id="request-2b-provider-btn" title="Become a Provider" action={pageContent.becomeProvider} />
   </BlockSection>

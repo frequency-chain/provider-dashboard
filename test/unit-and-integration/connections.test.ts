@@ -12,6 +12,7 @@ import { stringToU8a } from '@polkadot/util';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { vi } from 'vitest';
 import { waitReady } from '@polkadot/wasm-crypto';
+import { Account } from '../../src/lib/stores/accountsStore';
 
 await waitReady();
 
@@ -64,7 +65,7 @@ const mocks = vi.hoisted(() => {
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
     registry: { createType: vi.fn().mockResolvedValue(mockCreatedType) },
-    tx: { msa: { addPublicKeyToMsa: vi.fn().mockResolvedValue(undefined) } },
+    tx: { msa: { addPublicKeyToMsa: vi.fn(() => ({ signAndSend: vi.fn(), hash: '0x123456' })) } },
   };
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
 
@@ -109,27 +110,24 @@ describe('getBlockNumber', () => {
 });
 describe('submitAddControlKey', async () => {
   const keyring = new Keyring({ type: 'sr25519' });
-  const alice = keyring.addFromUri('//Alice');
-  const bob = keyring.addFromUri('//Bob');
+  const keyRingPairA = keyring.addFromUri('//Alice');
+  const keyRingPairB = keyring.addFromUri('//Bob');
+
+  const alice = new Account();
+  const bob = new Account();
+
+  alice.keyringPair = keyRingPairA;
+  alice.address = keyRingPairA.address;
+  bob.keyringPair = keyRingPairB;
+  bob.address = keyRingPairB.address;
 
   // TODO: probably separate this into a different file so can mock signPayloadWith(Keyring|Extension)
-  it('calls the callback when localhost', async () => {
+  it('calls the correct extrinsic with keyring pair', async () => {
     const api = await ApiPromise.create();
     const extension = undefined;
-    const callback = vi.fn();
     const msaId = 4;
-    const endpointURL = 'ws://localhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
-    expect(callback).toHaveBeenCalled();
-  });
-  it('calls the callback when not localhost', async () => {
-    const api = await ApiPromise.create();
-    const extension = undefined;
-    const callback = vi.fn();
-    const msaId = 4;
-    const endpointURL = 'ws://someotherhost:9944';
-    await submitAddControlKey(api, extension, bob, alice, msaId, endpointURL, callback, callback);
-    expect(callback).toHaveBeenCalled();
+    await submitAddControlKey(api, extension, bob, alice, msaId);
+    expect(api.tx.msa.addPublicKeyToMsa).toHaveBeenCalled();
   });
 });
 

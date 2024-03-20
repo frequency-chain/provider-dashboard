@@ -26,3 +26,15 @@ export type ChainInfo = {
   connected: boolean;
   token: string;
 };
+
+export enum TxnStatus {
+  LOADING = 'LOADING',
+  SUCCESS = 'SUCCESS',
+  FAILURE = 'FAILURE',
+}
+
+export type Activity = {
+  txnId: string;
+  txnStatusItems: string[];
+  txnStatus: TxnStatus;
+};

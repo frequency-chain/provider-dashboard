@@ -1,9 +1,8 @@
-import { dotApi, storeChainInfo } from '../../src/lib/stores';
+import { storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import CreateMsa from '../../src/components/CreateMsa.svelte';
 import { vi } from 'vitest';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
-import userEvent from '@testing-library/user-event';
 
 globalThis.alert = () => {};
 
@@ -15,12 +14,12 @@ describe('CreateMsa component', () => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
+    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
     expect(getByRole('button', { name: 'Create an MSA' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
   it('clicking Cancel performs the callback', async () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
+    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
 
     const cancel = getByRole('button', { name: 'Cancel' });
     fireEvent.click(cancel);

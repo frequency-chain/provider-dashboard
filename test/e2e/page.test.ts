@@ -1,7 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import Page from '$routes/+page.svelte';
-import { user } from '../../src/lib/stores/userStore';
 import { pageContent } from '../../src/lib/stores/pageContentStore';
 
 // global.alert = () => {};

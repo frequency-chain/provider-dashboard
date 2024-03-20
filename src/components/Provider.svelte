@@ -20,25 +20,16 @@
   let errMsg: string = '';
 
   $: {
-    if (!$storeChainInfo.connected) {
-      errMsg = 'Not connected';
-    } else if (!$user.signingKey) {
-      errMsg = 'No transaction signing address selected';
-    } else if (!$user.msaId) {
-      errMsg = 'No MSA ID.  Please create one.';
-    } else {
-      errMsg = '';
-      providerList = [
-        { label: 'Id', value: $user.msaId?.toString() },
-        { label: 'Name', value: $user.providerName ?? '' },
-        {
-          label: 'Total Balance',
-          value: balanceToHuman(accountBalances.free + accountBalances.frozen, $storeChainInfo.token),
-        },
-        { label: 'Transferable', value: balanceToHuman(accountBalances.free, $storeChainInfo.token) },
-        { label: 'Locked', value: balanceToHuman(accountBalances.frozen, $storeChainInfo.token) },
-      ];
-    }
+    providerList = [
+      { label: 'Id', value: $user.msaId?.toString() ?? '' },
+      { label: 'Name', value: $user.providerName ?? '' },
+      {
+        label: 'Total Balance',
+        value: balanceToHuman(accountBalances.free + accountBalances.frozen, $storeChainInfo.token),
+      },
+      { label: 'Transferable', value: balanceToHuman(accountBalances.free, $storeChainInfo.token) },
+      { label: 'Locked', value: balanceToHuman(accountBalances.frozen, $storeChainInfo.token) },
+    ];
   }
 </script>
 

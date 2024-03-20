@@ -3,8 +3,9 @@ import { defaultDotApi, type DotApi } from '$lib/storeTypes';
 import { storable } from './stores/storable';
 import { derived } from 'svelte/store';
 import { user } from './stores/userStore';
-import { createApi } from './polkadotApi';
 import { pageContent } from './stores/pageContentStore';
+import { clearLog } from './stores/activityLogStore';
+import { createApi } from './polkadotApi';
 
 export const dotApi = writable<DotApi>(defaultDotApi);
 
@@ -14,8 +15,8 @@ export const logInPromise = derived([user], ([$user]) =>
   (async () => {
     if ($user?.network?.endpoint) {
       dotApi.set(await createApi($user?.network?.endpoint));
-      isLoggedIn.set(true);
       if ($user.isProvider) {
+        isLoggedIn.set(true);
         pageContent.dashboard();
       }
     }
@@ -28,6 +29,7 @@ export const logout = () => {
   dotApi.set(defaultDotApi);
   storeChainInfo.set({ connected: false, blockNumber: 0n, epochNumber: 0n, token: '' });
   pageContent.login();
+  clearLog();
 };
 
 export const storeChainInfo = storable('storeChainInfo', {

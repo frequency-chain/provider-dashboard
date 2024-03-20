@@ -9,18 +9,17 @@ globalThis.alert = () => {};
 
 describe('CreateProvider component', () => {
   const mockCancelAction = vi.fn();
-  const mockBeforeCreate = vi.fn();
 
   beforeAll(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
-    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
+    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
     expect(getByRole('button', { name: 'Create Provider' })).toBeInTheDocument();
     expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
   });
   it('clicking Cancel performs the callback', async () => {
-    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction, beforeCreate: mockBeforeCreate });
+    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
 
     const cancel = getByRole('button', { name: 'Cancel' });
     fireEvent.click(cancel);
@@ -30,14 +29,13 @@ describe('CreateProvider component', () => {
     const user = userEvent.setup();
     const { container, getByRole, getByLabelText, getByText } = render(CreateProvider, {
       cancelAction: mockCancelAction,
-      beforeCreate: mockBeforeCreate,
     });
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);
-    const mockExtrinsic = vi.fn().mockImplementation(() => {
+    const mockExtrinsic = vi.fn(() => {
       extrinsicWasCalled = true;
-      return { signAndSend: vi.fn() };
+      return { signAndSend: vi.fn(), hash: '0x123456' };
     });
     dotApi.update(
       (val) =>
