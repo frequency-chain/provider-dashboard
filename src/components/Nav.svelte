@@ -13,7 +13,6 @@
 </script>
 
 <div class="fixed flex h-screen w-[126px] min-w-[126px] flex-col items-center justify-center bg-bg-black">
-  <img alt="iconLogo" src={iconLogo} class="absolute left-6 top-7 w-[57px]" />
   <div class="flex w-[100%] flex-col">
     <NavItem href="/" isActive={url === '/'} onClick={() => (url = '/')}>Home</NavItem>
     {#if $isLoggedIn === true}
