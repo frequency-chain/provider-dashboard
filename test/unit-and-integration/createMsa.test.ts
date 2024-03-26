@@ -2,13 +2,12 @@ import { storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
 import CreateMsa from '../../src/components/CreateMsa.svelte';
 import { vi } from 'vitest';
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
+import { fireEvent, render } from '@testing-library/svelte';
 
 globalThis.alert = () => {};
 
 describe('CreateMsa component', () => {
   const mockCancelAction = vi.fn();
-  const mockBeforeCreate = vi.fn();
 
   beforeAll(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));

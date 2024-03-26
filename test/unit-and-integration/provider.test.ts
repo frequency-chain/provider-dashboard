@@ -1,6 +1,6 @@
 import { cleanup, render } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
-import { dotApi, storeChainInfo } from '../../src/lib/stores';
+import { storeChainInfo } from '../../src/lib/stores';
 import { user } from '../../src/lib/stores/userStore';
 import Provider from '$components/Provider.svelte';
 import { getByTextContent } from '../helpers';
