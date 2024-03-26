@@ -1,6 +1,7 @@
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import { dotApi, storeChainInfo } from '../../src/lib/stores';
+import { Account, allAccountsStore } from '../../src/lib/stores/accountsStore';
 import Stake, { stakeAmount } from '$components/Stake.svelte';
 import { user } from '../../src/lib/stores/userStore';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -39,9 +40,17 @@ describe('Stake.svelte Unit Tests', () => {
 
   beforeEach(() => {
     const keyring = new Keyring({ type: 'sr25519' });
-    const keyRingPair: KeyringPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
+    const keyringPair: KeyringPair = { ...keyring.addFromUri('//Alice'), ...{ meta: { name: '//Alice' } } };
 
-    user.set({ address: '', isProvider: true, msaId: 1, providerName: 'test', signingKey: keyRingPair });
+    const account: Account = {
+      address: keyringPair.address,
+      isProvider: true,
+      msaId: 1,
+      providerName: 'test',
+      keyringPair,
+    };
+    user.set(account);
+    allAccountsStore.set(new Map([[account.address, account]]));
   });
   afterEach(() => cleanup());
 
@@ -69,7 +78,7 @@ describe('Stake.svelte Unit Tests', () => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
     render(Stake, { isOpen: true });
-    await dotApi.update((val) => (val = { ...val, api: createdApi }));
+    dotApi.update((val) => (val = { ...val, api: createdApi }));
 
     const button = screen.getByRole('button', { name: 'Stake' });
 
