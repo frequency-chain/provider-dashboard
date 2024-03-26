@@ -53,6 +53,18 @@ case "${CHAIN}" in
             LOCAL_NODE_BLOCK_SEALING="manual"
         fi
     ;;
+    "paseo_local")
+        PROVIDER_URL="ws://127.0.0.1:9944"
+        NPM_RUN_COMMAND="test:relay"
+        CHAIN_ENVIRONMENT="paseo-local"
+    ;;
+    "paseo_testnet")
+        PROVIDER_URL="wss://0.rpc.testnet.amplica.io"
+        NPM_RUN_COMMAND="test:relay"
+        CHAIN_ENVIRONMENT="paseo-testnet"
+
+        read -p "Enter the seed phrase for the Frequency Rococo account funding source: " FUNDING_ACCOUNT_SEED_PHRASE
+    ;;
     "rococo_local")
         PROVIDER_URL="ws://127.0.0.1:9944"
         NPM_RUN_COMMAND="test:relay"
@@ -64,7 +76,6 @@ case "${CHAIN}" in
         CHAIN_ENVIRONMENT="rococo-testnet"
 
         read -p "Enter the seed phrase for the Frequency Rococo account funding source: " FUNDING_ACCOUNT_SEED_PHRASE
-
     ;;
 esac
 
@@ -73,7 +84,16 @@ then
     echo "Frequency is not running."
     echo "The intended use case of running integration tests with a chain environment"
     echo "of \"rococo-local\" is to run the tests against a locally running Frequency"
-    echo "chain with locally running Polkadot relay nodes."
+    echo "chain with locally running Rococo relay nodes."
+    exit 1
+fi
+
+if [ "${CHAIN_ENVIRONMENT}" = "paseo-local" ]
+then
+    echo "Frequency is not running."
+    echo "The intended use case of running integration tests with a chain environment"
+    echo "of \"paseo-local\" is to run the tests against a locally running Frequency"
+    echo "chain with locally running Paseo relay nodes."
     exit 1
 fi
 
@@ -82,7 +102,7 @@ case ${LOCAL_NODE_BLOCK_SEALING} in
     "instant") \
         docker run --rm -p 9944:9944 -p 30333:30333 --platform=linux/amd64 \
         --name vitest-node --detach \
-        frequencychain/instant-seal-node:latest &
+        frequencychain/standalone-node:latest &
     ;;
     "manual") ${RUNDIR}/init.sh start-frequency-manual >& frequency.log &
     ;;

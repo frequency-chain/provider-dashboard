@@ -10,10 +10,16 @@
   <p>To do that:</p>
   <ol class="ordered-list">
     <li>
-      <a href="https://faucet.rococo.frequency.xyz/" target="_blank" rel="noopener noreferrer" class="underline">
-        Get XRQCY tokens for Frequency Testnet (Rococo)
-      </a>
-      and follow the instructions using your desired wallet address to get XRQCY tokens.
+      Get XRQCY tokens for the <a
+        href="https://faucet.paseo.frequency.xyz/"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="underline">Frequency Testnet (Paseo)</a
+      >
+      or
+      <a href="https://faucet.rococo.frequency.xyz/" target="_blank" rel="noopener noreferrer" class="underline"
+        >Frequency Testnet (Rococo)</a
+      > and follow the instructions using your desired wallet address to get XRQCY tokens.
     </li>
     <li>
       Once that succeeds, verify the tokens have made it to your wallet by selecting or re-selecting the address above.
@@ -27,7 +33,7 @@
         rel="noopener noreferrer"
         class="underline"
       >
-        Rococo Accounts page via the Polkadot UI.
+        Accounts page for the correct network via the Polkadot UI.
       </a>
       .
     </li>
