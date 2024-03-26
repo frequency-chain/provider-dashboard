@@ -19,7 +19,7 @@
   let errMsg: string = '';
 
   $: {
-    if (!$user.injectedAccount) {
+    if (!$user.injectedAccount && !$user.keyringPair) {
       errMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
       errMsg = 'No MSA ID.  Please create one.';
