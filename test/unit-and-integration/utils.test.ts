@@ -8,6 +8,7 @@ describe('isLocalhost', () => {
     expect(isLocalhost('ws://localhost:9944')).toBe(true);
     expect(isLocalhost('wss://0.rpc.frequency.xyz')).toBe(false);
     expect(isLocalhost('wss://rpc.rococo.frequency.xyz')).toBe(false);
+    expect(isLocalhost('wss://0.rpc.testnet.amplica.io')).toBe(false);
   });
 });
 describe('isMainnet', () => {
@@ -15,6 +16,7 @@ describe('isMainnet', () => {
     expect(isMainnet('wss://0.rpc.frequency.xyz')).toBe(true);
     expect(isMainnet('wss://1.rpc.frequency.xyz')).toBe(true);
     expect(isMainnet('wss://rpc.rococo.frequency.xyz')).toBe(false);
+    expect(isMainnet('wss://0.rpc.testnet.amplica.io')).toBe(false);
     expect(isMainnet('http://localhost:8080')).toBe(false);
     expect(isMainnet('wss://127.0.0.1:8080')).toBe(false);
     expect(isMainnet('http://localhost')).toBe(false);

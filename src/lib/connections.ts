@@ -1,7 +1,4 @@
 import type { ApiPromise } from '@polkadot/api/promise';
-// @ts-ignore
-// import { SignerResult } from "@polkadot/types";
-import { waitFor } from '$lib/utils';
 
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';

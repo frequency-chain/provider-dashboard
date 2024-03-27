@@ -1,6 +1,7 @@
 <script lang="ts">
   import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
+  import { activityLog } from '$lib/stores/activityLogStore';
   import { getCapacityInfo, type CapacityDetails } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
@@ -9,6 +10,9 @@
   let capacityDetails: CapacityDetails;
 
   $: {
+    // Easy way to tag a subscription onto this action.
+    // This way we update the capacity information when the log updates
+    const _triggerReloadOnLogUpdate = $activityLog;
     if ($user?.msaId && $user.msaId !== 0 && $dotApi.api) {
       getCapacityInfo($dotApi.api, $user.msaId).then((info) => (capacityDetails = info));
     }
@@ -19,7 +23,7 @@
   let errMsg: string = '';
 
   $: {
-    if (!$user.injectedAccount) {
+    if (!$user.injectedAccount && !$user.keyringPair) {
       errMsg = 'No transaction signing address selected';
     } else if (!$user.msaId) {
       errMsg = 'No MSA ID.  Please create one.';
