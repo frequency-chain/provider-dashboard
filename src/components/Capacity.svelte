@@ -33,7 +33,7 @@
         { label: 'Remaining', value: balanceToHuman(capacityDetails?.remainingCapacity, 'CAP') },
         { label: 'Total Issued', value: balanceToHuman(capacityDetails?.totalCapacityIssued, 'CAP') },
         { label: 'Last Replenished', value: `Epoch ${capacityDetails?.lastReplenishedEpoch}` },
-        { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalCapacityIssued, $storeChainInfo.token) },
+        { label: 'Staked Token', value: balanceToHuman(capacityDetails?.totalTokensStaked, $storeChainInfo.token) },
       ];
     }
   }

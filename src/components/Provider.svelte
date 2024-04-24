@@ -1,6 +1,7 @@
 <script lang="ts">
   import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
+  import { activityLog } from '$lib/stores/activityLogStore';
   import { balanceToHuman } from '$lib/utils';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
@@ -11,6 +12,9 @@
   let isAddKeyOpen: boolean = false;
 
   $: {
+    // Easy way to tag a subscription onto this action.
+    // This way we update the information when the log updates
+    const _triggerReloadOnLogUpdate = $activityLog;
     if ($dotApi.api) {
       getBalances($dotApi.api, $user.address).then((info) => (accountBalances = info));
     }
