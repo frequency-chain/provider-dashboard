@@ -10,9 +10,9 @@
     <span slot="question">What is the difference between Mainnet and Testnets?</span>
     <div slot="answer" class="column">
       <p>
-        The Frequency Mainnet is the production Frequency blockchain network. The Frequency Testnets, which work with
-        the Polkadot Rococo Testnet and Paseo Testnet relay chains, are for developers to test and debug applications
-        without risking real assets.
+        The Frequency Mainnet is the production Frequency blockchain network. The Frequency Testnet, which works with
+        the Polkadot Paseo Testnet relay chain, are for developers to test and debug applications without risking real
+        assets.
       </p>
       <p>What about the other options?</p>
       <ul class="unordered-list">

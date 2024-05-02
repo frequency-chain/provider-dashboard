@@ -15,10 +15,6 @@
         target="_blank"
         rel="noopener noreferrer"
         class="underline">Frequency Testnet (Paseo)</a
-      >
-      or
-      <a href="https://faucet.testnet.frequency.xyz/" target="_blank" rel="noopener noreferrer" class="underline"
-        >Frequency Testnet (Rococo)</a
       > and follow the instructions using your desired wallet address to get XRQCY tokens.
     </li>
     <li>
