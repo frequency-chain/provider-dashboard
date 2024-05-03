@@ -1,11 +1,13 @@
-# provider-dashboard
-Dashboard for Providers
+# Provider Dashboard
+
+Dashboard for create and managing a provider account on Frequency.
 
 Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
 
-[![Deploy to GitHub Pages](https://github.com/LibertyDSNP/provider-dashboard/actions/workflows/deploy.yml/badge.svg)](https://github.com/LibertyDSNP/provider-dashboard/actions/workflows/deploy.yml)
+[![Deploy to GitHub Pages](https://github.com/frequency-chain/provider-dashboard/actions/workflows/deploy.yml/badge.svg)](https://github.com/frequency-chain/provider-dashboard/actions/workflows/deploy.yml)
 
 ## Developing
+
 ```bash
 npm install
 npm run dev
@@ -24,14 +26,15 @@ npm run build
 
 You can preview the production build with `npm run preview`.
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target
+> environment.
 
 ## Testing
-To run the tests:
-The end to end tests require that a local instance of the frequency server is running.
-Clone the frequency server repo from:
-https://github.com/LibertyDSNP/frequency
-and run the following command from the root of the repo:
+
+To run the tests: The end to end tests require that a local instance of the frequency server is running. Clone the
+frequency server repo from: https://github.com/frequency-chain/frequency and run the following command from the root of
+the repo:
+
 ```bash
 make start # starts the frequency node
 Then run the tests:
