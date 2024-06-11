@@ -1,4 +1,4 @@
-import { vitePreprocess } from '@sveltejs/kit/vite';
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import adapter from '@sveltejs/adapter-static';
 
 const dev = process.argv.includes('dev');
@@ -20,8 +20,16 @@ const config = {
     }),
     paths: {
       base: dev ? '' : process.env.BASE_PATH,
-    }
-  }
+    },
+    alias: {
+      $components: './src/components',
+      '$components/*': './src/components/*',
+      $lib: './src/lib',
+      '$lib/*': './src/lib/*',
+      $routes: './src/routes',
+      '$routes/*': './src/routes/*',
+    },
+  },
 };
 
 export default config;
