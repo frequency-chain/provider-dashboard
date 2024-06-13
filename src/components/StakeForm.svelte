@@ -4,7 +4,6 @@
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
-  import { onMount } from 'svelte';
   import { formatAccount, getExtension } from '$lib/utils';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
@@ -12,12 +11,8 @@
   export let close: () => void;
   export let stakeAmount: bigint = 1n;
 
-  let selectedAccount: Account;
+  let selectedAccount: Account | null = $allAccountsStore.get($user.address) || null;
   let isLoading: boolean = false;
-
-  onMount(async () => {
-    selectedAccount = $allAccountsStore.get($user.address) as Account;
-  });
 
   $: stakeAmountInPlancks = BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS);
 
@@ -33,6 +28,7 @@
 
   const stake = async (evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
+    if (!selectedAccount) throw new Error('Account not selected');
     close();
     isLoading = true;
     await submitStake(

@@ -20,13 +20,13 @@ export function storable<T>(key: string, data?: T) {
   return {
     subscribe,
     set: (n: T) => {
-      storage && storage.setItem(key, toJson(n));
+      storage?.setItem(key, toJson(n));
       set(n);
     },
     update: (cb: (value: T) => T) => {
       const new_cb = (old_value: T) => {
         const new_value = cb(old_value);
-        storage && storage.setItem(key, toJson(new_value));
+        storage?.setItem(key, toJson(new_value));
         return new_value;
       };
       update(new_cb);

@@ -110,6 +110,7 @@ export const getExtension = async (account: Account) => {
         return await thisWeb3FromSource(account.injectedAccount.meta.source);
       }
     }
+    console.error('No wallet extensions found!');
   } catch (e) {
     console.error('Error getting extension:', e);
   }
