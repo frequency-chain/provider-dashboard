@@ -64,7 +64,7 @@ const mocks = vi.hoisted(() => {
       capacity: { currentEpoch: vi.fn().mockResolvedValue(epochNumber) },
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
-    registry: { createType: vi.fn().mockResolvedValue(mockCreatedType) },
+    registry: { createType: vi.fn().mockReturnValue(mockCreatedType) },
     tx: { msa: { addPublicKeyToMsa: vi.fn(() => ({ signAndSend: vi.fn(), hash: '0x123456' })) } },
   };
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
