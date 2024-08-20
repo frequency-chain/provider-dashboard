@@ -35,11 +35,11 @@ export function getToken(chain: ChainProperties) {
   return rawUnit.slice(1, rawUnit.length - 1);
 }
 
-export type AccountBalances = {
+export interface AccountBalances {
   free: bigint;
   frozen: bigint;
   reserved: bigint;
-};
+}
 export async function getBalances(apiPromise: ApiPromise, accountId: string): Promise<AccountBalances> {
   const accountData = (await apiPromise.query.system.account(accountId)).data;
   return {
@@ -64,12 +64,12 @@ export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Pro
   return msaInfo;
 }
 
-export type CapacityDetails = {
+export interface CapacityDetails {
   remainingCapacity: bigint;
   totalTokensStaked: bigint;
   totalCapacityIssued: bigint;
   lastReplenishedEpoch: bigint;
-};
+}
 
 export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
   let capacityDetails: CapacityDetails = {

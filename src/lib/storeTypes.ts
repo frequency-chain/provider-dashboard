@@ -1,31 +1,31 @@
 import type { ApiPromise, WsProvider } from '@polkadot/api';
 import type { Keyring } from '@polkadot/api';
 
-export type DotApi = {
+export interface DotApi {
   api?: ApiPromise;
   wsProvider?: WsProvider;
   keyring?: Keyring;
   options?: any;
   selectedEndpoint?: string;
-};
+}
 
 export const defaultDotApi: DotApi = {
   selectedEndpoint: '',
   options: {},
 };
 
-export type MsaInfo = {
+export interface MsaInfo {
   isProvider: boolean;
   msaId: number;
   providerName: string;
-};
+}
 
-export type ChainInfo = {
+export interface ChainInfo {
   blockNumber: bigint;
   epochNumber: bigint;
   connected: boolean;
   token: string;
-};
+}
 
 export enum TxnStatus {
   LOADING = 'LOADING',
@@ -33,8 +33,8 @@ export enum TxnStatus {
   FAILURE = 'FAILURE',
 }
 
-export type Activity = {
+export interface Activity {
   txnId: string;
   txnStatusItems: string[];
   txnStatus: TxnStatus;
-};
+}

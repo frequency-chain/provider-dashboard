@@ -23,14 +23,14 @@ describe('isMainnet', () => {
 });
 
 describe('createMailto', () => {
-  type TestCase = {
+  interface TestCase {
     to: string;
     subject: string | undefined;
     body: string | undefined;
     expectedOutput: string;
     expectedErr: boolean;
-  };
-  const testCases: Array<TestCase> = [
+  }
+  const testCases: TestCase[] = [
     {
       to: 'foo@bar',
       subject: 'hello',

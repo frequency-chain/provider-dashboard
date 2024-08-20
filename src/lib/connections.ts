@@ -9,7 +9,11 @@ import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 
-type AddKeyData = { msaId: string; expiration: string; newPublicKey: string };
+interface AddKeyData {
+  msaId: string;
+  expiration: string;
+  newPublicKey: string;
+}
 
 export const CENTS: bigint = 1000000n;
 export const DOLLARS: bigint = 100n * CENTS;
@@ -101,8 +105,8 @@ async function submitExtrinsicWithExtension(
   try {
     await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, handleResult);
     // await waitFor(() => currentTxDone);
-  } catch (e: any) {
-    const message: string = e.toString();
+  } catch (e: unknown) {
+    const message: string = `${e}`;
     console.debug('caught exception:', message);
     if (message.match(/timeout/i) === null) {
       handleTxnError(extrinsic.hash.toString(), message);
@@ -118,8 +122,8 @@ async function submitExtrinsicWithKeyring(
 ): Promise<string> {
   try {
     await extrinsic.signAndSend(signingAccount, { nonce: -1 }, handleResult);
-  } catch (e: any) {
-    handleTxnError(extrinsic.hash.toString(), e.toString());
+  } catch (e: unknown) {
+    handleTxnError(extrinsic.hash.toString(), `${e}`);
   }
   return extrinsic.hash.toString();
 }
@@ -152,8 +156,10 @@ export async function signPayloadWithExtension(
     try {
       signed = await signer.signRaw(signerPayloadRaw);
       return signed?.signature;
-    } catch (e: any) {
-      return 'ERROR ' + e.message;
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        return 'ERROR ' + e.message;
+      }
     }
   }
   return 'Unknown error';
@@ -165,8 +171,11 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
   try {
     // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.
     return u8aToHex(signingAccount.sign(u8aWrapBytes(payload.toU8a())));
-  } catch (e: any) {
-    return 'ERROR ' + e.message;
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return 'ERROR ' + e.message;
+    }
+    return 'UNKNOWN ERROR ' + e;
   }
 }
 

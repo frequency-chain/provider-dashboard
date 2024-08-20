@@ -42,7 +42,7 @@ describe('RequestToBeProvider component', () => {
 
   it('clicking Request To Be Provider submits extrinsic and shows Transaction Status', async () => {
     const user = userEvent.setup();
-    const { container, getByRole, getByLabelText, getByText } = render(RequestToBeProvider, {
+    const { getByRole, getByLabelText } = render(RequestToBeProvider, {
       cancelAction: mockCancelAction,
     });
 

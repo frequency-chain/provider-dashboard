@@ -22,6 +22,7 @@ describe('FAQ Page', () => {
     const questionBtn = container.querySelector('#faq-question');
     const answer = container.querySelector('#faq-answer');
     expect(answer).toHaveClass('hidden');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     questionBtn && fireEvent.click(questionBtn);
     await waitFor(() => {
       expect(answer).toHaveClass('block');
@@ -33,10 +34,12 @@ describe('FAQ Page', () => {
     const questionBtn = container.querySelector('#faq-question');
     const answer = container.querySelector('#faq-answer');
     expect(answer).toHaveClass('hidden');
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     questionBtn && fireEvent.click(questionBtn);
     await waitFor(() => {
       expect(answer).toHaveClass('block');
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     questionBtn && fireEvent.click(questionBtn);
     await waitFor(() => {
       expect(answer).toHaveClass('hidden');

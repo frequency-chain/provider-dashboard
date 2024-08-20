@@ -7,7 +7,10 @@ export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-type WaitOptions = { interval?: number; timeout?: number };
+interface WaitOptions {
+  interval?: number;
+  timeout?: number;
+}
 
 // This is used only in connections.  In testing, use the waitFor function provided by
 // vitest.
