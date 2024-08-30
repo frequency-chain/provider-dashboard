@@ -6,6 +6,7 @@
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   $: $logInPromise;
 
   $: {

@@ -26,7 +26,7 @@
     }
   }
 
-  const stake = async (evt: Event) => {
+  const stake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
     close();

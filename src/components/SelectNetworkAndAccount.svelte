@@ -66,10 +66,13 @@
   async function networkChanged() {
     isLoading = true;
     accounts = new Map();
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await connectAndFetchAccounts(selectedNetwork!);
     }
     isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
     isLoading = false;
   }
@@ -77,6 +80,7 @@
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         selectedNetwork!.endpoint = customNetwork;
       }
     }

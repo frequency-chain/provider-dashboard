@@ -1,6 +1,6 @@
 <script lang="ts">
   export let dismissed = false;
-  const hide = (evt: Event) => {
+  const hide = (_evt: Event) => {
     dismissed = true;
   };
 </script>

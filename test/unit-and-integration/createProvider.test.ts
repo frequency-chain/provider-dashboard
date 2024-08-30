@@ -26,8 +26,8 @@ describe('CreateProvider component', () => {
     expect(mockCancelAction).toHaveBeenCalled();
   });
   it('clicking CreateProvider calls the extrinsic', async () => {
-    const user = userEvent.setup();
-    const { container, getByRole, getByLabelText, getByText } = render(CreateProvider, {
+    userEvent.setup();
+    const { getByRole, getByLabelText } = render(CreateProvider, {
       cancelAction: mockCancelAction,
     });
 

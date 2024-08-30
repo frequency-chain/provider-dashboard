@@ -28,7 +28,7 @@ const mocks = vi.hoisted(() => {
       return this.value;
     }
   }
-  // eslint-disable-next-line  no-unused-vars
+
   class TestDetectCodec<T, K> {
     value: string;
     constructor(val: string) {
@@ -64,7 +64,7 @@ const mocks = vi.hoisted(() => {
       capacity: { currentEpoch: vi.fn().mockResolvedValue(epochNumber) },
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
-    registry: { createType: vi.fn().mockResolvedValue(mockCreatedType) },
+    registry: { createType: vi.fn().mockReturnValue(mockCreatedType) },
     tx: { msa: { addPublicKeyToMsa: vi.fn(() => ({ signAndSend: vi.fn(), hash: '0x123456' })) } },
   };
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
@@ -137,7 +137,7 @@ describe('signPayloadWithKeyring', () => {
     const signer = keyring.addFromUri('//Charlie');
 
     const mockApi = await ApiPromise.create();
-    const message = await mockApi.registry.createType('MyMessage', 'Anything');
+    const message = mockApi.registry.createType('MyMessage', 'Anything');
     const result = signPayloadWithKeyring(signer, message);
     expect(result).toMatch(/^0x/);
     expect(result.length).toEqual(130);
@@ -147,7 +147,7 @@ describe('signPayloadWithKeyring', () => {
 describe('signPayloadWithExtension', () => {
   it("returns the expected 'signature'", async () => {
     const mockApi = await ApiPromise.create();
-    const message = await mockApi.registry.createType('MyMessage', 'Anything');
+    const message = mockApi.registry.createType('MyMessage', 'Anything');
     const injected = await mocks.InjectedExtension();
     const result = await signPayloadWithExtension(injected, '//Someone', message);
     expect(result).toEqual('0xc0ffeec0ffee');
