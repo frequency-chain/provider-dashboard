@@ -12,9 +12,8 @@
 
   <ol class="ordered-list">
     <li>
-      When you are done requesting funds from the faucet, verify the tokens have been applied by
-      selecting or re-selecting the Account Id you chose above.
-      You may need to wait a minute.
+      When you are done requesting funds from the faucet, verify the tokens have been applied by selecting or
+      re-selecting the Account Id you chose above. You may need to wait a minute.
     </li>
     <li>
       For more information, visit the

@@ -22,5 +22,4 @@
   <BlockSection title="Need tokens?">
     <HowToTransact additionalStyles="text-sm" />
   </BlockSection>
-
 </div>
