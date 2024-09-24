@@ -26,7 +26,7 @@
       >
         Polkadot Apps Accounts page
       </a>
-      and select the correct network from the Polkadot UI.
+      and select the desired Frequency network from the Polkadot UI.
     </li>
   </ol>
 </div>
