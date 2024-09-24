@@ -21,6 +21,7 @@
     {/if}
     <NavItem href="/faq" isActive={url === '/faq'} onClick={() => (url = '/faq')}>FAQ's</NavItem>
     {#if $isLoggedIn === true}
+      <NavItem href="https://faucet.testnet.frequency.xyz/" target="_blank">Testnet Faucet</NavItem>/
       <NavItem id="logout-button" href="/" onClick={handleLogout}>Logout</NavItem>
     {:else}
       <NavItem />
