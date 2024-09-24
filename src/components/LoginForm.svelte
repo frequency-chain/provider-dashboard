@@ -26,9 +26,9 @@
 <SelectNetworkAndAccount
   bind:newUser
   accounts={$providerAccountsStore}
-  accountSelectorTitle="Select a Provider Control Key"
-  accountSelectorPlaceholder="Select a provider control key"
-  noAccountsFoundErrorMsg="No provider accounts found.  Become a provider?"
+  accountSelectorTitle="Select an Account Id"
+  accountSelectorPlaceholder="Select a Provider Account Id"
+  noAccountsFoundErrorMsg="No Provider Account Ids found.  Become a Provider?"
 />
 <div class="flex justify-between align-bottom">
   <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />

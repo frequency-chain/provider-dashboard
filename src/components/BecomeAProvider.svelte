@@ -20,9 +20,9 @@
       <SelectNetworkAndAccount
         bind:newUser={$user}
         accounts={$nonProviderAccountsStore}
-        accountSelectorTitle="Wallet Address"
-        accountSelectorPlaceholder="Select a wallet address"
-        noAccountsFoundErrorMsg="No accounts found.  Add an account to your wallet."
+        accountSelectorTitle="Account Id"
+        accountSelectorPlaceholder="Select an Account Id"
+        noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
       />
       {#if $user?.network != null && $user.network.name === 'MAINNET'}
         <EmailProviderRequest />
@@ -41,7 +41,8 @@
     <div class="text-sm">
       For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
       submit a createProvider transaction.<br /><br />This action will register the MSA Id that is controlled by the
-      selected Transaction Signing Address above. Any control key for the MSA Id can submit the transaction.
+      selected Transaction Signing Address above. Any Account Id that has been added to the MSA can submit the
+      transaction.
     </div>
   </BlockSection>
 </div>

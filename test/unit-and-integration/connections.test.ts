@@ -3,7 +3,7 @@ import {
   getEpoch,
   signPayloadWithExtension,
   signPayloadWithKeyring,
-  submitAddControlKey,
+  submitAddAccountId,
 } from '../../src/lib/connections';
 import { describe, expect, test } from 'vitest';
 import { ApiPromise } from '@polkadot/api';
@@ -108,7 +108,7 @@ describe('getBlockNumber', () => {
     expect(bn).toBe(1001n);
   });
 });
-describe('submitAddControlKey', async () => {
+describe('submitAddAccountId', async () => {
   const keyring = new Keyring({ type: 'sr25519' });
   const keyRingPairA = keyring.addFromUri('//Alice');
   const keyRingPairB = keyring.addFromUri('//Bob');
@@ -126,7 +126,7 @@ describe('submitAddControlKey', async () => {
     const api = await ApiPromise.create();
     const extension = undefined;
     const msaId = 4;
-    await submitAddControlKey(api, extension, bob, alice, msaId);
+    await submitAddAccountId(api, extension, bob, alice, msaId);
     expect(api.tx.msa.addPublicKeyToMsa).toHaveBeenCalled();
   });
 });

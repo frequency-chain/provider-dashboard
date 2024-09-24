@@ -44,8 +44,8 @@
 
 <form class="column">
   <DropDownMenu
-    id="stake-using-key"
-    label="Wallet Address"
+    id="stake-using-account-id"
+    label="Wallet Account Id"
     bind:value={selectedAccount}
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}

@@ -35,7 +35,7 @@ export async function getEpoch(api: ApiPromise): Promise<bigint> {
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
-export async function submitAddControlKey(
+export async function submitAddAccountId(
   api: ApiPromise,
   extension: InjectedExtension | undefined,
   newAccount: Account,

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
-  import { submitAddControlKey } from '$lib/connections';
+  import { submitAddAccountId } from '$lib/connections';
   import { getExtension } from '$lib/utils';
   import AddKeyRequirements from './AddKeyRequirements.svelte';
   import Modal from './Modal.svelte';
@@ -17,14 +17,14 @@
 
   $: isSubmitDisabled = selectedAccount?.injectedAccount == null;
 
-  const addControlKey = async () => {
+  const addAccountId = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
-      alert('Please choose a key to add.');
+      alert('Please choose an Account Id to add.');
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
       close();
-      await submitAddControlKey(
+      await submitAddAccountId(
         $dotApi.api as ApiPromise,
         await getExtension($user),
         selectedAccount,
@@ -40,17 +40,17 @@
   }
 </script>
 
-<Modal id="add-control-key" {isOpen} close={onCancel}>
+<Modal id="add-account-id" {isOpen} close={onCancel}>
   <span slot="title">
-    Add a Key to MSA (<span class="font-light">{$user.msaId}</span>)
+    Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
   </span>
 
   <svelte:fragment slot="body">
     <form class="column">
       <DropDownMenu
-        id="AddControlKey"
-        label="Key to Add"
-        placeholder="Select Key..."
+        id="AddAccountId"
+        label="Account Id to Add"
+        placeholder="Select Id..."
         bind:value={selectedAccount}
         options={Array.from($unusedKeyAccountsStore.values()) || []}
         disabled={$unusedKeyAccountsStore.size === 0}
@@ -58,11 +58,13 @@
       />
       {#if $unusedKeyAccountsStore.size === 0}
         <div id="network-error-msg" class="text-sm text-error">
-          No available keys. Create a new account without an MSA Id.
+          No available Account Ids. Create a new Account Id without an MSA Id.
         </div>
       {/if}
       <div class="flex w-[350px] justify-between">
-        <button on:click|preventDefault={addControlKey} class="btn-primary" disabled={isSubmitDisabled}>Add Key</button>
+        <button on:click|preventDefault={addAccountId} class="btn-primary" disabled={isSubmitDisabled}
+          >Add Account Id</button
+        >
         <button on:click|preventDefault={onCancel} class="btn-no-fill">Cancel</button>
       </div>
     </form>

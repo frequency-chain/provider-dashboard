@@ -6,10 +6,10 @@
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
-  import AddControlKey from './AddControlKey.svelte';
+  import AddAccountId from './AddAccountId.svelte';
 
   let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
-  let isAddKeyOpen: boolean = false;
+  let isAddAccountIdOpen: boolean = false;
 
   $: {
     // Easy way to tag a subscription onto this action.
@@ -38,6 +38,6 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <button on:click|preventDefault={() => (isAddKeyOpen = true)} class="btn-primary">Add control key</button>
-  <AddControlKey isOpen={isAddKeyOpen} close={() => (isAddKeyOpen = false)} />
+  <button on:click|preventDefault={() => (isAddAccountIdOpen = true)} class="btn-primary">Add Account Id</button>
+  <AddAccountId isOpen={isAddAccountIdOpen} close={() => (isAddAccountIdOpen = false)} />
 </ListCard>
