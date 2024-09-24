@@ -3,6 +3,7 @@
   export let isActive: boolean = false;
   export let onClick: () => void = () => {};
   export let id: string = '';
+  export let target: string = '';
 </script>
 
 <a
@@ -12,6 +13,7 @@
   class={` flex h-[100px] items-center justify-center text-sm font-bold ${
     isActive && 'bg-bg-black-active shadow-blue-border'
   }`}
+  {target}
 >
   <slot />
 </a>

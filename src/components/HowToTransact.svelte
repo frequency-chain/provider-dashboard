@@ -4,34 +4,28 @@
 
 <div class={`column ${additionalStyles}`}>
   <p>
-    To transact on Frequency as a provider you will need Frequency utility tokens. On Frequency Testnet, you can get
-    tokens from the Testnet Faucet.
+    To transact on Frequency as a Provider you will need Frequency utility tokens. On Frequency Testnet, you can get
+    tokens from the Testnet Faucet sent to the Account Id that you want to use.
   </p>
-  <p>To do that:</p>
+
+  <a href="https://faucet.testnet.frequency.xyz" target="_blank" class="btn-primary">Testnet Faucet</a>
+
   <ol class="ordered-list">
     <li>
-      Get XRQCY tokens for the <a
-        href="https://faucet.testnet.frequency.xyz/"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="underline">Frequency Testnet (Paseo)</a
-      > and follow the instructions using your desired wallet address to get XRQCY tokens.
+      When you are done requesting funds from the faucet, verify the tokens have been applied by selecting or
+      re-selecting the Account Id you chose above. You may need to wait a minute.
     </li>
     <li>
-      Once that succeeds, verify the tokens have made it to your wallet by selecting or re-selecting the address above.
-      You may need to wait a minute.
-    </li>
-    <li>
-      For more information, you can also visit the
+      For more information, visit the
       <a
-        href="https://cloudflare-ipfs.com/ipns/dotapps.io/#/accounts"
+        href="https://polkadot-dotapps-io.ipns.dweb.link/#/accounts"
         target="_blank"
         rel="noopener noreferrer"
         class="underline"
       >
-        Accounts page for the correct network via the Polkadot UI.
+        Polkadot Apps Accounts page
       </a>
-      .
+      and select the desired Frequency network from the Polkadot UI.
     </li>
   </ol>
 </div>

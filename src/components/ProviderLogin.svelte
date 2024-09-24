@@ -19,6 +19,7 @@
     </div>
     <Button id="request-2b-provider-btn" title="Become a Provider" action={pageContent.becomeProvider} />
   </BlockSection>
-
-  <HowToTransact additionalStyles="mt-12 text-xs gap-1" />
+  <BlockSection title="Need tokens?">
+    <HowToTransact additionalStyles="text-sm" />
+  </BlockSection>
 </div>
