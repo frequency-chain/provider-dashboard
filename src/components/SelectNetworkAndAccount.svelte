@@ -7,6 +7,7 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
+  import AddToClipboard from './AddToClipboard.svelte';
 
   export let newUser: Account | undefined;
   export let accounts: Accounts;
@@ -110,15 +111,20 @@
     />
   {/if}
   <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-  <DropDownMenu
-    id="controlkeys"
-    label={accountSelectorTitle}
-    bind:value={selectedAccount}
-    placeholder={accountSelectorPlaceholder}
-    options={Array.from(accounts.values())}
-    onChange={accountChanged}
-    formatter={formatAccount}
-    disabled={accounts.size === 0 || isLoading}
-  />
+  <div class="flex items-end">
+    <DropDownMenu
+      id="controlkeys"
+      label={accountSelectorTitle}
+      bind:value={selectedAccount}
+      placeholder={accountSelectorPlaceholder}
+      options={Array.from(accounts.values())}
+      onChange={accountChanged}
+      formatter={formatAccount}
+      disabled={accounts.size === 0 || isLoading}
+    />
+    {#if selectedAccount?.address}
+      <AddToClipboard copyValue={selectedAccount?.address} />
+    {/if}
+  </div>
   <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
 </div>
