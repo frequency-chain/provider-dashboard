@@ -16,9 +16,9 @@
     <FailureIcon />
   {/if}
 
-  <div>
-    <div class="break-all">Hash: {activity.txnId}</div>
-    <ul class="unordered-list break-words text-sm">
+  <div class="break-['break-word']">
+    <div>Hash: {activity.txnId}</div>
+    <ul class="unordered-list text-sm">
       {#each activity.txnStatusItems as item}
         <li>{item}</li>
       {/each}
