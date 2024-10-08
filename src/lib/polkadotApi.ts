@@ -46,7 +46,6 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   const locked = accountData.frozen.toBigInt();
   const transferable =  free - locked;
   const total = free + accountData.reserved.toBigInt();
-  console.debug({accountData});
   return {
     transferable,
     locked,
