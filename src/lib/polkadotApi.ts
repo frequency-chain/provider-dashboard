@@ -36,16 +36,21 @@ export function getToken(chain: ChainProperties) {
 }
 
 export interface AccountBalances {
-  free: bigint;
-  frozen: bigint;
-  reserved: bigint;
+  transferable: bigint;
+  locked: bigint;
+  total: bigint;
 }
 export async function getBalances(apiPromise: ApiPromise, accountId: string): Promise<AccountBalances> {
   const accountData = (await apiPromise.query.system.account(accountId)).data;
+  const free = accountData.free.toBigInt();
+  const locked = accountData.frozen.toBigInt();
+  const transferable =  free - locked;
+  const total = free + accountData.reserved.toBigInt();
+  console.debug({accountData});
   return {
-    free: accountData.free.toBigInt(),
-    frozen: accountData.frozen.toBigInt(),
-    reserved: accountData.reserved.toBigInt(),
+    transferable,
+    locked,
+    total
   };
 }
 

@@ -54,7 +54,6 @@ export async function fetchAccountsForNetwork(
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
 ): Promise<void> {
-  console.log('fetchAccountsForNetwork() - ', selectedNetwork);
 
   const allAccounts: Accounts = new Map<SS58Address, Account>();
 
