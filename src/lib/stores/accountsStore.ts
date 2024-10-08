@@ -54,7 +54,6 @@ export async function fetchAccountsForNetwork(
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
 ): Promise<void> {
-
   const allAccounts: Accounts = new Map<SS58Address, Account>();
 
   // If the network is localhost, add the default test accounts for the chain

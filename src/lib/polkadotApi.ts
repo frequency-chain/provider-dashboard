@@ -44,12 +44,12 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
   const accountData = (await apiPromise.query.system.account(accountId)).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
-  const transferable =  free - locked;
+  const transferable = free - locked;
   const total = free + accountData.reserved.toBigInt();
   return {
     transferable,
     locked,
-    total
+    total,
   };
 }
 
