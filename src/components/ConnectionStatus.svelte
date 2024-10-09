@@ -11,7 +11,7 @@
   <div class="flex items-center gap-6">
     <div class="flex items-center gap-2">
       {#if $storeChainInfo.connected}
-        <div class="w-1 h-1 rounded-full bg-green-success p-1" />
+        <div class="w-1 h-1 rounded-full bg-success p-1" />
       {:else}
         <div class="w-1 bg-red-error h-1 rounded-full p-1" />
       {/if}
