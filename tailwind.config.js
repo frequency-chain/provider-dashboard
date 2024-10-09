@@ -25,12 +25,9 @@ export default {
       success: '#27AE60',
       warning: '#F99A2A',
       error: '#EB5757',
-      'teal-dark': '#18465E',
-      'teal-light': '#55B1AB',
-
+      teal: '#55B1AB',
       divider: '#504D4D',
       overlay: 'rgba(57, 52, 52, 0.75)',
-
     },
     width: {
       modal: '480px',

@@ -10,8 +10,7 @@
   line-height: 24px;
   font-weight: 400;
 
-  background-color: #FEFAF3;
-  color: #18465E;
+  background-color: #fefaf3;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -23,12 +22,20 @@
 
 /*  */
 @layer components {
+  .sidebar-bg {
+    @apply bg-flan;
+  }
+
   .btn-primary {
-    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal-light text-base font-bold text-white disabled:bg-disabled;
+    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal text-base font-bold text-white hover:text-white hover:opacity-75 disabled:bg-disabled;
+  }
+
+  .btn-primary:disabled {
+    @apply hover:opacity-100;
   }
 
   .btn-no-fill {
-    @apply text-sm text-white underline;
+    @apply text-sm underline hover:text-bright-blue;
   }
 
   .action-card {
@@ -79,16 +86,16 @@
   }
 
   .data-value-lg {
-    @apply font-data text-lg text-teal-light;
+    @apply font-data text-lg text-teal;
   }
 
   .data-value-2xl {
-    @apply font-data text-2xl text-teal-light;
+    @apply font-data text-2xl text-teal;
   }
 
   /* layout */
   .content-block {
-    @apply rounded-md bg-white p-7 text-teal-dark drop-shadow-lg;
+    @apply rounded-md bg-white p-7 drop-shadow-lg;
   }
 
   .break-anywhere {
@@ -98,7 +105,6 @@
 
 @layer base {
   body {
-    @apply text-teal-dark;
     min-height: 100vh;
   }
 
@@ -106,23 +112,11 @@
     @apply select-none;
   }
 
-  .btn-primary {
-    @apply bg-teal-light;
-  }
-
-  .btn-primary:hover {
-    @apply opacity-75;
-  }
-
-  .sidebar-bg {
-    @apply bg-flan;
-  }
-
   input,
   [type='text'],
   [type='number'],
   select {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none py-0 pl-2 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray-3 disabled:text-disabled disabled:opacity-85;
   }
 
   select {
@@ -131,5 +125,9 @@
 
   ::placeholder {
     @apply text-disabled !important;
+  }
+
+  a {
+    @apply hover:text-bright-blue;
   }
 }
