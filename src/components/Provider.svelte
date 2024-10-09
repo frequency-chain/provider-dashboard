@@ -29,10 +29,10 @@
       { label: 'Name', value: $user.providerName ?? '' },
       {
         label: 'Total Balance',
-        value: balanceToHuman(accountBalances.free + accountBalances.frozen, $storeChainInfo.token),
+        value: balanceToHuman(accountBalances.total, $storeChainInfo.token),
       },
-      { label: 'Transferable', value: balanceToHuman(accountBalances.free, $storeChainInfo.token) },
-      { label: 'Locked', value: balanceToHuman(accountBalances.frozen, $storeChainInfo.token) },
+      { label: 'Transferable', value: balanceToHuman(accountBalances.transferable, $storeChainInfo.token) },
+      { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
     ];
   }
 </script>
