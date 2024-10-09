@@ -42,7 +42,7 @@ export default {
       },
       boxShadow: {
         md: '0px 4px 7px rgba(0,0,0,.25)',
-        'blue-border': '8px 0 0 #69B9CD',
+        'blue-border': '8px 0 0 #5E69FF',
       },
       backgroundImage: {
         topRight: 'url(/assets/top-right-bars.png)',
