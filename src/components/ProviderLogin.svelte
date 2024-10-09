@@ -6,7 +6,7 @@
   import { pageContent } from '$lib/stores/pageContentStore';
 </script>
 
-<div id="provider-login" class="column w-single-block">
+<div id="provider-login" class="column content-block w-single-block">
   <BlockSection title="Provider Login">
     <LoginForm />
   </BlockSection>
