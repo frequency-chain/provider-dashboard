@@ -1,6 +1,7 @@
 <div>
   <div class="label mb-2">Requirements</div>
-`  <ol class="ordered-list text-sm">
+  `
+  <ol class="ordered-list text-sm">
     <li>
       Ensure the new Account Id has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.

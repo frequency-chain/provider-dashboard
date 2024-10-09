@@ -12,11 +12,7 @@
     relationships in form of Permissions and Grants, respectively.
   </p>
   <p class="pt-6">Click OK to get started.</p>
-  <button
-    on:click|preventDefault={hide}
-    on:keydown={hide}
-    class="mt-6 rounded-2xl btn-primary p-2 px-8 text-white"
-  >
+  <button on:click|preventDefault={hide} on:keydown={hide} class="btn-primary mt-6 rounded-2xl p-2 px-8 text-white">
     Ok
   </button>
 </div>
