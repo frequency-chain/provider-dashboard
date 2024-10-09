@@ -13,7 +13,7 @@
 >
   <slot name="question" />
   <svg
-    class="w-8 ml-12 h-8 shrink-0 transform rounded bg-blue p-1 transition-transform duration-300 {isOpen
+    class="w-8 ml-12 h-8 shrink-0 transform rounded btn-primary p-1 transition-transform duration-300 {isOpen
       ? 'rotate-180'
       : ''}"
     xmlns="http://www.w3.org/2000/svg"

@@ -4,10 +4,27 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  font-family: Poppins, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  background-color: #FEFAF3;
+  color: #18465E;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 /*  */
 @layer components {
   .btn-primary {
-    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
+    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal-light text-base font-bold text-white disabled:bg-disabled;
   }
 
   .btn-no-fill {
@@ -27,9 +44,6 @@
   }
 
   /* layout */
-  .content-block {
-    @apply rounded-md bg-bg-black p-7;
-  }
   .unordered-list {
     @apply ml-6 list-disc text-wrap;
   }
@@ -47,7 +61,7 @@
   }
 
   .section-title-underlined {
-    @apply section-title border-b border-divider pb-3;
+    @apply section-title border-b border-gray-2 pb-3;
   }
 
   .label {
@@ -56,24 +70,25 @@
 
   /* data */
   .data-value-sm {
-    @apply font-data text-sm text-green;
+    /*@apply font-data text-sm text-green;*/
+    @apply font-data text-sm text-black;
   }
 
   .data-value-base {
-    @apply font-data text-base text-green;
+    @apply font-data text-base text-black;
   }
 
   .data-value-lg {
-    @apply font-data text-lg text-green;
+    @apply font-data text-lg text-teal-light;
   }
 
   .data-value-2xl {
-    @apply font-data text-2xl text-green;
+    @apply font-data text-2xl text-teal-light;
   }
 
   /* layout */
   .content-block {
-    @apply rounded-md bg-bg-black p-7;
+    @apply rounded-md bg-white p-7 text-teal-dark drop-shadow-lg;
   }
 
   .break-anywhere {
@@ -83,13 +98,24 @@
 
 @layer base {
   body {
-    color: white;
+    @apply text-teal-dark;
     min-height: 100vh;
-    background: linear-gradient(to top, #2c333d, #007da1);
   }
 
   button {
     @apply select-none;
+  }
+
+  .btn-primary {
+    @apply bg-teal-light;
+  }
+
+  .btn-primary:hover {
+    @apply opacity-75;
+  }
+
+  .sidebar-bg {
+    @apply bg-flan;
   }
 
   input,

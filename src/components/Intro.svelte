@@ -15,7 +15,7 @@
   <button
     on:click|preventDefault={hide}
     on:keydown={hide}
-    class="mt-6 rounded-2xl border-black bg-blue p-2 px-8 text-white"
+    class="mt-6 rounded-2xl btn-primary p-2 px-8 text-white"
   >
     Ok
   </button>
