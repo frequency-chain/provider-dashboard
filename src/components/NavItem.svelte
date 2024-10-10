@@ -11,7 +11,7 @@
   {href}
   on:click={onClick}
   class={` flex h-[100px] items-center justify-center text-sm font-bold ${
-    isActive && 'bg-bg-black-active shadow-blue-border'
+    isActive && 'bg-cream text-bright-blue shadow-blue-border'
   }`}
   {target}
 >

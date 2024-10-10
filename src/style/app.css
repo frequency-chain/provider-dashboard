@@ -4,14 +4,38 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  font-family: Poppins, Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+
+  background-color: #fefaf3;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 /*  */
 @layer components {
+  .sidebar-bg {
+    @apply bg-flan;
+  }
+
   .btn-primary {
-    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-blue text-base font-bold text-white disabled:bg-disabled;
+    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal text-base font-bold text-white hover:text-white hover:opacity-75 disabled:bg-disabled;
+  }
+
+  .btn-primary:disabled {
+    @apply hover:opacity-100;
   }
 
   .btn-no-fill {
-    @apply text-sm text-white underline;
+    @apply text-sm underline hover:text-bright-blue;
   }
 
   .action-card {
@@ -27,9 +51,6 @@
   }
 
   /* layout */
-  .content-block {
-    @apply rounded-md bg-bg-black p-7;
-  }
   .unordered-list {
     @apply ml-6 list-disc text-wrap;
   }
@@ -47,7 +68,7 @@
   }
 
   .section-title-underlined {
-    @apply section-title border-b border-divider pb-3;
+    @apply section-title border-b border-gray-2 pb-3;
   }
 
   .label {
@@ -56,24 +77,26 @@
 
   /* data */
   .data-value-sm {
-    @apply font-data text-sm text-green;
+    /*@apply font-data text-sm text-green;*/
+    @apply font-data text-sm text-black;
   }
 
   .data-value-base {
-    @apply font-data text-base text-green;
+    @apply font-data text-base text-black;
   }
 
   .data-value-lg {
-    @apply font-data text-lg text-green;
+    @apply font-data text-lg text-teal;
   }
 
   .data-value-2xl {
-    @apply font-data text-2xl text-green;
+    @apply font-data text-2xl text-teal;
   }
 
   /* layout */
   .content-block {
-    @apply rounded-md bg-bg-black p-7;
+    @apply box-border rounded-md bg-white p-7;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
   .break-anywhere {
@@ -83,9 +106,7 @@
 
 @layer base {
   body {
-    color: white;
     min-height: 100vh;
-    background: linear-gradient(to top, #2c333d, #007da1);
   }
 
   button {
@@ -96,7 +117,7 @@
   [type='text'],
   [type='number'],
   select {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none py-0 pl-2 text-sm text-black outline-none disabled:text-disabled disabled:opacity-85;
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray-3 disabled:text-disabled disabled:opacity-85;
   }
 
   select {
@@ -105,5 +126,9 @@
 
   ::placeholder {
     @apply text-disabled !important;
+  }
+
+  a {
+    @apply hover:text-bright-blue;
   }
 }

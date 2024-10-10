@@ -1,7 +1,6 @@
 <script lang="ts">
   import Header from '../components/Header.svelte';
   import Nav from '../components/Nav.svelte';
-  import Wave from '../components/Wave.svelte';
   import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
@@ -26,9 +25,6 @@
 </script>
 
 <div>
-  <div class="fixed right-0 top-[10%] z-[-1] w-[100%] opacity-60">
-    <Wave />
-  </div>
   <div class="flex">
     <Nav />
     <div class="m-6 w-[100%] pl-[126px]">
