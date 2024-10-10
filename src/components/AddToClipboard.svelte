@@ -2,22 +2,22 @@
   import Clipboard from './Clipboard.svelte';
   import CopyIcon from '../lib/assets/CopyIcon.svelte';
 
-  let fillColor = '#fff';
+  let fillColor = '#000';
   let isClicked = false;
 
   function handleMouseEnter() {
-    fillColor = '#459ABA';
+    fillColor = '#5E69FF';
   }
 
   function handleMouseLeave() {
-    if (!isClicked) fillColor = '#fff';
+    if (!isClicked) fillColor = '#000';
   }
 
   function handleClick() {
     fillColor = '#7CFA4D'; // Change to green on click
     isClicked = true;
     setTimeout(() => {
-      fillColor = '#fff'; // Reset to original
+      fillColor = '#000'; // Reset to original
       isClicked = false;
     }, 2000);
   }

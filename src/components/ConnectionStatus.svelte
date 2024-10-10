@@ -1,5 +1,5 @@
 <script lang="ts">
-  import switchIcon from '$lib/assets/switch.png';
+  import Switch from '$lib/assets/Switch.svelte';
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
   import { isLoggedIn, storeChainInfo } from '$lib/stores';
@@ -24,8 +24,8 @@
       on:click|preventDefault={() => {
         showConnectProvider = true;
       }}
-      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-green drop-shadow"
-      ><img src={switchIcon} alt="switch" class="w-[24px]" />
+      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-bright-blue drop-shadow hover:opacity-[75%]"
+      ><Switch class="w-[24px]" />
     </button>
     <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
   </div>

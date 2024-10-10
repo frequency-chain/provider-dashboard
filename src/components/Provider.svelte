@@ -8,7 +8,7 @@
   import ListCard from './ListCard.svelte';
   import AddAccountId from './AddAccountId.svelte';
 
-  let accountBalances: AccountBalances = { free: 0n, reserved: 0n, frozen: 0n };
+  let accountBalances: AccountBalances = { transferable: 0n, locked: 0n, total: 0n };
   let isAddAccountIdOpen: boolean = false;
 
   $: {

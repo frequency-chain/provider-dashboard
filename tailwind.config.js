@@ -21,7 +21,6 @@ export default {
       'bright-blue': '#5E69FF',
       'dusty-rose': '#A06B87',
       info: '#2F80ED',
-      green: '#6EE9D1',
       success: '#27AE60',
       warning: '#F99A2A',
       error: '#EB5757',

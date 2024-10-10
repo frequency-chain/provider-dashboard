@@ -95,7 +95,8 @@
 
   /* layout */
   .content-block {
-    @apply rounded-md bg-white p-7 drop-shadow-lg;
+    @apply box-border rounded-md bg-white p-7;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
   .break-anywhere {
@@ -105,7 +106,10 @@
 
 @layer base {
   body {
+    height: 100%;
+    width: 100%;
     min-height: 100vh;
+    position: absolute;
   }
 
   button {
