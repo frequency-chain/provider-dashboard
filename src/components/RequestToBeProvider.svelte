@@ -15,7 +15,6 @@
   let localDotApi: DotApi = defaultDotApi;
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
 
   dotApi.subscribe((api) => (localDotApi = api));
 
@@ -64,7 +63,7 @@
       <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
         Submit Request To Be Provider</button
       >
-      <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
+      <a href="/" class="btn-cancel">Cancel</a>
     </div>
   </form>
 </div>

@@ -20,6 +20,6 @@
   </p>
   <form class="flex w-[350px] items-end justify-between">
     <button id="email-request-btn" on:click|preventDefault={composeEmail} class="btn-primary">Email Request</button>
-    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+    <a href="/" class="btn-no-fill">Cancel</a>
   </form>
 </div>

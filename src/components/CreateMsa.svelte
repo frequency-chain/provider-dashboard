@@ -11,11 +11,6 @@
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
 
-  // a callback for when the user cancels this action
-  export let cancelAction = () => {
-    pageContent.login();
-  };
-
   let recentActivityItem: Activity | undefined;
   let recentTxnId: Activity['txnId'] | undefined;
   let isInProgress = false;
@@ -66,7 +61,7 @@
         Create an MSA
       {/if}
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+    <a href="/" class="btn-no-fill">Cancel</a>
   </form>
 </div>
 {#if recentActivityItem}

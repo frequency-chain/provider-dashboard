@@ -10,10 +10,6 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
 
-  // a callback for when the user cancels this action
-  export let cancelAction = () => {
-    pageContent.login();
-  };
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
@@ -82,7 +78,7 @@
         Create Provider
       {/if}
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+    <a href="/" class="btn-no-fill">Cancel</a>
   </div>
 </form>
 {#if recentActivityItem}

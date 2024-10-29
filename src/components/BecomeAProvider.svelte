@@ -6,13 +6,7 @@
   import CreateMsa from './CreateMsa.svelte';
   import CreateProvider from './CreateProvider.svelte';
   import EmailProviderRequest from './EmailProviderRequest.svelte';
-  import { pageContent } from '$lib/stores/pageContentStore';
   import { NetworkType } from '$lib/stores/networksStore';
-
-  // a callback for when the user cancels this action
-  export let cancelAction = () => {
-    pageContent.login();
-  };
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
@@ -34,7 +28,7 @@
           <CreateProvider />
         {/if}
       {:else}
-        <button on:click|preventDefault={cancelAction} class="btn-no-fill text-left">Back</button>
+        <a href="/" class="btn-no-fill text-left">Back</a>
       {/if}
     </form>
   </BlockSection>

@@ -7,8 +7,6 @@
 
 {#if $pageContent === PageContent.Dashboard}
   <Dashboard />
-{:else if $pageContent === PageContent.Login}
+{:else}
   <ProviderLogin />
-{:else if $pageContent === PageContent.BecomeProvider}
-  <BecomeAProvider />
 {/if}
