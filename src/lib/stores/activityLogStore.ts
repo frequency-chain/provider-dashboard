@@ -65,8 +65,8 @@ export function parseActivity(
     } else {
       console.debug({ status });
     }
-  } catch (e: any) {
-    txnStatusItems.push('Error: ' + e.toString());
+  } catch (e: unknown) {
+    txnStatusItems.push('Error: ' + (e as Error).toString());
     txnStatus = TxnStatus.FAILURE;
   }
   return { txnStatusItems, txnStatus, txnId };
