@@ -7,6 +7,7 @@
   import CreateProvider from './CreateProvider.svelte';
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { pageContent } from '$lib/stores/pageContentStore';
+  import { NetworkType } from '$lib/stores/networksStore';
 
   // a callback for when the user cancels this action
   export let cancelAction = () => {
@@ -24,7 +25,7 @@
         accountSelectorPlaceholder="Select an Account Id"
         noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
       />
-      {#if $user?.network != null && $user.network.name === 'MAINNET'}
+      {#if $user?.network != null && $user.network.id === NetworkType.MAINNET}
         <EmailProviderRequest />
       {:else if $user && $user?.address !== ''}
         {#if $user?.msaId === 0}

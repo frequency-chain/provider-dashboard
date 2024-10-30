@@ -3,7 +3,7 @@ import { Keyring, type ApiPromise } from '@polkadot/api';
 import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { getMsaInfo } from '$lib/polkadotApi';
 import { isFunction } from '@polkadot/util';
-import type { NetworkInfo } from '$lib/stores/networksStore';
+import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
@@ -57,7 +57,7 @@ export async function fetchAccountsForNetwork(
   const allAccounts: Accounts = new Map<SS58Address, Account>();
 
   // If the network is localhost, add the default test accounts for the chain
-  if (selectedNetwork.name === 'LOCALHOST') {
+  if (selectedNetwork.id === NetworkType.LOCALHOST) {
     const keyring = new Keyring({ type: 'sr25519' });
 
     await Promise.all(

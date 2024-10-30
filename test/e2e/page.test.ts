@@ -57,7 +57,7 @@ describe('End to End Tests', () => {
 
     // Be sure to wait for all the promises to resolve before checking the result
     await waitFor(() => {
-      expect(select).toHaveTextContent('LOCALHOST: ws://127.0.0.1:9944');
+      expect(select).toHaveTextContent('Localhost: ws://127.0.0.1:9944');
     });
 
     const btn = container.querySelector('button#connect-button');
