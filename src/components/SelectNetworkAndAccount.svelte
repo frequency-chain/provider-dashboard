@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
@@ -66,13 +66,13 @@
 
   async function networkChanged() {
     isLoading = true;
+    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
     accounts = new Map();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await connectAndFetchAccounts(selectedNetwork!);
     }
-    isCustomNetwork = selectedNetwork?.name === 'CUSTOM';
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
     isLoading = false;

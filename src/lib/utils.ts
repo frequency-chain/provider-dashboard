@@ -1,5 +1,5 @@
 import { formatBalance, hexToString } from '@polkadot/util';
-import type { NetworkInfo } from './stores/networksStore';
+import { NetworkType, type NetworkInfo } from './stores/networksStore';
 import type { Account } from './stores/accountsStore';
 import { isFunction } from '@polkadot/util';
 
@@ -60,7 +60,7 @@ export function isValidURL(url: string): boolean {
 }
 
 export function formatNetwork(network: NetworkInfo): string {
-  if (network.name === 'CUSTOM') {
+  if (network.id === NetworkType.CUSTOM) {
     return network.name;
   }
   return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
