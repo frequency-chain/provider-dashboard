@@ -61,7 +61,7 @@ export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Pro
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
-      msaInfo.providerName = registryEntry.providerName.toUtf8();
+      msaInfo.providerName = registryEntry.providerName.toString();
     }
   }
   return msaInfo;
