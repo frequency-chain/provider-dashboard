@@ -128,6 +128,7 @@ async function submitExtrinsicWithKeyring(
   return extrinsic.hash.toString();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
   if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
   if (extension) return await signPayloadWithExtension(extension, account.address, payload);
@@ -141,6 +142,7 @@ async function signPayload(payload: any, account: Account, extension: InjectedEx
 export async function signPayloadWithExtension(
   injector: InjectedExtension,
   signingPublicKey: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   payload: any
 ): Promise<string> {
   const signer = injector?.signer;
@@ -167,6 +169,7 @@ export async function signPayloadWithExtension(
 
 // Use the built-in Alice..Ferdie accounts to sign some data
 // returns a properly formatted signature to submit with an extrinsic
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any): string {
   try {
     // u8aWrapBytes literally puts <Bytes></Bytes> around the payload.

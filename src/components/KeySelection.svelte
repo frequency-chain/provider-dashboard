@@ -1,5 +1,5 @@
 <script lang="ts">
-  export let validAccounts: Record<string, any> = {};
+  export let validAccounts: Record<string, { meta: { name: string } }> = {};
   export let component = '';
   export let selectLabel = 'empty';
   export let selectedOption = '';

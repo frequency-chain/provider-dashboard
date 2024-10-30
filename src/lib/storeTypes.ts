@@ -1,11 +1,12 @@
 import type { ApiPromise, WsProvider } from '@polkadot/api';
 import type { Keyring } from '@polkadot/api';
+import type { ApiOptions } from '@polkadot/api/types';
 
 export interface DotApi {
   api?: ApiPromise;
   wsProvider?: WsProvider;
   keyring?: Keyring;
-  options?: any;
+  options?: ApiOptions;
   selectedEndpoint?: string;
 }
 

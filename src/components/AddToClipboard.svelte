@@ -26,6 +26,7 @@
 
   const copy = () => {
     const app = new Clipboard({
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       target: document.getElementById('clipboard')!,
       props: { copyValue },
     });

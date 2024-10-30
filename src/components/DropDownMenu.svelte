@@ -1,11 +1,11 @@
-<script lang="ts" generics="T">
+<script lang="ts" generics="T extends { toString: () => string }">
   export let label: string;
   export let id: string = '';
   export let options: T[]; // eslint-disable-line no-undef
   export let value: T | null = null; // eslint-disable-line no-undef
   export let placeholder: string = '';
   export let onChange: (() => void) | undefined = undefined;
-  export let formatter: (value: any) => string = (value) => value.toString();
+  export let formatter: (value: T) => string = (value) => value.toString(); // eslint-disable-line no-undef
 </script>
 
 <div>
