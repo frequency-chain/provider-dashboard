@@ -1,7 +1,6 @@
 import type { MsaInfo } from '$lib/storeTypes';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type { Option, u64 } from '@polkadot/types';
 import type { DotApi } from '$lib/storeTypes';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import { options } from '@frequency-chain/api-augment';
@@ -54,15 +53,15 @@ export async function getBalances(apiPromise: ApiPromise, accountId: string): Pr
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
-  const received: u64 = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey))?.unwrapOrDefault();
+  const received = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey))?.unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
-    const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
+    const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
-      msaInfo.providerName = registryEntry.providerName;
+      msaInfo.providerName = registryEntry.providerName.toString();
     }
   }
   return msaInfo;
@@ -83,10 +82,10 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
     lastReplenishedEpoch: 0n,
   };
 
-  const providerRegistry: Option<any> = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+  const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaId);
 
   if (providerRegistry.isSome) {
-    const details: any = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();
+    const details = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();
     capacityDetails = {
       remainingCapacity: details.remainingCapacity.toBigInt(),
       totalTokensStaked: details.totalTokensStaked.toBigInt(),

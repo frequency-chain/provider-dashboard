@@ -34,8 +34,8 @@ export function isLocalhost(url: string): boolean {
   try {
     const parsedURL: URL = new URL(url);
     return parsedURL.hostname.includes('localhost') || parsedURL.hostname.includes('127.0.0.1');
-  } catch (e: any) {
-    console.error(e.toString());
+  } catch (e: unknown) {
+    console.error((e as Error).toString());
     return false;
   }
 }
@@ -44,8 +44,8 @@ export function isMainnet(url: string): boolean {
   try {
     const parsedURL: URL = new URL(url);
     return !!parsedURL.hostname.match(/^(0|1).rpc.frequency.xyz/)?.length;
-  } catch (e: any) {
-    console.error(e.toString());
+  } catch (e: unknown) {
+    console.error((e as Error).toString());
     return false;
   }
 }
@@ -94,7 +94,7 @@ export function createMailto(to: string, subject?: string, body?: string): strin
 }
 
 // Convert the provider name in hex to a human-readable value.
-export const providerNameToHuman = (name: any): string => {
+export const providerNameToHuman = (name: { toString: () => string }): string => {
   return hexToString(name.toString());
 };
 

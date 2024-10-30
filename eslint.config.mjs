@@ -19,7 +19,6 @@ export default tseslint.config(
       '@typescript-eslint/no-empty-function': 'off',
       '@typescript-eslint/no-inferrable-types': 'off',
       '@typescript-eslint/consistent-type-assertions': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
