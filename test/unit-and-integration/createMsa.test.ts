@@ -16,9 +16,9 @@ describe('CreateMsa component', () => {
   it('shows text + Cancel button', () => {
     const { getByRole, getByText } = render(CreateMsa);
     expect(getByRole('button', { name: 'Create an MSA' })).toBeInTheDocument();
-    const cancel = getByText( 'Cancel' );
+    const cancel = getByText('Cancel');
     expect(cancel).toBeInTheDocument();
-    expect(cancel.getAttribute('href')).toEqual('/')
+    expect(cancel.getAttribute('href')).toEqual('/');
   });
 
   // TODO: we introduced create api into the parent component, which now breaks the test.

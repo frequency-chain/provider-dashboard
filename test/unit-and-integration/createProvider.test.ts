@@ -8,16 +8,15 @@ import userEvent from '@testing-library/user-event';
 globalThis.alert = () => {};
 
 describe('CreateProvider component', () => {
-
   beforeAll(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
     const { getByRole, getByText } = render(CreateProvider);
     expect(getByRole('button', { name: 'Create Provider' })).toBeInTheDocument();
-    const cancel = getByText( 'Cancel' );
+    const cancel = getByText('Cancel');
     expect(cancel).toBeInTheDocument();
-    expect(cancel.getAttribute('href')).toEqual('/')
+    expect(cancel.getAttribute('href')).toEqual('/');
   });
 
   it('clicking CreateProvider calls the extrinsic', async () => {

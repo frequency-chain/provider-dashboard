@@ -62,7 +62,7 @@
         Create an MSA
       {/if}
     </button>
-    <BackToRootButton/>
+    <BackToRootButton />
   </form>
 </div>
 {#if recentActivityItem}

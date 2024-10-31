@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-let root="http://localhost:4173/"
+let root = 'http://localhost:4173/';
 
 test('Navigation from home page', async ({ page }) => {
   await page.goto('/');
@@ -18,4 +18,3 @@ test('Navigation from home page', async ({ page }) => {
   await page.waitForURL('**/faq');
   expect(page.getByText(/What is the difference between Mainnet and Testnets\?/)).toBeVisible();
 });
-

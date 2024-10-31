@@ -11,7 +11,6 @@ import Keyring from '@polkadot/keyring';
 globalThis.alert = () => {};
 
 describe('RequestToBeProvider component', () => {
-
   beforeEach(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
 

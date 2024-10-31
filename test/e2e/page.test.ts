@@ -38,8 +38,8 @@ describe('/become-a-provider', () => {
     pageContent.login();
     const { getByTestId } = render(Page);
     expect(getByTestId('become-a-provider')).toBeInTheDocument();
-  })
-})
+  });
+});
 
 describe('End to End Tests', () => {
   // TODO: @testing-library/svelte claims to add this automatically but it doesn't work without explicit afterEach
