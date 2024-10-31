@@ -8,6 +8,7 @@
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 
   let isInProgress = false;
   let recentActivityItem: Activity;
@@ -63,7 +64,7 @@
       <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
         Submit Request To Be Provider</button
       >
-      <a href="/" class="btn-cancel">Cancel</a>
+      <BackHomeButton />
     </div>
   </form>
 </div>

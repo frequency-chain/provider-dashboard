@@ -1,5 +1,6 @@
 <script lang="ts">
   import { createMailto } from '$lib/utils';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 
   let mailTo: string = createMailto('hello@frequency.xyz', 'Request to become a Frequency provider', '');
 
@@ -15,6 +16,6 @@
   </p>
   <form class="flex w-[350px] items-end justify-between">
     <button id="email-request-btn" on:click|preventDefault={composeEmail} class="btn-primary">Email Request</button>
-    <a href="/" class="btn-no-fill">Cancel</a>
+    <BackHomeButton />
   </form>
 </div>

@@ -17,4 +17,9 @@ test('Navigation from home page', async ({ page }) => {
   await page.getByText(/FAQ/).click();
   await page.waitForURL('**/faq');
   expect(page.getByText(/What is the difference between Mainnet and Testnets\?/)).toBeVisible();
+
+  // Click the Home button
+  await page.getByText(/Home/).click();
+  await page.waitForURL('**/');
+  await expect(page.getByText('Provider Login')).toBeVisible();
 });
