@@ -7,6 +7,7 @@
   import CreateProvider from './CreateProvider.svelte';
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { NetworkType } from '$lib/stores/networksStore';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
@@ -28,7 +29,7 @@
           <CreateProvider />
         {/if}
       {:else}
-        <a href="/" class="btn-no-fill text-left">Back</a>
+      <BackHomeButton  cancelText="Back"/>
       {/if}
     </form>
   </BlockSection>

@@ -1,12 +1,7 @@
 <script lang="ts">
-  import { pageContent } from '$lib/stores/pageContentStore';
   import { createMailto } from '$lib/utils';
 
   let mailTo: string = createMailto('hello@frequency.xyz', 'Request to become a Frequency provider', '');
-
-  export let cancelAction = () => {
-    pageContent.login();
-  };
 
   function composeEmail() {
     window.location.href = mailTo;

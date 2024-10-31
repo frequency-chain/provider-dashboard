@@ -9,6 +9,7 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
@@ -78,7 +79,7 @@
         Create Provider
       {/if}
     </button>
-    <a href="/" class="btn-no-fill">Cancel</a>
+    <BackHomeButton />
   </div>
 </form>
 {#if recentActivityItem}

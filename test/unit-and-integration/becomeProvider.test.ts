@@ -9,17 +9,11 @@ describe('BecomeAProvider component', () => {
   const mockCancelAction = vi.fn();
 
   it('shows text + Cancel button', () => {
-    const { container, getByRole } = render(BecomeAProvider, { cancelAction: mockCancelAction });
+    const { container, getByTestId} = render(BecomeAProvider);
     const title = container.querySelector('h2');
     expect(title).toHaveTextContent('Become a Provider');
-    expect(getByRole('button', { name: 'Back' })).toBeInTheDocument();
-  });
-
-  it('clicking Cancel performs the cancelAction callback', async () => {
-    const { getByRole } = render(BecomeAProvider, { cancelAction: mockCancelAction });
-
-    const cancel = getByRole('button', { name: 'Back' });
-    fireEvent.click(cancel);
-    expect(mockCancelAction).toHaveBeenCalled();
+    const cancel = getByTestId('back-home');
+    expect(cancel).toBeInTheDocument();
+    expect(cancel.getAttribute('href')).toEqual('/')
   });
 });

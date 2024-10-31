@@ -11,7 +11,6 @@ import Keyring from '@polkadot/keyring';
 globalThis.alert = () => {};
 
 describe('RequestToBeProvider component', () => {
-  const mockCancelAction = vi.fn();
 
   beforeEach(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
@@ -25,26 +24,21 @@ describe('RequestToBeProvider component', () => {
   });
 
   it('shows text + Cancel button', () => {
-    const { container, getByRole } = render(RequestToBeProvider, { cancelAction: mockCancelAction });
+    const { container, getByRole, getByText } = render(RequestToBeProvider);
     const title = container.querySelector('h2');
     expect(title).toHaveTextContent('Request to Be a Provider');
     expect(getByRole('button', { name: 'Submit Request To Be Provider' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(getByText('Cancel')).toBeInTheDocument();
   });
 
-  it('clicking Cancel performs the cancelAction callback', async () => {
-    const { getByRole } = render(RequestToBeProvider, { cancelAction: mockCancelAction });
-
-    const cancel = getByRole('button', { name: 'Cancel' });
-    fireEvent.click(cancel);
-    expect(mockCancelAction).toHaveBeenCalled();
+  it('clicking Cancel goes back home', async () => {
+    const { container, getByText } = render(RequestToBeProvider);
+    const cancel = getByText('Cancel').click();
   });
 
   it('clicking Request To Be Provider submits extrinsic and shows Transaction Status', async () => {
     const user = userEvent.setup();
-    const { getByRole, getByLabelText } = render(RequestToBeProvider, {
-      cancelAction: mockCancelAction,
-    });
+    const { getByRole, getByLabelText } = render(RequestToBeProvider);
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);

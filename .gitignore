@@ -38,3 +38,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .idea/
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

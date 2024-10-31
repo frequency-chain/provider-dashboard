@@ -8,28 +8,21 @@ import userEvent from '@testing-library/user-event';
 globalThis.alert = () => {};
 
 describe('CreateProvider component', () => {
-  const mockCancelAction = vi.fn();
 
   beforeAll(() => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
-    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
+    const { getByRole, getByText } = render(CreateProvider);
     expect(getByRole('button', { name: 'Create Provider' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    const cancel = getByText( 'Cancel' );
+    expect(cancel).toBeInTheDocument();
+    expect(cancel.getAttribute('href')).toEqual('/')
   });
-  it('clicking Cancel performs the callback', async () => {
-    const { getByRole } = render(CreateProvider, { cancelAction: mockCancelAction });
 
-    const cancel = getByRole('button', { name: 'Cancel' });
-    fireEvent.click(cancel);
-    expect(mockCancelAction).toHaveBeenCalled();
-  });
   it('clicking CreateProvider calls the extrinsic', async () => {
     userEvent.setup();
-    const { getByRole, getByLabelText } = render(CreateProvider, {
-      cancelAction: mockCancelAction,
-    });
+    const { getByRole, getByLabelText } = render(CreateProvider);
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);

@@ -10,6 +10,7 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
+  import BackToRootButton from '$components/BackHomeButton.svelte';
 
   let recentActivityItem: Activity | undefined;
   let recentTxnId: Activity['txnId'] | undefined;
@@ -61,7 +62,7 @@
         Create an MSA
       {/if}
     </button>
-    <a href="/" class="btn-no-fill">Cancel</a>
+    <BackToRootButton/>
   </form>
 </div>
 {#if recentActivityItem}
