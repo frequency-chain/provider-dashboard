@@ -1,6 +1,13 @@
 <script lang="ts">
-  export let title: string = '';
-  export let action = () => {};
+  import { preventDefault } from 'svelte/legacy';
+
+  interface Props {
+    title?: string;
+    action?: () => void;
+    [key: string]: unknown;
+  }
+
+  let { title = '', action = () => {}, ...rest }: Props = $props();
 </script>
 
-<button on:click|preventDefault={action} class="btn-primary" {...$$restProps}>{title}</button>
+<button onclick={preventDefault(action)} class="btn-primary" {...rest}>{title}</button>

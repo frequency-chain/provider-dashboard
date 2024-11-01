@@ -4,11 +4,7 @@
   import BlockSection from '$components/BlockSection.svelte';
   import type { Activity } from '$lib/storeTypes';
 
-  let activityItems: Activity[];
-
-  $: {
-    activityItems = $activityLog;
-  }
+  let activityItems: Activity[] = $derived($activityLog);
 </script>
 
 <BlockSection title="Activity Log">

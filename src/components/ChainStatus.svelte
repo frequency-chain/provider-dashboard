@@ -1,11 +1,11 @@
 <script lang="ts">
   import { storeChainInfo } from '$lib/stores';
 
-  $: chainStatus = [
+  let chainStatus = $derived([
     { label: 'Current Block', value: $storeChainInfo.blockNumber, id: 'block-number' },
     { label: 'Epoch', value: $storeChainInfo.epochNumber, id: 'epoch-number' },
     { label: 'Token', value: $storeChainInfo.token, id: 'token' },
-  ];
+  ]);
 </script>
 
 <div id="chain-status" class="content-block">

@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import { user } from '$lib/stores/userStore';
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
   import BlockSection from './BlockSection.svelte';

@@ -25,9 +25,9 @@
     "@eslint/js": "^9.9.0",
     "@playwright/test": "^1.48.2",
     "@polkadot/types-codec": "^12.4.1",
-    "@sveltejs/adapter-static": "^3.0.4",
-    "@sveltejs/kit": "2.5.24",
-    "@sveltejs/vite-plugin-svelte": "^3.1.1",
+    "@sveltejs/adapter-static": "^3.0.6",
+    "@sveltejs/kit": "^2.5.27",
+    "@sveltejs/vite-plugin-svelte": "^4.0.0",
     "@tailwindcss/forms": "^0.5.7",
     "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/svelte": "^5.2.1",
@@ -41,7 +41,7 @@
     "@vitest/ui": "^2.0.5",
     "autoprefixer": "^10.4.20",
     "eslint": "^9.9.0",
-    "eslint-plugin-svelte": "^2.43.0",
+    "eslint-plugin-svelte": "^2.45.1",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0",
     "jsdom": "^24.1.1",
@@ -50,14 +50,14 @@
     "prettier-plugin-svelte": "^3.2.6",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "sass": "^1.77.8",
-    "svelte": "^4.2.18",
-    "svelte-check": "^3.8.5",
-    "svelte-eslint-parser": "^0.41.0",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "svelte-eslint-parser": "^0.42.0",
     "tailwindcss": "^3.4.10",
     "tslib": "^2.6.3",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.2.0",
-    "vite": "^5.4.2",
+    "vite": "^5.4.4",
     "vitest": "^2.0.5"
   },
   "type": "module",
@@ -74,5 +74,136 @@
   },
   "stackblitz": {
     "startCommand": "npm run test:ui"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    "./assets/CopyIcon.svelte": {
+      "types": "./package/assets/CopyIcon.svelte.d.ts",
+      "svelte": "./package/assets/CopyIcon.svelte",
+      "default": "./package/assets/CopyIcon.svelte"
+    },
+    "./assets/FailureIcon.svelte": {
+      "types": "./package/assets/FailureIcon.svelte.d.ts",
+      "svelte": "./package/assets/FailureIcon.svelte",
+      "default": "./package/assets/FailureIcon.svelte"
+    },
+    "./assets/LoadingIcon.svelte": {
+      "types": "./package/assets/LoadingIcon.svelte.d.ts",
+      "svelte": "./package/assets/LoadingIcon.svelte",
+      "default": "./package/assets/LoadingIcon.svelte"
+    },
+    "./assets/SuccessIcon.svelte": {
+      "types": "./package/assets/SuccessIcon.svelte.d.ts",
+      "svelte": "./package/assets/SuccessIcon.svelte",
+      "default": "./package/assets/SuccessIcon.svelte"
+    },
+    "./assets/Switch.svelte": {
+      "types": "./package/assets/Switch.svelte.d.ts",
+      "svelte": "./package/assets/Switch.svelte",
+      "default": "./package/assets/Switch.svelte"
+    },
+    "./assets/bottom-left-bars.png": "./package/assets/bottom-left-bars.png",
+    "./assets/logo.svg": "./package/assets/logo.svg",
+    "./assets/switch.png": "./package/assets/switch.png",
+    "./assets/top-right-bars.png": "./package/assets/top-right-bars.png",
+    "./connections": {
+      "types": "./package/connections.d.ts",
+      "default": "./package/connections.js"
+    },
+    "./polkadotApi": {
+      "types": "./package/polkadotApi.d.ts",
+      "default": "./package/polkadotApi.js"
+    },
+    "./storeTypes": {
+      "types": "./package/storeTypes.d.ts",
+      "default": "./package/storeTypes.js"
+    },
+    "./stores/accountsStore": {
+      "types": "./package/stores/accountsStore.d.ts",
+      "default": "./package/stores/accountsStore.js"
+    },
+    "./stores/activityLogStore": {
+      "types": "./package/stores/activityLogStore.d.ts",
+      "default": "./package/stores/activityLogStore.js"
+    },
+    "./stores/networksStore": {
+      "types": "./package/stores/networksStore.d.ts",
+      "default": "./package/stores/networksStore.js"
+    },
+    "./stores/pageContentStore": {
+      "types": "./package/stores/pageContentStore.d.ts",
+      "default": "./package/stores/pageContentStore.js"
+    },
+    "./stores/storable": {
+      "types": "./package/stores/storable.d.ts",
+      "default": "./package/stores/storable.js"
+    },
+    "./stores/userStore": {
+      "types": "./package/stores/userStore.d.ts",
+      "default": "./package/stores/userStore.js"
+    },
+    "./stores": {
+      "types": "./package/stores.d.ts",
+      "default": "./package/stores.js"
+    },
+    "./utils": {
+      "types": "./package/utils.d.ts",
+      "default": "./package/utils.js"
+    }
+  },
+  "files": [
+    "package"
+  ],
+  "typesVersions": {
+    ">4.0": {
+      "assets/CopyIcon.svelte": [
+        "./package/assets/CopyIcon.svelte.d.ts"
+      ],
+      "assets/FailureIcon.svelte": [
+        "./package/assets/FailureIcon.svelte.d.ts"
+      ],
+      "assets/LoadingIcon.svelte": [
+        "./package/assets/LoadingIcon.svelte.d.ts"
+      ],
+      "assets/SuccessIcon.svelte": [
+        "./package/assets/SuccessIcon.svelte.d.ts"
+      ],
+      "assets/Switch.svelte": [
+        "./package/assets/Switch.svelte.d.ts"
+      ],
+      "connections": [
+        "./package/connections.d.ts"
+      ],
+      "polkadotApi": [
+        "./package/polkadotApi.d.ts"
+      ],
+      "storeTypes": [
+        "./package/storeTypes.d.ts"
+      ],
+      "stores/accountsStore": [
+        "./package/stores/accountsStore.d.ts"
+      ],
+      "stores/activityLogStore": [
+        "./package/stores/activityLogStore.d.ts"
+      ],
+      "stores/networksStore": [
+        "./package/stores/networksStore.d.ts"
+      ],
+      "stores/pageContentStore": [
+        "./package/stores/pageContentStore.d.ts"
+      ],
+      "stores/storable": [
+        "./package/stores/storable.d.ts"
+      ],
+      "stores/userStore": [
+        "./package/stores/userStore.d.ts"
+      ],
+      "stores": [
+        "./package/stores.d.ts"
+      ],
+      "utils": [
+        "./package/utils.d.ts"
+      ]
+    }
   }
 }

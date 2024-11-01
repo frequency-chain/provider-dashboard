@@ -3,9 +3,10 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { resolve } from 'path';
 
 // Why do the alias not work in vite.config.ts?
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [svelte({ hot: !process.env.VITEST })],
   resolve: {
+    conditions: mode === 'test' ? ['browser'] : [],
     alias: {
       $lib: resolve(__dirname, 'src/lib'),
       $components: resolve(__dirname, 'src/components'),
@@ -24,4 +25,4 @@ export default defineConfig({
     },
     include: ['test/e2e/*.{test,spec}.?(c|m)[jt]s?(x)', 'test/unit-and-integration/*.{test,spec}.?(c|m)[jt]s?(x)'],
   }
-});
+}));

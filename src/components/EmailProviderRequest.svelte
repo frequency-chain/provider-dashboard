@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
   import { createMailto } from '$lib/utils';
   import BackHomeButton from '$components/BackHomeButton.svelte';
 
@@ -15,7 +16,7 @@
     Frequency Foundation.
   </p>
   <form class="flex w-[350px] items-end justify-between">
-    <button id="email-request-btn" on:click|preventDefault={composeEmail} class="btn-primary">Email Request</button>
-    <BackHomeButton />
+    <button id="email-request-btn" onclick={preventDefault(composeEmail)} class="btn-primary">Email Request</button>
+    <!-- <BackHomeButton /> -->
   </form>
 </div>

@@ -1,5 +1,11 @@
 <script lang="ts">
-  let isOpen = false;
+  interface Props {
+    question?: import('svelte').Snippet;
+    answer?: import('svelte').Snippet;
+  }
+
+  let { question, answer }: Props = $props();
+  let isOpen = $state(false);
 
   function toggleIsOpen() {
     isOpen = !isOpen;
@@ -9,9 +15,9 @@
 <button
   id="faq-question"
   class="label text-md mt-2 flex w-full items-center justify-between border-t border-divider p-4 text-left"
-  on:click={toggleIsOpen}
+  onclick={toggleIsOpen}
 >
-  <slot name="question" />
+  {@render question?.()}
   <svg
     class="w-8 ml-12 h-8 shrink-0 transform bg-black p-1 transition-transform duration-300 {isOpen ? 'rotate-180' : ''}"
     xmlns="http://www.w3.org/2000/svg"
@@ -28,5 +34,5 @@
 </button>
 
 <div id="faq-answer" class={`p-3 ${isOpen ? 'block' : 'hidden'}`}>
-  <slot name="answer" />
+  {@render answer?.()}
 </div>

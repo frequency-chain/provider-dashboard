@@ -1,11 +1,15 @@
 <script lang="ts">
-  export let fillColor = '#fff';
-  export let handleClick;
-  export let handleMouseEnter;
-  export let handleMouseLeave;
+  interface Props {
+    fillColor?: string;
+    handleClick: () => void;
+    handleMouseEnter: () => void;
+    handleMouseLeave: () => void;
+  }
+
+  let { fillColor = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: Props = $props();
 </script>
 
-<button on:click={handleClick} on:mouseenter={handleMouseEnter} on:mouseleave={handleMouseLeave}
+<button aria-label="Copy icon" onclick={handleClick} onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}
   ><svg
     class="transition"
     fill={fillColor}

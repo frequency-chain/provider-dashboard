@@ -4,7 +4,11 @@
   import FailureIcon from '$lib/assets/FailureIcon.svelte';
   import { TxnStatus, type Activity } from '$lib/storeTypes';
 
-  export let activity: Activity;
+  interface Props {
+    activity: Activity;
+  }
+
+  let { activity }: Props = $props();
 </script>
 
 <div class="break-anywhere flex gap-2 text-wrap border-b border-divider py-2 text-sm">

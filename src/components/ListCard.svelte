@@ -1,7 +1,12 @@
 <script lang="ts">
-  export let title = '';
-  export let list: { label: string; value: string }[] = [];
-  export let errorMessage: string;
+  interface Props {
+    title?: string;
+    list?: { label: string; value: string }[];
+    errorMessage: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { title = '', list = [], errorMessage, children }: Props = $props();
 </script>
 
 <div class="content-block relative min-w-fit flex-grow">
@@ -17,7 +22,7 @@
         </div>
       {/each}
       <div class="absolute bottom-7 right-7">
-        <slot />
+        {@render children?.()}
       </div>
     </div>
   {/if}

@@ -1,9 +1,10 @@
 <script lang="ts">
-  import Clipboard from './Clipboard.svelte';
   import CopyIcon from '../lib/assets/CopyIcon.svelte';
 
-  let fillColor = '#000';
-  let isClicked = false;
+  let fillColor = $state('#000');
+  let isClicked = $state(false);
+
+  let { copyValue = '' } = $props();
 
   function handleMouseEnter() {
     fillColor = '#5E69FF';
@@ -14,29 +15,23 @@
   }
 
   function handleClick() {
-    fillColor = '#7CFA4D'; // Change to green on click
+    fillColor = '#7CFA4D'; 
     isClicked = true;
     setTimeout(() => {
-      fillColor = '#000'; // Reset to original
+      fillColor = '#000';
       isClicked = false;
     }, 2000);
   }
 
-  export let copyValue = '';
-
-  const copy = () => {
-    const app = new Clipboard({
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      target: document.getElementById('clipboard')!,
-      props: { copyValue },
-    });
-    app.$destroy();
-  };
+  async function copyText() {
+    try {
+      await navigator.clipboard.writeText(copyValue);
+    } catch (err) {
+      console.error('Failed to copy: ', err);
+    }
+  }
 </script>
 
-<button on:click={copy} class="ml-2 flex h-[30px] items-center justify-center">
+<button onclick={copyText} class="ml-2 flex h-[30px] items-center justify-center">
   <CopyIcon {fillColor} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-  <slot />
 </button>
-
-<div id="clipboard"></div>

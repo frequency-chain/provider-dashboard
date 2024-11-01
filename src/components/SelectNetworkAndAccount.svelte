@@ -9,25 +9,35 @@
   import { createApi } from '$lib/polkadotApi';
   import AddToClipboard from './AddToClipboard.svelte';
 
-  export let newUser: Account | undefined;
-  export let accounts: Accounts;
-  export let accountSelectorTitle: string = 'Select an account';
-  export let accountSelectorPlaceholder: string = 'Select an account';
-  export let noAccountsFoundErrorMsg: string = 'No accounts found.';
+  interface Props {
+    newUser: Account | undefined;
+    accounts: Accounts;
+    accountSelectorTitle?: string;
+    accountSelectorPlaceholder?: string;
+    noAccountsFoundErrorMsg?: string;
+  }
+
+  let {
+    newUser = $bindable(),
+    accounts = $bindable(),
+    accountSelectorTitle = 'Select an account',
+    accountSelectorPlaceholder = 'Select an account',
+    noAccountsFoundErrorMsg = 'No accounts found.'
+  }: Props = $props();
 
   // Wallet access
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | undefined = newUser;
-  let selectedNetwork: NetworkInfo | undefined = newUser?.network;
-  let customNetwork: string;
-  let isCustomNetwork: boolean;
-  let isLoading: boolean = false;
+  let selectedAccount: Account | undefined = $state(newUser);
+  let selectedNetwork: NetworkInfo | undefined = $state(newUser?.network);
+  let customNetwork: string = $state();
+  let isCustomNetwork: boolean = $state();
+  let isLoading: boolean = $state(false);
 
   // Error messages
-  let networkErrorMsg: string = '';
-  let controlKeysErrorMsg: string = '';
+  let networkErrorMsg: string = $state('');
+  let controlKeysErrorMsg: string = $state('');
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -107,7 +117,7 @@
       bind:value={customNetwork}
       disabled={!isCustomNetwork}
       class:hidden={!isCustomNetwork}
-      on:keydown={customNetworkChanged}
+      onkeydown={customNetworkChanged}
     />
   {/if}
   <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>

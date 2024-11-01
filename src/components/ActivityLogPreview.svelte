@@ -3,15 +3,11 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import type { Activity } from '$lib/storeTypes';
 
-  let recentActivityItem: Activity;
-
-  $: {
-    recentActivityItem = $activityLog[0];
-  }
+  let recentActivityItem: Activity = $derived($activityLog[0]);
 </script>
 
 <div class="flex flex-col">
-  <div class="min-w-[300px] border-l border-divider pl-5" />
+  <div class="min-w-[300px] border-l border-divider pl-5"></div>
   <div class="label border-b border-divider pb-3">Activity Log</div>
 
   {#if recentActivityItem}
