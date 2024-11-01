@@ -9,6 +9,7 @@ Powered by [`create-svelte`]( https://github.com/sveltejs/kit/tree/main/packages
 ## Developing
 
 ```bash
+npm 
 npm install
 npm run dev
 
@@ -37,7 +38,15 @@ the repo:
 
 ```bash
 make start # starts the frequency node
-Then run the tests:
+```
+Then if you don't have Playwright installed, install it:
 
+```bash
+npx playwright install --with-deps
+```
+
+Finally, run tests.
+```bash
 npm run test
+npx playwright test
 ```
