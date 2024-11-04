@@ -48,39 +48,37 @@
 
 <Modal id="add-account-id" {isOpen} close={onCancel}>
   {#snippet title()}
-    <span >
+    <span>
       Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
     </span>
   {/snippet}
 
   {#snippet body()}
-  
-      <form class="column">
-        <DropDownMenu
-          id="AddAccountId"
-          label="Account Id to Add"
-          placeholder="Select Id..."
-          bind:value={selectedAccount}
-          options={Array.from($unusedKeyAccountsStore.values()) || []}
-          disabled={$unusedKeyAccountsStore.size === 0}
-          formatter={formatAccount}
-        />
-        {#if $unusedKeyAccountsStore.size === 0}
-          <div id="network-error-msg" class="text-sm text-error">
-            No available Account Ids. Create a new Account Id without an MSA Id.
-          </div>
-        {/if}
-        <div class="flex w-[350px] justify-between">
-          <button onclick={preventDefault(addAccountId)} class="btn-primary" disabled={isSubmitDisabled}
-            >Add Account Id</button
-          >
-          <button onclick={preventDefault(onCancel)} class="btn-no-fill">Cancel</button>
+    <form class="column">
+      <DropDownMenu
+        id="AddAccountId"
+        label="Account Id to Add"
+        placeholder="Select Id..."
+        bind:value={selectedAccount}
+        options={Array.from($unusedKeyAccountsStore.values()) || []}
+        disabled={$unusedKeyAccountsStore.size === 0}
+        formatter={formatAccount}
+      />
+      {#if $unusedKeyAccountsStore.size === 0}
+        <div id="network-error-msg" class="text-sm text-error">
+          No available Account Ids. Create a new Account Id without an MSA Id.
         </div>
-      </form>
+      {/if}
+      <div class="flex w-[350px] justify-between">
+        <button onclick={preventDefault(addAccountId)} class="btn-primary" disabled={isSubmitDisabled}
+          >Add Account Id</button
+        >
+        <button onclick={preventDefault(onCancel)} class="btn-no-fill">Cancel</button>
+      </div>
+    </form>
 
-      <span class="border-1 border-b border-divider"></span>
+    <span class="border-1 border-b border-divider"></span>
 
-      <AddKeyRequirements />
-    
+    <AddKeyRequirements />
   {/snippet}
 </Modal>

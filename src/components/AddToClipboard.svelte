@@ -15,7 +15,7 @@
   }
 
   function handleClick() {
-    fillColor = '#7CFA4D'; 
+    fillColor = '#7CFA4D';
     isClicked = true;
     setTimeout(() => {
       fillColor = '#000';

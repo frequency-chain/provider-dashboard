@@ -7,7 +7,6 @@
   import { isLoggedIn, storeChainInfo } from '$lib/stores';
 
   let showConnectProvider = $state(false);
-  
 </script>
 
 {#if $isLoggedIn}

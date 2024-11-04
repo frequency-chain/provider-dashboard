@@ -22,7 +22,7 @@
     accounts = $bindable(),
     accountSelectorTitle = 'Select an account',
     accountSelectorPlaceholder = 'Select an account',
-    noAccountsFoundErrorMsg = 'No accounts found.'
+    noAccountsFoundErrorMsg = 'No accounts found.',
   }: Props = $props();
 
   // Wallet access
