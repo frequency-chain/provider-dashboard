@@ -17,7 +17,7 @@
         >Want to learn more about providers?
       </a>
     </div>
-    <Button id="request-2b-provider-btn" title="Become a Provider" action={pageContent.becomeProvider} />
+    <a href="/become-a-provider" data-testid="become-a-provider" class="btn-primary">Become a Provider</a>
   </BlockSection>
   <BlockSection title="Need tokens?">
     <HowToTransact additionalStyles="text-sm" />

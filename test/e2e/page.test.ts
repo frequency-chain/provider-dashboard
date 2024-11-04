@@ -9,7 +9,7 @@ globalThis.alert = () => {};
 
 const getByTextContent = (text) => {
   // Passing function to `getByText`
-  return screen.getByText((content, element) => {
+  return screen.getByText((_content, element) => {
     const hasText = (element) => element.textContent === text;
     const elementHasText = hasText(element);
     const childrenDontHaveText = Array.from(element?.children || []).every((child) => !hasText(child));
@@ -26,14 +26,18 @@ describe('displays correct component', () => {
 
   it('renders ProviderLogin component when $pageContent is PageContent.Login', async () => {
     pageContent.login();
-    const { container } = render(Page);
-    expect(container.querySelector('#provider-login') as HTMLElement).toBeInTheDocument();
+    const { getByText, getByTestId } = render(Page);
+    expect(getByText(/Provider Login/)).toBeInTheDocument();
+    expect(getByText(/Not a Provider\?/)).toBeInTheDocument();
+    expect(getByTestId('become-a-provider')).toBeInTheDocument();
   });
+});
 
-  it('renders BecomeAProvider component when $pageContent is PageContent.BecomeProvider', async () => {
-    pageContent.becomeProvider();
-    const { container } = render(Page);
-    expect(container.querySelector('#become-a-provider') as HTMLElement).toBeInTheDocument();
+describe('/become-a-provider', () => {
+  it('is accessible from main page', () => {
+    pageContent.login();
+    const { getByTestId } = render(Page);
+    expect(getByTestId('become-a-provider')).toBeInTheDocument();
   });
 });
 

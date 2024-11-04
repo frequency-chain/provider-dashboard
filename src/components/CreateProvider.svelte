@@ -9,11 +9,8 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 
-  // a callback for when the user cancels this action
-  export let cancelAction = () => {
-    pageContent.login();
-  };
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
@@ -82,7 +79,7 @@
         Create Provider
       {/if}
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+    <BackHomeButton />
   </div>
 </form>
 {#if recentActivityItem}

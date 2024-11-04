@@ -8,6 +8,7 @@
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
+  import BackHomeButton from '$components/BackHomeButton.svelte';
 
   let isInProgress = false;
   let recentActivityItem: Activity;
@@ -15,7 +16,6 @@
   let localDotApi: DotApi = defaultDotApi;
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
   // a callback for when the user cancels this action
-  export let cancelAction = () => {};
 
   dotApi.subscribe((api) => (localDotApi = api));
 
@@ -64,7 +64,7 @@
       <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
         Submit Request To Be Provider</button
       >
-      <button on:click|preventDefault={cancelAction} class="btn-cancel">Cancel</button>
+      <BackHomeButton />
     </div>
   </form>
 </div>

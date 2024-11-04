@@ -22,5 +22,6 @@ export default defineConfig({
     coverage: {
       include: ['src/**'],
     },
-  },
+    include: ['test/e2e/*.{test,spec}.?(c|m)[jt]s?(x)', 'test/unit-and-integration/*.{test,spec}.?(c|m)[jt]s?(x)'],
+  }
 });

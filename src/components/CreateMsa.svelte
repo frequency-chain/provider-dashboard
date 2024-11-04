@@ -10,11 +10,7 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
-
-  // a callback for when the user cancels this action
-  export let cancelAction = () => {
-    pageContent.login();
-  };
+  import BackToRootButton from '$components/BackHomeButton.svelte';
 
   let recentActivityItem: Activity | undefined;
   let recentTxnId: Activity['txnId'] | undefined;
@@ -66,7 +62,7 @@
         Create an MSA
       {/if}
     </button>
-    <button on:click|preventDefault={cancelAction} class="btn-no-fill">Cancel</button>
+    <BackToRootButton />
   </form>
 </div>
 {#if recentActivityItem}

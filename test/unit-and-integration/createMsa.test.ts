@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import CreateMsa from '../../src/components/CreateMsa.svelte';
 import { vi } from 'vitest';
 import { fireEvent, render } from '@testing-library/svelte';
+import { getByTextContent } from '../helpers';
 
 globalThis.alert = () => {};
 
@@ -13,16 +14,11 @@ describe('CreateMsa component', () => {
     storeChainInfo.update((val) => (val = { ...val, connected: true }));
   });
   it('shows text + Cancel button', () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
+    const { getByRole, getByText } = render(CreateMsa);
     expect(getByRole('button', { name: 'Create an MSA' })).toBeInTheDocument();
-    expect(getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
-  });
-  it('clicking Cancel performs the callback', async () => {
-    const { getByRole } = render(CreateMsa, { cancelAction: mockCancelAction });
-
-    const cancel = getByRole('button', { name: 'Cancel' });
-    fireEvent.click(cancel);
-    expect(mockCancelAction).toHaveBeenCalled();
+    const cancel = getByText('Cancel');
+    expect(cancel).toBeInTheDocument();
+    expect(cancel.getAttribute('href')).toEqual('/');
   });
 
   // TODO: we introduced create api into the parent component, which now breaks the test.
