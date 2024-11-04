@@ -17,6 +17,6 @@
   </p>
   <form class="flex w-[350px] items-end justify-between">
     <button id="email-request-btn" onclick={preventDefault(composeEmail)} class="btn-primary">Email Request</button>
-    <!-- <BackHomeButton /> -->
+    <BackHomeButton />
   </form>
 </div>

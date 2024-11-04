@@ -1,9 +1,7 @@
 <script lang="ts">
   import BlockSection from '$components/BlockSection.svelte';
   import LoginForm from './LoginForm.svelte';
-  import Button from '$components/Button.svelte';
   import HowToTransact from '$components/HowToTransact.svelte';
-  import { pageContent } from '$lib/stores/pageContentStore';
 </script>
 
 <div id="provider-login" class="column content-block w-single-block">

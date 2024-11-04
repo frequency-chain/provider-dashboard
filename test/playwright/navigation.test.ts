@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-let root = 'http://localhost:4173/';
+const root = 'http://localhost:4173/';
 
 test('Navigation from home page', async ({ page }) => {
   await page.goto('/');
