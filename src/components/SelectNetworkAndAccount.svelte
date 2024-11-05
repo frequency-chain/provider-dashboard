@@ -117,7 +117,7 @@
 {:else }
   <p class="flex justify-between">
     <span class="text-teal">On {selectedNetwork?.name || "Custom"}</span>
-    <span on:click={resetNetworks} class="btn-no-fill cursor-pointer">
+    <span onclick={resetNetworks} class="btn-no-fill cursor-pointer">
       Change networks
     </span>
   </p>
