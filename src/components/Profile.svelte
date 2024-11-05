@@ -14,7 +14,7 @@
     <div class="text-sm">{$user.msaId}</div>
     <div class="flex items-center align-middle">
       <div class="text-sm leading-3">{$user.address}</div>
-      <AddToClipboard copyValue={$user.address}>hello world</AddToClipboard>
+      <AddToClipboard copyValue={$user.address}></AddToClipboard>
     </div>
   </div>
 </div>
