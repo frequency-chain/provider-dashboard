@@ -1,5 +1,5 @@
-<script>
-  export let cancelText = 'Cancel';
+<script lang="ts">
+  let { cancelText = 'Cancel' } = $props();
 </script>
 
-<a href="/" class="btn-no-fill {$$restProps}" data-testid="back-home">{cancelText}</a>
+<a href="/" class="btn-no-fill" data-testid="back-home">{cancelText}</a>

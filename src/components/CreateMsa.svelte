@@ -6,7 +6,6 @@
   import { submitCreateMsa } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
-  import { pageContent } from '$lib/stores/pageContentStore';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';

@@ -1,19 +1,21 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import Switch from '$lib/assets/Switch.svelte';
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
   import { isLoggedIn, storeChainInfo } from '$lib/stores';
 
-  $: showConnectProvider = false;
+  let showConnectProvider = $state(false);
 </script>
 
 {#if $isLoggedIn}
   <div class="flex items-center gap-6">
     <div class="flex items-center gap-2">
       {#if $storeChainInfo.connected}
-        <div class="w-1 h-1 rounded-full bg-success p-1" />
+        <div class="w-1 h-1 rounded-full bg-success p-1"></div>
       {:else}
-        <div class="w-1 bg-red-error h-1 rounded-full p-1" />
+        <div class="w-1 bg-red-error h-1 rounded-full p-1"></div>
       {/if}
       <p id="connected-network" class="text-md uppercase">{$user.network?.name}</p>
     </div>
@@ -21,9 +23,9 @@
       {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
     </p>
     <button
-      on:click|preventDefault={() => {
+      onclick={preventDefault(() => {
         showConnectProvider = true;
-      }}
+      })}
       class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-bright-blue drop-shadow hover:opacity-[75%]"
       ><Switch class="w-[24px]" />
     </button>

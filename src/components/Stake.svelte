@@ -3,17 +3,23 @@
   import StakeForm from './StakeForm.svelte';
   import { storeChainInfo } from '$lib/stores';
 
-  export let isOpen = false;
-  export let close = () => {};
-  export let stakeAmount: bigint = 1n;
+  interface Props {
+    isOpen?: boolean;
+    close?: () => void;
+    stakeAmount?: bigint;
+  }
+
+  let { isOpen = false, close = () => {}, stakeAmount = 1n }: Props = $props();
 </script>
 
 <Modal id="stake-to-provider" {isOpen} {close}>
-  <span slot="title">Stake to Provider</span>
-  <svelte:fragment slot="body">
+  {#snippet title()}
+    <span>Stake to Provider</span>
+  {/snippet}
+  {#snippet body()}
     <StakeForm {close} {stakeAmount} />
 
-    <span class="min-w-full border-b border-b-divider" />
+    <span class="min-w-full border-b border-b-divider"></span>
 
     <div>
       <div class="label mb-2">Requirements</div>
@@ -23,5 +29,5 @@
         <li>This will require 1 signature to send the transaction.</li>
       </ol>
     </div>
-  </svelte:fragment>
+  {/snippet}
 </Modal>

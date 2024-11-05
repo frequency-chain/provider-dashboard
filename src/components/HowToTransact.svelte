@@ -1,5 +1,9 @@
 <script lang="ts">
-  export let additionalStyles: string = '';
+  interface Props {
+    additionalStyles?: string;
+  }
+
+  let { additionalStyles = '' }: Props = $props();
 </script>
 
 <div class={`column ${additionalStyles}`}>

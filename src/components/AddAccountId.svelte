@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { preventDefault } from 'svelte/legacy';
+
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { submitAddAccountId } from '$lib/connections';
@@ -10,12 +12,16 @@
   import { type Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore';
   import { formatAccount } from '$lib/utils';
 
-  export let isOpen: boolean;
-  export let close: () => void;
+  interface Props {
+    isOpen: boolean;
+    close: () => void;
+  }
 
-  let selectedAccount: Account | null;
+  let { isOpen, close }: Props = $props();
 
-  $: isSubmitDisabled = selectedAccount?.injectedAccount == null;
+  let selectedAccount: Account | null = $state();
+
+  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
 
   const addAccountId = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -41,11 +47,13 @@
 </script>
 
 <Modal id="add-account-id" {isOpen} close={onCancel}>
-  <span slot="title">
-    Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
-  </span>
+  {#snippet title()}
+    <span>
+      Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
+    </span>
+  {/snippet}
 
-  <svelte:fragment slot="body">
+  {#snippet body()}
     <form class="column">
       <DropDownMenu
         id="AddAccountId"
@@ -62,15 +70,15 @@
         </div>
       {/if}
       <div class="flex w-[350px] justify-between">
-        <button on:click|preventDefault={addAccountId} class="btn-primary" disabled={isSubmitDisabled}
+        <button onclick={preventDefault(addAccountId)} class="btn-primary" disabled={isSubmitDisabled}
           >Add Account Id</button
         >
-        <button on:click|preventDefault={onCancel} class="btn-no-fill">Cancel</button>
+        <button onclick={preventDefault(onCancel)} class="btn-no-fill">Cancel</button>
       </div>
     </form>
 
-    <span class="border-1 border-b border-divider" />
+    <span class="border-1 border-b border-divider"></span>
 
     <AddKeyRequirements />
-  </svelte:fragment>
+  {/snippet}
 </Modal>
