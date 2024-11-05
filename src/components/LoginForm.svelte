@@ -34,7 +34,7 @@
   accounts={$providerAccountsStore}
   accountSelectorTitle="Select an Account Id"
   accountSelectorPlaceholder="Select a Provider Account Id"
-  noAccountsFoundErrorMsg="No Provider Account Ids found.  Become a Provider?"
+  noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
 <div class="flex justify-between align-bottom">
   <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />

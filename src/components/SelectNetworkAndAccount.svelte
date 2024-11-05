@@ -29,10 +29,10 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | undefined = $state(newUser);
-  let selectedNetwork: NetworkInfo | undefined = $state(newUser?.network);
-  let customNetwork: string = $state();
-  let isCustomNetwork: boolean = $state();
+  let selectedAccount: Account | undefined = $state();
+  let selectedNetwork: NetworkInfo | undefined = $state();
+  let customNetwork: string = $state('');
+  let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
 
   // Error messages
@@ -89,6 +89,7 @@
   }
 
   function customNetworkChanged(event: KeyboardEvent) {
+    console.debug('HERE');
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -96,9 +97,14 @@
       }
     }
   }
-</script>
 
-<div class="column">
+  const resetNetworks = () => {
+    selectedNetwork = undefined;
+    selectedAccount = undefined;
+    isCustomNetwork =  false;
+  };
+</script>
+{#if !selectedNetwork}
   <DropDownMenu
     id="network"
     label="Select a Network"
@@ -108,33 +114,41 @@
     onChange={networkChanged}
     formatter={formatNetwork}
   />
-  {#if isCustomNetwork}
-    <input
-      id="other-endpoint-url"
-      type="text"
-      pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
-      placeholder="wss://some.frequency.node"
-      bind:value={customNetwork}
-      disabled={!isCustomNetwork}
-      class:hidden={!isCustomNetwork}
+{:else }
+  <p class="flex justify-between">
+    <span class="text-teal">On {selectedNetwork?.name || "Custom"}</span>
+    <span on:click={resetNetworks} class="btn-no-fill cursor-pointer">
+      Change networks
+    </span>
+  </p>
+{/if}
+{#if isCustomNetwork}
+  <input
+    id="other-endpoint-url"
+    type="text"
+    pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
+    placeholder="wss://some.frequency.node"
+    bind:value={customNetwork}
+    disabled={!isCustomNetwork}
+    class:hidden={!isCustomNetwork}
       onkeydown={customNetworkChanged}
-    />
+  />
+{/if}
+
+<div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+<div class="flex items-end">
+  <DropDownMenu
+    id="controlkeys"
+    label={accountSelectorTitle}
+    bind:value={selectedAccount}
+    placeholder={accountSelectorPlaceholder}
+    options={Array.from(accounts.values())}
+    onChange={accountChanged}
+    formatter={formatAccount}
+    disabled={accounts.size === 0 || isLoading}
+  />
+  {#if selectedAccount?.address}
+    <AddToClipboard copyValue={selectedAccount?.address} />
   {/if}
-  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-  <div class="flex items-end">
-    <DropDownMenu
-      id="controlkeys"
-      label={accountSelectorTitle}
-      bind:value={selectedAccount}
-      placeholder={accountSelectorPlaceholder}
-      options={Array.from(accounts.values())}
-      onChange={accountChanged}
-      formatter={formatAccount}
-      disabled={accounts.size === 0 || isLoading}
-    />
-    {#if selectedAccount?.address}
-      <AddToClipboard copyValue={selectedAccount?.address} />
-    {/if}
-  </div>
-  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
 </div>
+<div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
