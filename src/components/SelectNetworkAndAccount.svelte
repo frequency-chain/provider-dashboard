@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { page} from '\$app/stores';
+  import { goto } from '\$app/navigation';
 
   import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
 
@@ -96,6 +97,18 @@
     isLoading = false;
   }
 
+  const onSelectNetworkChanged = () => {
+    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
+    if (!isCustomNetwork) {
+      if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
+        console.log("pathname: ", $page.url.pathname);
+        const join = $page.url.pathname === "/become-a-provider" ? '/' : ''
+        goto([$page.url.toString(),selectedNetwork.pathName].join(join));
+        networkChanged()
+      }
+    }
+  }
+
   function customNetworkChanged(event: KeyboardEvent) {
     console.debug('HERE');
     if (event.key === 'Enter') {
@@ -123,12 +136,12 @@
     bind:value={selectedNetwork}
     placeholder="Select a network"
     options={$allNetworks}
-    onChange={networkChanged}
+    onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
   />
 {:else }
   <p class="flex justify-between">
-    <span class="text-teal">Connected to {selectedNetwork?.displayName || "Custom"}</span>
+    <span class="text-teal">Connected to {selectedNetwork?.name || "Custom"}</span>
     <span onclick={resetState} class="btn-no-fill cursor-pointer">
       Change networks
     </span>

@@ -15,7 +15,7 @@
       <option class="text-disabled" value={null} disabled selected>{placeholder}</option>
     {/if}
     {#each options as option}
-      <option value={formatter(option)} class="bg-white">{formatter(option)}</option>
+      <option value={option} class="bg-white">{formatter(option)}</option>
     {/each}
   </select>
 </div>

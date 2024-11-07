@@ -1,7 +1,7 @@
 <script lang="ts">
   import { preventDefault } from 'svelte/legacy';
 
-  import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
+  import { providerAccountsStore, type Account} from '$lib/stores/accountsStore';
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
   import Button from './Button.svelte';
@@ -32,12 +32,12 @@
 <SelectNetworkAndAccount
   bind:newUser
   accounts={$providerAccountsStore}
-  accountSelectorTitle="Select an Account Id"
+  accountSelectorTitle="Select a Provider Account Id"
   accountSelectorPlaceholder="Select a Provider Account Id"
   noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
 <div class="flex justify-between align-bottom">
-  <Button id="connect-button" title="Connect" disabled={!canConnect} action={connect} />
+  <Button id="connect-button" title="Connect To Account" disabled={!canConnect} action={connect} />
   {#if onCancel}
     <button class="btn-no-fill" onclick={preventDefault(onCancel)}>Cancel</button>
   {/if}
