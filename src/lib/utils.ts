@@ -61,9 +61,9 @@ export function isValidURL(url: string): boolean {
 
 export function formatNetwork(network: NetworkInfo): string {
   if (network.id === NetworkType.CUSTOM) {
-    return network.name;
+    return network.displayName;
   }
-  return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
+  return `${network?.displayName ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
 }
 
 export function formatAccount(account: Account): string {

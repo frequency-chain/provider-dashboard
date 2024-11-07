@@ -1,4 +1,7 @@
-<script lang="ts">
+<script>
   import BecomeAProvider from '$components/BecomeAProvider.svelte';
 </script>
-<slot />
+<BecomeAProvider/>
+<div class="invisible">
+  slug
+</div>

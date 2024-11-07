@@ -1,6 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
+  import { page} from '\$app/stores';
+
+  import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
+
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
@@ -30,10 +33,11 @@
   let thisWeb3Accounts: typeof web3Accounts;
 
   let selectedAccount: Account | undefined = $state();
-  let selectedNetwork: NetworkInfo | undefined = $state();
+  let selectedNetwork: NetworkInfo | undefined = $state(networkNameToNetworkInfo($page.params.network));
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
+  let connected: boolean = $state(false);
 
   // Error messages
   let networkErrorMsg: string = $state('');
@@ -46,6 +50,9 @@
     const polkadotExt = await import('@polkadot/extension-dapp');
     thisWeb3Enable = polkadotExt.web3Enable;
     thisWeb3Accounts = polkadotExt.web3Accounts;
+    if (selectedNetwork) {
+      await networkChanged();
+    }
   });
 
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
@@ -82,6 +89,7 @@
     if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await connectAndFetchAccounts(selectedNetwork!);
+      connected = true;
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
@@ -98,13 +106,17 @@
     }
   }
 
-  const resetNetworks = () => {
+  const resetState = () => {
     selectedNetwork = undefined;
     selectedAccount = undefined;
     isCustomNetwork =  false;
+    connected = false;
+    networkErrorMsg = '';
+    controlKeysErrorMsg = '';
   };
 </script>
-{#if !selectedNetwork}
+
+{#if !connected}
   <DropDownMenu
     id="network"
     label="Select a Network"
@@ -116,8 +128,8 @@
   />
 {:else }
   <p class="flex justify-between">
-    <span class="text-teal">On {selectedNetwork?.name || "Custom"}</span>
-    <span onclick={resetNetworks} class="btn-no-fill cursor-pointer">
+    <span class="text-teal">Connected to {selectedNetwork?.displayName || "Custom"}</span>
+    <span onclick={resetState} class="btn-no-fill cursor-pointer">
       Change networks
     </span>
   </p>
@@ -129,8 +141,8 @@
     pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
     placeholder="wss://some.frequency.node"
     bind:value={customNetwork}
-    disabled={!isCustomNetwork}
-    class:hidden={!isCustomNetwork}
+    disabled={false}
+    class:hidden={false}
       onkeydown={customNetworkChanged}
   />
 {/if}

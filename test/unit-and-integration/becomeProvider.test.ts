@@ -1,12 +1,10 @@
 import '@testing-library/jest-dom';
 import BecomeAProvider from '$components/BecomeAProvider.svelte';
-import { fireEvent, render } from '@testing-library/svelte';
-import { vi } from 'vitest';
+import { render } from '@testing-library/svelte';
 
 globalThis.alert = () => {};
 
 describe('BecomeAProvider component', () => {
-  const mockCancelAction = vi.fn();
 
   it('shows text + Cancel button', () => {
     const { container, getByTestId } = render(BecomeAProvider);
