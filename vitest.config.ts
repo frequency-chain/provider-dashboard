@@ -4,13 +4,17 @@ import { resolve } from 'path';
 
 // Why do the alias not work in vite.config.ts?
 export default defineConfig(({ mode }) => ({
-  plugins: [svelte({ hot: !process.env.VITEST })],
+  plugins: [svelte({
+    compilerOptions: { hmr: !process.env.VITEST }
+  })],
   resolve: {
     conditions: mode === 'test' ? ['browser'] : [],
     alias: {
       $lib: resolve(__dirname, 'src/lib'),
       $components: resolve(__dirname, 'src/components'),
       $routes: resolve(__dirname, 'src/routes'),
+      '$app/stores': resolve(__dirname, 'test/__mocks__/stores'),
+      '$app/navigation': resolve(__dirname, 'test/__mocks__/navigation'),
     },
   },
   test: {

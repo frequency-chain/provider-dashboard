@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page } from '$app/stores';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
 
   import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
 

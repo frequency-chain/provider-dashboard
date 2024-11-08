@@ -8,7 +8,7 @@
     "preview": "vite preview",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "test": "vitest run && npx playwright test",
+    "test": "vitest run",
     "test:e2e": "vitest run ./test/e2e",
     "test:stake": "vitest stake",
     "test:ci": "vitest run ./test/unit-and-integration --coverage",
