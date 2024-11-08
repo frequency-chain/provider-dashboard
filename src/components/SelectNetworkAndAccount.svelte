@@ -101,7 +101,6 @@
     isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
       if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
-        console.log('pathname: ', $page.url.pathname);
         const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
         goto([$page.url.toString(), selectedNetwork.pathName].join(join));
         networkChanged();
