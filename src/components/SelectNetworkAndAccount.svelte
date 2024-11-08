@@ -38,7 +38,7 @@
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
-  let connected: boolean = $state(false);
+  let connectedToEndpoint: boolean = $state(false);
 
   // Error messages
   let networkErrorMsg: string = $state('');
@@ -90,7 +90,7 @@
     if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await connectAndFetchAccounts(selectedNetwork!);
-      connected = true;
+      connectedToEndpoint = true;
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
@@ -110,7 +110,6 @@
   }
 
   function customNetworkChanged(event: KeyboardEvent) {
-    console.debug('HERE');
     if (event.key === 'Enter') {
       if (isValidURL(customNetwork)) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -123,13 +122,13 @@
     selectedNetwork = undefined;
     selectedAccount = undefined;
     isCustomNetwork =  false;
-    connected = false;
+    connectedToEndpoint = false;
     networkErrorMsg = '';
     controlKeysErrorMsg = '';
   };
 </script>
 
-{#if !connected}
+{#if !connectedToEndpoint}
   <DropDownMenu
     id="network"
     label="Select a Network"
