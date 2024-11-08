@@ -5,7 +5,6 @@ import { render } from '@testing-library/svelte';
 globalThis.alert = () => {};
 
 describe('BecomeAProvider component', () => {
-
   it('shows text + Cancel button', () => {
     const { container, getByTestId } = render(BecomeAProvider);
     const title = container.querySelector('h2');

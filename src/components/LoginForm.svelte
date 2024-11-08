@@ -1,7 +1,7 @@
 <script lang="ts">
   import { preventDefault } from 'svelte/legacy';
 
-  import { providerAccountsStore, type Account} from '$lib/stores/accountsStore';
+  import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
   import Button from './Button.svelte';

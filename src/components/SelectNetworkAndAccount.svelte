@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { page} from '\$app/stores';
-  import { goto } from '\$app/navigation';
+  import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
 
   import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
 
@@ -101,13 +101,13 @@
     isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
       if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
-        console.log("pathname: ", $page.url.pathname);
-        const join = $page.url.pathname === "/become-a-provider" ? '/' : ''
-        goto([$page.url.toString(),selectedNetwork.pathName].join(join));
-        networkChanged()
+        console.log('pathname: ', $page.url.pathname);
+        const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
+        goto([$page.url.toString(), selectedNetwork.pathName].join(join));
+        networkChanged();
       }
     }
-  }
+  };
 
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -121,7 +121,7 @@
   const resetState = () => {
     selectedNetwork = undefined;
     selectedAccount = undefined;
-    isCustomNetwork =  false;
+    isCustomNetwork = false;
     connectedToEndpoint = false;
     networkErrorMsg = '';
     controlKeysErrorMsg = '';
@@ -138,12 +138,10 @@
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
   />
-{:else }
+{:else}
   <p class="flex justify-between">
-    <span class="text-teal">Connected to {selectedNetwork?.name || "Custom"}</span>
-    <span onclick={resetState} class="btn-no-fill cursor-pointer">
-      Change networks
-    </span>
+    <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
+    <span onclick={resetState} class="btn-no-fill cursor-pointer"> Change networks </span>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -155,7 +153,7 @@
     bind:value={customNetwork}
     disabled={false}
     class:hidden={false}
-      onkeydown={customNetworkChanged}
+    onkeydown={customNetworkChanged}
   />
 {/if}
 

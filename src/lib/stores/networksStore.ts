@@ -36,14 +36,15 @@ export const defaultNetworks: NetworkInfo[] = [
   { id: NetworkType.LOCALHOST, name: 'Localhost', pathName: 'localhost', endpoint: 'ws://127.0.0.1:9944' },
 ];
 
-export const allNetworks =
-  writable<NetworkInfo[]>(defaultNetworks.concat( [{ id: NetworkType.CUSTOM, name: 'Custom', pathName: 'custom' }]));
+export const allNetworks = writable<NetworkInfo[]>(
+  defaultNetworks.concat([{ id: NetworkType.CUSTOM, name: 'Custom', pathName: 'custom' }])
+);
 
-export const networkNameToNetworkInfo = (name: string|undefined): NetworkInfo|undefined => {
-  if (name ===undefined) return undefined;
-  const found = defaultNetworks.find( nw => {
+export const networkNameToNetworkInfo = (name: string | undefined): NetworkInfo | undefined => {
+  if (name === undefined) return undefined;
+  const found = defaultNetworks.find((nw) => {
     return nw.pathName.toLowerCase() === name.toLowerCase();
-  })
-  if (!found) throw(`Network not found: ${name}`);
-  return found
-}
+  });
+  if (!found) throw `Network not found: ${name}`;
+  return found;
+};
