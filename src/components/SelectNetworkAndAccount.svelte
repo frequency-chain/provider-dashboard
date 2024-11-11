@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
+  import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+
+  import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
+
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
@@ -29,11 +33,12 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | undefined = $state(newUser);
-  let selectedNetwork: NetworkInfo | undefined = $state(newUser?.network);
-  let customNetwork: string = $state();
-  let isCustomNetwork: boolean = $state();
+  let selectedAccount: Account | undefined = $state();
+  let selectedNetwork: NetworkInfo | undefined = $state(networkNameToNetworkInfo($page.params.network));
+  let customNetwork: string = $state('');
+  let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
+  let connectedToEndpoint: boolean = $state(false);
 
   // Error messages
   let networkErrorMsg: string = $state('');
@@ -46,6 +51,9 @@
     const polkadotExt = await import('@polkadot/extension-dapp');
     thisWeb3Enable = polkadotExt.web3Enable;
     thisWeb3Accounts = polkadotExt.web3Accounts;
+    if (selectedNetwork) {
+      await networkChanged();
+    }
   });
 
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
@@ -82,11 +90,23 @@
     if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       await connectAndFetchAccounts(selectedNetwork!);
+      connectedToEndpoint = true;
     }
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
     isLoading = false;
   }
+
+  const onSelectNetworkChanged = () => {
+    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
+    if (!isCustomNetwork) {
+      if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
+        const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
+        goto([$page.url.toString(), selectedNetwork.pathName].join(join));
+        networkChanged();
+      }
+    }
+  };
 
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -96,45 +116,60 @@
       }
     }
   }
+
+  const resetState = () => {
+    selectedNetwork = undefined;
+    selectedAccount = undefined;
+    isCustomNetwork = false;
+    connectedToEndpoint = false;
+    networkErrorMsg = '';
+    controlKeysErrorMsg = '';
+  };
 </script>
 
-<div class="column">
+{#if !connectedToEndpoint}
   <DropDownMenu
     id="network"
     label="Select a Network"
     bind:value={selectedNetwork}
     placeholder="Select a network"
     options={$allNetworks}
-    onChange={networkChanged}
+    onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
   />
-  {#if isCustomNetwork}
-    <input
-      id="other-endpoint-url"
-      type="text"
-      pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
-      placeholder="wss://some.frequency.node"
-      bind:value={customNetwork}
-      disabled={!isCustomNetwork}
-      class:hidden={!isCustomNetwork}
-      onkeydown={customNetworkChanged}
-    />
+{:else}
+  <p class="flex justify-between">
+    <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
+    <span onclick={resetState} class="btn-no-fill cursor-pointer"> Change networks </span>
+  </p>
+{/if}
+{#if isCustomNetwork}
+  <input
+    id="other-endpoint-url"
+    type="text"
+    pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
+    placeholder="wss://some.frequency.node"
+    bind:value={customNetwork}
+    disabled={false}
+    class:hidden={false}
+    onkeydown={customNetworkChanged}
+  />
+{/if}
+
+<div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+<div class="flex items-end">
+  <DropDownMenu
+    id="controlkeys"
+    label={accountSelectorTitle}
+    bind:value={selectedAccount}
+    placeholder={accountSelectorPlaceholder}
+    options={Array.from(accounts.values())}
+    onChange={accountChanged}
+    formatter={formatAccount}
+    disabled={accounts.size === 0 || isLoading}
+  />
+  {#if selectedAccount?.address}
+    <AddToClipboard copyValue={selectedAccount?.address} />
   {/if}
-  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-  <div class="flex items-end">
-    <DropDownMenu
-      id="controlkeys"
-      label={accountSelectorTitle}
-      bind:value={selectedAccount}
-      placeholder={accountSelectorPlaceholder}
-      options={Array.from(accounts.values())}
-      onChange={accountChanged}
-      formatter={formatAccount}
-      disabled={accounts.size === 0 || isLoading}
-    />
-    {#if selectedAccount?.address}
-      <AddToClipboard copyValue={selectedAccount?.address} />
-    {/if}
-  </div>
-  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
 </div>
+<div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>

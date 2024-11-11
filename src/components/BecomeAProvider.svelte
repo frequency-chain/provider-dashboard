@@ -16,7 +16,7 @@
       <SelectNetworkAndAccount
         bind:newUser={$user}
         accounts={$nonProviderAccountsStore}
-        accountSelectorTitle="Account Id"
+        accountSelectorTitle="Select an Account Id"
         accountSelectorPlaceholder="Select an Account Id"
         noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
       />

@@ -130,7 +130,7 @@ describe('Capacity.svelte', () => {
     beforeAll(async () => {
       storeChainInfo.update((val: ChainInfo) => (val = { ...val, connected: true }));
     });
-    // Also this depends on set-in-stone mocks which will return the address as a Provider
+    // Also this depends on set-in-stone __mocks__ which will return the address as a Provider
     it('Capacity elements are shown when selected transaction address, with MSA and is a Provider', async () => {
       // render component first
       const createdApi = await mocks.ApiPromise.create();
@@ -147,7 +147,7 @@ describe('Capacity.svelte', () => {
     // TODO: This test is not working as expected, it is not showing the expected values
     // it('Shows the expected values for Capacity, block and epoch', async () => {
     //   // render component first
-    //   const createdApi = await mocks.ApiPromise.create();
+    //   const createdApi = await __mocks__.ApiPromise.create();
     //   const { container } = render(Capacity, { token: 'FLARP' });
 
     //   // trigger changes as if user clicked Connect and such

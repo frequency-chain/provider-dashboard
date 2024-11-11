@@ -5,7 +5,7 @@
   export let isOpen: boolean = false;
 </script>
 
-<Modal id="conntect-provider" {close} {isOpen}>
+<Modal id="connect-provider" {close} {isOpen}>
   <span slot="title">Connect Provider</span>
   <LoginForm slot="body" onConnect={close} onCancel={close} />
 </Modal>
