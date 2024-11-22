@@ -4,50 +4,18 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  font-family: Poppins, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  background-color: #fefaf3;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
-}
-
 /*  */
 @layer components {
-  .sidebar-bg {
-    @apply bg-flan;
+  .title-h2 {
+    @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
   }
 
-  .btn-primary {
-    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal text-base font-bold text-white hover:text-white hover:opacity-75 disabled:bg-disabled;
+  .title-h3 {
+    @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
   }
 
-  .btn-primary:disabled {
-    @apply hover:opacity-100;
-  }
-
-  .btn-no-fill {
-    @apply text-sm underline hover:text-bright-blue;
-  }
-
-  .action-card {
-    @apply mt-8 shrink-0 rounded-lg p-8 text-white shadow-md;
-  }
-
-  .action-card {
-    @apply rounded text-white;
-  }
-
-  .action-card-title {
-    @apply text-lg font-semibold;
+  .title-h5 {
+    @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
   }
 
   /* layout */
@@ -68,7 +36,7 @@
   }
 
   .section-title-underlined {
-    @apply section-title border-b border-gray-2 pb-3;
+    @apply section-title border-b border-l-gray2 pb-3;
   }
 
   .label {
@@ -102,6 +70,9 @@
   .break-anywhere {
     overflow-wrap: anywhere;
   }
+  footer a svg{
+    @apply underline transition duration-[0.3s] hover:text-teal text-black bg-white;
+  }
 }
 
 @layer base {
@@ -109,6 +80,14 @@
     min-height: 100vh;
   }
 
+  html {
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-text-size-adjust: 100%;
+      scroll-behavior: smooth;
+  }
   button {
     @apply select-none;
   }
@@ -117,7 +96,7 @@
   [type='text'],
   [type='number'],
   select {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray-3 disabled:text-disabled disabled:opacity-85;
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray3 disabled:text-gray3 disabled:opacity-85;
   }
 
   select {
@@ -125,10 +104,7 @@
   }
 
   ::placeholder {
-    @apply text-disabled !important;
+    @apply text-gray2 !important;
   }
 
-  a {
-    @apply hover:text-bright-blue;
-  }
 }

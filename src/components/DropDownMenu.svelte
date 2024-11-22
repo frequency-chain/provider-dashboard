@@ -12,7 +12,7 @@
   <label class="label mb-3.5 block" for={id}>{label}</label>
   <select {...$$restProps} {id} bind:value on:change={onChange} data-test-id={id}>
     {#if placeholder !== ''}
-      <option class="text-disabled" value={null} disabled selected>{placeholder}</option>
+      <option class="text-gray3" value={null} disabled selected>{placeholder}</option>
     {/if}
     {#each options as option}
       <option value={option} class="bg-white">{formatter(option)}</option>

@@ -5,7 +5,7 @@
 
 <div class="flex min-w-[300px] max-w-[500px] items-center gap-4">
   <div
-    class="text-bold flex h-[90px] w-[90px] min-w-[70px] max-w-[90px] items-center justify-center rounded-full bg-gradient-to-r from-teal to-bright-blue text-2xl"
+    class="text-bold flex h-[90px] w-[90px] min-w-[70px] max-w-[90px] items-center justify-center rounded-full bg-gradient-to-r from-teal to-teal text-2xl"
   >
     {$user.providerName ? $user.providerName.substring(0, 1) : ''}
   </div>

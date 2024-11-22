@@ -63,6 +63,7 @@
   "type": "module",
   "dependencies": {
     "@frequency-chain/api-augment": "^1.13.2",
+    "@frequency-chain/style-guide": "^0.1.24",
     "@polkadot/api": "^13.2.1",
     "@polkadot/extension-dapp": "^0.53.1",
     "@polkadot/extension-inject": "^0.53.1",
