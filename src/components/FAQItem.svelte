@@ -14,7 +14,7 @@
 
 <button
   id="faq-question"
-  class="label text-md mt-2 flex w-full items-center justify-between border-t border-divider p-4 text-left"
+  class="label border-divider mt-2 flex w-full items-center justify-between border-t p-4 text-left text-md"
   onclick={toggleIsOpen}
 >
   {@render question?.()}

@@ -10,7 +10,7 @@
   import BackHomeButton from '$components/BackHomeButton.svelte';
 </script>
 
-<div id="become-a-provider" class="content-block column w-single-block">
+<div id="become-a-provider" class="column w-single-block">
   <BlockSection title="Become a Provider">
     <form class="column w-[320px]">
       <SelectNetworkAndAccount

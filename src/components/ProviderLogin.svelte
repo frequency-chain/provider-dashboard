@@ -4,7 +4,7 @@
   import HowToTransact from '$components/HowToTransact.svelte';
 </script>
 
-<div id="provider-login" class="column content-block w-single-block">
+<div id="provider-login">
   <BlockSection title="Provider Login">
     <LoginForm />
   </BlockSection>
