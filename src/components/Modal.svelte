@@ -11,7 +11,7 @@
     on:keyup={close}
     role="button"
     tabindex="0"
-    class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-126px)] cursor-default items-center justify-center overflow-y-auto bg-overlay"
+    class="bg-overlay fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-126px)] cursor-default items-center justify-center overflow-y-auto"
   >
     <div
       class="content-block flex w-modal cursor-default flex-col gap-7"

@@ -24,15 +24,17 @@
     <div class="px-0 md:px-f24">
       <FrequencyLogo fill="#000000" />
     </div>
-    <aside class="flex flex-col items-center space-y-4 text-center leading-none md:flex-row md:space-x-4 md:space-y-0">
+    <aside
+      class="space-between flex flex-col items-center space-y-f8 text-center leading-none md:flex-row md:space-x-f32 md:space-y-1"
+    >
       <div>
-        © {new Date().getFullYear()} Frequency Network Foundation <span class="md:hidden">All Rights Reserved</span>
+        © {new Date().getFullYear()} Frequency Network Foundation
       </div>
       <div class="hidden w-[2px] self-stretch md:block {fgColorBg}"></div>
       <div class="hidden md:block">All Rights Reserved</div>
       <div class="hidden w-[2px] self-stretch md:block {fgColorBg}"></div>
       <div>
-        <a href={privacyHref} class="text-normal">Privacy Policy</a>
+        <a href={privacyHref} class="md:mr-f16">Privacy&nbsp;Policy</a>
       </div>
     </aside>
     <div class="flex gap-f16" aria-label="Social Links">

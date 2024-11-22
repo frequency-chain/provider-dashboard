@@ -75,7 +75,7 @@
       </div>
     </form>
 
-    <span class="border-1 border-b border-divider"></span>
+    <span class="border-1 border-divider border-b"></span>
 
     <AddKeyRequirements />
   </div>

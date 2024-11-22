@@ -3,4 +3,3 @@
 </script>
 
 <BecomeAProvider />
-<div class="invisible">slug</div>

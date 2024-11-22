@@ -12,7 +12,7 @@
   <h3 class="section-title-underlined">Overview</h3>
   <div class="flex justify-around">
     {#each chainStatus as status, index}
-      <div class={`flex min-w-[30%] flex-col gap-6 p-5 ${index > 0 && 'border-l border-divider'}`}>
+      <div class={`flex min-w-[30%] flex-col gap-6 p-5 ${index > 0 && 'border-divider border-l'}`}>
         <p class="label" id={`${status.id}-title`}>{status.label}:</p>
         <p class="data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
       </div>

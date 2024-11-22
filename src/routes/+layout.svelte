@@ -28,12 +28,14 @@
 <div>
   <div class="flex flex-col">
     <Nav />
-    <div class="my-6 ml-f96 px-f16 md:ml-f128">
+    <div class="main-section my-6">
       <Header />
-      <slot />
+      <div class="mx-auto max-w-[512px] px-0">
+        <slot />
+      </div>
     </div>
   </div>
-  <div class="mx-auto ml-f128 mt-f16 md:mt-f96">
+  <div class="main-section mt-f16 md:mt-f96">
     <Footer />
   </div>
 </div>
