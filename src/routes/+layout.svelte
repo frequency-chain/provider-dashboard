@@ -4,6 +4,7 @@
   import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
+  import Footer from '$components/Footer.svelte';
 
   // eslint-disable-next-line @typescript-eslint/no-unused-expressions
   $: $logInPromise;
@@ -25,14 +26,14 @@
 </script>
 
 <div>
-  <div class="flex">
+  <div class="flex flex-col">
     <Nav />
-    <div class="m-6 w-[100%] pl-[126px]">
+    <div class="my-6 ml-f96 px-f16 md:ml-f128">
       <Header />
-      <div class="flex items-center justify-center">
-        <slot />
-      </div>
+      <slot />
     </div>
   </div>
+  <div class="mx-auto ml-f128 mt-f16 md:mt-f96">
+    <Footer />
+  </div>
 </div>
-;

@@ -26,7 +26,7 @@
       onclick={preventDefault(() => {
         showConnectProvider = true;
       })}
-      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-bright-blue drop-shadow hover:opacity-[75%]"
+      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-teal drop-shadow hover:opacity-[75%]"
       ><Switch class="w-[24px]" />
     </button>
     <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
