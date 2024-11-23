@@ -4,6 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --select-border: ;
+  --select-focus: red;
+  --select-arrow: var(--select-border);
+}
+
 /*  */
 @layer components {
   .title-h2 {
@@ -40,7 +46,7 @@
   }
 
   .label {
-    @apply text-base font-bold tracking-wide;
+    @apply text-normal tracking-wide;
   }
 
   /* data */
@@ -63,21 +69,53 @@
 
   /* layout */
   .content-block {
-    @apply box-border rounded-md bg-white p-7 mb-f24;
+    @apply mb-f24 box-border rounded-md p-7;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
   }
 
   /* right side sizing */
   .main-section {
-    @apply px-f16 ml-f80 md:ml-f128
+    @apply ml-f80 px-f16 md:ml-f128;
   }
 
   .break-anywhere {
     overflow-wrap: anywhere;
   }
 
-  .main-section a, .main-section svg{
-    @apply bg-white text-black underline transition duration-[0.3s] hover:text-teal;
+  .hover-teal {
+    @apply transition duration-[0.3s] hover:text-teal hover:border-teal;
+  }
+
+  .main-section svg {
+    @apply bg-white text-black ;
+  }
+  .main-section {
+    a, svg {
+      @apply hover-teal;
+    }
+
+    a {
+      @apply text-white underline;
+    }
+
+    footer a {
+      @apply text-black;
+    }
+    select {
+      @apply cursor-pointer m-0 p-2 pr-f32 border-none outline-none appearance-none overflow-clip text-black;
+
+      &:focus, &:hover {
+        @apply outline-teal outline-1;
+      }
+      option:first-child {
+        @apply text-gray3 !important;
+      }
+    }
+
+    ::placeholder {
+      @apply text-gray2 !important;
+    }
+
   }
 }
 
@@ -100,16 +138,8 @@
 
   input,
   [type='text'],
-  [type='number'],
-  select {
+  [type='number'] {
     @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray3 disabled:text-gray3 disabled:opacity-85;
   }
 
-  select {
-    @apply cursor-pointer pr-7;
-  }
-
-  ::placeholder {
-    @apply text-gray2 !important;
-  }
 }

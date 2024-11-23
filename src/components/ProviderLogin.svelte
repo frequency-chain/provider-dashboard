@@ -2,6 +2,7 @@
   import BlockSection from '$components/BlockSection.svelte';
   import LoginForm from './LoginForm.svelte';
   import HowToTransact from '$components/HowToTransact.svelte';
+  import { Button } from '@frequency-chain/style-guide';
 </script>
 
 <div id="provider-login">
@@ -15,7 +16,7 @@
         >Want to learn more about providers?
       </a>
     </div>
-    <a href="/become-a-provider" data-testid="become-a-provider" class="btn-primary">Become a Provider</a>
+    <Button href="/become-a-provider">Become a Provider</Button>
   </BlockSection>
   <BlockSection title="Need tokens?">
     <HowToTransact additionalStyles="text-sm" />
