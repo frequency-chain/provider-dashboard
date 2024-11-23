@@ -1,5 +1,5 @@
 <script lang="ts">
-  let { cancelText = 'Cancel' } = $props();
+  let { cancelText = 'Cancel', classes = '' } = $props();
 </script>
 
-<a href="/" class="btn-no-fill" data-testid="back-home">{cancelText}</a>
+<a href="/" class={classes} data-testid="back-home">{cancelText}</a>

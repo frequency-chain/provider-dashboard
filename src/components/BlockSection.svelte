@@ -7,7 +7,7 @@
   let { title, children }: Props = $props();
 </script>
 
-<div class="content-block column">
+<div class="content-block column bg-navy text-white">
   <h2 class="section-title-underlined">{title}</h2>
   {@render children?.()}
 </div>

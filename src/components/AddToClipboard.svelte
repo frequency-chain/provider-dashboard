@@ -1,24 +1,27 @@
 <script lang="ts">
   import CopyIcon from '../lib/assets/CopyIcon.svelte';
 
-  let fillColor = $state('#000');
+  let origFill = '#fff';
+
+  let fill = $state(origFill);
   let isClicked = $state(false);
 
-  let { copyValue = '' } = $props();
+  let { copyValue = '', classes = '' } = $props();
 
   function handleMouseEnter() {
-    fillColor = '#5E69FF';
+    fill = '#55B1AB';
   }
 
   function handleMouseLeave() {
-    if (!isClicked) fillColor = '#000';
+    if (!isClicked) fill = origFill;
   }
 
   function handleClick() {
-    fillColor = '#7CFA4D';
+    copyText();
+    fill = '#2F80ED';
     isClicked = true;
     setTimeout(() => {
-      fillColor = '#000';
+      fill = origFill;
       isClicked = false;
     }, 2000);
   }
@@ -32,6 +35,7 @@
   }
 </script>
 
-<button onclick={copyText} class="ml-2 flex h-[30px] items-center justify-center">
-  <CopyIcon {fillColor} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-</button>
+<div class="{classes} flex flex-col">
+  <CopyIcon {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
+  <span class="text-xs {!isClicked && 'hidden'}">Copied</span>
+</div>

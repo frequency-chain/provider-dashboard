@@ -133,15 +133,15 @@
     id="network"
     label="Select a Network"
     bind:value={selectedNetwork}
-    placeholder="Select a network"
+    placeholder="Select a Network"
     options={$allNetworks}
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
   />
 {:else}
-  <p class="flex justify-between">
+  <p class="mb-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="btn-no-fill cursor-pointer">Change networks</button>
+    <button onclick={resetState} class="hover-teal cursor-pointer underline">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -158,7 +158,7 @@
 {/if}
 
 <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-<div class="flex items-end">
+<div class="flex content-end gap-f12">
   <DropDownMenu
     id="controlkeys"
     label={accountSelectorTitle}
@@ -170,7 +170,7 @@
     disabled={accounts.size === 0 || isLoading}
   />
   {#if selectedAccount?.address}
-    <AddToClipboard copyValue={selectedAccount?.address || ''} />
+    <AddToClipboard copyValue={selectedAccount?.address || ''} classes="h-6 mt-f48" />
   {/if}
 </div>
 <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>

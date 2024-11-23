@@ -53,6 +53,7 @@
     id="stake-using-account-id"
     label="Wallet Account Id"
     bind:value={selectedAccount}
+    placeholder="Select Account Id"
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
   />
