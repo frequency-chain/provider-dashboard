@@ -16,7 +16,7 @@
         >Want to learn more about providers?
       </a>
     </div>
-    <Button href="/become-a-provider">Become a Provider</Button>
+    <Button class="px-f12 py-f8" href="/become-a-provider">Become a Provider</Button>
   </BlockSection>
   <BlockSection title="Need tokens?">
     <HowToTransact additionalStyles="text-sm" />

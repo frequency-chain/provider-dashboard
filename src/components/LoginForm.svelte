@@ -4,7 +4,8 @@
   import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
-  import Button from './Button.svelte';
+  import { Button } from '@frequency-chain/style-guide';
+
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
 
   interface Props {
@@ -37,8 +38,8 @@
   noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
 <div class="flex justify-between align-bottom">
-  <Button id="connect-button" title="Connect To Account" disabled={!canConnect} action={connect} />
+  <Button type="secondary" class="px-f12 py-f8" disabled={canConnect} onClick={connect}>Connect to Account</Button>
   {#if onCancel}
-    <button class="btn-no-fill" onclick={preventDefault(onCancel)}>Cancel</button>
+    <Button type="secondary" class="px-f12 py-f8" onClick={onCancel}>Cancel</Button>
   {/if}
 </div>
