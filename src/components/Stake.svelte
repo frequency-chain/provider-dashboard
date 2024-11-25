@@ -13,10 +13,9 @@
 </script>
 
 <Modal id="stake-to-provider" {isOpen} {close}>
-  {#snippet title()}
-    <span>Stake to Provider</span>
-  {/snippet}
-  {#snippet body()}
+  <span slot="title">Stake to Provider</span>
+
+  <div slot="body">
     <StakeForm {close} {stakeAmount} />
 
     <span class="min-w-full border-b border-b-divider"></span>
@@ -29,5 +28,5 @@
         <li>This will require 1 signature to send the transaction.</li>
       </ol>
     </div>
-  {/snippet}
+  </div>
 </Modal>

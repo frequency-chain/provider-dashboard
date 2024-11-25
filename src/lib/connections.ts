@@ -1,3 +1,4 @@
+import '@frequency-chain/api-augment';
 import type { ApiPromise } from '@polkadot/api/promise';
 
 import type { KeyringPair } from '@polkadot/keyring/types';
@@ -5,9 +6,9 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
-import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
+import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 
 interface AddKeyData {
   msaId: string;
@@ -50,19 +51,14 @@ export async function submitAddAccountId(
       newPublicKey: newAccount.address,
     };
 
-    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
+    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload) as unknown as PalletMsaAddKeyData;
 
     const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
     const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
 
     const ownerKeyProof = { Sr25519: ownerKeySignature };
     const newKeyProof = { Sr25519: newKeySignature };
-    const extrinsic = api.tx.msa.addPublicKeyToMsa(
-      signingAccount.address,
-      ownerKeyProof,
-      newKeyProof,
-      newKeyPayload as PalletMsaAddKeyData
-    );
+    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
     submitExtinsic(extrinsic, signingAccount, extension);
   } else {
     console.debug('api is not available.');

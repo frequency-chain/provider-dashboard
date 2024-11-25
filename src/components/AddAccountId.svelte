@@ -19,7 +19,7 @@
 
   let { isOpen, close }: Props = $props();
 
-  let selectedAccount: Account | null = $state();
+  let selectedAccount: Account | null | undefined = $state();
 
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
 
@@ -47,13 +47,11 @@
 </script>
 
 <Modal id="add-account-id" {isOpen} close={onCancel}>
-  {#snippet title()}
-    <span>
-      Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
-    </span>
-  {/snippet}
+  <span slot="title">
+    Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
+  </span>
 
-  {#snippet body()}
+  <div slot="body">
     <form class="column">
       <DropDownMenu
         id="AddAccountId"
@@ -80,5 +78,5 @@
     <span class="border-1 border-b border-divider"></span>
 
     <AddKeyRequirements />
-  {/snippet}
+  </div>
 </Modal>

@@ -98,9 +98,10 @@
   }
 
   const onSelectNetworkChanged = () => {
-    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
+    if (!selectedNetwork) return;
+    isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
-      if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
+      if (selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
         const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
         goto([$page.url.toString(), selectedNetwork.pathName].join(join));
         networkChanged();
@@ -140,7 +141,7 @@
 {:else}
   <p class="flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <span onclick={resetState} class="btn-no-fill cursor-pointer"> Change networks </span>
+    <button onclick={resetState} class="btn-no-fill cursor-pointer">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -169,7 +170,7 @@
     disabled={accounts.size === 0 || isLoading}
   />
   {#if selectedAccount?.address}
-    <AddToClipboard copyValue={selectedAccount?.address} />
+    <AddToClipboard copyValue={selectedAccount?.address || ''} />
   {/if}
 </div>
 <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>

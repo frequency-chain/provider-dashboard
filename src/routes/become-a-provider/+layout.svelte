@@ -1,5 +1,7 @@
-<script lang="ts">
-  import BecomeAProvider from '$components/BecomeAProvider.svelte';
+<script>
+  let { children } = $props();
 </script>
 
-<slot />
+<div>
+  {@render children()}
+</div>
