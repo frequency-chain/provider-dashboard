@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
-
   import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
@@ -38,8 +36,16 @@
   noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
 <div class="flex justify-between align-bottom">
-  <Button type="secondary" class="px-f12 py-f8" disabled={canConnect} onClick={connect}>Connect to Account</Button>
+  <Button
+    class="hover-teal px-f12 py-f8 disabled:bg-gray3"
+    type="primary"
+    size="md"
+    disabled={!canConnect}
+    onClick={connect}
+  >
+    Connect to Account
+  </Button>
   {#if onCancel}
-    <Button type="secondary" class="px-f12 py-f8" onClick={onCancel}>Cancel</Button>
+    <button class="px-f12 py-f8 underline hover:text-teal" onclick={onCancel}>Cancel</button>
   {/if}
 </div>

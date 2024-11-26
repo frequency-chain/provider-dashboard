@@ -7,7 +7,7 @@
 </script>
 
 <div class="flex flex-col">
-  <div class="border-divider min-w-[300px] border-l pl-5"></div>
+  <div class="border-divider border-l pl-5 md:min-w-[300px]"></div>
   <div class="label border-divider border-b pb-3">Activity Log</div>
 
   {#if recentActivityItem}

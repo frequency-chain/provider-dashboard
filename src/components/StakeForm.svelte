@@ -9,6 +9,7 @@
   import { formatAccount, getExtension } from '$lib/utils';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
+  import { Button } from '@frequency-chain/style-guide';
 
   interface Props {
     close: () => void;
@@ -64,8 +65,9 @@
     <input type="number" id="stakingInput" min="0" value="1" oninput={handleInput} />
   </div>
 
-  <div class="flex w-[320px] items-end justify-between">
-    <button onclick={preventDefault(stake)} class="btn-primary" aria-label="Stake" disabled={isLoading}>Stake</button>
-    <button class="btn-no-fill" onclick={preventDefault(close)}>Cancel</button>
+  <div class="flex w-[320px] items-center justify-between">
+    <Button size="md" onclick={stake} class="btn-primary" disabled={isLoading}>Stake</Button>
+
+    <button class="btn-no-fill underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
   </div>
 </form>

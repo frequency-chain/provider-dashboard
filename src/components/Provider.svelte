@@ -7,6 +7,7 @@
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from './ListCard.svelte';
   import AddAccountId from './AddAccountId.svelte';
+  import { Button } from '@frequency-chain/style-guide';
 
   let accountBalances: AccountBalances = { transferable: 0n, locked: 0n, total: 0n };
   let isAddAccountIdOpen: boolean = false;
@@ -38,6 +39,6 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <button on:click|preventDefault={() => (isAddAccountIdOpen = true)} class="btn-primary">Add Account Id</button>
+  <Button size="sm" class="btn-primary" onClick={() => (isAddAccountIdOpen = true)}>Add Account Id</Button>
   <AddAccountId isOpen={isAddAccountIdOpen} close={() => (isAddAccountIdOpen = false)} />
 </ListCard>

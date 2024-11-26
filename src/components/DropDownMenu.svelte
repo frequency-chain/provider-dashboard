@@ -9,16 +9,16 @@
 </script>
 
 <div class="column mb-f24 w-full max-w-[420px]">
-  <label class="" for={id}>{label}</label>
+  <label for={id}>{label}</label>
   <select
     {...$$restProps}
     {id}
     bind:value
     on:change={onChange}
     data-test-id={id}
-    class="mr-f32 max-w-[420px] rounded-xl align-middle"
+    class="mr-f32 max-w-[420px] rounded-xl align-middle text-black"
   >
-    <option value="" class="text-gray3" disabled selected>{placeholder}</option>
+    <option value="" class="text-black" disabled selected>{placeholder}</option>
     {#each options as option}
       <option value={option}>{formatter(option)}</option>
     {/each}

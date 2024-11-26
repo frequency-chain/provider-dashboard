@@ -16,11 +16,13 @@ export default {
       full: '100%',
     },
     extend: {
+      boxShadow: {
+        'blue-border': '8px 0 0 #5E69FF',
+      },
       backgroundImage: {
         topRight: 'url(/assets/top-right-bars.png)',
       },
     },
   },
-  plugins: [require('@tailwindcss/forms')],
   presets: [frequencyConfig]
 };
