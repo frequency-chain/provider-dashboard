@@ -30,7 +30,7 @@
     <Nav />
     <div class="main-section my-6">
       <Header />
-      <div class="mx-auto max-w-[512px] px-0">
+      <div class="mx-auto max-w-[80%] px-0 lg:max-w-[1024px]">
         <slot />
       </div>
     </div>

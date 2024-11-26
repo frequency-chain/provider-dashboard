@@ -9,9 +9,9 @@
 <a
   {id}
   {href}
-  on:click={onClick}
+  onclick={onClick}
   class={` flex h-[100px] items-center justify-center text-sm font-bold ${
-    isActive && 'shadow-blue-border bg-white text-teal'
+    isActive && 'bg-white text-teal shadow-blue-border shadow-teal'
   }`}
   {target}
 >

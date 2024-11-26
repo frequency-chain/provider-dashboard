@@ -8,13 +8,15 @@
   ]);
 </script>
 
-<div id="chain-status" class="content-block">
+<div id="chain-status" class="content-block border-gray3">
   <h3 class="section-title-underlined">Overview</h3>
-  <div class="flex justify-around">
+  <div class="flex flex-col md:flex-row md:justify-between">
     {#each chainStatus as status, index}
-      <div class={`flex min-w-[30%] flex-col gap-6 p-5 ${index > 0 && 'border-divider border-l'}`}>
+      <div
+        class={`flex flex-col gap-1 p-2 md:min-w-[30%] md:gap-6 md:p-5 ${index > 0 && 'md:border-divider md:border-l'}`}
+      >
         <p class="label" id={`${status.id}-title`}>{status.label}:</p>
-        <p class="data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
+        <p class="data-value-md lg:data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
       </div>
     {/each}
   </div>

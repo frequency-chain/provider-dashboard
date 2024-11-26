@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
-
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { submitAddAccountId } from '$lib/connections';
@@ -11,6 +9,7 @@
   import { user } from '$lib/stores/userStore';
   import { type Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore';
   import { formatAccount } from '$lib/utils';
+  import { Button } from '@frequency-chain/style-guide';
 
   interface Props {
     isOpen: boolean;
@@ -68,10 +67,8 @@
         </div>
       {/if}
       <div class="flex w-[350px] justify-between">
-        <button onclick={preventDefault(addAccountId)} class="btn-primary" disabled={isSubmitDisabled}
-          >Add Account Id</button
-        >
-        <button onclick={preventDefault(onCancel)} class="btn-no-fill">Cancel</button>
+        <Button class="btn-primary" onClick={addAccountId} disabled={isSubmitDisabled}>Add Account Id</Button>
+        <button class="underline transition hover:text-teal" onclick={onCancel}>Cancel</button>
       </div>
     </form>
 

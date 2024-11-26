@@ -35,7 +35,7 @@
   }
 </script>
 
-<div class="{classes} flex flex-col">
+<div class="{classes} flex min-w-f48 flex-col">
   <CopyIcon {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-  <span class="text-xs {!isClicked && 'hidden'}">Copied</span>
+  <span class="absolute top-[28px] text-xs {!isClicked && 'hidden'}">Copied</span>
 </div>
