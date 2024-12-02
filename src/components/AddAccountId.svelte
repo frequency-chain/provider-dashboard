@@ -19,9 +19,9 @@
 
   let { isOpen, close }: Props = $props();
 
-  let selectedAccount: Account | null | undefined = $state();
+  let selectedAccount: Account | undefined = $state();
 
-  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
+  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == undefined);
 
   const addAccountId = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -41,7 +41,7 @@
   };
 
   function onCancel() {
-    selectedAccount = null;
+    selectedAccount = undefined;
     close();
   }
 </script>

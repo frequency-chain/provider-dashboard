@@ -3,26 +3,28 @@
     label: string;
     id: string;
     options: T[];
-    value: T | null;
-    placeholder: string;
-    onChange: (() => void) | undefined;
+    value: T | undefined;
+    placeholder?: string;
+    onChange?: (() => void) | undefined;
     formatter: (value: T) => string;
+    disabled?: boolean;
   }
 
   let {
     label,
     id = '',
     options,
-    value = null,
+    value = $bindable(),
     placeholder = '',
     onChange = undefined,
     formatter = (value) => value.toString(),
+    disabled = false,
   }: Props = $props();
 </script>
 
 <div>
   <label class="label mb-3.5 block" for={id}>{label}</label>
-  <select {...$$restProps} {id} bind:value on:change={onChange} data-test-id={id}>
+  <select {...$$restProps} {id} bind:value on:change={onChange} data-test-id={id} {disabled}>
     {#if placeholder !== ''}
       <option class="text-disabled" value={null} disabled selected>{placeholder}</option>
     {/if}

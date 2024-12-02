@@ -3,7 +3,7 @@
   import LoginForm from './LoginForm.svelte';
 
   interface Props {
-    close: () => {};
+    close: () => void;
     isOpen: boolean;
   }
 

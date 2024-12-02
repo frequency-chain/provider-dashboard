@@ -4,12 +4,12 @@
   import { storeChainInfo } from '$lib/stores';
 
   interface Props {
-    isOpen?: boolean;
-    close?: () => void;
+    isOpen: boolean;
+    close: () => void;
     stakeAmount?: bigint;
   }
 
-  let { isOpen = false, close = () => {}, stakeAmount = 1n }: Props = $props();
+  let { isOpen, close, stakeAmount = 1n }: Props = $props();
 </script>
 
 <Modal id="stake-to-provider" {isOpen} {close}>
