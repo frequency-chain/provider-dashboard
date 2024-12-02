@@ -4,18 +4,16 @@
   import { storeChainInfo } from '$lib/stores';
 
   interface Props {
-    isOpen?: boolean;
-    close?: () => void;
+    isOpen: boolean;
+    close: () => void;
     stakeAmount?: bigint;
   }
 
-  let { isOpen = false, close = () => {}, stakeAmount = 1n }: Props = $props();
+  let { isOpen, close, stakeAmount = 1n }: Props = $props();
 </script>
 
-<Modal id="stake-to-provider" {isOpen} {close}>
-  <span slot="title">Stake to Provider</span>
-
-  <div slot="body">
+<Modal id="stake-to-provider" {isOpen} {close} title="Stake to Provider">
+  <div>
     <StakeForm {close} {stakeAmount} />
 
     <span class="min-w-full border-b border-b-divider"></span>
