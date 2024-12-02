@@ -1,11 +1,19 @@
 <script lang="ts">
+  import type { Snippet } from 'svelte';
+
   interface Props {
+    title: string;
     id: string;
     close: () => void;
     isOpen: boolean;
+    children: Snippet;
   }
 
-  let { id, close, isOpen = false }: Props = $props();
+  let { title, id, close, isOpen = false, children }: Props = $props();
+
+  function handleStopProp(e: Event) {
+    e.stopPropagation();
+  }
 </script>
 
 {#if isOpen}
@@ -19,13 +27,13 @@
   >
     <div
       class="content-block flex w-modal cursor-default flex-col gap-7"
-      on:click|stopPropagation={() => {}}
-      on:keyup|stopPropagation={() => {}}
+      onclick={handleStopProp}
+      onkeyup={handleStopProp}
       tabindex="0"
       role="button"
     >
-      <h2 class="section-title-underlined"><slot name="title" /></h2>
-      <slot name="body" />
+      <h2 class="section-title-underlined">{title}</h2>
+      {@render children()}
     </div>
   </div>
 {/if}
