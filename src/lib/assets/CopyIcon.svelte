@@ -6,10 +6,7 @@
     handleMouseLeave: () => void;
   }
 
-  let { fillColor = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: {fillColor?: string;
-    handleClick: () => void;
-    handleMouseEnter: () => void;
-    handleMouseLeave: () => void;} = $props();
+  let { fillColor = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: Props = $props();
 </script>
 
 <button aria-label="Copy icon" onclick={handleClick} onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}

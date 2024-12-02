@@ -8,7 +8,7 @@
     activity: Activity;
   }
 
-  let { activity }: Props = $props() as Props;
+  let { activity }: Props = $props();
 </script>
 
 <div class="break-anywhere flex gap-2 text-wrap border-b border-divider py-2 text-sm">
