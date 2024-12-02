@@ -1,7 +1,11 @@
 <script lang="ts">
-  export let id: string;
-  export let close = () => {};
-  export let isOpen: boolean = false;
+  interface Props {
+		id: string;
+    close: () => {};
+    isOpen: boolean
+	}
+
+	let { id, close, isOpen = false }: Props = $props();
 </script>
 
 {#if isOpen}

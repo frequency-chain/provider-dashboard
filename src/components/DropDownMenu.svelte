@@ -1,11 +1,23 @@
 <script lang="ts" generics="T extends { toString: () => string }">
-  export let label: string;
-  export let id: string = '';
-  export let options: T[]; // eslint-disable-line no-undef
-  export let value: T | null = null; // eslint-disable-line no-undef
-  export let placeholder: string = '';
-  export let onChange: (() => void) | undefined = undefined;
-  export let formatter: (value: T) => string = (value) => value.toString(); // eslint-disable-line no-undef
+  interface Props {
+    label: string;
+    id: string;
+    options: T[];
+    value: T | null;
+    placeholder: string;
+    onChange: (() => void) | undefined;
+    formatter: (value: T) => string;
+  }
+
+  let {
+    label,
+    id = '',
+    options,
+    value = null,
+    placeholder = '',
+    onChange = undefined,
+    formatter = (value) => value.toString(),
+  }: Props = $props();
 </script>
 
 <div>

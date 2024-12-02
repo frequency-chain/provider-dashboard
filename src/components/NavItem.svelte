@@ -1,9 +1,13 @@
 <script lang="ts">
-  export let href: string = '';
-  export let isActive: boolean = false;
-  export let onClick: () => void = () => {};
-  export let id: string = '';
-  export let target: string = '';
+  interface Props {
+    href: string;
+    isActive: boolean;
+    onClick: () => void;
+    id: string;
+    target: string;
+  }
+
+  let { href = '', isActive = false, onClick = () => {}, id = '', target = '' }: Props = $props();
 </script>
 
 <a

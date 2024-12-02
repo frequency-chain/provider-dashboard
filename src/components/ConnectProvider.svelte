@@ -1,8 +1,13 @@
 <script lang="ts">
   import Modal from '../components/Modal.svelte';
   import LoginForm from './LoginForm.svelte';
-  export let close = () => {};
-  export let isOpen: boolean = false;
+
+  interface Props {
+    close: () => {};
+    isOpen: boolean;
+  }
+
+  let { close, isOpen = false }: Props = $props();
 </script>
 
 <Modal id="connect-provider" {close} {isOpen}>
