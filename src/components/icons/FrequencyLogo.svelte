@@ -7,7 +7,7 @@
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   {width}
-  height="48.256"
+  height="100%"
   viewBox="0 0 461.117 68.256"
 >
   <defs>

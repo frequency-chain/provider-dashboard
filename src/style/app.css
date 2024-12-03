@@ -31,7 +31,7 @@
     @apply ml-6 list-decimal;
   }
   .column {
-    @apply flex flex-col md:gap-4;
+    @apply flex flex-col;
   }
 
   /* typography */
@@ -99,23 +99,6 @@
 
     footer svg {
       @apply bg-white text-black transition duration-[0.3s] hover:text-teal;
-    }
-
-    select {
-      @apply m-0 cursor-pointer overflow-clip bg-transparent p-2 pr-f32 text-black outline-none outline-1 outline-gray3;
-
-      &:focus,
-      &:hover {
-        @apply outline-teal;
-      }
-
-      option:first-child {
-        @apply text-gray3 !important;
-      }
-    }
-
-    ::placeholder {
-      @apply text-gray2 !important;
     }
   }
 }

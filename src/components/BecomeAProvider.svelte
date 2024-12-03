@@ -12,37 +12,36 @@
   let hasRequestedToBeProvider = $state(false);
 </script>
 
-<div id="become-a-provider" class="column w-single-block">
-  <BlockSection title="Become a Provider">
-    <form class="column">
-      {#if hasRequestedToBeProvider === false}
-        <SelectNetworkAndAccount
-          bind:newUser={$user}
-          accounts={$nonProviderAccountsStore}
-          accountSelectorTitle="Select an Account Id"
-          accountSelectorPlaceholder="Select an Account Id"
-          noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
-        />
-      {/if}
-      {#if $user && $user?.address !== ''}
-        {#if $user?.msaId === 0}
-          <CreateMsa />
-        {:else if $user?.network?.id === NetworkType.MAINNET}
-          <RequestToBeProvider bind:hasRequestedToBeProvider />
-        {:else}
-          <CreateProvider />
-        {/if}
+<BlockSection id="become-a-provider" title="Become a Provider">
+  <form class="column">
+    {#if hasRequestedToBeProvider === false}
+      <SelectNetworkAndAccount
+        bind:newUser={$user}
+        accounts={$nonProviderAccountsStore}
+        accountSelectorTitle="Select an Account Id"
+        accountSelectorPlaceholder="Select an Account Id"
+        noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
+      />
+    {/if}
+    {#if $user && $user?.address !== ''}
+      {#if $user?.msaId === 0}
+        <CreateMsa />
+      {:else if $user?.network?.id === NetworkType.MAINNET}
+        <RequestToBeProvider bind:hasRequestedToBeProvider />
       {:else}
-        <BackHomeButton cancelText="Back" />
+        <CreateProvider />
       {/if}
-    </form>
-  </BlockSection>
-  <BlockSection title="More Info">
-    <div class="text-sm">
-      For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
-      submit a createProvider transaction.<br /><br />This action will register the MSA Id that is controlled by the
-      selected Transaction Signing Address above. Any Account Id that has been added to the MSA can submit the
-      transaction.
-    </div>
-  </BlockSection>
-</div>
+    {:else}
+      <BackHomeButton cancelText="Back" />
+    {/if}
+  </form>
+</BlockSection>
+
+<BlockSection title="More Info">
+  <div class="text-sm">
+    For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
+    submit a createProvider transaction.<br /><br />This action will register the MSA Id that is controlled by the
+    selected Transaction Signing Address above. Any Account Id that has been added to the MSA can submit the
+    transaction.
+  </div>
+</BlockSection>

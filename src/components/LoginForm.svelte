@@ -35,7 +35,7 @@
   accountSelectorPlaceholder="Select a Provider Account Id"
   noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
-<div class="flex justify-between align-bottom">
+<div class="mt-f24 flex justify-between align-bottom">
   <Button
     class="hover-teal px-f12 py-f8 disabled:bg-gray3"
     type="primary"

@@ -139,7 +139,7 @@
     formatter={formatNetwork}
   />
 {:else}
-  <p class="mb-f24 flex justify-between">
+  <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
     <button onclick={resetState} class="hover-teal cursor-pointer underline">Change networks</button>
   </p>
