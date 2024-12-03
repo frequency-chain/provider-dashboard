@@ -109,7 +109,7 @@
   }
 
   button.btn-primary {
-    @apply rounded-full bg-teal p-f12 text-center text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md;
+    @apply rounded-full bg-teal p-f12 text-center text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md font-bold;
   }
 
   html {
