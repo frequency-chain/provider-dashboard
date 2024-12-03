@@ -18,7 +18,7 @@
   <div slot="body">
     <StakeForm {close} {stakeAmount} />
 
-    <span class="min-w-full border-b border-b-divider"></span>
+    <span class="border-b-divider min-w-full border-b"></span>
 
     <div>
       <div class="label mb-2">Requirements</div>

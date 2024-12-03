@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
-
   import { providerAccountsStore, type Account } from '$lib/stores/accountsStore';
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
-  import Button from './Button.svelte';
+  import { Button } from '@frequency-chain/style-guide';
+
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
 
   interface Props {
@@ -36,9 +35,17 @@
   accountSelectorPlaceholder="Select a Provider Account Id"
   noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
 />
-<div class="flex justify-between align-bottom">
-  <Button id="connect-button" title="Connect To Account" disabled={!canConnect} action={connect} />
+<div class="mt-f24 flex justify-between align-bottom">
+  <Button
+    class="hover-teal px-f12 py-f8 disabled:bg-gray3"
+    type="primary"
+    size="md"
+    disabled={!canConnect}
+    onClick={connect}
+  >
+    Connect to Account
+  </Button>
   {#if onCancel}
-    <button class="btn-no-fill" onclick={preventDefault(onCancel)}>Cancel</button>
+    <button class="px-f12 py-f8 underline hover:text-teal" onclick={onCancel}>Cancel</button>
   {/if}
 </div>

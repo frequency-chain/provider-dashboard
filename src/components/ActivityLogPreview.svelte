@@ -7,8 +7,8 @@
 </script>
 
 <div class="flex flex-col">
-  <div class="min-w-[300px] border-l border-divider pl-5"></div>
-  <div class="label border-b border-divider pb-3">Activity Log</div>
+  <div class="border-divider border-l pl-5 md:min-w-[300px]"></div>
+  <div class="label border-divider border-b pb-3">Activity Log</div>
 
   {#if recentActivityItem}
     <ActivityLogPreviewItem activity={recentActivityItem} />

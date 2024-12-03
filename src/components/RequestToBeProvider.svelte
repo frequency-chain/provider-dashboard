@@ -40,7 +40,7 @@
   }
 </script>
 
-<div id="request-to-be-provider" class="action-card basis-1/2">
+<div id="request-to-be-provider" class=" basis-1/2">
   <h2>Request to Be a Provider</h2>
   <h3>What is a Provider?</h3>
   <p>A Provider is an MSA holder on Frequency with special permissions.</p>

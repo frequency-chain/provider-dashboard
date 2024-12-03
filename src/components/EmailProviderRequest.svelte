@@ -15,8 +15,12 @@
     For use on Mainnet, anyone with an MSA who wishes to become a Provider needs to send an email request to the
     Frequency Foundation.
   </p>
-  <form class="flex w-[350px] items-end justify-between">
-    <button id="email-request-btn" onclick={preventDefault(composeEmail)} class="btn-primary">Email Request</button>
-    <BackHomeButton />
-  </form>
+  <div class="flex items-end justify-between">
+    <button
+      id="email-request"
+      onclick={preventDefault(composeEmail)}
+      class="md: border-3xl hover-teal rounded-3xl border p-f4 py-f8 md:px-f12">Email Request</button
+    >
+    <BackHomeButton classes="text-sm px-f4 md:px-f12" />
+  </div>
 </div>

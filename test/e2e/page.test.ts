@@ -1,4 +1,4 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
+import { cleanup, fireEvent, getByRole, render, screen, waitFor } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
 import Page from '$routes/[[network=networks]]/+page.svelte';
 import { pageContent } from '../../src/lib/stores/pageContentStore';
@@ -80,18 +80,18 @@ describe('displays correct component', () => {
 
   it('renders ProviderLogin component when $pageContent is PageContent.Login', async () => {
     pageContent.login();
-    const { getByText, getByTestId } = render(Page);
+    const { getByText, container } = render(Page);
     expect(getByText(/Provider Login/)).toBeInTheDocument();
     expect(getByText(/Not a Provider\?/)).toBeInTheDocument();
-    expect(getByTestId('become-a-provider')).toBeInTheDocument();
+    expect(container.querySelector('a[href="/become-a-provider"]')).toBeInTheDocument();
   });
 });
 
 describe('/become-a-provider', () => {
   it('is accessible from main page', () => {
     pageContent.login();
-    const { getByTestId } = render(Page);
-    expect(getByTestId('become-a-provider')).toBeInTheDocument();
+    const { container } = render(Page);
+    expect(container.querySelector('a[href="/become-a-provider"]')).toBeInTheDocument();
   });
 });
 
@@ -102,9 +102,9 @@ describe('End to End Tests', () => {
   test('connect to localhost from login', async () => {
     pageContent.login();
 
-    const { container, getByText } = render(Page);
+    const { container, getByText, getByLabelText } = render(Page);
     expect(getByText('Provider Login')).toBeInTheDocument();
-    expect(getByText('Select a Network')).toBeInTheDocument();
+    expect(getByLabelText('Select a Network')).toBeInTheDocument();
 
     // Get the select box to log back in
     const select = container.querySelector('#network');
