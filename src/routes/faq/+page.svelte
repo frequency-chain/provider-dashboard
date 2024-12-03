@@ -31,8 +31,8 @@
   <HowToTransact />
 {/snippet}
 
-<div class="content-block w-single-block text-left text-base">
-  <h2 class="section-title">FAQ's</h2>
+<div class="content-block">
+  <h2 class="text-md font-bold md:text-xl">FAQ's</h2>
 
   <FAQItem question={question1} answer={answer1} />
 

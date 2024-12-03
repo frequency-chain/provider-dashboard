@@ -7,7 +7,7 @@
 
 <header class="mb-8 flex items-start justify-between gap-3">
   <div>
-    <div class="w-[140px] max-w-48 pb-1 pl-3 md:min-w-40">
+    <div class="w-[180px] max-w-[180px] pb-1 pl-3 md:min-w-40">
       <FrequencyLogo />
     </div>
     <p class="pl-3 text-sm font-semibold md:text-md md:text-normal lg:tracking-wider">Provider Dashboard</p>
