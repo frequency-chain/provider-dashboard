@@ -47,7 +47,6 @@
     queueMicrotask(checkIsFinished);
   });
 
-
   const doProposeToBeProvider = async (_evt: Event) => {
     if (!$dotApi.api) {
       alert('please reconnect to an endpoint');
