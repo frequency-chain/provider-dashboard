@@ -5,10 +5,9 @@
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import CreateMsa from './CreateMsa.svelte';
   import CreateProvider from './CreateProvider.svelte';
-  import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { NetworkType } from '$lib/stores/networksStore';
   import BackHomeButton from '$components/BackHomeButton.svelte';
-  import RequestToBeProvider from "$components/RequestToBeProvider.svelte";
+  import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
@@ -24,12 +23,10 @@
       {#if $user && $user?.address !== ''}
         {#if $user?.msaId === 0}
           <CreateMsa />
+        {:else if $user?.network?.id === NetworkType.MAINNET}
+          <RequestToBeProvider />
         {:else}
-          {#if $user.network.id === NetworkType.MAINNET}
-            <RequestToBeProvider />
-          {:else}
-            <CreateProvider />
-          {/if}
+          <CreateProvider />
         {/if}
       {:else}
         <BackHomeButton cancelText="Back" />

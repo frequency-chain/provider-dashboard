@@ -25,8 +25,8 @@ describe('RequestToBeProvider component', () => {
   it('shows text + Cancel button', () => {
     const { container, getByRole, getByText } = render(RequestToBeProvider);
     const title = container.querySelector('h2');
-    expect(title).toHaveTextContent('Request to Be a Provider');
-    expect(getByRole('button', { name: 'Submit Request To Be Provider' })).toBeInTheDocument();
+    expect(title).toHaveTextContent('Become a Provider');
+    expect(getByRole('button', { name: 'Request To Be Provider' })).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
@@ -59,7 +59,7 @@ describe('RequestToBeProvider component', () => {
     const input = getByLabelText('Provider name');
     expect(input).toBeInTheDocument();
 
-    const btn = getByRole('button', { name: 'Submit Request To Be Provider' });
+    const btn = getByRole('button', { name: 'Request To Be Provider' });
     userEvent.click(btn);
     await waitFor(() => {
       expect(extrinsicWasCalled).toBe(false);

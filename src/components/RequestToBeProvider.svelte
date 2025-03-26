@@ -1,16 +1,16 @@
 <script lang="ts">
-  import {dotApi} from '$lib/stores';
-  import {submitRequestToBeProvider} from '$lib/connections';
-  import type {Activity} from '$lib/storeTypes';
-  import {type MsaInfo, TxnStatus} from '$lib/storeTypes';
-  import {createMailto, getExtension, providerNameToHuman} from '$lib/utils';
-  import {user} from '$lib/stores/userStore';
-  import {activityLog} from '$lib/stores/activityLogStore';
+  import { dotApi } from '$lib/stores';
+  import { submitRequestToBeProvider } from '$lib/connections';
+  import type { Activity } from '$lib/storeTypes';
+  import { type MsaInfo, TxnStatus } from '$lib/storeTypes';
+  import { createMailto, getExtension, providerNameToHuman } from '$lib/utils';
+  import { user } from '$lib/stores/userStore';
+  import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import BackHomeButton from '$components/BackHomeButton.svelte';
-  import LoadingIcon from "$lib/assets/LoadingIcon.svelte";
-  import {getMsaInfo} from "$lib/polkadotApi";
-  import {pageContent} from "$lib/stores/pageContentStore";
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
+  import { getMsaInfo } from '$lib/polkadotApi';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
   let isInProgress = false;
   let recentActivityItem: Activity | undefined;
@@ -35,7 +35,7 @@
   const checkIsFinished = async () => {
     if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
       await requestToBeProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
-      if(recentActivityItem.txnStatus === TxnStatus.FAILURE) isInProgress = false;
+      if (recentActivityItem.txnStatus === TxnStatus.FAILURE) isInProgress = false;
     }
   };
 
@@ -56,22 +56,27 @@
 </script>
 
 <div id="request-to-be-provider" class="column">
-    <form class="column">
-      <div>
-        <label for="providerNameRtB" class="label mb-3.5 block">Provider name</label>
-        <input id="providerNameRtB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
-      </div>
-      <div class="flex w-[350px] justify-between">
-        <button on:click|preventDefault={doProposeToBeProvider} disabled={newProviderName === '' || isInProgress} id="request-2b-provider-btn" class="btn-primary">
-          {#if isInProgress}
-            <LoadingIcon />
-          {:else}
-            Request To Be Provider
-          {/if}
-        </button>
-        <BackHomeButton />
-      </div>
-    </form>
+  <form class="column">
+    <div>
+      <label for="providerNameRtB" class="label mb-3.5 block">Provider name</label>
+      <input id="providerNameRtB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+    </div>
+    <div class="flex w-[350px] justify-between">
+      <button
+        on:click|preventDefault={doProposeToBeProvider}
+        disabled={newProviderName === '' || isInProgress}
+        id="request-2b-provider-btn"
+        class="btn-primary"
+      >
+        {#if isInProgress}
+          <LoadingIcon />
+        {:else}
+          Request To Be Provider
+        {/if}
+      </button>
+      <BackHomeButton />
+    </div>
+  </form>
 
   {#if recentActivityItem}
     {#if recentActivityItem && recentActivityItem.txnStatus === TxnStatus.SUCCESS}
@@ -83,7 +88,9 @@
       </p>
     {/if}
     {#if recentActivityItem && recentActivityItem.txnStatus === TxnStatus.FAILURE}
-      <p class="text-sm font-bold">Your request to has failed. This may be because you have previously submitted a request to become a provider.</p>
+      <p class="text-sm font-bold">
+        Your request to has failed. This may be because you have previously submitted a request to become a provider.
+      </p>
     {/if}
   {/if}
 </div>
