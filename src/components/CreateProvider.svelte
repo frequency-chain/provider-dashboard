@@ -11,6 +11,11 @@
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import BackHomeButton from '$components/BackHomeButton.svelte';
 
+  let newProviderName = '';
+  let isInProgress = false;
+  let recentActivityItem: Activity | undefined;
+  let recentTxnId: Activity['txnId'] | undefined;
+
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
@@ -24,11 +29,6 @@
       }, 1500);
     }
   };
-
-  let newProviderName = '';
-  let isInProgress = false;
-  let recentActivityItem: Activity | undefined;
-  let recentTxnId: Activity['txnId'] | undefined;
 
   const checkIsFinished = async () => {
     if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
@@ -82,6 +82,7 @@
     <BackHomeButton />
   </div>
 </form>
+
 {#if recentActivityItem}
   <ActivityLogPreviewItem activity={recentActivityItem} />
 {/if}
