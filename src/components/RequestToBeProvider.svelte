@@ -1,73 +1,107 @@
 <script lang="ts">
   import { dotApi } from '$lib/stores';
   import { submitRequestToBeProvider } from '$lib/connections';
-  import { defaultDotApi } from '$lib/storeTypes';
-  import type { Activity, DotApi } from '$lib/storeTypes';
-  import { getExtension, createMailto } from '$lib/utils';
-  import type { ApiPromise } from '@polkadot/api';
+  import type { Activity } from '$lib/storeTypes';
+  import { type MsaInfo, TxnStatus } from '$lib/storeTypes';
+  import { createMailto, getExtension, providerNameToHuman } from '$lib/utils';
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import BackHomeButton from '$components/BackHomeButton.svelte';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
+  import { getMsaInfo } from '$lib/polkadotApi';
+  import { pageContent } from '$lib/stores/pageContentStore';
 
-  let isInProgress = false;
-  let recentActivityItem: Activity;
-  let newProviderName = '';
-  let localDotApi: DotApi = defaultDotApi;
+  let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
+
+  let isInProgress = $state(false);
+  let recentActivityItem: Activity | undefined = $state();
+  let recentTxnId: Activity['txnId'] | undefined = $state();
+  let newProviderName = $state('');
   let mailTo = createMailto('hello@frequency.xyz', 'Request to be a Provider', '');
-  // a callback for when the user cancels this action
 
-  dotApi.subscribe((api) => (localDotApi = api));
+  // a callback for when a transaction hits a final state
+  let requestToBeProviderTxnFinished = async (succeeded: boolean) => {
+    if (succeeded) {
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
+      $user.providerName = providerNameToHuman(msaInfo.providerName);
+      $user.isProvider = msaInfo.isProvider;
+      isInProgress = false;
+      hasRequestedToBeProvider = true;
+      setTimeout(() => {
+        pageContent.dashboard();
+      }, 1500);
+    }
+  };
+
+  const checkIsFinished = async () => {
+    if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
+      await requestToBeProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
+      if (recentActivityItem.txnStatus === TxnStatus.FAILURE) isInProgress = false;
+    }
+  };
+
+  $effect(() => {
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    queueMicrotask(checkIsFinished);
+  });
 
   const doProposeToBeProvider = async (_evt: Event) => {
-    isInProgress = true;
-    if (newProviderName === '') {
-      alert('please enter a Provider Name');
-      return;
-    }
-    if (!localDotApi) {
+    if (!$dotApi.api) {
       alert('please reconnect to an endpoint');
       return;
     }
-    await submitRequestToBeProvider(localDotApi.api as ApiPromise, await getExtension($user), $user, newProviderName);
-    isInProgress = false;
+    isInProgress = true;
+    recentTxnId = await submitRequestToBeProvider($dotApi.api, await getExtension($user), $user, newProviderName);
+    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
-
-  $: {
-    if (isInProgress) {
-      recentActivityItem = $activityLog[0];
-    }
-  }
 </script>
 
-<div id="request-to-be-provider" class="action-card basis-1/2">
-  <h2>Request to Be a Provider</h2>
-  <h3>What is a Provider?</h3>
-  <p>A Provider is an MSA holder on Frequency with special permissions.</p>
-  <ol>
-    <li>They can pay for transactions with Capacity as well as Frequency token.</li>
-    <li>They can be permitted to post certain transactions on another MSA's behalf, also known as delegation.</li>
-    <li>An MSA can stake token to generate Capacity, and designate a Provider to receive that Capacity.</li>
-  </ol>
-  <p>Anyone with an MSA ID on Frequency's Mainnet who wants to become a Provider must follow this process:</p>
-  <ol>
-    <li>Submit an on-chain transaction to request be become a provider by filling in and submitting the form below.</li>
-    <li>
-      <a href={mailTo} class="underline"> Contact the Frequency Council </a>
+<div id="request-to-be-provider" class="column">
+  {#if hasRequestedToBeProvider === false}
+    <form class="column">
+      <div>
+        <label for="providerNameRtB" class="label mb-3.5 block">Provider name</label>
+        <input id="providerNameRtB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+      </div>
+      <div class="flex w-[350px] justify-between">
+        <button
+          on:click|preventDefault={doProposeToBeProvider}
+          disabled={newProviderName === '' || isInProgress}
+          id="request-2b-provider-btn"
+          class="btn-primary"
+        >
+          {#if isInProgress}
+            <LoadingIcon />
+          {:else}
+            Request To Be Provider
+          {/if}
+        </button>
+        <BackHomeButton />
+      </div>
+    </form>
+  {:else}
+    <p class="text-sm font-bold">Success! Your request to become a provider has been submitted.</p>
+    <ul class="text-sm truncate">
+      <li>Provider Name: <b>{newProviderName}</b></li>
+      <li>Address: <b>{$user.address}</b></li>
+      <li>MSA ID: <b>{$user.msaId}</b></li>
+    </ul>
+    <p class="text-sm">
+      <a href={mailTo} class="underline font-bold">Contact the Frequency Council </a>
       and inform them that you have requested to become a Provider, and provide them with your MSA Id.
-    </li>
-  </ol>
-  <form>
-    <label for="providerNameRtB">Provider name</label>
-    <input id="providerNameRtB" placeholder="Short name" maxlength="16" bind:value={newProviderName} />
-    <div class="flex w-[350px] justify-between">
-      <button on:click|preventDefault={doProposeToBeProvider} id="request-2b-provider-btn" class="btn-primary">
-        Submit Request To Be Provider</button
-      >
-      <BackHomeButton />
-    </div>
-  </form>
+    </p>
+    <BackHomeButton />
+  {/if}
+
+  {#if recentActivityItem && recentActivityItem.txnStatus === TxnStatus.FAILURE}
+    <p class="text-sm font-bold">
+      Your request to has failed. This may be because you have previously submitted a request to become a provider.
+    </p>
+  {/if}
 </div>
+
 {#if recentActivityItem}
   <ActivityLogPreviewItem activity={recentActivityItem} />
 {/if}

@@ -23,10 +23,12 @@ describe('RequestToBeProvider component', () => {
   });
 
   it('shows text + Cancel button', () => {
-    const { container, getByRole, getByText } = render(RequestToBeProvider);
-    const title = container.querySelector('h2');
-    expect(title).toHaveTextContent('Request to Be a Provider');
-    expect(getByRole('button', { name: 'Submit Request To Be Provider' })).toBeInTheDocument();
+    const { container, getByRole, getByText } = render(RequestToBeProvider, {
+      props: {
+        hasRequestedToBeProvider: false,
+      },
+    });
+    expect(getByRole('button', { name: 'Request To Be Provider' })).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
 
@@ -37,7 +39,11 @@ describe('RequestToBeProvider component', () => {
 
   it('clicking Request To Be Provider submits extrinsic and shows Transaction Status', async () => {
     const user = userEvent.setup();
-    const { getByRole, getByLabelText } = render(RequestToBeProvider);
+    const { getByRole, getByLabelText } = render(RequestToBeProvider, {
+      props: {
+        hasRequestedToBeProvider: false,
+      },
+    });
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);
@@ -59,7 +65,7 @@ describe('RequestToBeProvider component', () => {
     const input = getByLabelText('Provider name');
     expect(input).toBeInTheDocument();
 
-    const btn = getByRole('button', { name: 'Submit Request To Be Provider' });
+    const btn = getByRole('button', { name: 'Request To Be Provider' });
     userEvent.click(btn);
     await waitFor(() => {
       expect(extrinsicWasCalled).toBe(false);

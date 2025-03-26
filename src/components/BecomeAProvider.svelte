@@ -5,26 +5,30 @@
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
   import CreateMsa from './CreateMsa.svelte';
   import CreateProvider from './CreateProvider.svelte';
-  import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { NetworkType } from '$lib/stores/networksStore';
   import BackHomeButton from '$components/BackHomeButton.svelte';
+  import RequestToBeProvider from '$components/RequestToBeProvider.svelte';
+
+  let hasRequestedToBeProvider = $state(false);
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
   <BlockSection title="Become a Provider">
     <form class="column w-[320px]">
-      <SelectNetworkAndAccount
-        bind:newUser={$user}
-        accounts={$nonProviderAccountsStore}
-        accountSelectorTitle="Select an Account Id"
-        accountSelectorPlaceholder="Select an Account Id"
-        noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
-      />
-      {#if $user?.network != null && $user.network.id === NetworkType.MAINNET}
-        <EmailProviderRequest />
-      {:else if $user && $user?.address !== ''}
+      {#if hasRequestedToBeProvider === false}
+        <SelectNetworkAndAccount
+          bind:newUser={$user}
+          accounts={$nonProviderAccountsStore}
+          accountSelectorTitle="Select an Account Id"
+          accountSelectorPlaceholder="Select an Account Id"
+          noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
+        />
+      {/if}
+      {#if $user && $user?.address !== ''}
         {#if $user?.msaId === 0}
           <CreateMsa />
+        {:else if $user?.network?.id === NetworkType.TESTNET_PASEO}
+          <RequestToBeProvider bind:hasRequestedToBeProvider />
         {:else}
           <CreateProvider />
         {/if}
