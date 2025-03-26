@@ -27,7 +27,7 @@
       {#if $user && $user?.address !== ''}
         {#if $user?.msaId === 0}
           <CreateMsa />
-        {:else if $user?.network?.id === NetworkType.TESTNET_PASEO}
+        {:else if $user?.network?.id === NetworkType.MAINNET}
           <RequestToBeProvider bind:hasRequestedToBeProvider />
         {:else}
           <CreateProvider />
