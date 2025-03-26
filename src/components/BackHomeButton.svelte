@@ -1,5 +1,6 @@
 <script lang="ts">
+  import { logout } from '$lib/stores';
   let { cancelText = 'Cancel' } = $props();
 </script>
 
-<a href="/" class="btn-no-fill" data-testid="back-home">{cancelText}</a>
+<a href="/" class="btn-no-fill" data-testid="back-home" on:click={logout}>{cancelText}</a>

@@ -8,6 +8,7 @@
   import EmailProviderRequest from './EmailProviderRequest.svelte';
   import { NetworkType } from '$lib/stores/networksStore';
   import BackHomeButton from '$components/BackHomeButton.svelte';
+  import RequestToBeProvider from "$components/RequestToBeProvider.svelte";
 </script>
 
 <div id="become-a-provider" class="content-block column w-single-block">
@@ -20,13 +21,15 @@
         accountSelectorPlaceholder="Select an Account Id"
         noAccountsFoundErrorMsg="No accounts found.  Add an Account Id to your wallet."
       />
-      {#if $user?.network != null && $user.network.id === NetworkType.MAINNET}
-        <EmailProviderRequest />
-      {:else if $user && $user?.address !== ''}
+      {#if $user && $user?.address !== ''}
         {#if $user?.msaId === 0}
           <CreateMsa />
         {:else}
-          <CreateProvider />
+          {#if $user.network.id === NetworkType.MAINNET}
+            <RequestToBeProvider />
+          {:else}
+            <CreateProvider />
+          {/if}
         {/if}
       {:else}
         <BackHomeButton cancelText="Back" />
