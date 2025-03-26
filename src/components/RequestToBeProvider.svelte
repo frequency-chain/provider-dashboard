@@ -81,9 +81,7 @@
         <BackHomeButton />
       </div>
     </form>
-  {/if}
-
-  {#if hasRequestedToBeProvider}
+  {:else}
     <p class="text-sm font-bold">Success! Your request to become a provider has been submitted.</p>
     <ul class="text-sm truncate">
       <li>Provider Name: <b>{newProviderName}</b></li>

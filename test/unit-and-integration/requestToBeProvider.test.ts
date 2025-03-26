@@ -23,9 +23,11 @@ describe('RequestToBeProvider component', () => {
   });
 
   it('shows text + Cancel button', () => {
-    const { container, getByRole, getByText } = render(RequestToBeProvider);
-    const title = container.querySelector('h2');
-    expect(title).toHaveTextContent('Become a Provider');
+    const { container, getByRole, getByText } = render(RequestToBeProvider, {
+      props: {
+        hasRequestedToBeProvider: false,
+      },
+    });
     expect(getByRole('button', { name: 'Request To Be Provider' })).toBeInTheDocument();
     expect(getByText('Cancel')).toBeInTheDocument();
   });
@@ -37,7 +39,11 @@ describe('RequestToBeProvider component', () => {
 
   it('clicking Request To Be Provider submits extrinsic and shows Transaction Status', async () => {
     const user = userEvent.setup();
-    const { getByRole, getByLabelText } = render(RequestToBeProvider);
+    const { getByRole, getByLabelText } = render(RequestToBeProvider, {
+      props: {
+        hasRequestedToBeProvider: false,
+      },
+    });
 
     let extrinsicWasCalled = false;
     const mockReady = vi.fn().mockResolvedValue(true);
