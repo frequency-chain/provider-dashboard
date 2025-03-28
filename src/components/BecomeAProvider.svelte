@@ -14,7 +14,7 @@
 
 <div id="become-a-provider" class="content-block column w-single-block">
   <BlockSection title="Become a Provider">
-    <form class="column w-[320px]">
+    <form class="column w-[320px] gap-f16">
       {#if hasRequestedToBeProvider === false}
         <SelectNetworkAndAccount
           bind:newUser={$user}

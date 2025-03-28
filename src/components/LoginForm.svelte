@@ -3,9 +3,9 @@
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
   import { Button } from '@frequency-chain/style-guide';
-
   import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
 
+  // Props
   interface Props {
     onConnect?: () => void;
     onCancel?: (() => void) | undefined;
@@ -13,10 +13,15 @@
 
   let { onConnect = () => {}, onCancel = undefined }: Props = $props();
 
-  let newUser: Account | undefined = $state($providerAccountsStore.get($user.address));
+  // Get the matching account object safely
+  let newUser: Account | undefined = $providerAccountsStore.get($user.address);
 
-  let canConnect = $derived(newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '');
+  // Derive whether we can connect
+  let canConnect = $derived(
+    () => newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== ''
+  );
 
+  // Handle connect
   async function connect() {
     if (!newUser) {
       alert('Invalid form values');
@@ -26,26 +31,35 @@
     $user = newUser;
     onConnect();
   }
+
+  // Debug
+  console.log('user', $user);
+  console.log('newUser', newUser);
+  console.log('accounts', $providerAccountsStore);
+  console.log('canConnect', canConnect);
 </script>
 
-<SelectNetworkAndAccount
-  bind:newUser
-  accounts={$providerAccountsStore}
-  accountSelectorTitle="Select a Provider Account Id"
-  accountSelectorPlaceholder="Select a Provider Account Id"
-  noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
-/>
-<div class="mt-f24 flex justify-between align-bottom">
-  <Button
-    class="hover-teal px-f12 py-f8 disabled:bg-gray3"
-    type="primary"
-    size="md"
-    disabled={!canConnect}
-    onClick={connect}
-  >
-    Connect to Account
-  </Button>
-  {#if onCancel}
-    <button class="px-f12 py-f8 underline hover:text-teal" onclick={onCancel}>Cancel</button>
-  {/if}
-</div>
+<form class="column gap-f16">
+  <SelectNetworkAndAccount
+    bind:newUser
+    accounts={$providerAccountsStore}
+    accountSelectorTitle="Select a Provider Account Id"
+    accountSelectorPlaceholder="Select a Provider Account Id"
+    noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
+  />
+
+  <div class="flex items-end justify-between">
+    <Button
+      type="primary"
+      disabled={!canConnect}
+      onclick={connect}
+      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
+    >
+      Connect to Account
+    </Button>
+
+    {#if onCancel}
+      <button type="button" class="btn-no-fill underline hover:text-teal" onclick={onCancel}> Cancel </button>
+    {/if}
+  </div>
+</form>

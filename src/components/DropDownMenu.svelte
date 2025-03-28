@@ -8,7 +8,7 @@
   export let formatter: (value: T) => string = (value) => value.toString(); // eslint-disable-line no-undef
 </script>
 
-<div class="column freq-select my-f24 w-full max-w-[420px]">
+<div class="column freq-select w-full max-w-[420px]">
   <label class="font-bold" for={id}>{label}</label>
   <select
     {...$$restProps}
@@ -16,7 +16,10 @@
     bind:value
     on:change={onChange}
     data-test-id={id}
-    class="freq-select relative m-0 mt-f8 max-w-[420px] cursor-pointer appearance-none rounded-md bg-white p-2 pr-f32 align-middle outline outline-1 outline-gray3 active:shadow-md"
+    class="relative m-0 mt-f8 cursor-pointer rounded-md bg-white p-2 pr-f32 align-middle outline outline-1 outline-gray3 active:outline-1 focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray3 disabled:cursor-not-allowed hover:outline-teal
+    disabled:outline-gray3
+    disabled:hover:outline-gray3
+    disabled:focus-visible:outline-gray3"
   >
     <option class="text-gray3" value={null} disabled>{placeholder}</option>
     {#each options as option}
@@ -44,10 +47,5 @@
   }
   .freq-select select {
     -webkit-appearance: none;
-
-    &:focus,
-    &:hover {
-      @apply outline-teal;
-    }
   }
 </style>
