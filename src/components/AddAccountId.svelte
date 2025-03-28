@@ -19,9 +19,9 @@
 
   let { isOpen, close }: Props = $props();
 
-  let selectedAccount: Account | null | undefined = $state();
+  let selectedAccount: Account | undefined = $state();
 
-  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
+  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == undefined);
 
   const addAccountId = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -41,17 +41,18 @@
   };
 
   function onCancel() {
-    selectedAccount = null;
+    selectedAccount = undefined;
     close();
   }
 </script>
 
-<Modal id="add-account-id" {isOpen} close={onCancel}>
-  <span slot="title">
-    Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
-  </span>
-
-  <div slot="body">
+<Modal
+  id="add-account-id"
+  {isOpen}
+  close={onCancel}
+  title="Add an Account Id to MSA (<span class='font-light'>{$user.msaId}</span>)"
+>
+  <div>
     <form class="column">
       <DropDownMenu
         id="AddAccountId"
