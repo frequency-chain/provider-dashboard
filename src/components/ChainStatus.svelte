@@ -16,7 +16,7 @@
         class={`flex flex-col gap-1 p-2 md:min-w-[30%] md:gap-6 md:p-5 ${index > 0 && 'md:border-divider md:border-l'}`}
       >
         <p class="label" id={`${status.id}-title`}>{status.label}:</p>
-        <p class="data-value-md lg:data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
+        <p class="data-value-lg lg:data-value-2xl" id={`${status.id}-value`}>{status.value}</p>
       </div>
     {/each}
   </div>

@@ -18,7 +18,7 @@
       {#each list as item}
         <div class="border-divider flex items-center justify-between border-b py-3">
           <div class="label">{item.label}</div>
-          <div class="data-value-base">{item.value}</div>
+          <div class="data-value-normal">{item.value}</div>
         </div>
       {/each}
       <div class="absolute bottom-7 right-7">

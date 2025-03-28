@@ -10,7 +10,7 @@
     <div class="w-[180px] max-w-[180px] pb-1 pl-3 md:min-w-40">
       <FrequencyLogo />
     </div>
-    <p class="pl-3 text-sm font-semibold md:text-md md:text-normal lg:tracking-wider">Provider Dashboard</p>
+    <p class="pl-3 text-sm font-semibold md:text-normal lg:tracking-wider">Provider Dashboard</p>
   </div>
   <ConnectionStatus />
   {#if !$isLoggedIn}

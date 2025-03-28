@@ -10,6 +10,7 @@
   import { type Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore';
   import { formatAccount } from '$lib/utils';
   import { Button } from '@frequency-chain/style-guide';
+  import AddAccountIdForm from '$components/AddAccountIdForm.svelte';
 
   interface Props {
     isOpen: boolean;
@@ -19,25 +20,6 @@
   let { isOpen, close }: Props = $props();
 
   let selectedAccount: Account | null | undefined = $state();
-
-  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
-
-  const addAccountId = async () => {
-    if (!selectedAccount || !selectedAccount.injectedAccount) {
-      alert('Please choose an Account Id to add.');
-    } else if (!$user.msaId || !$user.injectedAccount) {
-      alert('Invalid provider.');
-    } else {
-      close();
-      await submitAddAccountId(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user,
-        $user.msaId
-      );
-    }
-  };
 
   function onCancel() {
     selectedAccount = null;
@@ -50,29 +32,10 @@
     Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
   </span>
 
-  <div slot="body">
-    <form class="column">
-      <DropDownMenu
-        id="AddAccountId"
-        label="Account Id to Add"
-        placeholder="Select Id..."
-        bind:value={selectedAccount}
-        options={Array.from($unusedKeyAccountsStore.values()) || []}
-        disabled={$unusedKeyAccountsStore.size === 0}
-        formatter={formatAccount}
-      />
-      {#if $unusedKeyAccountsStore.size === 0}
-        <div id="network-error-msg" class="text-sm text-error">
-          No available Account Ids. Create a new Account Id without an MSA Id.
-        </div>
-      {/if}
-      <div class="flex w-[350px] justify-between">
-        <Button class="btn-primary" onClick={addAccountId} disabled={isSubmitDisabled}>Add Account Id</Button>
-        <button class="underline transition hover:text-teal" onclick={onCancel}>Cancel</button>
-      </div>
-    </form>
+  <div slot="body" class="column gap-f16">
+    <AddAccountIdForm {onCancel} {selectedAccount} />
 
-    <span class="border-1 border-divider border-b"></span>
+    <span class="border-b-divider min-w-full border-b"></span>
 
     <AddKeyRequirements />
   </div>

@@ -10,12 +10,16 @@
 </BlockSection>
 
 <BlockSection title="Not a Provider?">
-  <div class="py-f24 text-sm">
-    <a href="https://docs.frequency.xyz/Delegation/Providers.html" target="_blank" rel="no-referrer" class="underline"
+  <div class="column gap-f16">
+    <a
+      href="https://docs.frequency.xyz/Delegation/Providers.html"
+      target="_blank"
+      rel="no-referrer"
+      class="underline text-sm"
       >Want to learn more about providers?
     </a>
+    <Button class="px-f12 py-f8" href="/become-a-provider">Become a Provider</Button>
   </div>
-  <Button class="px-f12 py-f8" href="/become-a-provider">Become a Provider</Button>
 </BlockSection>
 <BlockSection title="Need tokens?">
   <HowToTransact additionalStyles="text-sm" />

@@ -1,7 +1,7 @@
 <script lang="ts">
   import CopyIcon from '../lib/assets/CopyIcon.svelte';
 
-  let origFill = '#fff';
+  let origFill = '#000';
 
   let fill = $state(origFill);
   let isClicked = $state(false);
@@ -18,7 +18,7 @@
 
   function handleClick() {
     copyText();
-    fill = '#2F80ED';
+    fill = '#55B1AB';
     isClicked = true;
     setTimeout(() => {
       fill = origFill;
@@ -37,5 +37,5 @@
 
 <div class="{classes} flex min-w-f48 flex-col">
   <CopyIcon {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-  <span class="absolute top-[28px] text-xs {!isClicked && 'hidden'}">Copied</span>
+  <span class="absolute top-f24 text-xs {!isClicked && 'hidden'}">Copied</span>
 </div>

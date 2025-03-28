@@ -11,7 +11,6 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
-  import AddToClipboard from './AddToClipboard.svelte';
 
   interface Props {
     newUser: Account | undefined;
@@ -141,7 +140,7 @@
 {:else}
   <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="hover-teal cursor-pointer underline">Change networks</button>
+    <button onclick={resetState} class="hover:text-teal cursor-pointer underline">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -156,21 +155,19 @@
     onkeydown={customNetworkChanged}
   />
 {/if}
-
-<div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-<div class="flex content-end gap-f12">
-  <DropDownMenu
-    id="controlkeys"
-    label={accountSelectorTitle}
-    bind:value={selectedAccount}
-    placeholder={accountSelectorPlaceholder}
-    options={Array.from(accounts.values())}
-    onChange={accountChanged}
-    formatter={formatAccount}
-    disabled={accounts.size === 0 || isLoading}
-  />
-  {#if selectedAccount?.address}
-    <AddToClipboard copyValue={selectedAccount?.address || ''} classes="h-6 mt-f48" />
-  {/if}
-</div>
-<div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+{#if networkErrorMsg}
+  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+{/if}
+<DropDownMenu
+  id="controlkeys"
+  label={accountSelectorTitle}
+  bind:value={selectedAccount}
+  placeholder={accountSelectorPlaceholder}
+  options={Array.from(accounts.values())}
+  onChange={accountChanged}
+  formatter={formatAccount}
+  disabled={accounts.size === 0 || isLoading}
+/>
+{#if controlKeysErrorMsg}
+  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+{/if}

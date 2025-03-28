@@ -14,7 +14,7 @@
     class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-142px)] cursor-default items-center justify-center overflow-y-auto bg-black bg-opacity-25"
   >
     <div
-      class="content-block flex w-modal cursor-default flex-col gap-7 bg-white shadow-lg"
+      class="content-block flex w-modal cursor-default flex-col bg-white shadow-lg"
       on:click|stopPropagation={() => {}}
       on:keyup|stopPropagation={() => {}}
       tabindex="0"

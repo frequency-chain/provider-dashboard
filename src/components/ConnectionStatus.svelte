@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
-
   import Switch from '$lib/assets/Switch.svelte';
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
@@ -25,10 +23,8 @@
       </p>
       <div class="rounded-md transition hover:shadow-md">
         <button
-          onclick={preventDefault(() => {
-            showConnectProvider = true;
-          })}
-          class="w-f32 flex h-f32 min-h-f32 min-w-f32 items-end justify-center rounded-md bg-teal p-1 lg:min-h-f40 lg:min-w-f40"
+          onclick={() => (showConnectProvider = true)}
+          class="w-f32 flex h-f32 min-h-f32 min-w-f32 items-end justify-center rounded-md bg-teal p-f8"
           ><Switch />
         </button>
       </div>

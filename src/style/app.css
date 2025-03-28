@@ -41,11 +41,11 @@
   }
 
   .section-title-underlined {
-    @apply section-title border-b border-l-gray2 pb-3;
+    @apply section-title mb-f24 border-b border-l-gray2 pb-3;
   }
 
   .label {
-    @apply text-sm font-bold md:text-normal md:font-normal lg:tracking-wide;
+    @apply text-sm font-bold md:text-normal lg:tracking-wide;
   }
 
   /* data */
@@ -57,8 +57,8 @@
     @apply font-data text-md text-teal;
   }
 
-  .data-value-base {
-    @apply font-data text-base;
+  .data-value-normal {
+    @apply font-data text-normal text-teal;
   }
 
   .data-value-lg {
@@ -66,7 +66,7 @@
   }
 
   .data-value-2xl {
-    @apply font-data text-2xl text-teal;
+    @apply font-data text-h3 text-teal;
   }
 
   /* layout */
@@ -109,7 +109,7 @@
   }
 
   button.btn-primary {
-    @apply rounded-full bg-teal p-f12 text-center text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md font-bold;
+    @apply rounded-full bg-teal p-f12 text-center font-bold text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md;
   }
 
   html {

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { preventDefault } from 'svelte/legacy';
-
   import { user } from '$lib/stores/userStore';
   import { storeChainInfo } from '$lib/stores';
   import { dotApi } from '$lib/stores';
@@ -49,7 +48,7 @@
   };
 </script>
 
-<form class="column">
+<form class="column gap-f16">
   <DropDownMenu
     id="stake-using-account-id"
     label="Wallet Account Id"
@@ -58,16 +57,31 @@
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
   />
-  <div>
-    <label for="stakingInput" class="label mb-3.5 block">
+
+  <div class="column gap-f8">
+    <label class="form-item-label text-[16px]" for="stakingInput">
       Amount in <span class="units">{$storeChainInfo.token}</span>
     </label>
-    <input type="number" id="stakingInput" min="0" value="1" oninput={handleInput} />
+
+    <input
+      id="stakingInput"
+      class={'text-[16px] outline outline-1 outline-gray3 border-2 border-error border-input aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between rounded-md bg-white px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
+      type="number"
+      min="0"
+      value="1"
+      oninput={handleInput}
+    />
   </div>
 
-  <div class="flex w-[320px] items-center justify-between">
-    <Button size="md" onclick={stake} class="btn-primary" disabled={isLoading}>Stake</Button>
-
+  <div class="flex items-end justify-between">
+    <Button
+      type="primary"
+      onclick={stake}
+      disabled={isLoading}
+      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
+    >
+      Stake</Button
+    >
     <button class="btn-no-fill underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
   </div>
 </form>
