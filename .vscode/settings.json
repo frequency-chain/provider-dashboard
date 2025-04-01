@@ -1,0 +1,21 @@
+{
+  "svelte.enable-ts-plugin": true,
+  "svelte.plugin.svelte.format.config.singleQuote": true,
+  "svelte.plugin.svelte.format.config.printWidth": 100,
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "files.autoSave": "afterDelay",
+  "editor.tabSize": 2,
+  "files.exclude": {
+    "**/.idea": true
+  },
+  "editor.codeActionsOnSave": {},
+  "editor.minimap.enabled": false,
+  "typescript.updateImportsOnFileMove.enabled": "always",
+  "[svelte]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.accessibilitySupport": "off",
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  "makefile.configureOnOpen": true
+}

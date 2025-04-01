@@ -13,7 +13,7 @@
 </script>
 
 <BlockSection id="become-a-provider" title="Become a Provider">
-  <form class="column">
+  <form class="column gap-f16">
     {#if hasRequestedToBeProvider === false}
       <SelectNetworkAndAccount
         bind:newUser={$user}

@@ -101,8 +101,9 @@
     isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
       if (selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
-        const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
-        goto([$page.url.toString(), selectedNetwork.pathName].join(join));
+        const baseUrl =
+          $page.url.pathname === '/become-a-provider' ? $page.url.toString() : $page.url.origin.toString();
+        goto([baseUrl, selectedNetwork.pathName].join('/'));
         networkChanged();
       }
     }
@@ -124,6 +125,7 @@
     connectedToEndpoint = false;
     networkErrorMsg = '';
     controlKeysErrorMsg = '';
+    newUser = undefined;
   };
 </script>
 
@@ -140,7 +142,7 @@
 {:else}
   <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="hover:text-teal cursor-pointer underline">Change networks</button>
+    <button onclick={resetState} class="cursor-pointer text-sm underline hover:text-teal">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}

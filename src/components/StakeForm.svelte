@@ -65,7 +65,7 @@
 
     <input
       id="stakingInput"
-      class={'text-[16px] outline outline-1 outline-gray3 border-2 border-error border-input aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between rounded-md bg-white px-3 py-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
+      class={'border-input aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between rounded-md border-2 border-error bg-white px-3 py-2 text-[16px] outline outline-1 outline-gray3 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
       type="number"
       min="0"
       value="1"
@@ -82,6 +82,6 @@
     >
       Stake</Button
     >
-    <button class="btn-no-fill underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
+    <button class="btn-no-fill text-sm underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
   </div>
 </form>

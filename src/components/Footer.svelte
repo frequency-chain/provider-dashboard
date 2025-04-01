@@ -19,10 +19,10 @@
 
 <div class="px-[10px] sm:px-[30px] md:px-[40px] lg:px-[80px]">
   <footer
-    class="sm md:md mx-auto my-0 flex max-w-screen-xl flex-col items-center gap-f16 border-t-[2px] border-current py-f48 md:gap-f48 {fgColorText}"
+    class="mx-auto my-0 flex max-w-screen-xl flex-col items-center gap-f16 border-t-[2px] border-current py-f48 md:gap-f32 {fgColorText}"
   >
     <div class="px-0 md:px-f24">
-      <FrequencyLogo fill="#000000" />
+      <FrequencyLogo fill="#000000" width={'192px'} />
     </div>
     <aside
       class="space-between flex flex-col items-center space-y-f8 text-center leading-none md:flex-row md:space-x-f32 md:space-y-1"

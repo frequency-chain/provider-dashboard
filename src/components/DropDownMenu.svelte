@@ -16,7 +16,7 @@
     bind:value
     on:change={onChange}
     data-test-id={id}
-    class="relative m-0 mt-f8 cursor-pointer rounded-md bg-white p-2 pr-f32 align-middle outline outline-1 outline-gray3 active:outline-1 focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray3 disabled:cursor-not-allowed hover:outline-teal
+    class="relative m-0 mt-f8 cursor-pointer rounded-md bg-white p-2 pr-f32 align-middle outline outline-1 outline-gray3 hover:outline-teal focus-visible:outline focus-visible:outline-1 focus-visible:outline-gray3 active:outline-1 disabled:cursor-not-allowed
     disabled:outline-gray3
     disabled:hover:outline-gray3
     disabled:focus-visible:outline-gray3"

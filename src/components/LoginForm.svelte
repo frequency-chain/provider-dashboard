@@ -14,12 +14,13 @@
   let { onConnect = () => {}, onCancel = undefined }: Props = $props();
 
   // Get the matching account object safely
-  let newUser: Account | undefined = $providerAccountsStore.get($user.address);
+  let newUser: Account | undefined = $state($providerAccountsStore.get($user.address));
 
   // Derive whether we can connect
-  let canConnect = $derived(
-    () => newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== ''
-  );
+  const canConnect = $derived.by(() => {
+    console.log(newUser);
+    return newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
+  });
 
   // Handle connect
   async function connect() {
@@ -31,12 +32,6 @@
     $user = newUser;
     onConnect();
   }
-
-  // Debug
-  console.log('user', $user);
-  console.log('newUser', newUser);
-  console.log('accounts', $providerAccountsStore);
-  console.log('canConnect', canConnect);
 </script>
 
 <form class="column gap-f16">
@@ -59,7 +54,7 @@
     </Button>
 
     {#if onCancel}
-      <button type="button" class="btn-no-fill underline hover:text-teal" onclick={onCancel}> Cancel </button>
+      <button type="button" class="btn-no-fill text-sm underline hover:text-teal" onclick={onCancel}>Cancel</button>
     {/if}
   </div>
 </form>

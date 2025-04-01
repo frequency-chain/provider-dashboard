@@ -1,15 +1,8 @@
 <script lang="ts">
-  import { dotApi } from '$lib/stores';
-  import type { ApiPromise } from '@polkadot/api';
-  import { submitAddAccountId } from '$lib/connections';
-  import { getExtension } from '$lib/utils';
   import AddKeyRequirements from './AddKeyRequirements.svelte';
   import Modal from './Modal.svelte';
-  import DropDownMenu from './DropDownMenu.svelte';
   import { user } from '$lib/stores/userStore';
-  import { type Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore';
-  import { formatAccount } from '$lib/utils';
-  import { Button } from '@frequency-chain/style-guide';
+  import { type Account } from '$lib/stores/accountsStore';
   import AddAccountIdForm from '$components/AddAccountIdForm.svelte';
 
   interface Props {

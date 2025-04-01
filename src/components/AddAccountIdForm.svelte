@@ -59,6 +59,6 @@
       disabled={isSubmitDisabled}
       class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none">Add Account Id</Button
     >
-    <button class="btn-no-fill underline hover:text-teal" onclick={preventDefault(onCancel)}>Cancel</button>
+    <button class="btn-no-fill text-sm underline hover:text-teal" onclick={preventDefault(onCancel)}>Cancel</button>
   </div>
 </form>
