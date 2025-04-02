@@ -3,4 +3,4 @@
   let { cancelText = 'Cancel' } = $props();
 </script>
 
-<a href="/" class="btn-no-fill" data-testid="back-home" on:click={logout}>{cancelText}</a>
+<a href="/" class="btn-no-fill" data-testid="back-home" onclick={logout}>{cancelText}</a>

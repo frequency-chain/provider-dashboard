@@ -67,7 +67,7 @@
       </div>
       <div class="flex w-[350px] justify-between">
         <button
-          on:click|preventDefault={doProposeToBeProvider}
+          onclick={doProposeToBeProvider}
           disabled={newProviderName === '' || isInProgress}
           id="request-2b-provider-btn"
           class="btn-primary"
