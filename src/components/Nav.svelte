@@ -11,7 +11,7 @@
   };
 </script>
 
-<div class="sidebar-bg fixed flex h-screen w-[126px] min-w-[126px] flex-col items-center justify-center">
+<div class="fixed flex h-full min-w-f80 flex-col items-center justify-center bg-navy text-white md:w-[128px]">
   <div class="flex w-[100%] flex-col">
     <NavItem href="/" isActive={url === '/'} onClick={() => (url = '/')}>Home</NavItem>
     {#if $isLoggedIn === true}

@@ -1,18 +1,22 @@
 <script lang="ts">
   interface Props {
-    fillColor?: string;
+    fill?: string;
     handleClick: () => void;
     handleMouseEnter: () => void;
     handleMouseLeave: () => void;
   }
 
-  let { fillColor = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: Props = $props();
+  let { fill = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: Props = $props();
 </script>
 
-<button aria-label="Copy icon" onclick={handleClick} onmouseenter={handleMouseEnter} onmouseleave={handleMouseLeave}
-  ><svg
-    class="transition"
-    fill={fillColor}
+<button
+  aria-label="Copy selected address"
+  onclick={handleClick}
+  onmouseenter={handleMouseEnter}
+  onmouseleave={handleMouseLeave}
+>
+  <svg
+    {fill}
     height="24px"
     width="24px"
     version="1.1"
@@ -20,8 +24,8 @@
     xmlns="http://www.w3.org/2000/svg"
     xmlns:xlink="http://www.w3.org/1999/xlink"
     viewBox="0 0 64 64"
-    enable-background="new 0 0 64 64"
     xml:space="preserve"
+    style="background-color: transparent"
   >
     <g id="Text-files">
       <path

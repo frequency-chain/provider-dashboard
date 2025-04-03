@@ -80,18 +80,18 @@ describe('displays correct component', () => {
 
   it('renders ProviderLogin component when $pageContent is PageContent.Login', async () => {
     pageContent.login();
-    const { getByText, getByTestId } = render(Page);
+    const { getByText, getByRole } = render(Page);
     expect(getByText(/Provider Login/)).toBeInTheDocument();
     expect(getByText(/Not a Provider\?/)).toBeInTheDocument();
-    expect(getByTestId('become-a-provider')).toBeInTheDocument();
+    expect(getByRole('button', { name: /Become A Provider/i })).toBeInTheDocument();
   });
 });
 
 describe('/become-a-provider', () => {
   it('is accessible from main page', () => {
     pageContent.login();
-    const { getByTestId } = render(Page);
-    expect(getByTestId('become-a-provider')).toBeInTheDocument();
+    const { getByRole } = render(Page);
+    expect(getByRole('button', { name: /Become A Provider/i })).toBeInTheDocument();
   });
 });
 
@@ -102,9 +102,9 @@ describe('End to End Tests', () => {
   test('connect to localhost from login', async () => {
     pageContent.login();
 
-    const { container, getByText } = render(Page);
+    const { container, getByText, getByRole } = render(Page);
     expect(getByText('Provider Login')).toBeInTheDocument();
-    expect(getByText('Select a Network')).toBeInTheDocument();
+    expect(screen.getByRole('combobox', { name: 'Select a Network' })).toBeInTheDocument();
 
     // Get the select box to log back in
     const select = container.querySelector('#network');

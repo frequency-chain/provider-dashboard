@@ -5,49 +5,22 @@
 @tailwind utilities;
 
 :root {
-  font-family: Poppins, Helvetica, Arial, sans-serif;
-  font-size: 16px;
-  line-height: 24px;
-  font-weight: 400;
-
-  background-color: #fefaf3;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  -webkit-text-size-adjust: 100%;
-  scroll-behavior: smooth;
+  --select-border: none;
+  --select-arrow: var(--select-border);
 }
 
 /*  */
 @layer components {
-  .sidebar-bg {
-    @apply bg-flan;
+  .title-h2 {
+    @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
   }
 
-  .btn-primary {
-    @apply flex h-10 w-[225px] items-center justify-center rounded-full bg-teal text-base font-bold text-white hover:text-white hover:opacity-75 disabled:bg-disabled;
+  .title-h3 {
+    @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
   }
 
-  .btn-primary:disabled {
-    @apply hover:opacity-100;
-  }
-
-  .btn-no-fill {
-    @apply text-sm underline hover:text-bright-blue;
-  }
-
-  .action-card {
-    @apply mt-8 shrink-0 rounded-lg p-8 text-white shadow-md;
-  }
-
-  .action-card {
-    @apply rounded text-white;
-  }
-
-  .action-card-title {
-    @apply text-lg font-semibold;
+  .title-h5 {
+    @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
   }
 
   /* layout */
@@ -58,7 +31,7 @@
     @apply ml-6 list-decimal;
   }
   .column {
-    @apply flex flex-col gap-4;
+    @apply flex flex-col;
   }
 
   /* typography */
@@ -68,21 +41,24 @@
   }
 
   .section-title-underlined {
-    @apply section-title border-b border-gray-2 pb-3;
+    @apply section-title mb-f24 border-b border-l-gray2 pb-3;
   }
 
   .label {
-    @apply text-base font-bold tracking-wide;
+    @apply text-sm font-bold md:text-normal lg:tracking-wide;
   }
 
   /* data */
   .data-value-sm {
-    /*@apply font-data text-sm text-green;*/
-    @apply font-data text-sm text-black;
+    @apply font-data text-sm text-teal;
   }
 
-  .data-value-base {
-    @apply font-data text-base text-black;
+  .data-value-md {
+    @apply font-data text-md text-teal;
+  }
+
+  .data-value-normal {
+    @apply font-data text-normal text-teal;
   }
 
   .data-value-lg {
@@ -90,17 +66,40 @@
   }
 
   .data-value-2xl {
-    @apply font-data text-2xl text-teal;
+    @apply font-data text-h3 text-teal;
   }
 
   /* layout */
   .content-block {
-    @apply box-border rounded-md bg-white p-7;
+    @apply mb-f24 box-border rounded-md p-7;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+  }
+
+  /* right side sizing */
+  .main-section {
+    @apply ml-f80 px-f16 md:ml-f128;
   }
 
   .break-anywhere {
     overflow-wrap: anywhere;
+  }
+
+  .hover-teal:hover {
+    @apply transition duration-[0.3s] hover:bg-tealDark;
+  }
+
+  .main-section {
+    a {
+      @apply underline transition duration-[0.3s] hover:text-teal;
+    }
+
+    footer a {
+      @apply text-black;
+    }
+
+    footer svg {
+      @apply bg-white text-black transition duration-[0.3s] hover:text-teal;
+    }
   }
 }
 
@@ -109,26 +108,22 @@
     min-height: 100vh;
   }
 
-  button {
-    @apply select-none;
+  button.btn-primary {
+    @apply rounded-full bg-teal p-f12 text-center font-bold text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md;
+  }
+
+  html {
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   input,
   [type='text'],
-  [type='number'],
-  select {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray-3 disabled:text-disabled disabled:opacity-85;
-  }
-
-  select {
-    @apply cursor-pointer pr-7;
-  }
-
-  ::placeholder {
-    @apply text-disabled !important;
-  }
-
-  a {
-    @apply hover:text-bright-blue;
+  [type='number'] {
+    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray3 disabled:text-gray3 disabled:opacity-85;
   }
 }

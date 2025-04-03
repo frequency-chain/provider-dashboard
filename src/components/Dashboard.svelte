@@ -33,7 +33,7 @@
 
   <ChainStatus />
 
-  <div class="flex justify-center gap-4">
+  <div class="mx-f8 flex flex-col justify-center gap-4 md:flex-row">
     <Provider />
     <Capacity />
   </div>

@@ -1,6 +1,5 @@
 <script lang="ts">
   import { preventDefault } from 'svelte/legacy';
-
   import { user } from '$lib/stores/userStore';
   import { storeChainInfo } from '$lib/stores';
   import { dotApi } from '$lib/stores';
@@ -9,6 +8,7 @@
   import { formatAccount, getExtension } from '$lib/utils';
   import DropDownMenu from './DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
+  import { Button } from '@frequency-chain/style-guide';
 
   interface Props {
     close: () => void;
@@ -48,23 +48,40 @@
   };
 </script>
 
-<form class="column">
+<form class="column gap-f16">
   <DropDownMenu
     id="stake-using-account-id"
     label="Wallet Account Id"
     bind:value={selectedAccount}
+    placeholder="Select Account Id"
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
   />
-  <div>
-    <label for="stakingInput" class="label mb-3.5 block">
+
+  <div class="column gap-f8">
+    <label class="form-item-label text-[16px]" for="stakingInput">
       Amount in <span class="units">{$storeChainInfo.token}</span>
     </label>
-    <input type="number" id="stakingInput" min="0" value="1" oninput={handleInput} />
+
+    <input
+      id="stakingInput"
+      class={'border-input aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between rounded-md border-2 border-error bg-white px-3 py-2 text-[16px] outline outline-1 outline-gray3 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
+      type="number"
+      min="0"
+      value="1"
+      oninput={handleInput}
+    />
   </div>
 
-  <div class="flex w-[320px] items-end justify-between">
-    <button onclick={preventDefault(stake)} class="btn-primary" aria-label="Stake" disabled={isLoading}>Stake</button>
-    <button class="btn-no-fill" onclick={preventDefault(close)}>Cancel</button>
+  <div class="flex items-end justify-between">
+    <Button
+      type="primary"
+      onclick={stake}
+      disabled={isLoading}
+      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
+    >
+      Stake</Button
+    >
+    <button class="btn-no-fill text-sm underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
   </div>
 </form>

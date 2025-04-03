@@ -15,10 +15,10 @@
 <Modal id="stake-to-provider" {isOpen} {close}>
   <span slot="title">Stake to Provider</span>
 
-  <div slot="body">
+  <div slot="body" class="column gap-f16">
     <StakeForm {close} {stakeAmount} />
 
-    <span class="min-w-full border-b border-b-divider"></span>
+    <span class="border-b-divider min-w-full border-b"></span>
 
     <div>
       <div class="label mb-2">Requirements</div>
