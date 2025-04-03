@@ -1,12 +1,12 @@
 // @ts-check
 
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import tsParser from '@typescript-eslint/parser';
 import eslintPluginSvelte from 'eslint-plugin-svelte';
-import svelteParser from 'svelte-eslint-parser';
-import svelteConfig from './svelte.config.js';
 import globals from 'globals';
+import svelteParser from 'svelte-eslint-parser';
+import tseslint from 'typescript-eslint';
+import svelteConfig from './svelte.config.js';
 
 export default tseslint.config(
   eslint.configs.recommended,

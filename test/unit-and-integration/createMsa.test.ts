@@ -1,9 +1,8 @@
-import { storeChainInfo } from '../../src/lib/stores';
 import '@testing-library/jest-dom';
-import CreateMsa from '../../src/components/CreateMsa.svelte';
+import { render } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import { fireEvent, render } from '@testing-library/svelte';
-import { getByTextContent } from '../helpers';
+import CreateMsa from '../../src/components/CreateMsa.svelte';
+import { storeChainInfo } from '../../src/lib/stores';
 
 globalThis.alert = () => {};
 

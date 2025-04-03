@@ -1,8 +1,8 @@
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
 import Page from '$routes/[[network=networks]]/+page.svelte';
-import { pageContent } from '../../src/lib/stores/pageContentStore';
+import '@testing-library/jest-dom';
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { vi } from 'vitest';
+import { pageContent } from '../../src/lib/stores/pageContentStore';
 
 vi.mock('$app/navigation', async () => {
   const goto = vi.fn();

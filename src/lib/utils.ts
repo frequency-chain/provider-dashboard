@@ -1,7 +1,6 @@
-import { formatBalance, hexToString } from '@polkadot/util';
-import { NetworkType, type NetworkInfo } from './stores/networksStore';
+import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
-import { isFunction } from '@polkadot/util';
+import { NetworkType, type NetworkInfo } from './stores/networksStore';
 
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));

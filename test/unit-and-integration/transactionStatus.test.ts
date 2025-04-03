@@ -1,6 +1,6 @@
-import { cleanup, render } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
 import ActivityLogPreview from '$components/ActivityLogPreview.svelte';
+import '@testing-library/jest-dom';
+import { cleanup, render } from '@testing-library/svelte';
 
 describe('ActivityLogPreview', () => {
   afterEach(() => cleanup());

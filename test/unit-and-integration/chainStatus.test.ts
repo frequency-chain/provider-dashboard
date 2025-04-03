@@ -1,7 +1,7 @@
-import { storeChainInfo } from '../../src/lib/stores';
-import { render } from '@testing-library/svelte';
 import '@testing-library/jest-dom';
+import { render } from '@testing-library/svelte';
 import ChainStatus from '../../src/components/ChainStatus.svelte';
+import { storeChainInfo } from '../../src/lib/stores';
 
 globalThis.alert = () => {};
 

@@ -1,10 +1,10 @@
-import { cleanup, render, waitFor } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
-import { storeChainInfo, dotApi } from '../../src/lib/stores';
 import Capacity from '$components/Capacity.svelte';
+import '@testing-library/jest-dom';
+import { cleanup, render, waitFor } from '@testing-library/svelte';
+import { vi } from 'vitest';
+import { dotApi, storeChainInfo } from '../../src/lib/stores';
 import { user } from '../../src/lib/stores/userStore';
 import { ChainInfo } from '../../src/lib/storeTypes';
-import { vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
   class TestCodec {

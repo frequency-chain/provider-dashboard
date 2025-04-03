@@ -1,5 +1,5 @@
-import { writable } from 'svelte/store';
 import { BROWSER } from 'esm-env';
+import { writable } from 'svelte/store';
 
 export function storable<T>(key: string, data?: T) {
   const store = writable(data);

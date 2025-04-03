@@ -1,6 +1,6 @@
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
 import FAQPage from '$routes/faq/+page.svelte';
+import '@testing-library/jest-dom';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 
 describe('FAQ Page', () => {
   it('mounts', () => {

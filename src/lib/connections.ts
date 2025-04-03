@@ -1,14 +1,14 @@
 import '@frequency-chain/api-augment';
 import type { ApiPromise } from '@polkadot/api/promise';
 
-import type { KeyringPair } from '@polkadot/keyring/types';
-import type { InjectedExtension } from '@polkadot/extension-inject/types';
-import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
-import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import type { InjectedExtension } from '@polkadot/extension-inject/types';
+import type { KeyringPair } from '@polkadot/keyring/types';
+import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
+import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
-import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 
 interface AddKeyData {
   msaId: string;

@@ -1,8 +1,8 @@
 import { TxnStatus, type Activity } from '$lib/storeTypes';
-import { storable } from './storable';
-import { readonly } from 'svelte/store';
 import type { EventRecord, ExtrinsicStatus } from '@polkadot/types/interfaces';
 import type { ISubmittableResult } from '@polkadot/types/types';
+import { readonly } from 'svelte/store';
+import { storable } from './storable';
 
 //writableActivityLog: Oldest to Newest
 const writableActivityLog = storable<Activity[]>('ActivityLog', []);

@@ -1,5 +1,5 @@
-import { test, expect } from '@playwright/test';
 import Page from '$routes/+page.svelte';
+import { expect, test } from '@playwright/test';
 
 // Mainnet: 1, testnet: 2, localhost: 3
 // selects the option and then it must fire a change event.
