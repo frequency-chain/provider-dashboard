@@ -1,9 +1,8 @@
-import type { MsaInfo } from '$lib/storeTypes';
+import type { DotApi, MsaInfo } from '$lib/storeTypes';
+import { options } from '@frequency-chain/api-augment';
+import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type { DotApi } from '$lib/storeTypes';
-import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import { options } from '@frequency-chain/api-augment';
 
 export type AccountMap = Record<string, KeyringPair>;
 

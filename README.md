@@ -2,14 +2,14 @@
 
 Dashboard for create and managing a provider account on Frequency.
 
-Powered by [`create-svelte`]( https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
+Powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/main/packages/create-svelte).
 
 [![Deploy to GitHub Pages](https://github.com/frequency-chain/provider-dashboard/actions/workflows/deploy.yml/badge.svg)](https://github.com/frequency-chain/provider-dashboard/actions/workflows/deploy.yml)
 
 ## Developing
 
 ```bash
-npm 
+npm
 npm install
 npm run dev
 
@@ -39,6 +39,7 @@ the repo:
 ```bash
 make start # starts the frequency node
 ```
+
 Then if you don't have Playwright installed, install it:
 
 ```bash
@@ -46,6 +47,7 @@ npx playwright install --with-deps
 ```
 
 Finally, run tests.
+
 ```bash
 npm run test
 npx playwright test

@@ -1,11 +1,10 @@
-import { writable } from 'svelte/store';
 import { defaultDotApi, type DotApi } from '$lib/storeTypes';
-import { storable } from './stores/storable';
-import { derived } from 'svelte/store';
-import { user } from './stores/userStore';
-import { pageContent } from './stores/pageContentStore';
-import { clearLog } from './stores/activityLogStore';
+import { derived, writable } from 'svelte/store';
 import { createApi } from './polkadotApi';
+import { clearLog } from './stores/activityLogStore';
+import { pageContent } from './stores/pageContentStore';
+import { storable } from './stores/storable';
+import { user } from './stores/userStore';
 
 export const dotApi = writable<DotApi>(defaultDotApi);
 

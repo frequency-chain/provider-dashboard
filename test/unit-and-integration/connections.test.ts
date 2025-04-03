@@ -1,3 +1,9 @@
+import { ApiPromise } from '@polkadot/api';
+import { Keyring } from '@polkadot/keyring';
+import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import { stringToU8a } from '@polkadot/util';
+import { waitReady } from '@polkadot/wasm-crypto';
+import { describe, expect, test, vi } from 'vitest';
 import {
   getBlockNumber,
   getEpoch,
@@ -5,13 +11,6 @@ import {
   signPayloadWithKeyring,
   submitAddAccountId,
 } from '../../src/lib/connections';
-import { describe, expect, test } from 'vitest';
-import { ApiPromise } from '@polkadot/api';
-import { Keyring } from '@polkadot/keyring';
-import { stringToU8a } from '@polkadot/util';
-import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
-import { vi } from 'vitest';
-import { waitReady } from '@polkadot/wasm-crypto';
 import { Account } from '../../src/lib/stores/accountsStore';
 
 await waitReady();

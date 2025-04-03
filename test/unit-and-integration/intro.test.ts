@@ -1,6 +1,6 @@
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
-import '@testing-library/jest-dom';
 import Intro from '$components/Intro.svelte';
+import '@testing-library/jest-dom';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 
 describe('Intro', () => {
   it('has everything showing by default', () => {

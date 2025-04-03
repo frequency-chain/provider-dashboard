@@ -1,13 +1,13 @@
-import { derived, writable, type Readable } from 'svelte/store';
-import { Keyring, type ApiPromise } from '@polkadot/api';
-import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 import { getMsaInfo } from '$lib/polkadotApi';
-import { isFunction } from '@polkadot/util';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
+import { Keyring, type ApiPromise } from '@polkadot/api';
+import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
+import { isFunction } from '@polkadot/util';
+import { derived, writable, type Readable } from 'svelte/store';
 
 export type SS58Address = string;
 

@@ -67,7 +67,7 @@
       </div>
       <div class="flex w-[350px] justify-between">
         <button
-          on:click|preventDefault={doProposeToBeProvider}
+          onclick={doProposeToBeProvider}
           disabled={newProviderName === '' || isInProgress}
           id="request-2b-provider-btn"
           class="btn-primary"
@@ -83,13 +83,13 @@
     </form>
   {:else}
     <p class="text-sm font-bold">Success! Your request to become a provider has been submitted.</p>
-    <ul class="text-sm truncate">
+    <ul class="truncate text-sm">
       <li>Provider Name: <b>{newProviderName}</b></li>
       <li>Address: <b>{$user.address}</b></li>
       <li>MSA ID: <b>{$user.msaId}</b></li>
     </ul>
     <p class="text-sm">
-      <a href={mailTo} class="underline font-bold">Contact the Frequency Council </a>
+      <a href={mailTo} class="font-bold underline">Contact the Frequency Council </a>
       and inform them that you have requested to become a Provider, and provide them with your MSA Id.
     </p>
     <BackHomeButton />
