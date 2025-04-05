@@ -1,16 +1,30 @@
 <script lang="ts" generics="T extends { toString: () => string }">
-  export let label: string;
-  export let id: string = '';
-  export let options: T[]; // eslint-disable-line no-undef
-  export let value: T | null = null; // eslint-disable-line no-undef
-  export let placeholder: string = '';
-  export let onChange: (() => void) | undefined = undefined;
-  export let formatter: (value: T) => string = (value) => value.toString(); // eslint-disable-line no-undef
+  interface Props<T> {
+    label: string;
+    id: string;
+    options: T[];
+    value: T | undefined;
+    placeholder?: string;
+    onChange?: (() => void) | undefined;
+    formatter: (value: T) => string;
+    disabled?: boolean;
+  }
+
+  let {
+    label,
+    id = '',
+    options,
+    value = $bindable(),
+    placeholder = '',
+    onChange = undefined,
+    formatter = (value) => value.toString(),
+    disabled = false,
+  }: Props<T> = $props();
 </script>
 
 <div>
   <label class="label mb-3.5 block" for={id}>{label}</label>
-  <select {...$$restProps} {id} bind:value on:change={onChange} data-test-id={id}>
+  <select {id} {value} onchange={onChange} data-test-id={id} {disabled}>
     {#if placeholder !== ''}
       <option class="text-disabled" value={null} disabled selected>{placeholder}</option>
     {/if}

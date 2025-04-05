@@ -17,7 +17,7 @@
 
   let { close, stakeAmount = $bindable(1n) }: Props = $props();
 
-  let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
+  let selectedAccount: Account | undefined = $state($allAccountsStore.get($user.address));
   let isLoading: boolean = $state(false);
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
@@ -52,7 +52,7 @@
   <DropDownMenu
     id="stake-using-account-id"
     label="Wallet Account Id"
-    bind:value={selectedAccount}
+    value={selectedAccount}
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
   />
