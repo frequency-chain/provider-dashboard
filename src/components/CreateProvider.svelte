@@ -4,6 +4,7 @@
   import { submitCreateProvider } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
+  import { base } from '$app/paths';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
@@ -26,7 +27,7 @@
       $user.isProvider = msaInfo.isProvider;
       isInProgress = false;
       // TODO: make nav reactive so we don't have to do this
-      goto('/');
+      goto(base + '/');
     }
   };
 
