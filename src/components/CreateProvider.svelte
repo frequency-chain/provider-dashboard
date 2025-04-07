@@ -4,7 +4,6 @@
   import { submitCreateProvider } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
-  import { base } from '$app/paths';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
@@ -12,6 +11,7 @@
   import BackHomeButton from '$components/BackHomeButton.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { goto } from '$app/navigation';
+  import { base } from '$app/paths';
 
   let newProviderName = '';
   let isInProgress = false;
