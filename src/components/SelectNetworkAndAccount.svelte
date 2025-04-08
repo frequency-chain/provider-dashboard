@@ -11,7 +11,6 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
-  import AddToClipboard from './AddToClipboard.svelte';
 
   interface Props {
     newUser: Account | undefined;
@@ -102,8 +101,9 @@
     isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
       if (selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
-        const join = $page.url.pathname === '/become-a-provider' ? '/' : '';
-        goto([$page.url.toString(), selectedNetwork.pathName].join(join));
+        const baseUrl =
+          $page.url.pathname === '/become-a-provider' ? $page.url.toString() : $page.url.origin.toString();
+        goto([baseUrl, selectedNetwork.pathName].join('/'));
         networkChanged();
       }
     }
@@ -125,6 +125,7 @@
     connectedToEndpoint = false;
     networkErrorMsg = '';
     controlKeysErrorMsg = '';
+    newUser = undefined;
   };
 </script>
 
@@ -133,15 +134,15 @@
     id="network"
     label="Select a Network"
     bind:value={selectedNetwork}
-    placeholder="Select a network"
+    placeholder="Select a Network"
     options={$allNetworks}
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
   />
 {:else}
-  <p class="flex justify-between">
+  <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="btn-no-fill cursor-pointer">Change networks</button>
+    <button onclick={resetState} class="cursor-pointer text-sm underline hover:text-teal">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -156,21 +157,19 @@
     onkeydown={customNetworkChanged}
   />
 {/if}
-
-<div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
-<div class="flex items-end">
-  <DropDownMenu
-    id="controlkeys"
-    label={accountSelectorTitle}
-    bind:value={selectedAccount}
-    placeholder={accountSelectorPlaceholder}
-    options={Array.from(accounts.values())}
-    onChange={accountChanged}
-    formatter={formatAccount}
-    disabled={accounts.size === 0 || isLoading}
-  />
-  {#if selectedAccount?.address}
-    <AddToClipboard copyValue={selectedAccount?.address || ''} />
-  {/if}
-</div>
-<div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+{#if networkErrorMsg}
+  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+{/if}
+<DropDownMenu
+  id="controlkeys"
+  label={accountSelectorTitle}
+  bind:value={selectedAccount}
+  placeholder={accountSelectorPlaceholder}
+  options={Array.from(accounts.values())}
+  onChange={accountChanged}
+  formatter={formatAccount}
+  disabled={accounts.size === 0 || isLoading}
+/>
+{#if controlKeysErrorMsg}
+  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+{/if}

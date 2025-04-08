@@ -5,11 +5,14 @@
   import { user } from '$lib/stores/userStore';
   import { getMsaInfo } from '$lib/polkadotApi';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
-  import { pageContent } from '$lib/stores/pageContentStore';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
   import BackHomeButton from '$components/BackHomeButton.svelte';
+  import { Button } from '@frequency-chain/style-guide';
+  import { goto } from '$app/navigation';
+  // TODO: uncomment on transition to svelte 5
+  // import { base } from '$app/paths';
 
   let newProviderName = '';
   let isInProgress = false;
@@ -24,9 +27,10 @@
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
       isInProgress = false;
-      setTimeout(() => {
-        pageContent.dashboard();
-      }, 1500);
+      // TODO: make nav reactive so we don't have to do this
+      // TODO: uncomment on transition to svelte 5
+      // goto(base + '/');
+      goto('/');
     }
   };
 
@@ -61,24 +65,32 @@
   };
 </script>
 
-<form id="create-provider" class="column text-sm">
+<form id="create-provider" class="column gap-f16">
   <div>
-    <label for="providerNameCB" class="label mb-3.5 block">Provider name</label>
-    <input id="providerNameCB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+    <label for="providerNameCB" class="label block">Provider name</label>
+    <input
+      id="providerNameCB"
+      class="mt-f8 h-f40 w-full max-w-[420px] p-2 text-normal"
+      required
+      placeholder="Short name"
+      maxlength={16}
+      bind:value={newProviderName}
+    />
   </div>
-  <div class="flex w-[350px] items-end justify-between">
-    <button
+  <div class="flex items-end justify-between">
+    <Button
+      type="primary"
       id="create-provider-btn"
-      on:click|preventDefault={doCreateProvider}
+      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
+      onclick={doCreateProvider}
       disabled={isInProgress}
-      class="btn-primary"
     >
       {#if isInProgress}
         <LoadingIcon />
       {:else}
         Create Provider
       {/if}
-    </button>
+    </Button>
     <BackHomeButton />
   </div>
 </form>

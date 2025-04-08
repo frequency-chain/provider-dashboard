@@ -6,6 +6,7 @@
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from './ListCard.svelte';
   import Stake from './Stake.svelte';
+  import { Button } from '@frequency-chain/style-guide';
 
   let capacityDetails: CapacityDetails;
 
@@ -40,6 +41,8 @@
 </script>
 
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
-  <button on:click|preventDefault={() => (showStakeToProvider = true)} class="btn-primary">Stake to Provider</button>
+  <Button size="md" type="primary" class="btn-primary" onClick={() => (showStakeToProvider = true)}
+    >Stake to Provider</Button
+  >
   <Stake isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
 </ListCard>

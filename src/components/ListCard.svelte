@@ -16,9 +16,9 @@
   {:else}
     <div class="mb-16">
       {#each list as item}
-        <div class="flex items-center justify-between border-b border-divider py-3">
+        <div class="border-divider flex items-center justify-between border-b py-3">
           <div class="label">{item.label}</div>
-          <div class="data-value-base">{item.value}</div>
+          <div class="data-value-normal">{item.value}</div>
         </div>
       {/each}
       <div class="absolute bottom-7 right-7">

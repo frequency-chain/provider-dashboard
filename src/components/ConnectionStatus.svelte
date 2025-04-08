@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
-
   import Switch from '$lib/assets/Switch.svelte';
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
@@ -10,25 +8,27 @@
 </script>
 
 {#if $isLoggedIn}
-  <div class="flex items-center gap-6">
-    <div class="flex items-center gap-2">
+  <div class="flex flex-col gap-2 md:flex-row md:gap-6">
+    <div class="flex items-center gap-2 md:ml-2 lg:ml-0">
       {#if $storeChainInfo.connected}
         <div class="w-1 h-1 rounded-full bg-success p-1"></div>
       {:else}
         <div class="w-1 bg-red-error h-1 rounded-full p-1"></div>
       {/if}
-      <p id="connected-network" class="text-md uppercase">{$user.network?.name}</p>
+      <p id="connected-network" class="text-sm uppercase md:text-normal lg:text-md">{$user.network?.name}</p>
     </div>
-    <p class="text-md">
-      {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
-    </p>
-    <button
-      onclick={preventDefault(() => {
-        showConnectProvider = true;
-      })}
-      class="flex h-[40px] w-[40px] items-center justify-center rounded-md bg-bright-blue drop-shadow hover:opacity-[75%]"
-      ><Switch class="w-[24px]" />
-    </button>
-    <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
+    <div class="flex items-center justify-between gap-2">
+      <p class="text-sm md:text-normal lg:text-md">
+        {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
+      </p>
+      <div class="rounded-md transition hover:shadow-md">
+        <button
+          onclick={() => (showConnectProvider = true)}
+          class="w-f32 flex h-f32 min-h-f32 min-w-f32 items-end justify-center rounded-md bg-teal p-f8"
+          ><Switch />
+        </button>
+      </div>
+      <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
+    </div>
   </div>
 {/if}

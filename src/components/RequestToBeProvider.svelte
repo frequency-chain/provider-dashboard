@@ -10,7 +10,6 @@
   import BackHomeButton from '$components/BackHomeButton.svelte';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { getMsaInfo } from '$lib/polkadotApi';
-  import { pageContent } from '$lib/stores/pageContentStore';
 
   let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
 
@@ -29,9 +28,6 @@
       $user.isProvider = msaInfo.isProvider;
       isInProgress = false;
       hasRequestedToBeProvider = true;
-      setTimeout(() => {
-        pageContent.dashboard();
-      }, 1500);
     }
   };
 
