@@ -11,7 +11,8 @@
   import BackHomeButton from '$components/BackHomeButton.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { goto } from '$app/navigation';
-  import { base } from '$app/paths';
+  // TODO: uncomment on transition to svelte 5
+  // import { base } from '$app/paths';
 
   let newProviderName = '';
   let isInProgress = false;
@@ -27,7 +28,9 @@
       $user.isProvider = msaInfo.isProvider;
       isInProgress = false;
       // TODO: make nav reactive so we don't have to do this
-      goto(base + '/');
+      // TODO: uncomment on transition to svelte 5
+      // goto(base + '/');
+      goto('/');
     }
   };
 
