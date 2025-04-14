@@ -1,4 +1,4 @@
-import frequencyConfig from '@frequency-chain/style-guide/tailwind.config';
+// import frequencyConfig from '@frequency-chain/style-guide/tailwind.config';
 
 /** @type {import('tailwindcss').Config} */
 
@@ -24,5 +24,5 @@ export default {
       },
     },
   },
-  presets: [frequencyConfig],
+  presets: [],
 };
