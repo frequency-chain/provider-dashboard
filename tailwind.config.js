@@ -23,6 +23,5 @@ export default {
         topRight: 'url(/assets/top-right-bars.png)',
       },
     },
-  },
-  presets: [],
+  }
 };
