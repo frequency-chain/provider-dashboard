@@ -5,11 +5,19 @@
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
   import Footer from '$components/Footer.svelte';
+  interface Props {
+    children?: import('svelte').Snippet;
+  }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-  $: $logInPromise;
+  let { children }: Props = $props();
 
-  $: {
+  $effect(() => {
+    $logInPromise.then(() => {
+      console.log('Set login in promise');
+    });
+  });
+
+  $effect(() => {
     $dotApi?.api?.rpc.system.properties().then((chain) => {
       if ($dotApi?.api && chain) {
         const token = getToken(chain);
@@ -22,7 +30,7 @@
           });
       }
     });
-  }
+  });
 </script>
 
 <div>
@@ -31,7 +39,7 @@
     <div class="main-section my-6">
       <Header />
       <div class="mx-auto max-w-[80%] px-0 lg:max-w-[1024px]">
-        <slot />
+        {@render children?.()}
       </div>
     </div>
   </div>

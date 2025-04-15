@@ -10,12 +10,10 @@
     <div class="w-[180px] max-w-[180px] pb-1 pl-3 md:min-w-40">
       <FrequencyLogo />
     </div>
-    <p class="pl-3 text-sm font-semibold md:text-normal lg:tracking-wider">Provider Dashboard</p>
+    <p class="md:text-normal pl-3 text-sm font-semibold lg:tracking-wider">Provider Dashboard</p>
   </div>
   <ConnectionStatus />
   {#if !$isLoggedIn}
-    <div class="md:w-f192 my-auto min-w-f120">
-      <Button href="/faq" target="_self" class="px-2 py-f8 text-sm sm:p-f12 md:text-normal">&rarr; Questions?</Button>
-    </div>
+    <Button href="/faq" target="_self" class="py-f8 sm:p-f12 md:text-normal px-2 text-sm">&rarr; Questions?</Button>
   {/if}
 </header>

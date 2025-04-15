@@ -44,17 +44,10 @@
   />
 
   <div class="flex items-end justify-between">
-    <Button
-      type="primary"
-      disabled={!canConnect}
-      onclick={connect}
-      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
-    >
-      Connect to Account
-    </Button>
+    <Button type="primary" disabled={!canConnect} onclick={connect}>Connect to Account</Button>
 
     {#if onCancel}
-      <button type="button" class="btn-no-fill text-sm underline hover:text-teal" onclick={onCancel}>Cancel</button>
+      <button type="button" class="btn-no-fill hover:text-teal text-sm underline" onclick={onCancel}>Cancel</button>
     {/if}
   </div>
 </form>

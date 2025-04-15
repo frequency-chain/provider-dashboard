@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+  import { Button } from '@frequency-chain/style-guide';
   import { dotApi } from '$lib/stores';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import type { ApiPromise } from '@polkadot/api';
@@ -11,9 +13,9 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import BackToRootButton from '$components/BackHomeButton.svelte';
 
-  let recentActivityItem: Activity | undefined;
-  let recentTxnId: Activity['txnId'] | undefined;
-  let isInProgress = false;
+  let recentActivityItem: Activity | undefined = $state();
+  let recentTxnId: Activity['txnId'] | undefined = $state();
+  let isInProgress = $state(false);
 
   // a callback for when a transaction hits a final state
   let createMsaTxnFinished = async (succeeded: boolean) => {
@@ -35,10 +37,10 @@
     }
   };
 
-  $: {
+  run(() => {
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     checkIsFinished();
-  }
+  });
 
   const doCreateMsa = async (_evt: Event) => {
     isInProgress = true;
@@ -47,22 +49,22 @@
   };
 </script>
 
-<div id="create-msa" class="flex flex-col gap-3.5 text-sm">
+<div id="create-msa" class="flex flex-col gap-3.5">
   <div class="label">Create MSA Id</div>
-  <p>
+  <p class="text-sm">
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above.
   </p>
-  <form class="flex w-[350px] items-end justify-between">
-    <button id="create-msa-btn" on:click|preventDefault={doCreateMsa} disabled={isInProgress} class="btn-primary">
+  <div class="flex w-[350px] items-end justify-between">
+    <Button type="primary" onclick={doCreateMsa} disabled={isInProgress}>
       {#if isInProgress}
         <LoadingIcon />
       {:else}
         Create an MSA
       {/if}
-    </button>
+    </Button>
     <BackToRootButton />
-  </form>
+  </div>
 </div>
 {#if recentActivityItem}
   <ActivityLogPreviewItem activity={recentActivityItem} />

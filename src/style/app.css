@@ -1,106 +1,87 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@config '../../tailwind.config.ts';
+
+/*  */
+@utility title-h2 {
+  @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
+}
+@utility title-h3 {
+  @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
+}
+@utility title-h5 {
+  @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
+}
+@utility unordered-list {
+  /* layout */
+  @apply ml-6 list-disc text-wrap;
+}
+@utility ordered-list {
+  @apply ml-6 list-decimal;
+}
+@utility column {
+  @apply flex flex-col;
+}
+@utility section-title {
+  /* typography */
+  /* headers */
+  @apply text-xl font-bold;
+}
+@utility section-title-underlined {
+  @apply section-title mb-f24 border-l-gray2 border-b pb-3;
+}
+@utility label {
+  @apply md:text-normal text-sm font-bold lg:tracking-wide;
+}
+@utility data-value-sm {
+  /* data */
+  @apply font-data text-teal text-sm;
+}
+@utility data-value-md {
+  @apply font-data text-md text-teal;
+}
+@utility data-value-normal {
+  @apply font-data text-normal text-teal;
+}
+@utility data-value-lg {
+  @apply font-data text-teal text-lg;
+}
+@utility data-value-2xl {
+  @apply font-data text-h3 text-teal;
+}
+@utility content-block {
+  /* layout */
+  @apply mb-f24 box-border rounded-md p-7;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+}
+@utility main-section {
+  /* right side sizing */
+  @apply ml-f80 px-f16 md:ml-f128;
+  a {
+    @apply hover:text-teal underline transition duration-[0.3s];
+  }
+
+  footer a {
+    @apply text-black;
+  }
+
+  footer svg {
+    @apply hover:text-teal bg-white text-black transition duration-[0.3s];
+  }
+}
+@utility break-anywhere {
+  overflow-wrap: anywhere;
+}
+
+@utility btn-no-fill {
+  @apply hover:text-teal cursor-pointer text-sm underline;
+}
 
 :root {
   --select-border: none;
   --select-arrow: var(--select-border);
-}
-
-/*  */
-@layer components {
-  .title-h2 {
-    @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
-  }
-
-  .title-h3 {
-    @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
-  }
-
-  .title-h5 {
-    @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
-  }
-
-  /* layout */
-  .unordered-list {
-    @apply ml-6 list-disc text-wrap;
-  }
-  .ordered-list {
-    @apply ml-6 list-decimal;
-  }
-  .column {
-    @apply flex flex-col;
-  }
-
-  /* typography */
-  /* headers */
-  .section-title {
-    @apply text-xl font-bold;
-  }
-
-  .section-title-underlined {
-    @apply section-title mb-f24 border-b border-l-gray2 pb-3;
-  }
-
-  .label {
-    @apply text-sm font-bold md:text-normal lg:tracking-wide;
-  }
-
-  /* data */
-  .data-value-sm {
-    @apply font-data text-sm text-teal;
-  }
-
-  .data-value-md {
-    @apply font-data text-md text-teal;
-  }
-
-  .data-value-normal {
-    @apply font-data text-normal text-teal;
-  }
-
-  .data-value-lg {
-    @apply font-data text-lg text-teal;
-  }
-
-  .data-value-2xl {
-    @apply font-data text-h3 text-teal;
-  }
-
-  /* layout */
-  .content-block {
-    @apply mb-f24 box-border rounded-md p-7;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-  }
-
-  /* right side sizing */
-  .main-section {
-    @apply ml-f80 px-f16 md:ml-f128;
-  }
-
-  .break-anywhere {
-    overflow-wrap: anywhere;
-  }
-
-  .hover-teal:hover {
-    @apply transition duration-[0.3s] hover:bg-tealDark;
-  }
-
-  .main-section {
-    a {
-      @apply underline transition duration-[0.3s] hover:text-teal;
-    }
-
-    footer a {
-      @apply text-black;
-    }
-
-    footer svg {
-      @apply bg-white text-black transition duration-[0.3s] hover:text-teal;
-    }
-  }
 }
 
 @layer base {
@@ -109,7 +90,7 @@
   }
 
   button.btn-primary {
-    @apply rounded-full bg-teal p-f12 text-center font-bold text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md;
+    @apply bg-teal p-f12 rounded-full text-center font-bold text-black transition-all hover:text-black hover:shadow-md;
   }
 
   html {
@@ -124,6 +105,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray3 disabled:text-gray3 disabled:opacity-85;
+    @apply border-gray3 hover:border-teal relative m-0 h-[30px] w-[320px] cursor-pointer rounded-md border bg-white p-2 py-0 pl-2 align-middle text-sm overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-85;
   }
 }

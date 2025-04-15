@@ -47,7 +47,7 @@
     formatter={formatAccount}
   />
   {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-sm text-error">
+    <div id="network-error-msg" class="text-error text-sm">
       No available Account Ids. Create a new Account Id without an MSA Id.
     </div>
   {/if}
@@ -59,6 +59,6 @@
       disabled={isSubmitDisabled}
       class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none">Add Account Id</Button
     >
-    <button class="btn-no-fill text-sm underline hover:text-teal" onclick={preventDefault(onCancel)}>Cancel</button>
+    <button class="btn-no-fill hover:text-teal text-sm underline" onclick={preventDefault(onCancel)}>Cancel</button>
   </div>
 </form>

@@ -1,3 +1,9 @@
+<script lang="ts">
+  type Props = Record<string, string>;
+
+  let { ...rest }: Props = $props();
+</script>
+
 <svg
   width="256"
   height="256"
@@ -6,7 +12,7 @@
   xmlns="http://www.w3.org/2000/svg"
   xmlns:xlink="http://www.w3.org/1999/xlink"
   preserveAspectRatio="xMidYMid"
-  class={$$restProps.class}
+  class={rest.class}
 >
   <g>
     <path

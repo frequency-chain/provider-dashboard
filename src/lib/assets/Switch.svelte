@@ -1,4 +1,10 @@
-<svg {...$$restProps} id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40.78 41.85">
+<script lang="ts">
+  type Props = Record<string, unknown>;
+
+  let { ...rest }: Props = $props();
+</script>
+
+<svg {...rest} id="Layer_2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40.78 41.85">
   <defs>
     <style>
       .cls-1 {
