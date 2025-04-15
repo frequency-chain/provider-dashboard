@@ -2,8 +2,6 @@
 
 @import 'tailwindcss';
 
-@config './tailwind.config.js';
-
 @theme {
   --font-*: initial;
   --font-sans: Poppins, sans-serif;

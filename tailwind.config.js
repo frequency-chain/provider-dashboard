@@ -1,15 +1,14 @@
-import frequencyConfig from '@frequency-chain/style-guide/tailwind.config';
+import frequencyConfig from '@frequency-chain/style-guide/tailwind.config.ts';
 
 /** @type {import('tailwindcss').Config} */
 
 export default {
   content: ['./src/**/*.{html,js,svelte,ts}'],
   theme: {
-    fontFamily: {
-      sans: ['Poppins', 'sans-serif'],
-      data: ['Space Mono', 'sans-serif'],
-    },
     extend: {
+      fontFamily: {
+        data: ['Space Mono', 'sans-serif'],
+      },
       width: {
         modal: '480px',
         'single-block': '550px',
@@ -21,5 +20,5 @@ export default {
       },
     },
   },
-  presets: { frequencyConfig },
+  presets: [frequencyConfig],
 };
