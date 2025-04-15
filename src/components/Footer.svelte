@@ -19,13 +19,13 @@
 
 <div class="px-[10px] sm:px-[30px] md:px-[40px] lg:px-[80px]">
   <footer
-    class="mx-auto my-0 flex max-w-screen-xl flex-col items-center gap-f16 border-t-[2px] border-current py-f48 md:gap-f32 {fgColorText}"
+    class="gap-f16 py-f48 md:gap-f32 mx-auto my-0 flex max-w-(--breakpoint-xl) flex-col items-center border-t-[2px] border-current {fgColorText}"
   >
-    <div class="px-0 md:px-f24">
-      <FrequencyLogo fill="#000000" width={'192px'} />
+    <div class="md:px-f24 px-0">
+      <FrequencyLogo fill="#000000" width="192px" />
     </div>
     <aside
-      class="space-between flex flex-col items-center space-y-f8 text-center leading-none md:flex-row md:space-x-f32 md:space-y-1"
+      class="space-between space-y-f8 md:space-x-f32 flex flex-col items-center text-center leading-none md:flex-row md:space-y-1"
     >
       <div>
         © {new Date().getFullYear()} Frequency Network Foundation
@@ -37,12 +37,12 @@
         <a href={privacyHref} class="md:mr-f16">Privacy&nbsp;Policy</a>
       </div>
     </aside>
-    <div class="flex gap-f16" aria-label="Social Links">
-      <IconButton {type} label="X/Twitter" href={'https://twitter.com/one_frequency'} class="bg-white">
-        <XLogo class="w-[40px] p-f4" />
+    <div class="gap-f16 flex" aria-label="Social Links">
+      <IconButton {type} label="X/Twitter" href="https://twitter.com/one_frequency" class="bg-white">
+        <XLogo class="p-f4 w-[40px]" />
       </IconButton>
       <IconButton {type} label="Discord" href="https://discord.com/invite/JchmHX5afV" class="bg-white">
-        <DiscordLogo class="h-[50px] w-[50px] p-f4" />
+        <DiscordLogo class="p-f4 h-[50px] w-[50px]" />
       </IconButton>
     </div>
   </footer>

@@ -70,7 +70,7 @@
     <label for="providerNameCB" class="label block">Provider name</label>
     <input
       id="providerNameCB"
-      class="mt-f8 h-f40 w-full max-w-[420px] p-2 text-normal"
+      class="mt-f8 h-f40 text-normal w-full max-w-[420px] p-2"
       required
       placeholder="Short name"
       maxlength={16}

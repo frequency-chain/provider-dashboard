@@ -10,7 +10,7 @@
 <BlockSection title="Activity Log">
   <div class="min-w-[500px]">
     {#if activityItems.length > 0}
-      {#each activityItems as activity}
+      {#each activityItems as activity (activity.txnId)}
         <ActivityLogPreviewItem {activity} />
       {/each}
     {:else}

@@ -54,7 +54,7 @@
     </Button>
 
     {#if onCancel}
-      <button type="button" class="btn-no-fill text-sm underline hover:text-teal" onclick={onCancel}>Cancel</button>
+      <button type="button" class="btn-no-fill hover:text-teal text-sm underline" onclick={onCancel}>Cancel</button>
     {/if}
   </div>
 </form>

@@ -1,106 +1,125 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-:root {
-  --select-border: none;
-  --select-arrow: var(--select-border);
+@config './tailwind.config.js';
+
+@theme {
+  --font-*: initial;
+  --font-sans: Poppins, sans-serif;
+  --font-data: Space Mono, sans-serif;
+
+  --width-*: initial;
+  --width-modal: 480px;
+  --width-single-block: 550px;
+  --width-dashboard: 1010px;
+  --width-full: 100%;
+
+  --shadow-blue-border: 8px 0 0 #5e69ff;
+
+  --background-image-top-right: url(/assets/top-right-bars.png);
 }
 
-/*  */
-@layer components {
-  .title-h2 {
-    @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
-  }
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
 
-  .title-h3 {
-    @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentcolor);
   }
+}
 
-  .title-h5 {
-    @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
-  }
-
+@utility title-h2 {
+  @apply font-title text-[50px] leading-none tracking-wider md:text-[60px] lg:text-[64px];
+}
+@utility title-h3 {
+  @apply font-title text-[40px] leading-none tracking-wider md:text-[40px] lg:text-[44px];
+}
+@utility title-h5 {
+  @apply font-title text-[18px] leading-none tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
+}
+@utility unordered-list {
   /* layout */
-  .unordered-list {
-    @apply ml-6 list-disc text-wrap;
-  }
-  .ordered-list {
-    @apply ml-6 list-decimal;
-  }
-  .column {
-    @apply flex flex-col;
-  }
-
+  @apply ml-6 list-disc text-wrap;
+}
+@utility ordered-list {
+  @apply ml-6 list-decimal;
+}
+@utility column {
+  @apply flex flex-col;
+}
+@utility section-title {
   /* typography */
   /* headers */
-  .section-title {
-    @apply text-xl font-bold;
-  }
-
-  .section-title-underlined {
-    @apply section-title mb-f24 border-b border-l-gray2 pb-3;
-  }
-
-  .label {
-    @apply text-sm font-bold md:text-normal lg:tracking-wide;
-  }
-
+  @apply text-xl font-bold;
+}
+@utility section-title-underlined {
+  @apply section-title mb-f24 border-l-gray2 border-b pb-3;
+}
+@utility label {
+  @apply md:text-normal text-sm font-bold lg:tracking-wide;
+}
+@utility data-value-sm {
   /* data */
-  .data-value-sm {
-    @apply font-data text-sm text-teal;
-  }
-
-  .data-value-md {
-    @apply font-data text-md text-teal;
-  }
-
-  .data-value-normal {
-    @apply font-data text-normal text-teal;
-  }
-
-  .data-value-lg {
-    @apply font-data text-lg text-teal;
-  }
-
-  .data-value-2xl {
-    @apply font-data text-h3 text-teal;
-  }
-
+  @apply font-data text-teal text-sm;
+}
+@utility data-value-md {
+  @apply font-data text-md text-teal;
+}
+@utility data-value-normal {
+  @apply font-data text-normal text-teal;
+}
+@utility data-value-lg {
+  @apply font-data text-teal text-lg;
+}
+@utility data-value-2xl {
+  @apply font-data text-h3 text-teal;
+}
+@utility content-block {
   /* layout */
-  .content-block {
-    @apply mb-f24 box-border rounded-md p-7;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
-  }
-
+  @apply mb-f24 box-border rounded-md p-7;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+}
+@utility main-section {
   /* right side sizing */
-  .main-section {
-    @apply ml-f80 px-f16 md:ml-f128;
+  @apply ml-f80 px-f16 md:ml-f128;
+  a {
+    @apply hover:text-teal underline transition duration-[0.3s];
   }
 
-  .break-anywhere {
-    overflow-wrap: anywhere;
+  footer a {
+    @apply text-black;
   }
 
-  .hover-teal:hover {
-    @apply transition duration-[0.3s] hover:bg-tealDark;
+  footer svg {
+    @apply hover:text-teal bg-white text-black transition duration-[0.3s];
+  }
+}
+@utility break-anywhere {
+  overflow-wrap: anywhere;
+}
+@utility hover-teal {
+  &:hover {
+    @apply hover:bg-tealDark transition duration-[0.3s];
+  }
+}
+
+@layer utilities {
+  :root {
+    --select-border: none;
+    --select-arrow: var(--select-border);
   }
 
-  .main-section {
-    a {
-      @apply underline transition duration-[0.3s] hover:text-teal;
-    }
-
-    footer a {
-      @apply text-black;
-    }
-
-    footer svg {
-      @apply bg-white text-black transition duration-[0.3s] hover:text-teal;
-    }
-  }
+  /*  */
 }
 
 @layer base {
@@ -109,7 +128,7 @@
   }
 
   button.btn-primary {
-    @apply rounded-full bg-teal p-f12 text-center font-bold text-black transition-all hover:bg-tealDark hover:text-black hover:shadow-md;
+    @apply bg-teal p-f12 hover:bg-tealDark rounded-full text-center font-bold text-black transition-all hover:text-black hover:shadow-md;
   }
 
   html {
@@ -124,6 +143,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-[30px] w-[320px] overflow-ellipsis rounded-md border-none bg-white py-0 pl-2 text-sm text-black outline-none outline outline-1 outline-gray3 disabled:text-gray3 disabled:opacity-85;
+    @apply outline-gray3 disabled:text-gray3 h-[30px] w-[320px] rounded-md border-none bg-white py-0 pl-2 text-sm text-ellipsis text-black outline-hidden outline outline-1 disabled:opacity-85;
   }
 }

@@ -11,10 +11,10 @@
     on:keyup={close}
     role="button"
     tabindex="0"
-    class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-142px)] cursor-default items-center justify-center overflow-y-auto bg-black bg-opacity-25"
+    class="bg-opacity-25 fixed top-0 right-0 z-100 flex h-[100vh] w-[calc(100vw-142px)] cursor-default items-center justify-center overflow-y-auto bg-black"
   >
     <div
-      class="content-block flex w-modal cursor-default flex-col bg-white shadow-lg"
+      class="content-block w-modal flex cursor-default flex-col bg-white shadow-lg"
       on:click|stopPropagation={() => {}}
       on:keyup|stopPropagation={() => {}}
       tabindex="0"

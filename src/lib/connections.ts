@@ -1,11 +1,11 @@
 import '@frequency-chain/api-augment';
-import type { ApiPromise } from '@polkadot/api/promise';
-
-import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
+import type { ApiPromise } from '@polkadot/api';
+import type { SignerResult, SubmittableExtrinsic } from '@polkadot/api/types';
+import type { SignerOptions } from '@polkadot/api/types/submittable';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
-import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import type { ISubmittableResult, Signer, SignerPayloadRaw } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
@@ -52,7 +52,6 @@ export async function submitAddAccountId(
     };
 
     const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload) as unknown as PalletMsaAddKeyData;
-
     const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
     const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
 
@@ -82,7 +81,7 @@ export async function submitStake(
 }
 
 function submitExtinsic(
-  extrinsic: SubmittableExtrinsic,
+  extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
   account: Account,
   extension: InjectedExtension | undefined
 ): Promise<string> {
@@ -94,12 +93,13 @@ function submitExtinsic(
 // use the Polkadot extension the user selected to submit the provided extrinsic
 async function submitExtrinsicWithExtension(
   extension: InjectedExtension,
-  extrinsic: SubmittableExtrinsic,
+  extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
   signingAddress: string
 ): Promise<string> {
   // let currentTxDone = false; // eslint-disable-line prefer-const
   try {
-    await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, handleResult);
+    const signerOptions: Partial<SignerOptions> = { signer: extension.signer as Signer, nonce: -1 };
+    await extrinsic.signAndSend(signingAddress, signerOptions, handleResult);
     // await waitFor(() => currentTxDone);
   } catch (e: unknown) {
     const message: string = `${e}`;
@@ -113,7 +113,7 @@ async function submitExtrinsicWithExtension(
 
 // Use the built-in test accounts to submit an extrinsic
 async function submitExtrinsicWithKeyring(
-  extrinsic: SubmittableExtrinsic,
+  extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult>,
   signingAccount: KeyringPair
 ): Promise<string> {
   try {
@@ -192,7 +192,7 @@ export async function submitCreateProvider(
   providerName: string
 ): Promise<string | undefined> {
   if (api && (await api.isReady)) {
-    const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
+    const extrinsic: SubmittableExtrinsic<'promise', ISubmittableResult> = api.tx.msa.createProvider(providerName);
     const txnId = submitExtinsic(extrinsic, signingAccount, extension);
     return txnId;
   }

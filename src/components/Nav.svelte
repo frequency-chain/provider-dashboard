@@ -3,7 +3,11 @@
   import { isLoggedIn } from '$lib/stores';
   import NavItem from '$components/NavItem.svelte';
 
-  $: url = window.location.pathname;
+  let url = $state(window.location.pathname);
+
+  $effect(() => {
+    url = window.location.pathname;
+  });
 
   const handleLogout = () => {
     logout();
@@ -11,7 +15,7 @@
   };
 </script>
 
-<div class="fixed flex h-full min-w-f80 flex-col items-center justify-center bg-navy text-white md:w-[128px]">
+<div class="min-w-f80 bg-navy fixed flex h-full flex-col items-center justify-center text-white md:w-[128px]">
   <div class="flex w-[100%] flex-col">
     <NavItem href="/" isActive={url === '/'} onClick={() => (url = '/')}>Home</NavItem>
     {#if $isLoggedIn === true}
