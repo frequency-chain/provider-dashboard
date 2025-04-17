@@ -1,5 +1,5 @@
 import adapter from '@sveltejs/adapter-static';
-import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
+import preprocess from 'svelte-preprocess';
 
 const dev = process.argv.includes('dev');
 
@@ -7,7 +7,7 @@ const dev = process.argv.includes('dev');
 const config = {
   // Consult https://kit.svelte.dev/docs/integrations#preprocessors
   // for more information about preprocessors
-  preprocess: vitePreprocess(),
+  preprocess: preprocess({}),
   kit: {
     // this is an adapter for  statically-rendered, single page application.
     // See https://kit.svelte.dev/docs/adapters for more information about adapters.

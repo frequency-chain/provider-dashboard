@@ -64,7 +64,7 @@
 
     <input
       id="stakingInput"
-      class={'outline-gray3 aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm border-error outline-gray3 flex h-10 w-full max-w-[420px] items-center justify-between rounded-md border-2 bg-white px-3 py-2 text-[16px] outline-1 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
+      class={'data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between px-3 py-2 text-[16px] disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
       type="number"
       min="0"
       value="1"
