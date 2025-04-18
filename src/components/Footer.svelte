@@ -42,11 +42,11 @@
       </div>
     </aside>
     <div class="gap-f16 flex" aria-label="Social Links">
-      <IconButton {type} label="X/Twitter" href={'https://twitter.com/one_frequency'} class="bg-white">
-        <XLogo class="p-f4 w-[40px]" />
+      <IconButton {type} label="X/Twitter" href={'https://twitter.com/one_frequency'}>
+        <XLogo />
       </IconButton>
-      <IconButton {type} label="Discord" href="https://discord.com/invite/JchmHX5afV" class="bg-white">
-        <DiscordLogo class="p-f4 h-[50px] w-[50px]" />
+      <IconButton {type} label="Discord" href="https://discord.com/invite/JchmHX5afV">
+        <DiscordLogo />
       </IconButton>
     </div>
   </footer>
