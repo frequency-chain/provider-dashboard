@@ -64,7 +64,6 @@
 
     <input
       id="stakingInput"
-      class={'data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between px-3 py-2 text-[16px] disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
       type="number"
       min="0"
       value="1"

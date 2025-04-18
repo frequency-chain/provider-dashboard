@@ -25,7 +25,7 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     setupFiles: ['test/e2e/setup-vitest.ts'],
     server: {
-      deps: { inline: ['@sveltejs/kit', 'bits-ui'] },
+      deps: { inline: ['@sveltejs/kit'] },
     },
     globals: true,
     reporters: 'basic',
