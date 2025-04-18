@@ -105,6 +105,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-f40 text-normal w-full max-w-[420px] p-2 relative flex items-center justify-between cursor-pointer border border-gray3 hover:border-teal bg-white text-black text-[16px] px-3 py-2 outline-none overflow-ellipsis align-middle disabled:cursor-not-allowed disabled:opacity-50 rounded-md;
+    @apply h-f40 text-normal border-gray3 hover:border-teal relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle text-[16px] overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

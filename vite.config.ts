@@ -12,5 +12,5 @@ export default defineConfig({
       'bits-ui': resolve(__dirname, 'node_modules/bits-ui/dist/index.js'),
       '@melt-ui/svelte': resolve(__dirname, 'node_modules/bits-ui/node_modules/@melt-ui/svelte/dist/index.js'),
     },
-  }
+  },
 });

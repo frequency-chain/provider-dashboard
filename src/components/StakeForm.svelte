@@ -62,13 +62,7 @@
       Amount in <span class="units">{$storeChainInfo.token}</span>
     </label>
 
-    <input
-      id="stakingInput"
-      type="number"
-      min="0"
-      value="1"
-      oninput={handleInput}
-    />
+    <input id="stakingInput" type="number" min="0" value="1" oninput={handleInput} />
   </div>
 
   <div class="flex items-end justify-between">
