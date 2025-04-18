@@ -73,15 +73,17 @@ export interface CapacityDetails {
   lastReplenishedEpoch: bigint;
 }
 
-export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
-  let capacityDetails: CapacityDetails = {
-    remainingCapacity: 0n,
-    totalCapacityIssued: 0n,
-    totalTokensStaked: 0n,
-    lastReplenishedEpoch: 0n,
-  };
+export const defaultCapacityDetails: CapacityDetails = {
+  remainingCapacity: 0n,
+  totalCapacityIssued: 0n,
+  totalTokensStaked: 0n,
+  lastReplenishedEpoch: 0n,
+};
 
+export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
   const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+
+  let capacityDetails = defaultCapacityDetails;
 
   if (providerRegistry.isSome) {
     const details = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();

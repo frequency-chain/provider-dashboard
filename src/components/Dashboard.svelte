@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import Capacity from '$components/Capacity.svelte';
   import Provider from '$components/Provider.svelte';
   import DashboardHeader from '$components/DashboardHeader.svelte';
@@ -10,8 +12,8 @@
   import { onMount } from 'svelte';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
 
-  let thisWeb3Accounts: typeof web3Accounts;
-  let thisWeb3Enable: typeof web3Enable;
+  let thisWeb3Accounts: typeof web3Accounts | undefined = $state();
+  let thisWeb3Enable: typeof web3Enable | undefined = $state();
 
   onMount(async () => {
     const extension = await import('@polkadot/extension-dapp');
@@ -19,13 +21,13 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  $: {
-    if ($user.network) {
+  run(() => {
+    if ($user.network && thisWeb3Enable && thisWeb3Accounts) {
       fetchAccountsForNetwork($user.network, thisWeb3Enable, thisWeb3Accounts, $dotApi.api as ApiPromise).then(() =>
         console.info('Accounts store updated.')
       );
     }
-  }
+  });
 </script>
 
 <div class="max-w-dashboard column w-full" id="dashboard">

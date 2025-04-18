@@ -1,27 +1,33 @@
 <script lang="ts">
-  export let id: string;
-  export let close = () => {};
-  export let isOpen: boolean = false;
+  interface Props {
+    id: string;
+    close?: () => void;
+    isOpen?: boolean;
+    title?: import('svelte').Snippet;
+    body?: import('svelte').Snippet;
+  }
+
+  let { id, close = () => {}, isOpen = false, title, body }: Props = $props();
 </script>
 
 {#if isOpen}
   <div
     {id}
-    on:click={close}
-    on:keyup={close}
+    onclick={close}
+    onkeyup={close}
     role="button"
     tabindex="0"
-    class="fixed right-0 top-0 z-[100] flex h-[100vh] w-[calc(100vw-142px)] cursor-default items-center justify-center overflow-y-auto bg-black bg-opacity-25"
+    class="fixed top-0 right-0 z-[100] flex h-[100vh] w-[calc(100vw-128px)] cursor-default items-center justify-center overflow-y-auto bg-black/25"
   >
     <div
-      class="content-block flex w-modal cursor-default flex-col bg-white shadow-lg"
-      on:click|stopPropagation={() => {}}
-      on:keyup|stopPropagation={() => {}}
+      class="content-block w-modal flex cursor-default flex-col bg-white shadow-lg"
+      onclick={(e) => e.stopPropagation()}
+      onkeyup={(e) => e.stopPropagation()}
       tabindex="0"
       role="button"
     >
-      <h2 class="section-title-underlined"><slot name="title" /></h2>
-      <slot name="body" />
+      <h2 class="section-title-underlined">{@render title?.()}</h2>
+      {@render body?.()}
     </div>
   </div>
 {/if}

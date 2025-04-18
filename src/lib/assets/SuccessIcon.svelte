@@ -1,5 +1,5 @@
 <svg
-  class="w-5 h-5 min-w-5 fill-success"
+  class="fill-success h-5 w-5 min-w-5"
   id="Layer_2"
   data-name="Layer 2"
   xmlns="http://www.w3.org/2000/svg"

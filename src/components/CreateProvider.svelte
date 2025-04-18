@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { run } from 'svelte/legacy';
+
   import { dotApi } from '$lib/stores';
   import { getExtension, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider } from '$lib/connections';
@@ -14,10 +16,10 @@
   // TODO: uncomment on transition to svelte 5
   // import { base } from '$app/paths';
 
-  let newProviderName = '';
-  let isInProgress = false;
-  let recentActivityItem: Activity | undefined;
-  let recentTxnId: Activity['txnId'] | undefined;
+  let newProviderName = $state('');
+  let isInProgress = $state(false);
+  let recentActivityItem: Activity | undefined = $state();
+  let recentTxnId: Activity['txnId'] | undefined = $state();
 
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
@@ -40,10 +42,10 @@
     }
   };
 
-  $: {
+  run(() => {
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     checkIsFinished();
-  }
+  });
 
   const doCreateProvider = async (_evt: Event) => {
     const endpointURI: string | undefined = $user.network?.endpoint;
@@ -68,14 +70,7 @@
 <form id="create-provider" class="column gap-f16">
   <div>
     <label for="providerNameCB" class="label block">Provider name</label>
-    <input
-      id="providerNameCB"
-      class="mt-f8 h-f40 w-full max-w-[420px] p-2 text-normal"
-      required
-      placeholder="Short name"
-      maxlength={16}
-      bind:value={newProviderName}
-    />
+    <input id="providerNameCB" class="" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
   </div>
   <div class="flex items-end justify-between">
     <Button

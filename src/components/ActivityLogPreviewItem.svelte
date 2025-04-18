@@ -11,7 +11,7 @@
   let { activity }: Props = $props();
 </script>
 
-<div class="break-anywhere border-divider flex gap-2 text-wrap border-b py-2 text-sm">
+<div class="break-anywhere border-divider flex gap-2 border-b py-2 text-sm text-wrap">
   {#if activity.txnStatus === TxnStatus.LOADING}
     <LoadingIcon />
   {:else if activity.txnStatus === TxnStatus.SUCCESS}

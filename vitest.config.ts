@@ -17,13 +17,16 @@ export default defineConfig(({ mode }) => ({
       $routes: resolve(__dirname, 'src/routes'),
       '$app/stores': resolve(__dirname, 'test/__mocks__/stores'),
       '$app/navigation': resolve(__dirname, 'test/__mocks__/navigation'),
+      'bits-ui': resolve(__dirname, 'node_modules/bits-ui/dist/index.js'),
+      '@melt-ui/svelte': resolve(__dirname, 'node_modules/bits-ui/node_modules/@melt-ui/svelte/dist/index.js'),
     },
   },
   test: {
+    environment: 'jsdom',
+    setupFiles: ['test/e2e/setup-vitest.ts'],
     server: {
       deps: { inline: ['@sveltejs/kit'] },
     },
-    environment: 'jsdom',
     globals: true,
     reporters: 'basic',
     coverage: {

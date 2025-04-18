@@ -14,12 +14,12 @@
 
 <button
   id="faq-question"
-  class="label border-divider mt-2 flex w-full items-center justify-between border-t p-4 text-left text-md font-bold"
+  class="label border-divider text-md mt-2 flex w-full cursor-pointer items-center justify-between border-t p-4 text-left font-bold"
   onclick={toggleIsOpen}
 >
   {@render question?.()}
   <svg
-    class="w-8 ml-12 h-8 shrink-0 transform bg-black p-1 transition-transform duration-300 {isOpen ? 'rotate-180' : ''}"
+    class="ml-12 h-8 w-8 shrink-0 transform bg-black p-1 transition-transform duration-300 {isOpen ? 'rotate-180' : ''}"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
     fill="currentColor"
@@ -33,6 +33,6 @@
   </svg>
 </button>
 
-<div id="faq-answer" class="text-sm lg:text-md {`p-3 ${isOpen ? 'block' : 'hidden'}`}">
+<div id="faq-answer" class="lg:text-md text-sm {`p-3 ${isOpen ? 'block' : 'hidden'}`}">
   {@render answer?.()}
 </div>

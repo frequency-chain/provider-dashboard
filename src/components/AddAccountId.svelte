@@ -10,9 +10,9 @@
     close: () => void;
   }
 
-  let { isOpen, close }: Props = $props();
+  let { isOpen = false, close = () => {} }: Props = $props();
 
-  let selectedAccount: Account | null | undefined = $state();
+  let selectedAccount: Account | null = $state(null);
 
   function onCancel() {
     selectedAccount = null;
@@ -21,15 +21,19 @@
 </script>
 
 <Modal id="add-account-id" {isOpen} close={onCancel}>
-  <span slot="title">
-    Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
-  </span>
+  {#snippet title()}
+    <span>
+      Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
+    </span>
+  {/snippet}
 
-  <div slot="body" class="column gap-f16">
-    <AddAccountIdForm {onCancel} {selectedAccount} />
+  {#snippet body()}
+    <div class="column gap-f16">
+      <AddAccountIdForm {onCancel} {selectedAccount} />
 
-    <span class="border-b-divider min-w-full border-b"></span>
+      <span class="border-b-divider min-w-full border-b"></span>
 
-    <AddKeyRequirements />
-  </div>
+      <AddKeyRequirements />
+    </div>
+  {/snippet}
 </Modal>

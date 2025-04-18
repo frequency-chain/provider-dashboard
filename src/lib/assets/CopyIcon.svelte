@@ -14,6 +14,7 @@
   onclick={handleClick}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
+  class="cursor-pointer"
 >
   <svg
     {fill}

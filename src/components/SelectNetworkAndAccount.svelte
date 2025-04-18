@@ -1,7 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
-  import { page } from '$app/stores';
 
   import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
 
@@ -11,6 +10,7 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
+  import { page } from '$app/stores';
 
   interface Props {
     newUser: Account | undefined;
@@ -32,8 +32,8 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | undefined = $state();
-  let selectedNetwork: NetworkInfo | undefined = $state(networkNameToNetworkInfo($page.params.network));
+  let selectedAccount: Account | null = $state(null);
+  let selectedNetwork: NetworkInfo | null = $state(networkNameToNetworkInfo($page.params.network) ?? null);
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
@@ -119,8 +119,8 @@
   }
 
   const resetState = () => {
-    selectedNetwork = undefined;
-    selectedAccount = undefined;
+    selectedNetwork = null;
+    selectedAccount = null;
     isCustomNetwork = false;
     connectedToEndpoint = false;
     networkErrorMsg = '';
@@ -142,7 +142,7 @@
 {:else}
   <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="cursor-pointer text-sm underline hover:text-teal">Change networks</button>
+    <button onclick={resetState} class="hover:text-teal cursor-pointer text-sm underline">Change networks</button>
   </p>
 {/if}
 {#if isCustomNetwork}
@@ -158,7 +158,7 @@
   />
 {/if}
 {#if networkErrorMsg}
-  <div id="network-error-msg" class="text-sm text-error">{networkErrorMsg}</div>
+  <div id="network-error-msg" class="text-error text-sm">{networkErrorMsg}</div>
 {/if}
 <DropDownMenu
   id="controlkeys"
@@ -171,5 +171,5 @@
   disabled={accounts.size === 0 || isLoading}
 />
 {#if controlKeysErrorMsg}
-  <div id="controlkey-error-msg" class="text-sm text-error">{controlKeysErrorMsg}</div>
+  <div id="controlkey-error-msg" class="text-error text-sm">{controlKeysErrorMsg}</div>
 {/if}

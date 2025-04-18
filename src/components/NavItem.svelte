@@ -1,9 +1,14 @@
 <script lang="ts">
-  export let href: string = '';
-  export let isActive: boolean = false;
-  export let onClick: () => void = () => {};
-  export let id: string = '';
-  export let target: string = '';
+  interface Props {
+    href?: string;
+    isActive?: boolean;
+    onClick?: () => void;
+    id?: string;
+    target?: string;
+    children?: import('svelte').Snippet;
+  }
+
+  let { href = '', isActive = false, onClick = () => {}, id = '', target = '', children }: Props = $props();
 </script>
 
 <a
@@ -11,9 +16,9 @@
   {href}
   onclick={onClick}
   class={` flex h-[100px] items-center justify-center text-sm font-bold ${
-    isActive && 'bg-white text-teal shadow-blue-border shadow-teal'
+    isActive && 'text-teal shadow-blue-border shadow-teal bg-white'
   }`}
   {target}
 >
-  <slot />
+  {@render children?.()}
 </a>

@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { preventDefault } from 'svelte/legacy';
   import { user } from '$lib/stores/userStore';
   import { storeChainInfo } from '$lib/stores';
   import { dotApi } from '$lib/stores';
@@ -63,14 +62,7 @@
       Amount in <span class="units">{$storeChainInfo.token}</span>
     </label>
 
-    <input
-      id="stakingInput"
-      class={'border-input aria-[invalid]:border-destructive data-[placeholder]:[&>span]:text-muted-foreground sm flex h-10 w-full max-w-[420px] items-center justify-between rounded-md border-2 border-error bg-white px-3 py-2 text-[16px] outline outline-1 outline-gray3 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1'}
-      type="number"
-      min="0"
-      value="1"
-      oninput={handleInput}
-    />
+    <input id="stakingInput" type="number" min="0" value="1" oninput={handleInput} />
   </div>
 
   <div class="flex items-end justify-between">
@@ -82,6 +74,6 @@
     >
       Stake</Button
     >
-    <button class="btn-no-fill text-sm underline hover:text-teal" onclick={preventDefault(close)}>Cancel</button>
+    <button class="btn-no-fill" onclick={close}>Cancel</button>
   </div>
 </form>

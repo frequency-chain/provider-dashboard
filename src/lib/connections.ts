@@ -5,7 +5,7 @@ import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
-import type { SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
@@ -99,7 +99,7 @@ async function submitExtrinsicWithExtension(
 ): Promise<string> {
   // let currentTxDone = false; // eslint-disable-line prefer-const
   try {
-    await extrinsic.signAndSend(signingAddress, { signer: extension.signer, nonce: -1 }, handleResult);
+    await extrinsic.signAndSend(signingAddress, { signer: extension.signer as Signer, nonce: -1 }, handleResult);
     // await waitFor(() => currentTxDone);
   } catch (e: unknown) {
     const message: string = `${e}`;

@@ -21,7 +21,7 @@
           <div class="data-value-normal">{item.value}</div>
         </div>
       {/each}
-      <div class="absolute bottom-7 right-7">
+      <div class="absolute right-7 bottom-7">
         {@render children?.()}
       </div>
     </div>
