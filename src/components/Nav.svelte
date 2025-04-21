@@ -17,7 +17,7 @@
 
 <div class="min-w-f80 bg-navy fixed flex h-full flex-col items-center justify-center text-white md:w-[128px]">
   <div class="flex w-[100%] flex-col">
-    <NavItem href="/" isActive={url === '/'} onClick={() => (url = '/')}>Home</NavItem>
+    <NavItem href="/" isActive={url === '/' || url === '/become-a-provider'} onClick={() => (url = '/')}>Home</NavItem>
     {#if $isLoggedIn === true}
       <NavItem href="/activity-log" isActive={url === '/activity-log'} onClick={() => (url = '/activity-log')}
         >Activity Log</NavItem
