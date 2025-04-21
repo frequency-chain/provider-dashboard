@@ -32,7 +32,7 @@
   let thisWeb3Accounts: typeof web3Accounts;
 
   let selectedAccount: Account | null = $state(null);
-  let selectedNetwork: NetworkInfo | null = $state(networkNameToNetworkInfo($page.params.network) ?? null);
+  let selectedNetwork: NetworkInfo | null = $state(null);
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
