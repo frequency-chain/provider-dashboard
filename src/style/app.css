@@ -62,14 +62,6 @@
   a {
     @apply hover:text-teal underline transition duration-[0.3s];
   }
-
-  footer a {
-    @apply text-black;
-  }
-
-  footer svg {
-    @apply hover:text-teal bg-white text-black transition duration-[0.3s];
-  }
 }
 @utility break-anywhere {
   overflow-wrap: anywhere;
