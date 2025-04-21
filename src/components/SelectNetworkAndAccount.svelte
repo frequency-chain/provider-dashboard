@@ -138,6 +138,7 @@
     options={$allNetworks}
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
+    {isLoading}
   />
 {:else}
   <p class="my-f24 flex justify-between">
