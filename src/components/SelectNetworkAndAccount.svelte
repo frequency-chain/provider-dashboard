@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
 
   import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
 
@@ -33,7 +32,7 @@
   let thisWeb3Accounts: typeof web3Accounts;
 
   let selectedAccount: Account | null = $state(null);
-  let selectedNetwork: NetworkInfo | null = $state(networkNameToNetworkInfo($page.params.network) ?? null);
+  let selectedNetwork: NetworkInfo | null = $state(null);
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
@@ -100,12 +99,7 @@
     if (!selectedNetwork) return;
     isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
-      if (selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
-        const baseUrl =
-          $page.url.pathname === '/become-a-provider' ? $page.url.toString() : $page.url.origin.toString();
-        goto([baseUrl, selectedNetwork.pathName].join('/'));
-        networkChanged();
-      }
+      networkChanged();
     }
   };
 
