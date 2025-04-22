@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
@@ -9,7 +9,6 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
-  import { page } from '$app/stores';
 
   interface Props {
     newUser: Account | undefined;
@@ -132,6 +131,7 @@
     options={$allNetworks}
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
+    {isLoading}
   />
 {:else}
   <p class="my-f24 flex justify-between">
