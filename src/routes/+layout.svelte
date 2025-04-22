@@ -4,7 +4,8 @@
   import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
-  import Footer from '$components/Footer.svelte';
+  import { Footer } from '@frequency-chain/style-guide';
+
   interface Props {
     children?: import('svelte').Snippet;
   }
