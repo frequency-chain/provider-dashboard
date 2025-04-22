@@ -59,7 +59,14 @@
     <form class="column">
       <div>
         <label for="providerNameRtB" class="label mb-3.5 block">Provider name</label>
-        <input id="providerNameRtB" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+        <input
+          type="text"
+          id="providerNameRtB"
+          required
+          placeholder="Short name"
+          maxlength={16}
+          bind:value={newProviderName}
+        />
       </div>
       <div class="flex w-[350px] justify-between">
         <button

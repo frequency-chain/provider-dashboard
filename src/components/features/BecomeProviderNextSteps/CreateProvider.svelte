@@ -70,7 +70,14 @@
 <form id="create-provider" class="column gap-f16">
   <div>
     <label for="providerNameCB" class="label block">Provider name</label>
-    <input id="providerNameCB" class="" required placeholder="Short name" maxlength={16} bind:value={newProviderName} />
+    <input
+      id="providerNameCB"
+      type="text"
+      required
+      placeholder="Short name"
+      maxlength={16}
+      bind:value={newProviderName}
+    />
   </div>
   <div class="flex items-end justify-between">
     <Button
