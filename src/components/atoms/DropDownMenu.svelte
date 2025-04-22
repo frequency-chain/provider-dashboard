@@ -5,10 +5,11 @@
     label: string;
     id?: string;
     options: T[];
-    value?: any;
+    value?: T | null;
     placeholder?: string;
     onChange?: (() => void) | undefined;
     formatter?: (value: T) => string;
+    getKey?: (item: T) => string;
     isLoading?: boolean;
     disabled?: boolean;
     [key: string]: unknown;
@@ -18,10 +19,11 @@
     label,
     id = '',
     options,
-    value = $bindable(null),
+    value = $bindable<T | null>(null),
     placeholder = '',
     onChange = undefined,
     formatter = (value: T) => value.toString(),
+    getKey = (item: T) => item.toString(),
     isLoading = false,
     disabled = false,
     ...rest

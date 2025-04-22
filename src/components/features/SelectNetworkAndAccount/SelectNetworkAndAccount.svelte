@@ -111,23 +111,16 @@
     }
   }
 
-  function normalizeAccount(account: Account | string | number | null): string {
-    if (account == null) return '';
-    if (typeof account === 'string' || typeof account === 'number') return account.toString();
-    return account.address;
-  }
-
-  function findMatchingAccount(value: Account | string | number | null): Account | null {
-    const normalized = normalizeAccount(value);
+  function findMatchingAccount(): Account | null {
     for (const account of accounts.values()) {
-      if (normalizeAccount(account) === normalized) return account;
+      if (JSON.stringify(account) === JSON.stringify(selectedAccount)) return account;
     }
     return null;
   }
 
   $effect(() => {
     if (accounts && selectedAccount) {
-      const match = findMatchingAccount(selectedAccount);
+      const match = findMatchingAccount();
       if (match && match !== selectedAccount) {
         selectedAccount = match;
       }
