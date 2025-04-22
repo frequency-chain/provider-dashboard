@@ -1,8 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { goto } from '$app/navigation';
 
-  import { allNetworks, NetworkType, type NetworkInfo, networkNameToNetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
@@ -10,7 +9,6 @@
   import DropDownMenu from '$components/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
-  import { page } from '$app/stores';
 
   interface Props {
     newUser: Account | undefined;
@@ -33,7 +31,7 @@
   let thisWeb3Accounts: typeof web3Accounts;
 
   let selectedAccount: Account | null = $state(null);
-  let selectedNetwork: NetworkInfo | null = $state(networkNameToNetworkInfo($page.params.network) ?? null);
+  let selectedNetwork: NetworkInfo | null = $state(null);
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
@@ -100,12 +98,7 @@
     if (!selectedNetwork) return;
     isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
     if (!isCustomNetwork) {
-      if (selectedNetwork.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
-        const baseUrl =
-          $page.url.pathname === '/become-a-provider' ? $page.url.toString() : $page.url.origin.toString();
-        goto([baseUrl, selectedNetwork.pathName].join('/'));
-        networkChanged();
-      }
+      networkChanged();
     }
   };
 
@@ -138,6 +131,7 @@
     options={$allNetworks}
     onChange={onSelectNetworkChanged}
     formatter={formatNetwork}
+    {isLoading}
   />
 {:else}
   <p class="my-f24 flex justify-between">
