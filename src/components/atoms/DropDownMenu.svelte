@@ -28,26 +28,26 @@
   }: Props = $props();
 </script>
 
-<div class="column freq-select gap-f8 w-full max-w-[460px]">
+<div class="column freq-select gap-f8">
   <label class="font-bold" for={id}>{label}</label>
-  <select
-    {...rest}
-    {id}
-    bind:value
-    onchange={onChange}
-    data-test-id={id}
-    class="mt-f8 pr-f32 outline-gray3 hover:outline-teal focus-visible:outline-gray3 disabled:outline-gray3 disabled:hover:outline-gray3 disabled:focus-visible:outline-gray3 relative m-0 cursor-pointer rounded-md bg-white p-2 align-middle outline focus-visible:outline
-    active:outline
-    disabled:cursor-not-allowed"
-    disabled={isLoading || disabled}
-  >
-    <option class="text-gray3" value={null} disabled>{placeholder}</option>
-    {#each options as option}
-      <option value={option}>{formatter(option)}</option>
-    {/each}
-  </select>
-  {#if isLoading}
-    <LoadingIcon />
-  {/if}
-  <div class="select-arrow"></div>
+  <div class="gap-f12 flex flex-row items-center">
+    <select
+      {...rest}
+      {id}
+      bind:value
+      onchange={onChange}
+      data-test-id={id}
+      class="mt-f8 pr-f32 w-full max-w-[460px] outline-gray3 hover:outline-teal focus-visible:outline-gray3 disabled:outline-gray3 disabled:hover:outline-gray3 disabled:focus-visible:outline-gray3 relative m-0 cursor-pointer rounded-md bg-white p-2 align-middle outline focus-visible:outline active:outline disabled:cursor-not-allowed"
+      disabled={isLoading || disabled}
+    >
+      <option class="text-gray3" value={null} disabled>{placeholder}</option>
+      {#each options as option}
+        <option value={option}>{formatter(option)}</option>
+      {/each}
+    </select>
+    {#if isLoading}
+      <LoadingIcon />
+    {/if}
+    <div class="select-arrow"></div>
+  </div>
 </div>
