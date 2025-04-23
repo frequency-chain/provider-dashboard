@@ -1,4 +1,4 @@
-import Stake, { stakeAmount } from '$features/capacity/Stake.svelte';
+import Stake, { stakeAmount } from '$features/Capacity/Stake.svelte';
 import { dotApi, storeChainInfo } from '$lib/stores';
 import { Account, allAccountsStore } from '$lib/stores/accountsStore';
 import { user } from '$lib/stores/userStore';
