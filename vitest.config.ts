@@ -13,7 +13,9 @@ export default defineConfig(({ mode }) => ({
     conditions: mode === 'test' ? ['browser'] : [],
     alias: {
       $lib: resolve(__dirname, 'src/lib'),
-      $components: resolve(__dirname, 'src/components'),
+      $atoms: resolve(__dirname, 'src/components/atoms'),
+      $features: resolve(__dirname, 'src/components/features'),
+      $pages: resolve(__dirname, 'src/components/pages'),
       $routes: resolve(__dirname, 'src/routes'),
       '$app/stores': resolve(__dirname, 'test/__mocks__/stores'),
       '$app/navigation': resolve(__dirname, 'test/__mocks__/navigation'),

@@ -1,9 +1,9 @@
 <script lang="ts">
   import { user } from '$lib/stores/userStore';
   import { nonProviderAccountsStore } from '$lib/stores/accountsStore';
-  import BlockSection from '$components/atoms/BlockSection.svelte';
-  import SelectNetworkAndAccount from '$components/features/SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
-  import BecomeProviderNextSteps from '$components/features/BecomeProviderNextSteps/BecomeProviderNextSteps.svelte';
+  import BlockSection from '$atoms/BlockSection.svelte';
+  import SelectNetworkAndAccount from '$features/SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
+  import BecomeProviderNextSteps from '$features/BecomeProviderNextSteps/BecomeProviderNextSteps.svelte';
 
   let hasRequestedToBeProvider = $state(false);
 </script>

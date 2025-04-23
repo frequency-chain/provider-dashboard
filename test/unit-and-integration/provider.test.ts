@@ -1,12 +1,12 @@
-import Provider from '$components/features/Provider/Provider.svelte';
+import Provider from '$features/Provider/Provider.svelte';
+import { storeChainInfo } from '$lib/stores';
+import { user } from '$lib/stores/userStore';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';
 import '@testing-library/jest-dom';
 import { cleanup, render } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import { storeChainInfo } from '../../src/lib/stores';
-import { user } from '../../src/lib/stores/userStore';
 import { getByTextContent } from '../helpers';
 
 await waitReady();

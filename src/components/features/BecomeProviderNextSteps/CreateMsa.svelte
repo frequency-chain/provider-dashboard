@@ -10,8 +10,8 @@
   import { getMsaInfo } from '$lib/polkadotApi';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
-  import BackToRootButton from '$components/atoms/BackHomeButton.svelte';
-  import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
+  import BackToRootButton from '$atoms/BackHomeButton.svelte';
+  import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
 
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();

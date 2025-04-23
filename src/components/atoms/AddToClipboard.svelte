@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CopyIcon from '../../lib/assets/CopyIcon.svelte';
+  import CopyIcon from '$lib/assets/CopyIcon.svelte';
 
   let origFill = '#000';
 

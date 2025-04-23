@@ -1,5 +1,5 @@
 <script lang="ts">
-  import BackHomeButton from '$components/atoms/BackHomeButton.svelte';
+  import BackHomeButton from '$atoms/BackHomeButton.svelte';
   import { NetworkType } from '$lib/stores/networksStore';
   import { user } from '$lib/stores/userStore';
   import CreateMsa from './CreateMsa.svelte';

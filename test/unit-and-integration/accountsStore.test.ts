@@ -1,13 +1,13 @@
-import Keyring from '@polkadot/keyring';
-import { KeyringPair } from '@polkadot/keyring/types';
-import { get } from 'svelte/store';
 import {
   Account,
   allAccountsStore,
   nonProviderAccountsStore,
   providerAccountsStore,
   unusedKeyAccountsStore,
-} from '../../src/lib/stores/accountsStore';
+} from '$lib/stores/accountsStore';
+import Keyring from '@polkadot/keyring';
+import { KeyringPair } from '@polkadot/keyring/types';
+import { get } from 'svelte/store';
 
 describe('derived stores have the correct data', () => {
   const keyring = new Keyring({ type: 'sr25519' });

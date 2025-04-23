@@ -1,13 +1,13 @@
-import Stake, { stakeAmount } from '$components/features/capacity/Stake.svelte';
+import Stake, { stakeAmount } from '$features/capacity/Stake.svelte';
+import { dotApi, storeChainInfo } from '$lib/stores';
+import { Account, allAccountsStore } from '$lib/stores/accountsStore';
+import { user } from '$lib/stores/userStore';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';
 import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import { dotApi, storeChainInfo } from '../../src/lib/stores';
-import { Account, allAccountsStore } from '../../src/lib/stores/accountsStore';
-import { user } from '../../src/lib/stores/userStore';
 
 const mocks = vi.hoisted(() => {
   const resolvedApi = {

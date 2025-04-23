@@ -1,16 +1,16 @@
 <script lang="ts">
   import { run } from 'svelte/legacy';
 
-  import Capacity from '$components/features/Capacity/Capacity.svelte';
-  import Provider from '$components/features/Provider/Provider.svelte';
-  import ProfileOverview from '$components/features/ProfileOverview/ProfileOverview.svelte';
+  import Capacity from '$features/Capacity/Capacity.svelte';
+  import Provider from '$features/Provider/Provider.svelte';
+  import ProfileOverview from '$features/ProfileOverview/ProfileOverview.svelte';
   import { fetchAccountsForNetwork } from '$lib/stores/accountsStore';
   import { user } from '$lib/stores/userStore';
   import type { ApiPromise } from '@polkadot/api';
   import { dotApi } from '$lib/stores';
   import { onMount } from 'svelte';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import ChainStatus from '$components/features/ChainStatus/ChainStatus.svelte';
+  import ChainStatus from '$features/ChainStatus/ChainStatus.svelte';
 
   let thisWeb3Accounts: typeof web3Accounts | undefined = $state();
   let thisWeb3Enable: typeof web3Enable | undefined = $state();

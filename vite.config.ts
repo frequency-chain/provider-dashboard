@@ -7,7 +7,9 @@ export default defineConfig({
   resolve: {
     alias: {
       $lib: resolve(__dirname, 'src/lib'),
-      $components: resolve(__dirname, 'src/components'),
+      $atoms: resolve(__dirname, 'src/components/atoms'),
+      $features: resolve(__dirname, 'src/components/features'),
+      $pages: resolve(__dirname, 'src/components/pages'),
       $routes: resolve(__dirname, 'src/routes'),
       'bits-ui': resolve(__dirname, 'node_modules/bits-ui/dist/index.js'),
       '@melt-ui/svelte': resolve(__dirname, 'node_modules/bits-ui/node_modules/@melt-ui/svelte/dist/index.js'),
