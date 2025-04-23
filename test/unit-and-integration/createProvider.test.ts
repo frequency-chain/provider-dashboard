@@ -1,9 +1,9 @@
+import CreateProvider from '$features/BecomeProviderNextSteps/CreateProvider.svelte';
+import { dotApi, storeChainInfo } from '$lib/stores';
 import '@testing-library/jest-dom';
 import { render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import CreateProvider from '../../src/components/CreateProvider.svelte';
-import { dotApi, storeChainInfo } from '../../src/lib/stores';
 
 globalThis.alert = () => {};
 

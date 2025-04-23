@@ -1,4 +1,4 @@
-import BecomeAProvider from '$components/BecomeAProvider.svelte';
+import BecomeAProvider from '$routes/become-a-provider/[[network=networks]]/+page.svelte';
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/svelte';
 import { vi } from 'vitest';

@@ -1,4 +1,4 @@
-import { networkNameToNetworkInfo } from '../../src/lib/stores/networksStore';
+import { networkNameToNetworkInfo } from '$lib/stores/networksStore';
 
 describe('Network Store Test', () => {
   it('networkNameToNetworkInfo works for valid endpoints', () => {

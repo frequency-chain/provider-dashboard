@@ -1,12 +1,12 @@
+import RequestToBeProvider from '$features/BecomeProviderNextSteps/RequestToBeProvider.svelte';
+import { dotApi, storeChainInfo } from '$lib/stores';
+import { Account } from '$lib/stores/accountsStore';
+import { user } from '$lib/stores/userStore';
 import Keyring from '@polkadot/keyring';
 import '@testing-library/jest-dom';
 import { render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
-import RequestToBeProvider from '../../src/components/RequestToBeProvider.svelte';
-import { dotApi, storeChainInfo } from '../../src/lib/stores';
-import { Account } from '../../src/lib/stores/accountsStore';
-import { user } from '../../src/lib/stores/userStore';
 
 globalThis.alert = () => {};
 

@@ -9,8 +9,8 @@
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
-  import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
-  import BackHomeButton from '$components/BackHomeButton.svelte';
+  import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
+  import BackHomeButton from '$atoms/BackHomeButton.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { goto } from '$app/navigation';
   // TODO: uncomment on transition to svelte 5

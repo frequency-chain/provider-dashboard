@@ -4,7 +4,7 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import { defaultCapacityDetails, getCapacityInfo, type CapacityDetails } from '$lib/polkadotApi';
   import { balanceToHuman } from '$lib/utils.js';
-  import ListCard from './ListCard.svelte';
+  import ListCard from '../../atoms/ListCard.svelte';
   import Stake from './Stake.svelte';
   import { Button } from '@frequency-chain/style-guide';
 

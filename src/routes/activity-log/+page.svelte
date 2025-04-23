@@ -1,8 +1,8 @@
 <script lang="ts">
-  import ActivityLogPreviewItem from '../../components/ActivityLogPreviewItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
-  import BlockSection from '$components/BlockSection.svelte';
+  import BlockSection from '$atoms/BlockSection.svelte';
   import type { Activity } from '$lib/storeTypes';
+  import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
 
   let activityItems: Activity[] = $derived($activityLog);
 </script>

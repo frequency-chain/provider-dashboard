@@ -1,7 +1,7 @@
 <script lang="ts">
   import { logout } from '$lib/stores';
   import { isLoggedIn } from '$lib/stores';
-  import NavItem from '$components/NavItem.svelte';
+  import NavItem from './NavItem.svelte';
 
   let url = $state();
 

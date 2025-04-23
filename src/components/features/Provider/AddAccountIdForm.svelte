@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore.js';
   import { formatAccount, getExtension } from '$lib/utils.js';
-  import DropDownMenu from '$components/DropDownMenu.svelte';
+  import DropDownMenu from '$atoms/DropDownMenu.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { user } from '$lib/stores/userStore.js';
   import { submitAddAccountId } from '$lib/connections.js';

@@ -1,6 +1,6 @@
 <script lang="ts">
-  import FAQItem from '$components/FAQItem.svelte';
-  import HowToTransact from '$components/HowToTransact.svelte';
+  import FAQItem from '$atoms/FAQItem.svelte';
+  import HowToTransact from '$features/HowToTransact/HowToTransact.svelte';
 </script>
 
 {#snippet question1()}

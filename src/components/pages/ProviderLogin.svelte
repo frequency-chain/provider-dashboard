@@ -1,7 +1,7 @@
 <script lang="ts">
-  import BlockSection from '$components/BlockSection.svelte';
-  import LoginForm from './LoginForm.svelte';
-  import HowToTransact from '$components/HowToTransact.svelte';
+  import BlockSection from '$atoms/BlockSection.svelte';
+  import LoginForm from '$features/LoginForm/LoginForm.svelte';
+  import HowToTransact from '$features/HowToTransact/HowToTransact.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { goto } from '$app/navigation';
 </script>
