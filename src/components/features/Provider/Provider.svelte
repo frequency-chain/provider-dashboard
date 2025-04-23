@@ -7,7 +7,7 @@
   import { balanceToHuman } from '$lib/utils';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
-  import ListCard from './ListCard.svelte';
+  import ListCard from '../../atoms/ListCard.svelte';
   import AddAccountId from './AddAccountId.svelte';
   import { Button } from '@frequency-chain/style-guide';
 

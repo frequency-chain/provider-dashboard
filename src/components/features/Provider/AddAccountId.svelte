@@ -1,9 +1,9 @@
 <script lang="ts">
-  import AddKeyRequirements from './AddKeyRequirements.svelte';
-  import Modal from './Modal.svelte';
+  import Modal from '../../atoms/Modal.svelte';
   import { user } from '$lib/stores/userStore';
   import { type Account } from '$lib/stores/accountsStore';
-  import AddAccountIdForm from '$components/AddAccountIdForm.svelte';
+  import AddAccountIdForm from './AddAccountIdForm.svelte';
+  import AddAccountIdRequirements from './AddAccountIdRequirements.svelte';
 
   interface Props {
     isOpen: boolean;
@@ -33,7 +33,7 @@
 
       <span class="border-b-divider min-w-full border-b"></span>
 
-      <AddKeyRequirements />
+      <AddAccountIdRequirements />
     </div>
   {/snippet}
 </Modal>

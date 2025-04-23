@@ -5,7 +5,7 @@
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { formatAccount, getExtension } from '$lib/utils';
-  import DropDownMenu from './DropDownMenu.svelte';
+  import DropDownMenu from '../../atoms/DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
   import { Button } from '@frequency-chain/style-guide';
 

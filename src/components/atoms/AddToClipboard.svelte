@@ -1,5 +1,5 @@
 <script lang="ts">
-  import CopyIcon from '../lib/assets/CopyIcon.svelte';
+  import CopyIcon from '../../lib/assets/CopyIcon.svelte';
 
   let origFill = '#000';
 
@@ -37,5 +37,5 @@
 
 <div class="{classes} flex flex-col">
   <CopyIcon {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-  <span class="top-f24 absolute text-xs {!isClicked && 'hidden'}">Copied</span>
+  <span class="top-f24 absolute text-xs whitespace-nowrap {!isClicked && 'hidden'}">Copied</span>
 </div>

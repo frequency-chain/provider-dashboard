@@ -6,10 +6,10 @@
   import { createMailto, getExtension, providerNameToHuman } from '$lib/utils';
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
-  import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
-  import BackHomeButton from '$components/BackHomeButton.svelte';
+  import BackHomeButton from '$components/atoms/BackHomeButton.svelte';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { getMsaInfo } from '$lib/polkadotApi';
+  import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
 
   let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
 

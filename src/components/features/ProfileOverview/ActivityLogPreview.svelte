@@ -1,5 +1,5 @@
 <script lang="ts">
-  import ActivityLogPreviewItem from './ActivityLogPreviewItem.svelte';
+  import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import type { Activity } from '$lib/storeTypes';
 

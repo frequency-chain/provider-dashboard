@@ -1,6 +1,6 @@
 <script lang="ts">
   import { user } from '$lib/stores/userStore';
-  import AddToClipboard from './AddToClipboard.svelte';
+  import AddToClipboard from '../../atoms/AddToClipboard.svelte';
 </script>
 
 <div class="flex flex-col items-center gap-2 md:min-w-[300px] md:flex-row md:gap-4">

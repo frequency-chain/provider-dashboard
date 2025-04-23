@@ -3,7 +3,7 @@
   import { clearLog } from '$lib/stores/activityLogStore';
   import { user } from '$lib/stores/userStore';
   import { Button } from '@frequency-chain/style-guide';
-  import SelectNetworkAndAccount from './SelectNetworkAndAccount.svelte';
+  import SelectNetworkAndAccount from '../SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
 
   // Props
   interface Props {

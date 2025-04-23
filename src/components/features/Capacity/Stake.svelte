@@ -1,5 +1,5 @@
 <script lang="ts">
-  import Modal from './Modal.svelte';
+  import Modal from '../../atoms/Modal.svelte';
   import StakeForm from './StakeForm.svelte';
   import { storeChainInfo } from '$lib/stores';
 

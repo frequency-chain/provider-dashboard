@@ -1,6 +1,6 @@
 <script lang="ts">
-  import Modal from '../components/Modal.svelte';
-  import LoginForm from './LoginForm.svelte';
+  import Modal from '../../atoms/Modal.svelte';
+  import LoginForm from '../LoginForm/LoginForm.svelte';
   interface Props {
     close?: () => void;
     isOpen?: boolean;
