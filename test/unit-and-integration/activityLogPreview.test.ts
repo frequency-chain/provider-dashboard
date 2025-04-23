@@ -1,4 +1,4 @@
-import ActivityLogPreview from '$components/ActivityLogPreview.svelte';
+import ActivityLogPreview from '$components/features/ProfileOverview/ActivityLogPreview.svelte';
 import '@testing-library/jest-dom';
 import { cleanup, render } from '@testing-library/svelte';
 

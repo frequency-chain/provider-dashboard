@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render } from '@testing-library/svelte';
 import { vi } from 'vitest';
-import CreateMsa from '../../src/components/CreateMsa.svelte';
+import CreateMsa from '../../src/components/features/BecomeProviderNextSteps/CreateMsa.svelte';
 import { storeChainInfo } from '../../src/lib/stores';
 
 globalThis.alert = () => {};

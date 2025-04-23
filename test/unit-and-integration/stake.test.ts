@@ -1,4 +1,4 @@
-import Stake, { stakeAmount } from '$components/Stake.svelte';
+import Stake, { stakeAmount } from '$components/features/capacity/Stake.svelte';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';

@@ -1,4 +1,4 @@
-import Provider from '$components/Provider.svelte';
+import Provider from '$components/features/Provider/Provider.svelte';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';

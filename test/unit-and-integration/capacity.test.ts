@@ -1,4 +1,4 @@
-import Capacity from '$components/Capacity.svelte';
+import Capacity from '$components/features/Capacity/Capacity.svelte';
 import '@testing-library/jest-dom';
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import { vi } from 'vitest';
