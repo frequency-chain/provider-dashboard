@@ -14,11 +14,11 @@
   let { onConnect = () => {}, onCancel = undefined }: Props = $props();
 
   // Get the matching account object safely
-  let newUser: Account | undefined = $state($providerAccountsStore.get($user.address));
+  let newUser: Account | null = $state($providerAccountsStore.get($user.address) ?? null);
 
   // Derive whether we can connect
   const canConnect = $derived.by(() => {
-    console.log(newUser);
+    console.log('Selected new user: ', newUser);
     return newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
   });
 

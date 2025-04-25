@@ -11,7 +11,7 @@
   import { createApi } from '$lib/polkadotApi';
 
   interface Props {
-    newUser: Account | undefined;
+    newUser: Account | null;
     accounts: Accounts;
     accountSelectorTitle?: string;
     accountSelectorPlaceholder?: string;
@@ -30,8 +30,8 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | null = $state(null);
-  let selectedNetwork: NetworkInfo | null = $state(null);
+  let selectedAccount: Account | null = $state(newUser);
+  let selectedNetwork: NetworkInfo | null = $state(newUser?.network ?? null);
   let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
   let isLoading: boolean = $state(false);
@@ -111,6 +111,22 @@
     }
   }
 
+  function findMatchingAccount(): Account | null {
+    for (const account of accounts.values()) {
+      if (JSON.stringify(account) === JSON.stringify(selectedAccount)) return account;
+    }
+    return null;
+  }
+
+  $effect(() => {
+    if (accounts && selectedAccount) {
+      const match = findMatchingAccount();
+      if (match && match !== selectedAccount) {
+        selectedAccount = match;
+      }
+    }
+  });
+
   const resetState = () => {
     selectedNetwork = null;
     selectedAccount = null;
@@ -118,7 +134,7 @@
     connectedToEndpoint = false;
     networkErrorMsg = '';
     controlKeysErrorMsg = '';
-    newUser = undefined;
+    newUser = null;
   };
 </script>
 
