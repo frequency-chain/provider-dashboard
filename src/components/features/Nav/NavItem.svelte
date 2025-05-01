@@ -1,5 +1,7 @@
 <script lang="ts">
-  interface Props {
+  import type { HTMLAttributes } from 'svelte/elements';
+
+  interface Props extends HTMLAttributes<HTMLAnchorElement> {
     href?: string;
     isActive?: boolean;
     onClick?: () => void;
@@ -8,16 +10,16 @@
     children?: import('svelte').Snippet;
   }
 
-  let { href = '', isActive = false, onClick = () => {}, id = '', target = '', children }: Props = $props();
+  let { href = '', isActive = false, onClick = () => {}, id = '', target = '', children, ...rest }: Props = $props();
 </script>
 
 <a
   {id}
   {href}
   onclick={onClick}
-  class={` flex h-[100px] items-center justify-center text-sm font-bold ${
+  class={`hover:text-teal flex h-[100px] items-center justify-center text-sm font-bold ${
     isActive && 'text-teal shadow-blue-border shadow-teal bg-white'
-  }`}
+  } ${rest.class}`}
   {target}
 >
   {@render children?.()}
