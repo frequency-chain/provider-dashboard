@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Button } from '@frequency-chain/style-guide';
+
   interface Props {
     additionalStyles?: string;
   }
@@ -12,7 +14,7 @@
     tokens from the Testnet Faucet sent to the Account Id that you want to use.
   </p>
 
-  <a href="https://faucet.testnet.frequency.xyz" target="_blank" class="btn-primary">Testnet Faucet</a>
+  <Button href="https://faucet.testnet.frequency.xyz" target="_blank">Testnet Faucet</Button>
 
   <ol class="ordered-list">
     <li>

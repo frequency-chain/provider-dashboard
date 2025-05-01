@@ -56,7 +56,7 @@
     controlled by the selected Transaction Signing Address above.
   </p>
   <div class="flex w-[350px] items-end justify-between">
-    <Button type="primary" onclick={doCreateMsa} disabled={isInProgress}>
+    <Button onclick={doCreateMsa} disabled={isInProgress}>
       {#if isInProgress}
         <LoadingIcon />
       {:else}

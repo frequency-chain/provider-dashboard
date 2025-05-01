@@ -2,6 +2,7 @@
   import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import type { Activity } from '$lib/storeTypes';
+  import { Button } from '@frequency-chain/style-guide';
 
   let recentActivityItem: Activity = $derived($activityLog[0]);
 </script>
@@ -12,9 +13,7 @@
 
   {#if recentActivityItem}
     <ActivityLogPreviewItem activity={recentActivityItem} />
-    <a href="/activity-log" class="mt-4 self-end">
-      <button class="btn-primary">See all activity</button>
-    </a>
+    <Button href="/activity-log" class="mt-4 self-end">See all activity</Button>
   {:else}
     <div class="py-2 text-sm">No activity.</div>
   {/if}

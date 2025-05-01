@@ -81,9 +81,7 @@
   </div>
   <div class="flex items-end justify-between">
     <Button
-      type="primary"
       id="create-provider-btn"
-      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
       onclick={doCreateProvider}
       disabled={isInProgress}
     >

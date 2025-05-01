@@ -8,6 +8,7 @@
   import DropDownMenu from '../../atoms/DropDownMenu.svelte';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
   import { Button } from '@frequency-chain/style-guide';
+  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   interface Props {
     close: () => void;
@@ -66,14 +67,7 @@
   </div>
 
   <div class="flex items-end justify-between">
-    <Button
-      type="primary"
-      onclick={stake}
-      disabled={isLoading}
-      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none"
-    >
-      Stake</Button
-    >
-    <button class="btn-no-fill" onclick={close}>Cancel</button>
+    <Button onclick={stake} disabled={isLoading}>Stake</Button>
+    <ButtonNoFill onclick={close}>Cancel</ButtonNoFill>
   </div>
 </form>

@@ -41,8 +41,6 @@
 </script>
 
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
-  <Button size="sm" type="primary" class="btn-primary" onClick={() => (showStakeToProvider = true)}
-    >Stake to Provider</Button
-  >
+  <Button size="sm" onclick={() => (showStakeToProvider = true)}>Stake to Provider</Button>
   <Stake isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
 </ListCard>
