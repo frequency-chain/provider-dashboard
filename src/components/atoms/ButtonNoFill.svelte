@@ -2,7 +2,7 @@
   import { cn } from '$lib/utils';
   import type { HTMLAttributes } from 'svelte/elements';
 
-  interface Props extends HTMLAttributes<HTMLButtonElement> {
+  interface Props extends HTMLAttributes<HTMLButtonElement | HTMLAnchorElement> {
     href?: string;
     children?: import('svelte').Snippet;
   }
@@ -11,7 +11,7 @@
 </script>
 
 {#if href}
-  <a {href} class={cn('hover:text-teal underline; cursor-pointer text-sm', rest.class)}>
+  <a {...rest} {href} class={cn('hover:text-teal underline; cursor-pointer text-sm', rest.class)}>
     {@render children?.()}
   </a>
 {:else}
