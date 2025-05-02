@@ -80,11 +80,7 @@
     />
   </div>
   <div class="flex items-end justify-between">
-    <Button
-      id="create-provider-btn"
-      onclick={doCreateProvider}
-      disabled={isInProgress}
-    >
+    <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isInProgress}>
       {#if isInProgress}
         <LoadingIcon />
       {:else}
