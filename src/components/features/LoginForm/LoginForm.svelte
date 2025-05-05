@@ -4,6 +4,7 @@
   import { user } from '$lib/stores/userStore';
   import { Button } from '@frequency-chain/style-guide';
   import SelectNetworkAndAccount from '../SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
+  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   // Props
   interface Props {
@@ -44,10 +45,10 @@
   />
 
   <div class="flex items-end justify-between">
-    <Button type="primary" disabled={!canConnect} onclick={connect}>Connect to Account</Button>
+    <Button disabled={!canConnect} onclick={connect}>Connect to Account</Button>
 
     {#if onCancel}
-      <button type="button" class="btn-no-fill hover:text-teal text-sm underline" onclick={onCancel}>Cancel</button>
+      <ButtonNoFill onclick={onCancel}>Cancel</ButtonNoFill>
     {/if}
   </div>
 </form>

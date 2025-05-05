@@ -21,7 +21,7 @@
     </a>
     <!-- TODO: remove div on button width fix -->
     <div>
-      <Button type="primary" onclick={() => goto('/become-a-provider')}>Become a Provider</Button>
+      <Button onclick={() => goto('/become-a-provider')}>Become a Provider</Button>
     </div>
   </div></BlockSection
 >

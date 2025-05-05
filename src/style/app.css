@@ -4,7 +4,7 @@
 
 @config '../../tailwind.config.ts';
 
-/*  */
+/* layout */
 @utility title-h2 {
   @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
 }
@@ -15,7 +15,6 @@
   @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
 }
 @utility unordered-list {
-  /* layout */
   @apply ml-6 list-disc text-wrap;
 }
 @utility ordered-list {
@@ -24,9 +23,11 @@
 @utility column {
   @apply flex flex-col;
 }
+
+/* typography */
+/* headers */
+
 @utility section-title {
-  /* typography */
-  /* headers */
   @apply text-xl font-bold;
 }
 @utility section-title-underlined {
@@ -35,8 +36,9 @@
 @utility label {
   @apply md:text-normal text-sm font-bold lg:tracking-wide;
 }
+
+/* data */
 @utility data-value-sm {
-  /* data */
   @apply font-data text-teal text-sm;
 }
 @utility data-value-md {
@@ -51,13 +53,14 @@
 @utility data-value-2xl {
   @apply font-data text-h3 text-teal;
 }
+
+/* layout */
 @utility content-block {
-  /* layout */
   @apply mb-f24 box-border rounded-md p-7;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
 }
+/* right side sizing */
 @utility main-section {
-  /* right side sizing */
   @apply ml-f80 px-f16 md:ml-f128;
   a {
     @apply hover:text-teal underline transition duration-[0.3s];
@@ -65,10 +68,6 @@
 }
 @utility break-anywhere {
   overflow-wrap: anywhere;
-}
-
-@utility btn-no-fill {
-  @apply hover:text-teal cursor-pointer text-sm underline;
 }
 
 :root {
@@ -79,10 +78,6 @@
 @layer base {
   body {
     min-height: 100vh;
-  }
-
-  button.btn-primary {
-    @apply bg-teal p-f12 rounded-full text-center font-bold text-black transition-all hover:text-black hover:shadow-md;
   }
 
   html {
@@ -97,6 +92,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-f40 text-normal border-gray3 hover:border-teal relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle text-[16px] overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply h-f40 text-normal border-gray3 hover:border-teal relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

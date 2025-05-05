@@ -41,6 +41,6 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <Button size="sm" class="btn-primary" onclick={() => (isAddAccountIdOpen = true)}>Add Account Id</Button>
+  <Button size="sm" onclick={() => (isAddAccountIdOpen = true)}>Add Account Id</Button>
   <AddAccountId isOpen={isAddAccountIdOpen} close={() => (isAddAccountIdOpen = false)} />
 </ListCard>

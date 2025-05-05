@@ -10,6 +10,7 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { getMsaInfo } from '$lib/polkadotApi';
   import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
+  import { Button } from '@frequency-chain/style-guide';
 
   let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
 
@@ -69,18 +70,17 @@
         />
       </div>
       <div class="flex w-[350px] justify-between">
-        <button
+        <Button
           onclick={doProposeToBeProvider}
           disabled={newProviderName === '' || isInProgress}
           id="request-2b-provider-btn"
-          class="btn-primary"
         >
           {#if isInProgress}
             <LoadingIcon />
           {:else}
             Request To Be Provider
           {/if}
-        </button>
+        </Button>
         <BackHomeButton />
       </div>
     </form>

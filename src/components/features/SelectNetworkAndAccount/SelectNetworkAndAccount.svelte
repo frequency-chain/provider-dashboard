@@ -9,6 +9,7 @@
   import DropDownMenu from '$atoms/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
+  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   interface Props {
     newUser: Account | null;
@@ -152,7 +153,7 @@
 {:else}
   <p class="my-f24 flex justify-between">
     <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <button onclick={resetState} class="hover:text-teal cursor-pointer text-sm underline">Change networks</button>
+    <ButtonNoFill onclick={resetState}>Change networks</ButtonNoFill>
   </p>
 {/if}
 {#if isCustomNetwork}

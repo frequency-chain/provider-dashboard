@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { Button } from '@frequency-chain/style-guide';
+
   interface Props {
     additionalStyles?: string;
   }
@@ -6,13 +8,13 @@
   let { additionalStyles = '' }: Props = $props();
 </script>
 
-<div class={`column ${additionalStyles}`}>
+<div class={`column gap-f16 ${additionalStyles}`}>
   <p>
     To transact on Frequency as a Provider you will need Frequency utility tokens. On Frequency Testnet, you can get
     tokens from the Testnet Faucet sent to the Account Id that you want to use.
   </p>
 
-  <a href="https://faucet.testnet.frequency.xyz" target="_blank" class="btn-primary">Testnet Faucet</a>
+  <Button href="https://faucet.testnet.frequency.xyz" target="_blank">Testnet Faucet</Button>
 
   <ol class="ordered-list">
     <li>
