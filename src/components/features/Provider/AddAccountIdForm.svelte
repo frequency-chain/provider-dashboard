@@ -8,6 +8,7 @@
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
   import { preventDefault } from 'svelte/legacy';
+  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   interface Props {
     onCancel: () => void;
@@ -53,12 +54,7 @@
   {/if}
 
   <div class="flex items-end justify-between">
-    <Button
-      type="primary"
-      onclick={addAccountId}
-      disabled={isSubmitDisabled}
-      class="disabled:bg-gray3 disabled:text-white disabled:hover:shadow-none">Add Account Id</Button
-    >
-    <button class="btn-no-fill hover:text-teal text-sm underline" onclick={preventDefault(onCancel)}>Cancel</button>
+    <Button onclick={addAccountId} disabled={isSubmitDisabled}>Add Account Id</Button>
+    <ButtonNoFill onclick={onCancel}>Cancel</ButtonNoFill>
   </div>
 </form>

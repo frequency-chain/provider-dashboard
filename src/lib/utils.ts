@@ -1,7 +1,12 @@
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
 import type { Account } from './stores/accountsStore';
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 export async function sleep(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
