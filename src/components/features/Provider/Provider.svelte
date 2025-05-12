@@ -54,14 +54,14 @@
   <Button size="sm" onclick={() => (isAddControlKeyOpen = true)}>Add Control Key</Button>
   <AddControlKey isOpen={isAddControlKeyOpen} close={() => (isAddControlKeyOpen = false)} />
 
-  <Modal title="Control Keys" description={`Keys associated with the logged in provider: ${$user.msaId}`}>
+  <Modal title="Control Keys" description={`Keys associated with the logged in provider (MSA ID: ${$user.msaId})`}>
     {#snippet trigger()}
       <Button size="sm" onclick={handleGetControlKeys}>View Control Keys</Button>
     {/snippet}
     {#snippet body()}
       {#each controlKeys as key (key)}
-        <div class="gap-f8 items-top flex">
-          <div class="wrap-anywhere">{key}</div>
+        <div class="gap-f4 items-top pt-f20 flex border-t">
+          <div class="font-bold wrap-anywhere">{key}</div>
           <AddToClipboard />
         </div>
       {/each}
