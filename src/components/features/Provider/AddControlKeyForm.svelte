@@ -4,7 +4,7 @@
   import DropDownMenu from '$atoms/DropDownMenu.svelte';
   import { Button } from '@frequency-chain/style-guide';
   import { user } from '$lib/stores/userStore.js';
-  import { submitAddAccountId } from '$lib/connections.js';
+  import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
   import { preventDefault } from 'svelte/legacy';
@@ -19,14 +19,14 @@
 
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
 
-  const addAccountId = async () => {
+  const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
-      alert('Please choose an Account Id to add.');
+      alert('Please choose an Control Key to add.');
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
       onCancel();
-      await submitAddAccountId(
+      await submitAddControlKey(
         $dotApi.api as ApiPromise,
         await getExtension($user),
         selectedAccount,
@@ -39,8 +39,8 @@
 
 <form class="column gap-f16">
   <DropDownMenu
-    id="AddAccountId"
-    label="Account Id to Add"
+    id="AddControlKey"
+    label="Control Key to Add"
     placeholder="Select Id..."
     bind:value={selectedAccount}
     options={Array.from($unusedKeyAccountsStore.values()) || []}
@@ -49,12 +49,12 @@
   />
   {#if $unusedKeyAccountsStore.size === 0}
     <div id="network-error-msg" class="text-error text-sm">
-      No available Account Ids. Create a new Account Id without an MSA Id.
+      No available Control Keys. Create a new Control Key without an MSA Id.
     </div>
   {/if}
 
   <div class="flex items-end justify-between">
-    <Button onclick={addAccountId} disabled={isSubmitDisabled}>Add Account Id</Button>
+    <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
     <ButtonNoFill onclick={onCancel}>Cancel</ButtonNoFill>
   </div>
 </form>

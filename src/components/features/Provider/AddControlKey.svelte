@@ -2,8 +2,8 @@
   import Modal from '../../atoms/Modal.svelte';
   import { user } from '$lib/stores/userStore';
   import { type Account } from '$lib/stores/accountsStore';
-  import AddAccountIdForm from './AddAccountIdForm.svelte';
-  import AddAccountIdRequirements from './AddAccountIdRequirements.svelte';
+  import AddControlKeyForm from './AddControlKeyForm.svelte';
+  import AddControlKeyRequirements from './AddControlKeyRequirements.svelte';
 
   interface Props {
     isOpen: boolean;
@@ -29,11 +29,11 @@
 
   {#snippet body()}
     <div class="column gap-f16">
-      <AddAccountIdForm {onCancel} {selectedAccount} />
+      <AddControlKeyForm {onCancel} {selectedAccount} />
 
       <span class="border-b-divider min-w-full border-b"></span>
 
-      <AddAccountIdRequirements />
+      <AddControlKeyRequirements />
     </div>
   {/snippet}
 </Modal>

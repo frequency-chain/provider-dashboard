@@ -51,9 +51,9 @@
 <form class="column gap-f16">
   <DropDownMenu
     id="stake-using-account-id"
-    label="Wallet Account Id"
+    label="Wallet Control Key"
     bind:value={selectedAccount}
-    placeholder="Select Account Id"
+    placeholder="Select Control Key"
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
   />

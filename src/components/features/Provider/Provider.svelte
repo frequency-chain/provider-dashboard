@@ -5,14 +5,17 @@
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import { balanceToHuman } from '$lib/utils';
-  import { getBalances } from '$lib/polkadotApi';
+  import { getBalances, getControlKeys } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from '../../atoms/ListCard.svelte';
-  import AddAccountId from './AddAccountId.svelte';
+  import AddControlKey from './AddControlKey.svelte';
   import { Button, Modal } from '@frequency-chain/style-guide';
+  import type { ApiPromise } from '@polkadot/api';
+  import AddToClipboard from '$atoms/AddToClipboard.svelte';
 
   let accountBalances: AccountBalances = $state({ transferable: 0n, locked: 0n, total: 0n });
-  let isAddAccountIdOpen: boolean = $state(false);
+  let isAddControlKeyOpen: boolean = $state(false);
+  let controlKeys: string[] = $state([]);
 
   run(() => {
     // Easy way to tag a subscription onto this action.
@@ -38,18 +41,30 @@
       { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
     ];
   });
+
+  function handleGetControlKeys() {
+    if (!$user.msaId) return;
+    getControlKeys($dotApi.api as ApiPromise, $user.msaId).then((keys) => {
+      if (keys) controlKeys = keys;
+    });
+  }
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <Button size="sm" onclick={() => (isAddAccountIdOpen = true)}>Add Control Key</Button>
-  <AddAccountId isOpen={isAddAccountIdOpen} close={() => (isAddAccountIdOpen = false)} />
+  <Button size="sm" onclick={() => (isAddControlKeyOpen = true)}>Add Control Key</Button>
+  <AddControlKey isOpen={isAddControlKeyOpen} close={() => (isAddControlKeyOpen = false)} />
 
-  <Modal title="Control Keys" description="control keys for the logged in provider">
+  <Modal title="Control Keys" description={`Keys associated with the logged in provider: ${$user.msaId}`}>
     {#snippet trigger()}
-      <Button>View Control Keys</Button>
+      <Button size="sm" onclick={handleGetControlKeys}>View Control Keys</Button>
     {/snippet}
     {#snippet body()}
-      <div>Control Keys</div>
+      {#each controlKeys as key (key)}
+        <div class="gap-f8 items-top flex">
+          <div class="wrap-anywhere">{key}</div>
+          <AddToClipboard />
+        </div>
+      {/each}
     {/snippet}
   </Modal>
 </ListCard>
