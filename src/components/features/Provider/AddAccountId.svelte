@@ -23,7 +23,7 @@
 <Modal id="add-account-id" {isOpen} close={onCancel}>
   {#snippet title()}
     <span>
-      Add an Account Id to MSA (<span class="font-light">{$user.msaId}</span>)
+      Add Control Key to MSA (<span class="font-light">{$user.msaId}</span>)
     </span>
   {/snippet}
 

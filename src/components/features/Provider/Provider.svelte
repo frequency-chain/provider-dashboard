@@ -9,7 +9,7 @@
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from '../../atoms/ListCard.svelte';
   import AddAccountId from './AddAccountId.svelte';
-  import { Button } from '@frequency-chain/style-guide';
+  import { Button, Modal } from '@frequency-chain/style-guide';
 
   let accountBalances: AccountBalances = $state({ transferable: 0n, locked: 0n, total: 0n });
   let isAddAccountIdOpen: boolean = $state(false);
@@ -41,6 +41,15 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <Button size="sm" onclick={() => (isAddAccountIdOpen = true)}>Add Account Id</Button>
+  <Button size="sm" onclick={() => (isAddAccountIdOpen = true)}>Add Control Key</Button>
   <AddAccountId isOpen={isAddAccountIdOpen} close={() => (isAddAccountIdOpen = false)} />
+
+  <Modal title="Control Keys" description="control keys for the logged in provider">
+    {#snippet trigger()}
+      <Button>View Control Keys</Button>
+    {/snippet}
+    {#snippet body()}
+      <div>Control Keys</div>
+    {/snippet}
+  </Modal>
 </ListCard>

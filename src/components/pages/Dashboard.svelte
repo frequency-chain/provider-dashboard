@@ -11,6 +11,7 @@
   import { onMount } from 'svelte';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
   import ChainStatus from '$features/ChainStatus/ChainStatus.svelte';
+  import { getControlKeys } from '$lib/polkadotApi';
 
   let thisWeb3Accounts: typeof web3Accounts | undefined = $state();
   let thisWeb3Enable: typeof web3Enable | undefined = $state();
@@ -26,6 +27,11 @@
       fetchAccountsForNetwork($user.network, thisWeb3Enable, thisWeb3Accounts, $dotApi.api as ApiPromise).then(() =>
         console.info('Accounts store updated.')
       );
+      // if ($user.msaId) {
+      //   const keys = getControlKeys($dotApi.api as ApiPromise, $user.msaId);
+      //   console.log('KEYS', keys);
+      //   console.log(' $user.msaId', $user.msaId);
+      // } else console.log('No msa ID');
     }
   });
 </script>

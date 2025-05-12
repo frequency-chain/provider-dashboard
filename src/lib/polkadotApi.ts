@@ -97,3 +97,12 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 
   return capacityDetails;
 }
+
+// export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<{ msaKeys: Vec<AccountId> }> {
+//   const keyInfoResponse = (await apiPromise.query.msa.getKeysByMsa(msaId)) as any;
+//   if (keyInfoResponse) {
+//     console.log('Successfully found keys.');
+//     return { msaKeys: keyInfoResponse.msa_keys };
+//   }
+//   throw Error(`Keys not found for ${msaId}`);
+// }
