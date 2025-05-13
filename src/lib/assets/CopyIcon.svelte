@@ -1,20 +1,24 @@
 <script lang="ts">
-  interface Props {
+  import { cn } from '$lib/utils';
+  import type { HTMLAttributes } from 'svelte/elements';
+
+  interface Props extends HTMLAttributes<HTMLButtonElement> {
     fill?: string;
     handleClick: () => void;
     handleMouseEnter: () => void;
     handleMouseLeave: () => void;
   }
 
-  let { fill = '#fff', handleClick, handleMouseEnter, handleMouseLeave }: Props = $props();
+  let { fill = '#fff', handleClick, handleMouseEnter, handleMouseLeave, ...rest }: Props = $props();
 </script>
 
 <button
+  {...rest}
   aria-label="Copy selected address"
   onclick={handleClick}
   onmouseenter={handleMouseEnter}
   onmouseleave={handleMouseLeave}
-  class="cursor-pointer"
+  class={cn('cursor-pointer', rest.class)}
 >
   <svg
     {fill}

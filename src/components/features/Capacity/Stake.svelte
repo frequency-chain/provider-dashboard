@@ -26,7 +26,7 @@
       <div>
         <div class="label mb-2">Requirements</div>
         <ol class="ordered-list text-sm">
-          <li>Ensure the Account Id has a <span class="units">{$storeChainInfo.token}</span> balance.</li>
+          <li>Ensure the Control Key has a <span class="units">{$storeChainInfo.token}</span> balance.</li>
           <li>Click 'Stake'.</li>
           <li>This will require 1 signature to send the transaction.</li>
         </ol>

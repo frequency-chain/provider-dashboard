@@ -39,9 +39,9 @@
   <SelectNetworkAndAccount
     bind:newUser
     accounts={$providerAccountsStore}
-    accountSelectorTitle="Select a Provider Account Id"
-    accountSelectorPlaceholder="Select a Provider Account Id"
-    noAccountsFoundErrorMsg="No Provider Account Ids found. To become a Provider, see below."
+    accountSelectorTitle="Select a Provider Control Key"
+    accountSelectorPlaceholder="Select a Provider Control Key"
+    noAccountsFoundErrorMsg="No Provider Control Keys found. To become a Provider, see below."
   />
 
   <div class="flex items-end justify-between">

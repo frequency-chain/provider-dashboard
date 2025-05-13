@@ -38,8 +38,8 @@ export interface AccountBalances {
   locked: bigint;
   total: bigint;
 }
-export async function getBalances(apiPromise: ApiPromise, accountId: string): Promise<AccountBalances> {
-  const accountData = (await apiPromise.query.system.account(accountId)).data;
+export async function getBalances(apiPromise: ApiPromise, ControlKey: string): Promise<AccountBalances> {
+  const accountData = (await apiPromise.query.system.account(ControlKey)).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
   const transferable = free - locked;
@@ -96,4 +96,14 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
   }
 
   return capacityDetails;
+}
+
+export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
+  const keyInfoResponse = (await apiPromise.rpc.msa.getKeysByMsaId(msaId)).toHuman() as any;
+  const keys = keyInfoResponse?.msa_keys;
+  if (keys) {
+    console.log('Successfully found keys.', keys);
+    return keys;
+  }
+  throw Error(`Keys not found for ${msaId}`);
 }
