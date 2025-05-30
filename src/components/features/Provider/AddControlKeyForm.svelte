@@ -7,7 +7,6 @@
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
-  import { preventDefault } from 'svelte/legacy';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   interface Props {

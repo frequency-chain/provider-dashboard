@@ -39,7 +39,7 @@
       bind:value
       onchange={onChange}
       data-test-id={id}
-      class="mt-f8 pr-f32 outline-gray3 hover:outline-teal focus-visible:outline-gray3 disabled:outline-gray3 disabled:hover:outline-gray3 disabled:focus-visible:outline-gray3 relative m-0 w-full max-w-[420px] cursor-pointer rounded-md bg-white p-2 align-middle outline focus-visible:outline active:outline disabled:cursor-not-allowed"
+      class="mt-f8 pr-f32 outline-gray3 hover:outline-primary focus-visible:outline-gray3 disabled:outline-gray3 disabled:hover:outline-gray3 disabled:focus-visible:outline-gray3 relative m-0 w-full max-w-[420px] cursor-pointer rounded-md bg-white p-2 align-middle outline focus-visible:outline active:outline disabled:cursor-not-allowed"
       disabled={isLoading || disabled}
     >
       <option class="text-gray3" value={null} disabled>{placeholder}</option>

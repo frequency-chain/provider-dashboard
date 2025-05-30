@@ -17,8 +17,8 @@
   {id}
   {href}
   onclick={onClick}
-  class={`hover:text-teal flex h-[100px] items-center justify-center text-sm font-bold ${
-    isActive && 'text-teal shadow-blue-border shadow-teal bg-white'
+  class={`hover:text-secondary flex h-[100px] items-center justify-center text-sm font-bold ${
+    isActive && 'text-primary bg-white shadow-[8px_0_rgba(121,14,112,1)]'
   } ${rest.class}`}
   {target}
 >

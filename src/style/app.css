@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-@import 'tailwindcss';
+@import '@frequency-chain/style-guide';
 
-@config '../../tailwind.config.ts';
+@source '../../node_modules/@frequency-chain/style-guide/**/*.{svelte,js,ts}';
 
 /* layout */
 @utility title-h2 {
@@ -39,32 +39,33 @@
 
 /* data */
 @utility data-value-sm {
-  @apply font-data text-teal text-sm;
+  @apply text-primary text-sm;
 }
 @utility data-value-md {
-  @apply font-data text-md text-teal;
+  @apply mdText text-primary;
 }
 @utility data-value-normal {
-  @apply font-data text-normal text-teal;
+  @apply text-normal text-primary;
 }
 @utility data-value-lg {
-  @apply font-data text-teal text-lg;
+  @apply text-primary text-lg;
 }
 @utility data-value-2xl {
-  @apply font-data text-h3 text-teal;
+  @apply text-h3 text-primary;
 }
 
 /* layout */
 @utility content-block {
   @apply mb-f24 box-border rounded-md p-7;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+
+  a {
+    @apply hover:text-primary underline transition duration-[0.3s];
+  }
 }
 /* right side sizing */
 @utility main-section {
   @apply ml-f80 px-f16 md:ml-f128;
-  a {
-    @apply hover:text-teal underline transition duration-[0.3s];
-  }
 }
 @utility break-anywhere {
   overflow-wrap: anywhere;
@@ -92,6 +93,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-f40 text-normal border-gray3 hover:border-teal relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply h-f40 text-normal border-gray3 hover:border-primary relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

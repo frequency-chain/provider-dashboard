@@ -11,6 +11,6 @@
   </div>
   <ConnectionStatus />
   {#if !$isLoggedIn}
-    <Button href="/faq" target="_self" class="py-f8 sm:p-f12 md:text-normal px-2 text-sm">&rarr; Questions?</Button>
+    <Button href="/faq" target="_self" intent="outlined-dark" size="small">&rarr; Questions?</Button>
   {/if}
 </header>

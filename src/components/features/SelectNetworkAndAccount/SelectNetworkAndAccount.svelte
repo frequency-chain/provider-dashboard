@@ -152,7 +152,7 @@
   />
 {:else}
   <p class="my-f24 flex justify-between">
-    <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
+    <span class="text-primary">Connected to {selectedNetwork?.name || 'Custom'}</span>
     <ButtonNoFill onclick={resetState}>Change networks</ButtonNoFill>
   </p>
 {/if}

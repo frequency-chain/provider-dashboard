@@ -5,7 +5,7 @@
 
 <div class="flex flex-col items-center gap-2 md:min-w-[300px] md:flex-row md:gap-4">
   <div
-    class="w-f64 h-f64 from-tealDark to-teal flex min-w-[60px] items-center justify-center rounded-full bg-gradient-to-r text-xl text-black md:h-[90px] md:w-[90px] md:max-w-[90px] md:text-2xl"
+    class="w-f64 h-f64 from-primary to-secondary flex min-w-[60px] items-center justify-center rounded-full bg-gradient-to-r text-xl text-black md:h-[90px] md:w-[90px] md:max-w-[90px] md:text-2xl"
   >
     {$user.providerName ? $user.providerName.substring(0, 1) : $user.address.substring(0, 3) + '…'}
   </div>
