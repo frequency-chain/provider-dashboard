@@ -10,7 +10,7 @@
     hasRequestedToBeProvider: boolean;
   }
 
-  let { hasRequestedToBeProvider = $bindable(), ...rest }: Props = $props();
+  let { hasRequestedToBeProvider = $bindable() }: Props = $props();
 </script>
 
 {#if $user && $user?.address !== ''}

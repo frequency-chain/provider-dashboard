@@ -6,7 +6,7 @@
   <NavItem class="py-f8 h-auto" href={link} target="_blank">{label}</NavItem>
 {/snippet}
 
-<div class="pb-f20 pt-f8 border-t">
+<div class="pb-f40 pt-f8 border-t">
   {@render navItem('Provider Rewards', 'https://rewards.frequency.xyz/providers/')}
   {@render navItem('Testnet Faucet', 'https://faucet.testnet.frequency.xyz/')}
 </div>

@@ -45,6 +45,6 @@
     </div>
   </div>
   <div class="main-section mt-f16 md:mt-f96">
-    <Footer />
+    <Footer intent="light" />
   </div>
 </div>

@@ -9,7 +9,7 @@
   let { copyValue = '', classes = '' } = $props();
 
   function handleMouseEnter() {
-    fill = '#55B1AB';
+    fill = '#790E70';
   }
 
   function handleMouseLeave() {
@@ -18,7 +18,7 @@
 
   function handleClick() {
     copyText();
-    fill = '#55B1AB';
+    fill = '#790E70';
     isClicked = true;
     setTimeout(() => {
       fill = origFill;

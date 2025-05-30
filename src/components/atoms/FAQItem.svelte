@@ -14,7 +14,7 @@
 
 <button
   id="faq-question"
-  class="label border-divider text-md mt-2 flex w-full cursor-pointer items-center justify-between border-t p-4 text-left font-bold"
+  class="label border-divider mdText mt-2 flex w-full cursor-pointer items-center justify-between border-t p-4 text-left font-bold"
   onclick={toggleIsOpen}
 >
   {@render question?.()}
@@ -33,6 +33,6 @@
   </svg>
 </button>
 
-<div id="faq-answer" class="lg:text-md text-sm {`p-3 ${isOpen ? 'block' : 'hidden'}`}">
+<div id="faq-answer" class="lg:mdText text-sm {`p-3 ${isOpen ? 'block' : 'hidden'}`}">
   {@render answer?.()}
 </div>
