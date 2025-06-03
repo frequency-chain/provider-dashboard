@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-@import '@frequency-chain/style-guide';
+@import '@frequency-chain/style-guide/styles';
 
 @source '../../node_modules/@frequency-chain/style-guide/**/*.{svelte,js,ts}';
 
