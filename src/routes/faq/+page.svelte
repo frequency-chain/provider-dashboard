@@ -1,6 +1,7 @@
 <script lang="ts">
   import { Accordion, AccordionList } from '@frequency-chain/style-guide';
   import HowToTransact from '$features/HowToTransact/HowToTransact.svelte';
+  import BlockSection from '$atoms/BlockSection.svelte';
 
   const question1 = 'What is the difference between Mainnet and Testnets?';
   const question2 = 'How do I transact on Frequency as a provider?';
@@ -27,11 +28,9 @@
   <HowToTransact />
 {/snippet}
 
-<div class="content-block">
-  <h2 class="mdText font-bold md:text-xl">FAQ's</h2>
-
+<BlockSection title="FAQ's">
   <AccordionList>
     <Accordion trigger={question1} content={answer1} />
     <Accordion trigger={question2} content={answer2} />
   </AccordionList>
-</div>
+</BlockSection>

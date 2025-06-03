@@ -16,10 +16,10 @@
       {:else}
         <div class="bg-red-error h-1 w-1 rounded-full p-1"></div>
       {/if}
-      <p id="connected-network" class="md:text-normal lg:mdText text-sm uppercase">{$user.network?.name}</p>
+      <p id="connected-network" class="md:text-normal lg:mdText smText uppercase">{$user.network?.name}</p>
     </div>
     <div class="flex items-center justify-between gap-2">
-      <p class="md:text-normal lg:mdText text-sm">
+      <p class="md:text-normal lg:mdText smText">
         {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
       </p>
       <IconButton label="switch button" onclick={() => (showConnectProvider = true)}><Switch /></IconButton>

@@ -51,7 +51,7 @@
 
 <div id="create-msa" class="flex flex-col gap-3.5">
   <div class="label">Create MSA Id</div>
-  <p class="text-sm">
+  <p class="smText">
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above.
   </p>

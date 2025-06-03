@@ -69,7 +69,7 @@
 
 <form id="create-provider" class="column gap-f16">
   <div>
-    <label for="providerNameCB" class="label block">Provider name</label>
+    <label for="providerNameCB" class="lgText block font-bold">Provider name</label>
     <input
       id="providerNameCB"
       type="text"

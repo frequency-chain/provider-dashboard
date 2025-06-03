@@ -5,15 +5,6 @@
 @source '../../node_modules/@frequency-chain/style-guide/**/*.{svelte,js,ts}';
 
 /* layout */
-@utility title-h2 {
-  @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
-}
-@utility title-h3 {
-  @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
-}
-@utility title-h5 {
-  @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
-}
 @utility unordered-list {
   @apply ml-6 list-disc text-wrap;
 }
@@ -28,30 +19,10 @@
 /* headers */
 
 @utility section-title {
-  @apply text-xl font-bold;
+  @apply lgText font-bold;
 }
 @utility section-title-underlined {
   @apply section-title mb-f24 border-l-gray2 border-b pb-3;
-}
-@utility label {
-  @apply md:text-normal text-sm font-bold lg:tracking-wide;
-}
-
-/* data */
-@utility data-value-sm {
-  @apply text-primary text-sm;
-}
-@utility data-value-md {
-  @apply mdText text-primary;
-}
-@utility data-value-normal {
-  @apply text-normal text-primary;
-}
-@utility data-value-lg {
-  @apply text-primary text-lg;
-}
-@utility data-value-2xl {
-  @apply text-h3 text-primary;
 }
 
 /* layout */

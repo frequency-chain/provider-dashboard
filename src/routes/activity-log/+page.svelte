@@ -14,7 +14,7 @@
         <ActivityLogPreviewItem {activity} />
       {/each}
     {:else}
-      <div class="py-2 text-sm">No activity.</div>
+      <div class="smText py-2">No activity.</div>
     {/if}
   </div>
 </BlockSection>

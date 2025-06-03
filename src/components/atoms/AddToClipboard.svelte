@@ -37,5 +37,5 @@
 
 <div class="{classes} relative flex flex-col">
   <CopyIcon class="relative" {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
-  <span class="top-f24 absolute text-xs whitespace-nowrap {!isClicked && 'hidden'}">Copied</span>
+  <span class="top-f24 xsText absolute whitespace-nowrap {!isClicked && 'hidden'}">Copied</span>
 </div>

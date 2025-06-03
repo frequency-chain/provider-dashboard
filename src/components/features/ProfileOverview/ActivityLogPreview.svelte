@@ -9,12 +9,12 @@
 
 <div class="flex flex-col">
   <div class="border-divider border-l pl-5 md:min-w-[300px]"></div>
-  <div class="label border-divider border-b pb-3">Activity Log</div>
+  <div class="mdText border-divider border-b pb-3 font-bold">Activity Log</div>
 
   {#if recentActivityItem}
     <ActivityLogPreviewItem activity={recentActivityItem} />
     <Button href="/activity-log" class="mt-4 self-end">See all activity</Button>
   {:else}
-    <div class="py-2 text-sm">No activity.</div>
+    <div class="smText py-2">No activity.</div>
   {/if}
 </div>

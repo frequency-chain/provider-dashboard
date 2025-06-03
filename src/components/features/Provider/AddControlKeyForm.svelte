@@ -47,7 +47,7 @@
     formatter={formatAccount}
   />
   {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-error text-sm">
+    <div id="network-error-msg" class="text-error smText">
       No available Control Keys. Create a new Control Key without an MSA Id.
     </div>
   {/if}

@@ -16,7 +16,7 @@
       href="https://docs.frequency.xyz/Delegation/Providers.html"
       target="_blank"
       rel="no-referrer"
-      class="text-sm underline"
+      class="smText underline"
       >Want to learn more about providers?
     </a>
     <!-- TODO: remove div on button width fix -->
@@ -27,5 +27,5 @@
 >
 
 <BlockSection title="Need tokens?">
-  <HowToTransact additionalStyles="text-sm" />
+  <HowToTransact additionalStyles="smText" />
 </BlockSection>
