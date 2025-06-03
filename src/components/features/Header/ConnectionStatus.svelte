@@ -3,6 +3,7 @@
   import ConnectProvider from './ConnectProvider.svelte';
   import { user } from '$lib/stores/userStore';
   import { isLoggedIn, storeChainInfo } from '$lib/stores';
+  import { IconButton } from '@frequency-chain/style-guide';
 
   let showConnectProvider = $state(false);
 </script>
@@ -15,19 +16,13 @@
       {:else}
         <div class="bg-red-error h-1 w-1 rounded-full p-1"></div>
       {/if}
-      <p id="connected-network" class="md:text-normal lg:text-md text-sm uppercase">{$user.network?.name}</p>
+      <p id="connected-network" class="md:text-normal lg:mdText smText uppercase">{$user.network?.name}</p>
     </div>
     <div class="flex items-center justify-between gap-2">
-      <p class="md:text-normal lg:text-md text-sm">
+      <p class="md:text-normal lg:mdText smText">
         {#if $user?.network}{$user.network.endpoint?.toString().replace(/\/$/, '')}{/if}
       </p>
-      <div class="rounded-md transition hover:shadow-md">
-        <button
-          onclick={() => (showConnectProvider = true)}
-          class="w-f32 h-f32 min-h-f32 min-w-f32 bg-teal p-f8 flex items-end justify-center rounded-md"
-          ><Switch />
-        </button>
-      </div>
+      <IconButton label="switch button" onclick={() => (showConnectProvider = true)}><Switch /></IconButton>
       <ConnectProvider close={() => (showConnectProvider = false)} isOpen={showConnectProvider} />
     </div>
   </div>

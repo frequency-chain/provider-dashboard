@@ -7,7 +7,6 @@
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
-  import { preventDefault } from 'svelte/legacy';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
   interface Props {
@@ -48,7 +47,7 @@
     formatter={formatAccount}
   />
   {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-error text-sm">
+    <div id="network-error-msg" class="text-error smText">
       No available Control Keys. Create a new Control Key without an MSA Id.
     </div>
   {/if}

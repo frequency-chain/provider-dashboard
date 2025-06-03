@@ -59,7 +59,7 @@
   {#if hasRequestedToBeProvider === false}
     <form class="column">
       <div>
-        <label for="providerNameRtB" class="label mb-3.5 block">Provider name</label>
+        <label for="providerNameRtB" class="lgText mb-3.5 block font-bold">Provider name</label>
         <input
           type="text"
           id="providerNameRtB"
@@ -85,13 +85,13 @@
       </div>
     </form>
   {:else}
-    <p class="text-sm font-bold">Success! Your request to become a provider has been submitted.</p>
-    <ul class="truncate text-sm">
+    <p class="smText font-bold">Success! Your request to become a provider has been submitted.</p>
+    <ul class="smText truncate">
       <li>Provider Name: <b>{newProviderName}</b></li>
       <li>Address: <b>{$user.address}</b></li>
       <li>MSA ID: <b>{$user.msaId}</b></li>
     </ul>
-    <p class="text-sm">
+    <p class="smText">
       <a href={mailTo} class="font-bold underline">Contact the Frequency Council </a>
       and inform them that you have requested to become a Provider, and provide them with your MSA Id.
     </p>
@@ -99,7 +99,7 @@
   {/if}
 
   {#if recentActivityItem && recentActivityItem.txnStatus === TxnStatus.FAILURE}
-    <p class="text-sm font-bold">
+    <p class="smText font-bold">
       Your request to has failed. This may be because you have previously submitted a request to become a provider.
     </p>
   {/if}

@@ -1,6 +1,6 @@
 <div>
-  <div class="label mb-2">Requirements</div>
-  <ol class="ordered-list text-sm">
+  <div class="lgText mb-2 font-bold">Requirements</div>
+  <ol class="ordered-list smText">
     <li>
       Ensure the new Control Key has a FRQCY balance if you intend to use it for submitting FRQCY or Capacity
       transactions.

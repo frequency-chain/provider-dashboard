@@ -1,19 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,900;1,400;1,500&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
-@import 'tailwindcss';
+@import '@frequency-chain/style-guide/styles';
 
-@config '../../tailwind.config.ts';
+@source '../../node_modules/@frequency-chain/style-guide/**/*.{svelte,js,ts}';
 
 /* layout */
-@utility title-h2 {
-  @apply font-title text-[50px] leading-[1] tracking-wider md:text-[60px] lg:text-[64px];
-}
-@utility title-h3 {
-  @apply font-title text-[40px] leading-[1] tracking-wider md:text-[40px] lg:text-[44px];
-}
-@utility title-h5 {
-  @apply font-title text-[18px] leading-[1] tracking-wider sm:text-[20px] md:text-[22px] lg:text-[26px];
-}
 @utility unordered-list {
   @apply ml-6 list-disc text-wrap;
 }
@@ -28,43 +19,24 @@
 /* headers */
 
 @utility section-title {
-  @apply text-xl font-bold;
+  @apply lgText font-bold;
 }
 @utility section-title-underlined {
   @apply section-title mb-f24 border-l-gray2 border-b pb-3;
-}
-@utility label {
-  @apply md:text-normal text-sm font-bold lg:tracking-wide;
-}
-
-/* data */
-@utility data-value-sm {
-  @apply font-data text-teal text-sm;
-}
-@utility data-value-md {
-  @apply font-data text-md text-teal;
-}
-@utility data-value-normal {
-  @apply font-data text-normal text-teal;
-}
-@utility data-value-lg {
-  @apply font-data text-teal text-lg;
-}
-@utility data-value-2xl {
-  @apply font-data text-h3 text-teal;
 }
 
 /* layout */
 @utility content-block {
   @apply mb-f24 box-border rounded-md p-7;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2);
+
+  a {
+    @apply hover:text-primary underline transition duration-[0.3s];
+  }
 }
 /* right side sizing */
 @utility main-section {
   @apply ml-f80 px-f16 md:ml-f128;
-  a {
-    @apply hover:text-teal underline transition duration-[0.3s];
-  }
 }
 @utility break-anywhere {
   overflow-wrap: anywhere;
@@ -92,6 +64,6 @@
   input,
   [type='text'],
   [type='number'] {
-    @apply h-f40 text-normal border-gray3 hover:border-teal relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
+    @apply h-f40 text-normal border-gray3 hover:border-primary relative flex w-full max-w-[420px] cursor-pointer items-center justify-between rounded-md border bg-white p-2 px-3 py-2 align-middle overflow-ellipsis text-black outline-none disabled:cursor-not-allowed disabled:opacity-50;
   }
 }

@@ -11,7 +11,7 @@
   let { activity }: Props = $props();
 </script>
 
-<div class="break-anywhere border-divider flex gap-2 border-b py-2 text-sm text-wrap">
+<div class="break-anywhere border-divider smText flex gap-2 border-b py-2 text-wrap">
   {#if activity.txnStatus === TxnStatus.LOADING}
     <LoadingIcon />
   {:else if activity.txnStatus === TxnStatus.SUCCESS}
@@ -22,7 +22,7 @@
 
   <div class="break-['break-word']">
     <div>Hash: {activity.txnId}</div>
-    <ul class="unordered-list text-sm">
+    <ul class="unordered-list smText">
       {#each activity.txnStatusItems as item}
         <li>{item}</li>
       {/each}

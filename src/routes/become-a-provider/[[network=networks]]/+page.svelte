@@ -24,7 +24,7 @@
 </BlockSection>
 
 <BlockSection title="More Info">
-  <div class="text-sm">
+  <div class="smText">
     For developer and testing convenience, on Testnet, anyone with an MSA who wishes to become a Provider may simply
     submit a createProvider transaction.<br /><br />This action will register the MSA Id that is controlled by the
     selected Transaction Signing Address above. Any Control Key that has been added to the MSA can submit the

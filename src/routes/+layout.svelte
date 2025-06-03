@@ -37,7 +37,7 @@
 <div>
   <div class="flex flex-col">
     <Nav />
-    <div class="main-section my-6">
+    <div class="main-section my-6 min-h-[calc(100vh-436px)]">
       <Header />
       <div class="mx-auto max-w-[80%] px-0 lg:max-w-[1024px]">
         {@render children?.()}
@@ -45,6 +45,6 @@
     </div>
   </div>
   <div class="main-section mt-f16 md:mt-f96">
-    <Footer />
+    <Footer intent="light" />
   </div>
 </div>

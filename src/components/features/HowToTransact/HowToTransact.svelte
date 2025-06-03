@@ -14,7 +14,9 @@
     tokens from the Testnet Faucet sent to the Control Key that you want to use.
   </p>
 
-  <Button href="https://faucet.testnet.frequency.xyz" target="_blank">Testnet Faucet</Button>
+  <Button href="https://faucet.testnet.frequency.xyz" target="_blank" intent="outlined-dark" size="small"
+    >Testnet Faucet</Button
+  >
 
   <ol class="ordered-list">
     <li>

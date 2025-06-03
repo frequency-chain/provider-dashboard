@@ -152,7 +152,7 @@
   />
 {:else}
   <p class="my-f24 flex justify-between">
-    <span class="text-teal">Connected to {selectedNetwork?.name || 'Custom'}</span>
+    <span class="text-primary">Connected to {selectedNetwork?.name || 'Custom'}</span>
     <ButtonNoFill onclick={resetState}>Change networks</ButtonNoFill>
   </p>
 {/if}
@@ -169,7 +169,7 @@
   />
 {/if}
 {#if networkErrorMsg}
-  <div id="network-error-msg" class="text-error text-sm">{networkErrorMsg}</div>
+  <div id="network-error-msg" class="text-error smText">{networkErrorMsg}</div>
 {/if}
 <DropDownMenu
   id="controlkeys"
@@ -182,5 +182,5 @@
   disabled={accounts.size === 0 || isLoading}
 />
 {#if controlKeysErrorMsg}
-  <div id="controlkey-error-msg" class="text-error text-sm">{controlKeysErrorMsg}</div>
+  <div id="controlkey-error-msg" class="text-error smText">{controlKeysErrorMsg}</div>
 {/if}
