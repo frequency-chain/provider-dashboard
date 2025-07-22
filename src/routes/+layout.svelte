@@ -44,18 +44,28 @@
     onclick?: () => void;
   }
 
-  const menuItems: MenuItem[] = $state([{ label: "FAQ's", href: '/faq', viewportHighlightId: 'faq', isButton: false }]);
+  const loggedOutMenu = [{ label: "FAQ's", href: '/faq', viewportHighlightId: 'faq', isButton: false }];
+  let menuItems = $state<MenuItem[]>(loggedOutMenu);
 
-  if ($isLoggedIn) {
-    menuItems.unshift({ label: 'Activity Log', href: '/activity-log', viewportHighlightId: 'home', isButton: false });
-    menuItems.push({
-      href: '/',
-      label: 'Logout',
-      viewportHighlightId: 'logout-button',
-      isButton: true,
-      onclick: logout,
-    });
-  }
+  $effect(() => {
+    const items: MenuItem[] = [...loggedOutMenu];
+    if ($isLoggedIn) {
+      items.unshift({
+        label: 'Activity Log',
+        href: '/activity-log',
+        viewportHighlightId: 'home',
+        isButton: false,
+      });
+      items.push({
+        href: '/',
+        label: 'Logout',
+        viewportHighlightId: 'logout-button',
+        isButton: true,
+        onclick: logout,
+      });
+    }
+    menuItems = items;
+  });
 </script>
 
 <div class="sticky top-0 z-50 mb-4 w-full bg-white">
