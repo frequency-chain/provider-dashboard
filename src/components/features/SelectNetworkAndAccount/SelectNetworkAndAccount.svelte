@@ -6,10 +6,10 @@
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import DropDownMenu from '$atoms/DropDownMenu.svelte';
   import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
+  import { Select } from '@frequency-chain/style-guide';
 
   interface Props {
     newUser: Account | null;
@@ -50,7 +50,7 @@
     thisWeb3Enable = polkadotExt.web3Enable;
     thisWeb3Accounts = polkadotExt.web3Accounts;
     if (selectedNetwork) {
-      await networkChanged();
+      await onNetworkChange(selectedNetwork.name);
     }
   });
 
@@ -76,12 +76,34 @@
     }
   }
 
-  function accountChanged() {
-    if (selectedAccount) newUser = selectedAccount;
-  }
+  const networkOptions = $allNetworks.map((network) => ({
+    optionLabel: network.name,
+    value: network.name,
+  }));
 
-  async function networkChanged() {
+  const allAccounts = Array.from(accounts.values());
+
+  const accountOptions = allAccounts.map((account) => ({
+    optionLabel: `${account.display}: ${account.address}`,
+    value: account.address,
+  }));
+
+  let onAccountChange = (selectedAccountValue: string) => {
+    const curAccount: Account | undefined = allAccounts.find((account) => account.address === selectedAccountValue);
+    if (curAccount) {
+      selectedAccount = curAccount;
+      newUser = selectedAccount;
+    }
+  };
+
+  async function onNetworkChange(selectedNetworkValue: string) {
+    console.log('hello world');
     isLoading = true;
+    console.log('hello world loading', isLoading);
+    const curNetwork: NetworkInfo | undefined = $allNetworks.find((network) => network.name === selectedNetworkValue);
+    if (curNetwork) {
+      selectedNetwork = curNetwork;
+    }
     isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
     accounts = new Map();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -94,14 +116,6 @@
     newUser = { network: selectedNetwork!, address: '', isProvider: false };
     isLoading = false;
   }
-
-  const onSelectNetworkChanged = () => {
-    if (!selectedNetwork) return;
-    isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
-    if (!isCustomNetwork) {
-      networkChanged();
-    }
-  };
 
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
@@ -140,13 +154,12 @@
 </script>
 
 {#if !connectedToEndpoint}
-  <DropDownMenu
+  <Select
     id="network"
     label="Select a Network"
-    bind:value={selectedNetwork}
+    onSelectedChange={onNetworkChange}
     placeholder="Select a Network"
-    options={$allNetworks}
-    onChange={onSelectNetworkChanged}
+    options={networkOptions}
     formatter={formatNetwork}
     {isLoading}
   />
@@ -171,13 +184,12 @@
 {#if networkErrorMsg}
   <div id="network-error-msg" class="text-error smText">{networkErrorMsg}</div>
 {/if}
-<DropDownMenu
+<Select
   id="controlkeys"
   label={accountSelectorTitle}
-  bind:value={selectedAccount}
+  onSelectedChange={onAccountChange}
   placeholder={accountSelectorPlaceholder}
-  options={Array.from(accounts.values())}
-  onChange={accountChanged}
+  options={accountOptions}
   formatter={formatAccount}
   disabled={accounts.size === 0 || isLoading}
 />
