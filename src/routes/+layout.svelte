@@ -1,10 +1,9 @@
 <script lang="ts">
-  import Header from '$features/Header/Header.svelte';
-  import Nav from '$features/Nav/Nav.svelte';
-  import { logInPromise, dotApi, storeChainInfo } from '$lib/stores';
+  import { logInPromise, dotApi, storeChainInfo, isLoggedIn, logout } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
-  import { Footer } from '@frequency-chain/style-guide';
+  import { Footer, Header } from '@frequency-chain/style-guide';
+  import { base } from '$app/paths';
 
   interface Props {
     children?: import('svelte').Snippet;
@@ -32,19 +31,49 @@
       }
     });
   });
+
+  interface MenuItem {
+    label: string;
+    href: string;
+    isExternal?: boolean;
+    isButton?: boolean;
+    // Show the active state (buttons only)
+    isActive?: boolean;
+    // Optional id to highlight if in the viewport
+    viewportHighlightId?: string;
+    onclick?: () => void;
+  }
+
+  const loggedOutMenu = [{ label: "FAQ's", href: '/faq', viewportHighlightId: 'faq', isButton: false }];
+  let menuItems = $state<MenuItem[]>(loggedOutMenu);
+
+  $effect(() => {
+    const items: MenuItem[] = [...loggedOutMenu];
+    if ($isLoggedIn) {
+      items.unshift({
+        label: 'Activity Log',
+        href: '/activity-log',
+        viewportHighlightId: 'home',
+        isButton: false,
+      });
+      items.push({
+        href: '/',
+        label: 'Logout',
+        viewportHighlightId: 'logout-button',
+        isButton: true,
+        onclick: logout,
+      });
+    }
+    menuItems = items;
+  });
 </script>
 
-<div>
-  <div class="flex flex-col">
-    <Nav />
-    <div class="main-section my-6 min-h-[calc(100vh-436px)]">
-      <Header />
-      <div class="mx-auto max-w-[80%] px-0 lg:max-w-[1024px]">
-        {@render children?.()}
-      </div>
-    </div>
-  </div>
-  <div class="main-section mt-f16 md:mt-f96">
-    <Footer intent="light" />
-  </div>
+<div class="sticky top-0 z-50 mb-4 w-full bg-white">
+  <Header highlightMarginTop="-90px" innerClass="mx-auto max-w-[80%]" logoLink={base + '/'} {menuItems} />
+</div>
+<div class="py-f24 mx-auto min-h-[calc(100vh-436px)] max-w-[80%] px-0 lg:max-w-[1024px]">
+  {@render children?.()}
+</div>
+<div class="mt-f16 md:mt-f96">
+  <Footer intent="light" />
 </div>

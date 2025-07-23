@@ -34,10 +34,7 @@
     @apply hover:text-primary underline transition duration-[0.3s];
   }
 }
-/* right side sizing */
-@utility main-section {
-  @apply ml-f80 px-f16 md:ml-f128;
-}
+
 @utility break-anywhere {
   overflow-wrap: anywhere;
 }
