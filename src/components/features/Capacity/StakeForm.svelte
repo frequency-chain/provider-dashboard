@@ -49,15 +49,20 @@
 </script>
 
 <form class="column gap-f16">
-  <DropDownMenu
-    id="stake-using-account-id"
-    label="Wallet Control Key"
+  <!-- <DropDownMenu
     bind:value={selectedAccount}
-    placeholder="Select Control Key"
     options={Array.from($allAccountsStore.values())}
     formatter={formatAccount}
-  />
+  /> -->
 
+  <Select
+    id="stake-using-account-id"
+    label="Wallet Control Key"
+    placeholder="Select Control Key"
+    onSelectedChange={accountChanged}
+    options={Array.from($allAccountsStore.values())}
+    disabled={accounts.size === 0 || isLoading}
+  />
   <div class="column gap-f8">
     <label class="form-item-label text-[16px]" for="stakingInput">
       Amount in <span class="units">{$storeChainInfo.token}</span>

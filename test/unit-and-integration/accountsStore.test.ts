@@ -1,5 +1,6 @@
 import {
   Account,
+  Accounts,
   allAccountsStore,
   nonProviderAccountsStore,
   providerAccountsStore,
@@ -44,22 +45,22 @@ describe('derived stores have the correct data', () => {
     );
   });
   it('allAccountsStore', () => {
-    const accounts = get(allAccountsStore);
+    const accounts: Accounts = get(allAccountsStore);
     expect(accounts.size).toBe(3);
   });
   it('providerAccountsStore', () => {
-    const accounts = get(providerAccountsStore);
+    const accounts: Accounts = get(providerAccountsStore);
     expect(accounts.size).toBe(1);
     expect(accounts.get(alice.address)).not.toBeUndefined();
   });
   it('nonProviderAccountsStore', () => {
-    const accounts = get(nonProviderAccountsStore);
+    const accounts: Accounts = get(nonProviderAccountsStore);
     expect(accounts.size).toBe(2);
     expect(accounts.get(bob.address)).not.toBeUndefined();
     expect(accounts.get(charlie.address)).not.toBeUndefined();
   });
   it('unusedKeyAccountsStore', () => {
-    const accounts = get(unusedKeyAccountsStore);
+    const accounts: Accounts = get(unusedKeyAccountsStore);
     expect(accounts.size).toBe(1);
     expect(accounts.get(charlie.address)).not.toBeUndefined();
   });

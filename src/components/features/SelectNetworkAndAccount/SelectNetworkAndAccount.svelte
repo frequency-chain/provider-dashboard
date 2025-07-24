@@ -1,15 +1,14 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
+  import { type NetworkInfo } from '$lib/stores/networksStore';
 
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
   import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
-  import { formatNetwork, formatAccount, isValidURL } from '$lib/utils';
   import { createApi } from '$lib/polkadotApi';
-  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
-  import { Select } from '@frequency-chain/style-guide';
+  import SelectNetwork from './SelectNetwork.svelte';
+  import SelectAccount from './SelectAccount.svelte';
 
   interface Props {
     newUser: Account | null;
@@ -33,14 +32,11 @@
 
   let selectedAccount: Account | null = $state(newUser);
   let selectedNetwork: NetworkInfo | null = $state(newUser?.network ?? null);
-  let customNetwork: string = $state('');
   let isCustomNetwork: boolean = $state(false);
-  let isLoading: boolean = $state(false);
   let connectedToEndpoint: boolean = $state(false);
-
-  // Error messages
   let networkErrorMsg: string = $state('');
-  let controlKeysErrorMsg: string = $state('');
+  let accountErrorMsg: string = $state('');
+  let isLoading: boolean = $state(false);
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -49,16 +45,13 @@
     const polkadotExt = await import('@polkadot/extension-dapp');
     thisWeb3Enable = polkadotExt.web3Enable;
     thisWeb3Accounts = polkadotExt.web3Accounts;
-    if (selectedNetwork) {
-      await onNetworkChange(selectedNetwork.name);
-    }
   });
 
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
     if (network) {
       try {
         networkErrorMsg = '';
-        controlKeysErrorMsg = '';
+        accountErrorMsg = '';
         if (!network.endpoint) throw new Error('Undefined endpoint.');
         const curApi = await createApi(network.endpoint);
         await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
@@ -71,76 +64,10 @@
         console.error(networkErrorMsg);
       }
       if (networkErrorMsg == '' && accounts.size === 0) {
-        controlKeysErrorMsg = noAccountsFoundErrorMsg;
+        accountErrorMsg = noAccountsFoundErrorMsg;
       }
     }
   }
-
-  const networkOptions = $allNetworks.map((network) => ({
-    optionLabel: network.name,
-    value: network.name,
-  }));
-
-  const allAccounts = Array.from(accounts.values());
-
-  const accountOptions = allAccounts.map((account) => ({
-    optionLabel: `${account.display}: ${account.address}`,
-    value: account.address,
-  }));
-
-  let onAccountChange = (selectedAccountValue: string) => {
-    const curAccount: Account | undefined = allAccounts.find((account) => account.address === selectedAccountValue);
-    if (curAccount) {
-      selectedAccount = curAccount;
-      newUser = selectedAccount;
-    }
-  };
-
-  async function onNetworkChange(selectedNetworkValue: string) {
-    console.log('hello world');
-    isLoading = true;
-    console.log('hello world loading', isLoading);
-    const curNetwork: NetworkInfo | undefined = $allNetworks.find((network) => network.name === selectedNetworkValue);
-    if (curNetwork) {
-      selectedNetwork = curNetwork;
-    }
-    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
-    accounts = new Map();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await connectAndFetchAccounts(selectedNetwork!);
-      connectedToEndpoint = true;
-    }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    newUser = { network: selectedNetwork!, address: '', isProvider: false };
-    isLoading = false;
-  }
-
-  function customNetworkChanged(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      if (isValidURL(customNetwork)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        selectedNetwork!.endpoint = customNetwork;
-      }
-    }
-  }
-
-  function findMatchingAccount(): Account | null {
-    for (const account of accounts.values()) {
-      if (JSON.stringify(account) === JSON.stringify(selectedAccount)) return account;
-    }
-    return null;
-  }
-
-  $effect(() => {
-    if (accounts && selectedAccount) {
-      const match = findMatchingAccount();
-      if (match && match !== selectedAccount) {
-        selectedAccount = match;
-      }
-    }
-  });
 
   const resetState = () => {
     selectedNetwork = null;
@@ -148,51 +75,28 @@
     isCustomNetwork = false;
     connectedToEndpoint = false;
     networkErrorMsg = '';
-    controlKeysErrorMsg = '';
+    accountErrorMsg = '';
     newUser = null;
   };
 </script>
 
-{#if !connectedToEndpoint}
-  <Select
-    id="network"
-    label="Select a Network"
-    onSelectedChange={onNetworkChange}
-    placeholder="Select a Network"
-    options={networkOptions}
-    formatter={formatNetwork}
-    {isLoading}
-  />
-{:else}
-  <p class="my-f24 flex justify-between">
-    <span class="text-primary">Connected to {selectedNetwork?.name || 'Custom'}</span>
-    <ButtonNoFill onclick={resetState}>Change networks</ButtonNoFill>
-  </p>
-{/if}
-{#if isCustomNetwork}
-  <input
-    id="other-endpoint-url"
-    type="text"
-    pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
-    placeholder="wss://some.frequency.node"
-    bind:value={customNetwork}
-    disabled={false}
-    class:hidden={false}
-    onkeydown={customNetworkChanged}
-  />
-{/if}
-{#if networkErrorMsg}
-  <div id="network-error-msg" class="text-error smText">{networkErrorMsg}</div>
-{/if}
-<Select
-  id="controlkeys"
-  label={accountSelectorTitle}
-  onSelectedChange={onAccountChange}
-  placeholder={accountSelectorPlaceholder}
-  options={accountOptions}
-  formatter={formatAccount}
-  disabled={accounts.size === 0 || isLoading}
+<SelectNetwork
+  bind:accounts
+  bind:newUser
+  {resetState}
+  {connectAndFetchAccounts}
+  bind:selectedNetwork
+  bind:isCustomNetwork
+  bind:connectedToEndpoint
+  {networkErrorMsg}
+  bind:isLoading
 />
-{#if controlKeysErrorMsg}
-  <div id="controlkey-error-msg" class="text-error smText">{controlKeysErrorMsg}</div>
-{/if}
+<SelectAccount
+  {accounts}
+  bind:newUser
+  bind:selectedAccount
+  {accountSelectorTitle}
+  {accountSelectorPlaceholder}
+  {accountErrorMsg}
+  {isLoading}
+/>
