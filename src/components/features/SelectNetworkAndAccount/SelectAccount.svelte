@@ -50,14 +50,12 @@
   });
 </script>
 
-<div>
-  <Select
-    id="controlkeys"
-    label={accountSelectorTitle}
-    onSelectedChange={accountChanged}
-    placeholder={accountSelectorPlaceholder}
-    options={accountOptions}
-    disabled={accounts.size === 0 || isLoading}
-    error={accountErrorMsg}
-  />
-</div>
+<Select
+  id="controlkeys"
+  label={accountSelectorTitle}
+  onSelectedChange={accountChanged}
+  placeholder={accountSelectorPlaceholder}
+  options={accountOptions}
+  disabled={accounts.size === 0 || isLoading}
+  error={accountErrorMsg}
+/>

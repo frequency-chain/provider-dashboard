@@ -82,17 +82,15 @@
 </script>
 
 {#if !connectedToEndpoint}
-  <div>
-    <Select
-      id="network"
-      label="Select a Network"
-      placeholder="Select a Network"
-      options={networkOptions}
-      onSelectedChange={onSelectNetworkChanged}
-      {isLoading}
-      error={networkErrorMsg}
-    />
-  </div>
+  <Select
+    id="network"
+    label="Select a Network"
+    placeholder="Select a Network"
+    options={networkOptions}
+    onSelectedChange={onSelectNetworkChanged}
+    {isLoading}
+    error={networkErrorMsg}
+  />
 {:else}
   <p class="gap-f8 flex items-center">
     <IconButton label="switch button" onclick={resetState}><Switch /></IconButton>
