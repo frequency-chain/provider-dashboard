@@ -1,7 +1,7 @@
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import type { Account } from './stores/accountsStore';
+import type { Account, Accounts } from './stores/accountsStore';
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 
 export function cn(...inputs: ClassValue[]) {
@@ -63,18 +63,32 @@ export function isValidURL(url: string): boolean {
   }
 }
 
-export function formatNetwork(network: NetworkInfo): string {
-  if (network.id === NetworkType.CUSTOM) {
-    return network.name;
-  }
-  return `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
+export function selectNetworkOptions(networks: NetworkInfo[]) {
+  return networks.map((network) => {
+    let label = `${network?.name ?? ''}: ${network?.endpoint?.toString().replace(/\/$/, '') ?? ''}`;
+    if (network.id === NetworkType.CUSTOM) {
+      label = network.name;
+    }
+    return {
+      optionLabel: label,
+      value: network.name,
+    };
+  });
 }
 
-export function formatAccount(account: Account): string {
-  if (account.isProvider) {
-    return `${account.providerName || `Provider #${account.msaId}`}: ${account.address}`;
-  }
-  return `${account.display}${account.display && ':'} ${account.address}`;
+export function selectAccountOptions(accounts: Accounts) {
+  const accountsArray = Array.from(accounts.values());
+
+  return accountsArray.map((account) => {
+    let optionLabel = `${account.display}${account.display && ':'} ${account.address}`;
+    if (account.isProvider) {
+      optionLabel = `${account.providerName || `Provider #${account.msaId}`}: ${account.address}`;
+    }
+    return {
+      optionLabel,
+      value: account.address,
+    };
+  });
 }
 
 // create a URL-encoded mailto URL string using the provided parameters.

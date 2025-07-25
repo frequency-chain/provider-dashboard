@@ -12,7 +12,7 @@
   import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
   import { Button } from '@frequency-chain/style-guide';
 
-  let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
+  let { hasRequestedToBeProvider = $bindable() } = $props();
 
   let isInProgress = $state(false);
   let recentActivityItem: Activity | undefined = $state();

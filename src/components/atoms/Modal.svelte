@@ -17,10 +17,10 @@
     onkeyup={close}
     role="button"
     tabindex="0"
-    class="fixed top-0 right-0 z-[100] flex h-[100vh] w-[calc(100vw-128px)] cursor-default items-center justify-center overflow-y-auto bg-black/25"
+    class="fixed top-0 right-0 z-[100] flex h-[100vh] w-[100vw] cursor-default items-center justify-center overflow-y-auto bg-black/25"
   >
     <div
-      class="content-block w-modal flex cursor-default flex-col bg-white shadow-lg"
+      class="content-block flex w-[460px] cursor-default flex-col bg-white shadow-lg"
       onclick={(e) => e.stopPropagation()}
       onkeyup={(e) => e.stopPropagation()}
       tabindex="0"

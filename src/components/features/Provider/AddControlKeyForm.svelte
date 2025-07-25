@@ -1,13 +1,13 @@
 <script lang="ts">
   import { Account, unusedKeyAccountsStore } from '$lib/stores/accountsStore.js';
-  import { formatAccount, getExtension } from '$lib/utils.js';
-  import DropDownMenu from '$atoms/DropDownMenu.svelte';
-  import { Button } from '@frequency-chain/style-guide';
+  import { getExtension, selectAccountOptions } from '$lib/utils.js';
+  import { Button, Select } from '@frequency-chain/style-guide';
   import { user } from '$lib/stores/userStore.js';
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
+  import type { Selected } from 'bits-ui';
 
   interface Props {
     onCancel: () => void;
@@ -34,17 +34,23 @@
       );
     }
   };
+
+  const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
+
+  let accountChanged = (selectedAccountValue: Selected<string>) => {
+    const curAccount: Account | undefined = $unusedKeyAccountsStore.get(selectedAccountValue.value);
+    if (curAccount) selectedAccount = curAccount;
+  };
 </script>
 
 <form class="column gap-f16">
-  <DropDownMenu
+  <Select
     id="AddControlKey"
     label="Control Key to Add"
     placeholder="Select Id..."
-    bind:value={selectedAccount}
-    options={Array.from($unusedKeyAccountsStore.values()) || []}
+    options={accountOptions || []}
+    onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
-    formatter={formatAccount}
   />
   {#if $unusedKeyAccountsStore.size === 0}
     <div id="network-error-msg" class="text-error smText">

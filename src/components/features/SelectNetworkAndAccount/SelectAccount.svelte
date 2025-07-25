@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Account, Accounts } from '$lib/stores/accountsStore';
+  import { selectAccountOptions } from '$lib/utils';
   import { Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
 
@@ -22,21 +23,10 @@
     accountErrorMsg,
     isLoading,
   }: Props = $props();
-
-  const allAccounts = $derived(Array.from(accounts.values()));
-  $effect(() => console.log('allAccounts: ', allAccounts));
-
-  const accountOptions = $derived(
-    allAccounts.map((account) => ({
-      optionLabel: `${account.display}: ${account.address}`,
-      value: account.address,
-    }))
-  );
+  const accountOptions = $derived(selectAccountOptions(accounts));
 
   let accountChanged = (selectedAccountValue: Selected<string>) => {
-    const curAccount: Account | undefined = allAccounts.find(
-      (account) => account.address === selectedAccountValue.value
-    );
+    const curAccount: Account | undefined = accounts.get(selectedAccountValue.value);
     if (curAccount) {
       selectedAccount = curAccount;
       newUser = selectedAccount;

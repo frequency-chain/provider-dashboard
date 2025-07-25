@@ -1,9 +1,8 @@
 <script lang="ts">
-  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import Switch from '$lib/assets/Switch.svelte';
   import type { Account, Accounts } from '$lib/stores/accountsStore';
   import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
-  import { isValidURL } from '$lib/utils';
+  import { isValidURL, selectNetworkOptions } from '$lib/utils';
   import { IconButton, Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
   import { onMount } from 'svelte';
@@ -41,10 +40,7 @@
 
   let customNetwork: string = $state('');
 
-  const networkOptions = $allNetworks.map((network) => ({
-    optionLabel: network.name,
-    value: network.name,
-  }));
+  const networkOptions = selectNetworkOptions($allNetworks);
 
   async function networkChanged() {
     isLoading = true;

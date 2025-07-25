@@ -99,7 +99,7 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 }
 
 export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
-  const keyInfoResponse = (await apiPromise.rpc.msa.getKeysByMsaId(msaId)).toHuman() as any;
+  const keyInfoResponse = (await apiPromise.rpc.msa.getKeysByMsaId(msaId)).toHuman();
   const keys = keyInfoResponse?.msa_keys;
   if (keys) {
     console.log('Successfully found keys.', keys);
