@@ -20,7 +20,7 @@
     selectedAccount = $bindable(null),
     accountSelectorTitle,
     accountSelectorPlaceholder,
-    accountErrorMsg,
+    accountErrorMsg = $bindable(),
     isLoading,
   }: Props = $props();
   const accountOptions = $derived(selectAccountOptions(accounts));
@@ -50,14 +50,14 @@
   });
 </script>
 
-<Select
-  id="controlkeys"
-  label={accountSelectorTitle}
-  onSelectedChange={accountChanged}
-  placeholder={accountSelectorPlaceholder}
-  options={accountOptions}
-  disabled={accounts.size === 0 || isLoading}
-/>
-{#if accountErrorMsg}
-  <div id="controlkey-error-msg" class="text-error smText">{accountErrorMsg}</div>
-{/if}
+<div>
+  <Select
+    id="controlkeys"
+    label={accountSelectorTitle}
+    onSelectedChange={accountChanged}
+    placeholder={accountSelectorPlaceholder}
+    options={accountOptions}
+    disabled={accounts.size === 0 || isLoading}
+    error={accountErrorMsg}
+  />
+</div>

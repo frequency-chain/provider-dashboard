@@ -88,7 +88,7 @@
   bind:selectedNetwork
   bind:isCustomNetwork
   bind:connectedToEndpoint
-  {networkErrorMsg}
+  bind:networkErrorMsg
   bind:isLoading
 />
 <SelectAccount
@@ -97,6 +97,6 @@
   bind:selectedAccount
   {accountSelectorTitle}
   {accountSelectorPlaceholder}
-  {accountErrorMsg}
+  bind:accountErrorMsg
   {isLoading}
 />

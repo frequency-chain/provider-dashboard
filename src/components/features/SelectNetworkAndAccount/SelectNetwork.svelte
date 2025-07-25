@@ -27,7 +27,7 @@
     selectedNetwork = $bindable(null),
     isCustomNetwork = $bindable(false),
     connectedToEndpoint = $bindable(false),
-    networkErrorMsg,
+    networkErrorMsg = $bindable(),
     isLoading = $bindable(false),
   }: Props = $props();
 
@@ -82,17 +82,19 @@
 </script>
 
 {#if !connectedToEndpoint}
-  <Select
-    id="network"
-    label="Select a Network"
-    placeholder="Select a Network"
-    options={networkOptions}
-    onSelectedChange={onSelectNetworkChanged}
-    {isLoading}
-    error={networkErrorMsg}
-  />
+  <div>
+    <Select
+      id="network"
+      label="Select a Network"
+      placeholder="Select a Network"
+      options={networkOptions}
+      onSelectedChange={onSelectNetworkChanged}
+      {isLoading}
+      error={networkErrorMsg}
+    />
+  </div>
 {:else}
-  <p class="my-f24 gap-f8 flex items-center">
+  <p class="gap-f8 flex items-center">
     <IconButton label="switch button" onclick={resetState}><Switch /></IconButton>
     <span class="text-primary smText font-bold">Connected to {selectedNetwork?.name || 'Custom'}</span>
   </p>
@@ -108,7 +110,4 @@
     class:hidden={false}
     onkeydown={customNetworkChanged}
   />
-{/if}
-{#if networkErrorMsg}
-  <div id="network-error-msg" class="text-error smText">{networkErrorMsg}</div>
 {/if}
