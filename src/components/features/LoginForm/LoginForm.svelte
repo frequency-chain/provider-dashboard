@@ -19,7 +19,7 @@
 
   // Derive whether we can connect
   const canConnect = $derived.by(() => {
-    console.log('Selected new user: ', newUser);
+    $inspect('Selected new user: ', newUser);
     return newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
   });
 
