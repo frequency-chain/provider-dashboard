@@ -142,21 +142,32 @@ describe('End to End Tests', () => {
 
     // Change the select box value
     const accountOption = `${providerAccount.providerName || `Provider #${providerAccount.msaId}`}: ${providerAccount.address}`;
-    getByText(accountOption).click();
+
+    const curAccountOption = screen.getByText(accountOption);
+    expect(curAccountOption).not.toBeNull();
+
+    fireEvent.click(curAccountOption);
 
     // Be sure to wait for all the promises to resolve before checking the result
     // await waitFor(() => {
     //   // expect the trigger to show the selected value
-    //   expect(screen.getByText(accountOption)).toBeInTheDocument();
+    //   screen.debug();
+    //   const selectedAccount = screen.getByText(accountOption, { exact: false });
+    //   console.log('selectedAccount', selectedAccount);
+    //   expect(selectedAccount).toBeInTheDocument();
     // });
-    // // click login button
-    // screen.debug();
 
-    // await waitFor(() => {
-    //   expect(container.querySelector('#dashboard') as HTMLElement).toBeInTheDocument();
-    //   const connectedNetwork = container.querySelector('#connected-network');
-    //   expect(connectedNetwork?.textContent?.trim()).toBe('LOCALHOST');
-    // });
+    // click login button
+    // console.log('screen', screen);
+    const loginButton = screen.getByText('Connect to Account');
+    expect(loginButton).not.toBeDisabled();
+    fireEvent.click(loginButton);
+
+    await waitFor(() => {
+      expect(container.querySelector('#dashboard')).toBeInTheDocument();
+      const connectedNetwork = container.querySelector('#connected-network');
+      expect(connectedNetwork?.textContent?.trim()).toBe('LOCALHOST');
+    });
   });
 
   test('values persist on reload', async () => {

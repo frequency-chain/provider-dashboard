@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Account, Accounts } from '$lib/stores/accountsStore';
+  import { allAccountsStore, type Account, type Accounts } from '$lib/stores/accountsStore';
   import { selectAccountOptions } from '$lib/utils';
   import { Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
@@ -32,22 +32,6 @@
       newUser = selectedAccount;
     }
   };
-
-  function findMatchingAccount(): Account | null {
-    for (const account of accounts.values()) {
-      if (JSON.stringify(account) === JSON.stringify(selectedAccount)) return account;
-    }
-    return null;
-  }
-
-  $effect(() => {
-    if (accounts && selectedAccount) {
-      const match = findMatchingAccount();
-      if (match && match !== selectedAccount) {
-        selectedAccount = match;
-      }
-    }
-  });
 </script>
 
 <Select
