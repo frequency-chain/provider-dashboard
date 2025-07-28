@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { allAccountsStore, type Account, type Accounts } from '$lib/stores/accountsStore';
+  import { type Account, type Accounts } from '$lib/stores/accountsStore';
   import { selectAccountOptions } from '$lib/utils';
   import { Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
