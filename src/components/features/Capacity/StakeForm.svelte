@@ -57,12 +57,12 @@
 
 <form class="column gap-f16">
   <Select
+  disabled={$allAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"
-    onSelectedChange={accountChanged}
     options={accountOptions}
-    disabled={$allAccountsStore.size === 0 || isLoading}
+    onSelectedChange={accountChanged}
   />
 
   <Input
