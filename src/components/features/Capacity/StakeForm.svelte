@@ -49,15 +49,17 @@
 
   const accountOptions = $derived(selectAccountOptions($allAccountsStore));
 
-  let accountChanged = (selectedAccountValue: Selected<string>) => {
-    const curAccount: Account | undefined = $allAccountsStore.get(selectedAccountValue.value);
+  let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    const curAccount: Account | undefined = selectedAccountValue?.value
+      ? $allAccountsStore.get(selectedAccountValue.value)
+      : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
 </script>
 
 <form class="column gap-f16">
   <Select
-  disabled={$allAccountsStore.size === 0 || isLoading}
+    disabled={$allAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"
