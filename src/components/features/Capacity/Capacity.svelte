@@ -7,6 +7,7 @@
   import ListCard from '../../atoms/ListCard.svelte';
   import Stake from './Stake.svelte';
   import { Button } from '@frequency-chain/style-guide';
+  import Unstake from './Unstake.svelte';
 
   let capacityDetails: CapacityDetails = $state(defaultCapacityDetails);
 
@@ -20,6 +21,7 @@
   });
 
   let showStakeToProvider = $state(false);
+  let showUnstakeFromProvider = $state(false);
   let capacityList: { label: string; value: string }[] = $state([]);
   let errMsg: string = $state('');
 
@@ -43,4 +45,7 @@
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
   <Button size="sm" onclick={() => (showStakeToProvider = true)}>Stake to Provider</Button>
   <Stake isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
+
+  <Button size="sm" onclick={() => (showUnstakeFromProvider = true)}>Unstake from Provider</Button>
+  <Unstake isOpen={showUnstakeFromProvider} close={() => (showUnstakeFromProvider = false)} />
 </ListCard>
