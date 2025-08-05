@@ -59,11 +59,11 @@
   />
 
   <div class="column gap-f8">
-    <label class="form-item-label text-[16px]" for="stakingInput">
+    <label class="form-item-label text-[16px]" for="unstakingInput">
       Amount in <span class="units">{$storeChainInfo.token}</span>
     </label>
 
-    <input id="stakingInput" type="number" min="0" value="1" oninput={handleInput} />
+    <input id="unstakingInput" type="number" min="0" value="1" oninput={handleInput} />
   </div>
 
   <div class="flex items-end justify-between">
