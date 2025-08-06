@@ -77,6 +77,8 @@
       placeholder="Short name"
       maxlength={16}
       bind:value={newProviderName}
+      error={undefined}
+      disabled={false}
     />
   </div>
   <div class="flex items-end justify-between">

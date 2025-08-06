@@ -67,6 +67,8 @@
           type="text"
           required
           maxlength={16}
+          error={undefined}
+          disabled={false}
         />
       </div>
       <div class="flex w-[350px] justify-between">

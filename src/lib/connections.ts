@@ -4,11 +4,11 @@ import type { ApiPromise } from '@polkadot/api/promise';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { PalletMsaAddKeyData } from '@polkadot/types/lookup';
 import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
+import type { u64 } from '@polkadot/types';
 
 interface AddKeyData {
   msaId: string;
@@ -30,7 +30,7 @@ export async function getBlockNumber(api: ApiPromise): Promise<bigint> {
 
 export async function getEpoch(api: ApiPromise): Promise<bigint> {
   if (api && (await api.isReady)) {
-    return (await api.query.capacity.currentEpoch()).toBigInt();
+    return (await api.query.capacity.currentEpoch() as u64).toBigInt();
   }
   return 0n;
 }
@@ -51,7 +51,7 @@ export async function submitAddControlKey(
       newPublicKey: newAccount.address,
     };
 
-    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload) as unknown as PalletMsaAddKeyData;
+    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
 
     const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
     const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);

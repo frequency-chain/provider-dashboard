@@ -8,6 +8,7 @@
   import { ApiPromise } from '@polkadot/api';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
+  import type { OnChangeFn } from '$lib/storeTypes';
 
   interface Props {
     onCancel: () => void;
@@ -37,12 +38,11 @@
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
-  let accountChanged = (selectedAccountValue: Selected<string>) => {
-    const curAccount: Account | undefined = $unusedKeyAccountsStore.get(selectedAccountValue.value);
+  let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
+    const curAccount: Account | undefined = selectedAccountValue?.value ? $unusedKeyAccountsStore.get(selectedAccountValue.value) : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
 </script>
-
 <form class="column gap-f16">
   <Select
     id="AddControlKey"

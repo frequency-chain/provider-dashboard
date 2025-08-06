@@ -74,6 +74,8 @@
     min="0"
     value="1"
     oninput={handleInput}
+    error={undefined}
+    disabled={false}
   />
 
   <div class="flex items-end justify-between">
