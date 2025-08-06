@@ -39,10 +39,13 @@
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
   let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
-    const curAccount: Account | undefined = selectedAccountValue?.value ? $unusedKeyAccountsStore.get(selectedAccountValue.value) : undefined;
+    const curAccount: Account | undefined = selectedAccountValue?.value
+      ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
+      : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
 </script>
+
 <form class="column gap-f16">
   <Select
     id="AddControlKey"

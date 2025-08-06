@@ -4,7 +4,7 @@ import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type { Codec, RegistryTypes } from '@polkadot/types/types';
+import type { Codec } from '@polkadot/types/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 
@@ -41,7 +41,7 @@ export interface AccountBalances {
   total: bigint;
 }
 export async function getBalances(apiPromise: ApiPromise, ControlKey: string): Promise<AccountBalances> {
-  const accountData = (await apiPromise.query.system.account(ControlKey) as any).data;
+  const accountData = ((await apiPromise.query.system.account(ControlKey)) as any).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
   const transferable = BigInt(free - locked);
@@ -54,12 +54,12 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
-  const result = await apiPromise?.query.msa.publicKeyToMsaId(publicKey) as Option<u64>;
+  const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
   const received = result.unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
-    const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId) as Option<any>;
+    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId)) as Option<any>;
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
@@ -84,12 +84,12 @@ export const defaultCapacityDetails: CapacityDetails = {
 };
 
 export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
-  const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaId) as Option<any>;
+  const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaId)) as Option<any>;
 
   let capacityDetails = defaultCapacityDetails;
 
   if (providerRegistry.isSome) {
-    const detailsResult = await apiPromise.query.capacity.capacityLedger(msaId) as Option<CapacityDetails & Codec>;
+    const detailsResult = (await apiPromise.query.capacity.capacityLedger(msaId)) as Option<CapacityDetails & Codec>;
     const details = detailsResult.unwrapOrDefault();
 
     capacityDetails = {

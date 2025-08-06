@@ -4,11 +4,11 @@ import type { ApiPromise } from '@polkadot/api/promise';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
+import type { u64 } from '@polkadot/types';
 import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
-import type { u64 } from '@polkadot/types';
 
 interface AddKeyData {
   msaId: string;
@@ -30,7 +30,7 @@ export async function getBlockNumber(api: ApiPromise): Promise<bigint> {
 
 export async function getEpoch(api: ApiPromise): Promise<bigint> {
   if (api && (await api.isReady)) {
-    return (await api.query.capacity.currentEpoch() as u64).toBigInt();
+    return ((await api.query.capacity.currentEpoch()) as u64).toBigInt();
   }
   return 0n;
 }

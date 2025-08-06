@@ -1,10 +1,9 @@
-import { allAccountsStore } from '$lib/stores/accountsStore';
 import { pageContent } from '$lib/stores/pageContentStore';
 import Page from '$routes/[[network=networks]]/+page.svelte';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import '@testing-library/jest-dom';
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/svelte';
+import { cleanup, render, screen, waitFor } from '@testing-library/svelte';
 import { vi } from 'vitest';
 
 vi.mock('$app/navigation', async () => {
