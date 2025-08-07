@@ -1,5 +1,4 @@
 import { pageContent } from '$lib/stores/pageContentStore';
-import { allAccountsStore } from '$lib/stores/accountsStore';
 import Page from '$routes/[[network=networks]]/+page.svelte';
 import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
@@ -163,11 +162,11 @@ describe('End to End Tests', () => {
     //   expect(loginButton).not.toBeDisabled();
     //   fireEvent.click(loginButton);
 
-  //   await waitFor(() => {
-  //     expect(container.querySelector('#dashboard')).toBeVisible();
-  //     const connectedNetwork = container.querySelector('#connected-network');
-  //     expect(connectedNetwork?.textContent?.trim()).toBe('LOCALHOST');
-  //   });
+    //   await waitFor(() => {
+    //     expect(container.querySelector('#dashboard')).toBeVisible();
+    //     const connectedNetwork = container.querySelector('#connected-network');
+    //     expect(connectedNetwork?.textContent?.trim()).toBe('LOCALHOST');
+    //   });
   });
 
   test('values persist on reload', async () => {

@@ -4,7 +4,7 @@ import { Account } from '$lib/stores/accountsStore';
 import { user } from '$lib/stores/userStore';
 import Keyring from '@polkadot/keyring';
 import '@testing-library/jest-dom';
-import { getByText, render, waitFor } from '@testing-library/svelte';
+import { render, waitFor } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
