@@ -9,6 +9,7 @@
   import { createApi } from '$lib/polkadotApi';
   import SelectNetwork from './SelectNetwork.svelte';
   import SelectAccount from './SelectAccount.svelte';
+  import NoExtensionError from '$features/NoExtensionError.svelte';
 
   interface Props {
     newUser: Account | null;
@@ -100,3 +101,4 @@
   bind:accountErrorMsg
   {isLoading}
 />
+<NoExtensionError />

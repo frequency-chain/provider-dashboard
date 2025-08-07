@@ -25,15 +25,15 @@
   let errMsg: string = '';
 
   const providerList: { label: string; value: string }[] = $derived([
-      { label: 'Id', value: $user.msaId?.toString() ?? '' },
-      { label: 'Name', value: $user.providerName ?? '' },
-      {
-        label: 'Total Balance',
-        value: balanceToHuman(accountBalances.total, $storeChainInfo.token),
-      },
-      { label: 'Transferable', value: balanceToHuman(accountBalances.transferable, $storeChainInfo.token) },
-      { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
-    ]);
+    { label: 'Id', value: $user.msaId?.toString() ?? '' },
+    { label: 'Name', value: $user.providerName ?? '' },
+    {
+      label: 'Total Balance',
+      value: balanceToHuman(accountBalances.total, $storeChainInfo.token),
+    },
+    { label: 'Transferable', value: balanceToHuman(accountBalances.transferable, $storeChainInfo.token) },
+    { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
+  ]);
 
 </script>
 
