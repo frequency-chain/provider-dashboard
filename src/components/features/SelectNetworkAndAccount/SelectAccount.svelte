@@ -26,9 +26,7 @@
   const accountOptions = $derived(selectAccountOptions(accounts));
 
   let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? accounts.get(selectedAccountValue.value)
-      : undefined;
+    const curAccount = selectedAccountValue?.value && accounts.get(selectedAccountValue.value) || null;
     if (curAccount) {
       selectedAccount = curAccount;
       newUser = selectedAccount;

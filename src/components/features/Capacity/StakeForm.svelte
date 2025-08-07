@@ -50,10 +50,8 @@
   const accountOptions = $derived(selectAccountOptions($allAccountsStore));
 
   let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $allAccountsStore.get(selectedAccountValue.value)
-      : undefined;
-    if (curAccount) selectedAccount = curAccount;
+    const curAccount = selectedAccountValue?.value && $allAccountsStore.get(selectedAccountValue.value) || null;
+    if (curAccount)  selectedAccount = curAccount;
   };
 </script>
 
