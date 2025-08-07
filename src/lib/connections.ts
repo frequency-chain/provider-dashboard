@@ -81,6 +81,22 @@ export async function submitStake(
   }
 }
 
+// creates the payloads and gets or creates the signatures, then submits the extrinsic
+export async function submitUnstake(
+  api: ApiPromise,
+  extension: InjectedExtension | undefined,
+  signingAccount: Account,
+  providerId: number,
+  unstakeAmount: bigint
+) {
+  if (api && (await api.isReady)) {
+    const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
+    submitExtinsic(extrinsic, signingAccount, extension);
+  } else {
+    console.debug('api is not available.');
+  }
+}
+
 function submitExtinsic(
   extrinsic: SubmittableExtrinsic,
   account: Account,
