@@ -1,16 +1,9 @@
 <script lang="ts">
-  import Modal from '../../atoms/Modal.svelte';
   import { user } from '$lib/stores/userStore';
   import { type Account } from '$lib/stores/accountsStore';
   import AddControlKeyForm from './AddControlKeyForm.svelte';
   import AddControlKeyRequirements from './AddControlKeyRequirements.svelte';
-
-  interface Props {
-    isOpen: boolean;
-    close: () => void;
-  }
-
-  let { isOpen = false, close = () => {} }: Props = $props();
+  import { Button, Modal } from '@frequency-chain/style-guide';
 
   let selectedAccount: Account | null = $state(null);
 
@@ -20,20 +13,17 @@
   }
 </script>
 
-<Modal id="add-account-id" {isOpen} close={onCancel}>
-  {#snippet title()}
-    <span>
-      Add Control Key to MSA (<span class="font-light">{$user.msaId}</span>)
-    </span>
+<Modal id="add-account-id" close={onCancel} title={`Add Control Key to MSA (${$user.msaId}`}>
+  {#snippet trigger()}
+    <Button size="sm">Add Control Key</Button>
   {/snippet}
-
   {#snippet body()}
-    <div class="column gap-f16">
-      <AddControlKeyForm {onCancel} {selectedAccount} />
+  <div class="column gap-f16">
+    <AddControlKeyForm {onCancel} {selectedAccount} />
 
-      <span class="border-b-divider min-w-full border-b"></span>
+    <span class="border-b-divider min-w-full border-b"></span>
 
-      <AddControlKeyRequirements />
-    </div>
+    <AddControlKeyRequirements />
+  </div>
   {/snippet}
 </Modal>

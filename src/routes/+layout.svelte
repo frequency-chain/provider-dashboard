@@ -2,8 +2,10 @@
   import { logInPromise, dotApi, storeChainInfo, isLoggedIn, logout } from '$lib/stores';
   import { getToken } from '$lib/polkadotApi';
   import { getBlockNumber, getEpoch } from '$lib/connections';
-  import { Footer, Header } from '@frequency-chain/style-guide';
+  import { Footer, Header, Modal } from '@frequency-chain/style-guide';
   import { base } from '$app/paths';
+  import { hasExtension } from '$lib/stores/accountsStore';
+  import { isFunction } from '@polkadot/util';
 
   interface Props {
     children?: import('svelte').Snippet;
@@ -31,6 +33,14 @@
       }
     });
   });
+
+  $effect(() => {
+    if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
+    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
+    
+      const extensionCheck = !!extensions && !!extensions.length;
+      hasExtension.set(extensionCheck);
+  })
 
   interface MenuItem {
     label: string;
@@ -77,3 +87,12 @@
 <div class="mt-f16 md:mt-f96">
   <Footer intent="light" />
 </div>
+
+<Modal open={$hasExtension === false} title="Extension Not Found" description={`Polkadot{.js} extension not found; please install it first.`}>
+  {#snippet body()}
+    <div>
+      Lorem ipsum dolor sit amet consectetur adipisicing elit. Omnis fugit iste labore sit suscipit nisi cumque iure! Sed
+      exercitationem eos sint eum eaque quos quo, impedit cumque eveniet accusantium nam?
+    </div>
+  {/snippet}
+</Modal>

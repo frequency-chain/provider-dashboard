@@ -2,6 +2,7 @@ import { getMsaInfo } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
+import type { Modal } from '@frequency-chain/style-guide';
 import { Keyring, type ApiPromise } from '@polkadot/api';
 import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
@@ -48,6 +49,9 @@ export const nonProviderAccountsStore = derived<Readable<Accounts>, Accounts>(al
   setFn(new Map([...all.entries()].filter(isNotProviderMsa)));
 });
 
+// Checks for wallet/extension
+export const hasExtension = derived<boolean | null>(null);
+
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
   thisWeb3Enable: typeof web3Enable,
@@ -79,13 +83,11 @@ export async function fetchAccountsForNetwork(
   try {
     // Check if the Polkadot{.js} wallet extension is installed.
     if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
-      const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-      if (!extensions || !extensions.length) {
-        alert('Polkadot{.js} extension not found; please install it first.');
-        throw new Error('Polkadot{.js} extension not found; please install it first.');
-      }
 
-      // If so, add the wallet accounts for the selected network (chain)
+      if (!extensionCheck)
+        throw new Error('Polkadot{.js} extension not found; please install it first.');
+
+        // If so, add the wallet accounts for the selected network (chain)
       const walletAccounts = await thisWeb3Accounts();
       await Promise.all(
         walletAccounts.map(async (walletAccount: InjectedAccountWithMeta) => {

@@ -20,8 +20,6 @@
     }
   });
 
-  let showStakeToProvider = $state(false);
-  let showUnstakeFromProvider = $state(false);
   let capacityList: { label: string; value: string }[] = $state([]);
   let errMsg: string = $state('');
 
@@ -43,8 +41,7 @@
 </script>
 
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
-  <Button size="sm" onclick={() => (showStakeToProvider = true)}>Stake to Provider</Button>
-  <Stake isOpen={showStakeToProvider} close={() => (showStakeToProvider = false)} />
+  <Stake />
 
   <Button size="sm" onclick={() => (showUnstakeFromProvider = true)}>Unstake from Provider</Button>
   <Unstake isOpen={showUnstakeFromProvider} close={() => (showUnstakeFromProvider = false)} />
