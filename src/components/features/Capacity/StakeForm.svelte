@@ -4,11 +4,11 @@
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
-  import { formatAccount, getExtension } from '$lib/utils';
-  import DropDownMenu from '../../atoms/DropDownMenu.svelte';
+  import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
-  import { Button } from '@frequency-chain/style-guide';
+  import { Button, Input, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
+  import type { Selected } from 'bits-ui';
 
   interface Props {
     close: () => void;
@@ -46,25 +46,35 @@
     );
     isLoading = false;
   };
+
+  const accountOptions = $derived(selectAccountOptions($allAccountsStore));
+
+  let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    const curAccount = (selectedAccountValue?.value && $allAccountsStore.get(selectedAccountValue.value)) || null;
+    if (curAccount) selectedAccount = curAccount;
+  };
 </script>
 
 <form class="column gap-f16">
-  <DropDownMenu
+  <Select
+    disabled={$allAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
-    bind:value={selectedAccount}
     placeholder="Select Control Key"
-    options={Array.from($allAccountsStore.values())}
-    formatter={formatAccount}
+    options={accountOptions}
+    onSelectedChange={accountChanged}
   />
 
-  <div class="column gap-f8">
-    <label class="form-item-label text-[16px]" for="stakingInput">
-      Amount in <span class="units">{$storeChainInfo.token}</span>
-    </label>
-
-    <input id="stakingInput" type="number" min="0" value="1" oninput={handleInput} />
-  </div>
+  <Input
+    id="stakingInput"
+    type="number"
+    label={`Amount in ${$storeChainInfo.token}`}
+    min="0"
+    value="1"
+    oninput={handleInput}
+    error={undefined}
+    disabled={false}
+  />
 
   <div class="flex items-end justify-between">
     <Button onclick={stake} disabled={isLoading}>Stake</Button>

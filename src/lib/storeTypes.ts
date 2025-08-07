@@ -38,3 +38,5 @@ export interface Activity {
   txnStatusItems: string[];
   txnStatus: TxnStatus;
 }
+
+export type OnChangeFn<T> = (value: T | undefined) => void;

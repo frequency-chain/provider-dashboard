@@ -10,9 +10,9 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { getMsaInfo } from '$lib/polkadotApi';
   import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
-  import { Button } from '@frequency-chain/style-guide';
+  import { Button, Input } from '@frequency-chain/style-guide';
 
-  let { hasRequestedToBeProvider = $bindable(), ...props } = $props();
+  let { hasRequestedToBeProvider = $bindable() } = $props();
 
   let isInProgress = $state(false);
   let recentActivityItem: Activity | undefined = $state();
@@ -59,14 +59,16 @@
   {#if hasRequestedToBeProvider === false}
     <form class="column">
       <div>
-        <label for="providerNameRtB" class="lgText mb-3.5 block font-bold">Provider name</label>
-        <input
-          type="text"
+        <Input
+          label="Provider name"
           id="providerNameRtB"
-          required
           placeholder="Short name"
-          maxlength={16}
           bind:value={newProviderName}
+          type="text"
+          required
+          maxlength={16}
+          error={undefined}
+          disabled={false}
         />
       </div>
       <div class="flex w-[350px] justify-between">

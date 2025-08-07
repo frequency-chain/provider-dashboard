@@ -36,3 +36,30 @@ class MockWebSocket {
 
 // Must be set before anything uses WebSocket
 globalThis.WebSocket = MockWebSocket as any;
+
+// Mock Element.animate for JSDOM (since it's not implemented)
+if (!HTMLElement.prototype.animate) {
+  HTMLElement.prototype.animate = function (): Animation {
+    return {
+      finished: Promise.resolve(),
+      cancel: () => {},
+      play: () => {},
+      pause: () => {},
+      reverse: () => {},
+      finish: () => {},
+      onfinish: null,
+      oncancel: null,
+      startTime: null,
+      currentTime: null,
+      playbackRate: 1,
+      playState: 'finished',
+      replaceState: 'active',
+      effect: null,
+      timeline: null,
+      id: '',
+      addEventListener: () => {},
+      removeEventListener: () => {},
+      dispatchEvent: () => false,
+    } as unknown as Animation;
+  };
+}

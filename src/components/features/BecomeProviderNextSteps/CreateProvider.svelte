@@ -11,7 +11,7 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import ActivityLogPreviewItem from '../ActivityLogItem/ActivityLogItem.svelte';
   import BackHomeButton from '$atoms/BackHomeButton.svelte';
-  import { Button } from '@frequency-chain/style-guide';
+  import { Button, Input } from '@frequency-chain/style-guide';
   import { goto } from '$app/navigation';
   // TODO: uncomment on transition to svelte 5
   // import { base } from '$app/paths';
@@ -69,14 +69,16 @@
 
 <form id="create-provider" class="column gap-f16">
   <div>
-    <label for="providerNameCB" class="lgText block font-bold">Provider name</label>
-    <input
+    <Input
+      label="Provider name"
       id="providerNameCB"
       type="text"
       required
       placeholder="Short name"
       maxlength={16}
       bind:value={newProviderName}
+      error={undefined}
+      disabled={false}
     />
   </div>
   <div class="flex items-end justify-between">

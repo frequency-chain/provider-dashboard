@@ -4,11 +4,11 @@
   import { dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitUnstake } from '$lib/connections';
-  import { formatAccount, getExtension } from '$lib/utils';
-  import DropDownMenu from '../../atoms/DropDownMenu.svelte';
+  import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
-  import { Button } from '@frequency-chain/style-guide';
+  import { Button, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
+  import type { Selected } from 'bits-ui';
 
   interface Props {
     close: () => void;
@@ -46,16 +46,25 @@
     );
     isLoading = false;
   };
+
+  const controlKeyOptions = $derived(selectAccountOptions($allAccountsStore));
+
+  let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    const curAccount: Account | undefined = selectedAccountValue?.value
+      ? $allAccountsStore.get(selectedAccountValue.value)
+      : undefined;
+    if (curAccount) selectedAccount = curAccount;
+  };
 </script>
 
 <form class="column gap-f16">
-  <DropDownMenu
+  <Select
     id="unstake-using-account-id"
     label="Wallet Control Key"
-    bind:value={selectedAccount}
+    onSelectedChange={controlKeyChanged}
     placeholder="Select Control Key"
-    options={Array.from($allAccountsStore.values())}
-    formatter={formatAccount}
+    options={controlKeyOptions}
+    disabled={$allAccountsStore.size === 0}
   />
 
   <div class="column gap-f8">

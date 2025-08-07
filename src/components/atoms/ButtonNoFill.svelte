@@ -11,11 +11,11 @@
 </script>
 
 {#if href}
-  <a {...rest} {href} class={cn('hover:text-primary underline; smText cursor-pointer', rest.class)}>
+  <a {...rest} {href} class={cn('hover:text-primary smText cursor-pointer underline', rest.class)}>
     {@render children?.()}
   </a>
 {:else}
-  <button {...rest} class={cn('hover:text-primary underline; smText cursor-pointer', rest.class)}>
+  <button {...rest} class={cn('hover:text-primary smText cursor-pointer underline', rest.class)}>
     {@render children?.()}
   </button>
 {/if}

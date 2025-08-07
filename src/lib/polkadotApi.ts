@@ -2,7 +2,9 @@ import type { DotApi, MsaInfo } from '$lib/storeTypes';
 import { options } from '@frequency-chain/api-augment';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import type { KeyringPair } from '@polkadot/keyring/types';
+import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
+import type { Codec } from '@polkadot/types/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 
@@ -39,10 +41,10 @@ export interface AccountBalances {
   total: bigint;
 }
 export async function getBalances(apiPromise: ApiPromise, ControlKey: string): Promise<AccountBalances> {
-  const accountData = (await apiPromise.query.system.account(ControlKey)).data;
+  const accountData = ((await apiPromise.query.system.account(ControlKey)) as any).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
-  const transferable = free - locked;
+  const transferable = BigInt(free - locked);
   const total = free + accountData.reserved.toBigInt();
   return {
     transferable,
@@ -52,11 +54,12 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
-  const received = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey))?.unwrapOrDefault();
+  const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
+  const received = result.unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
-    const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId);
+    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId)) as Option<any>;
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
@@ -81,17 +84,19 @@ export const defaultCapacityDetails: CapacityDetails = {
 };
 
 export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
-  const providerRegistry = await apiPromise.query.msa.providerToRegistryEntry(msaId);
+  const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaId)) as Option<any>;
 
   let capacityDetails = defaultCapacityDetails;
 
   if (providerRegistry.isSome) {
-    const details = (await apiPromise.query.capacity.capacityLedger(msaId)).unwrapOrDefault();
+    const detailsResult = (await apiPromise.query.capacity.capacityLedger(msaId)) as Option<CapacityDetails & Codec>;
+    const details = detailsResult.unwrapOrDefault();
+
     capacityDetails = {
-      remainingCapacity: details.remainingCapacity.toBigInt(),
-      totalTokensStaked: details.totalTokensStaked.toBigInt(),
-      totalCapacityIssued: details.totalCapacityIssued.toBigInt(),
-      lastReplenishedEpoch: details.lastReplenishedEpoch.toBigInt(),
+      remainingCapacity: details.remainingCapacity,
+      totalTokensStaked: details.totalTokensStaked,
+      totalCapacityIssued: details.totalCapacityIssued,
+      lastReplenishedEpoch: details.lastReplenishedEpoch,
     };
   }
 
@@ -99,7 +104,7 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 }
 
 export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
-  const keyInfoResponse = (await apiPromise.rpc.msa.getKeysByMsaId(msaId)).toHuman() as any;
+  const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
   const keys = keyInfoResponse?.msa_keys;
   if (keys) {
     console.log('Successfully found keys.', keys);
