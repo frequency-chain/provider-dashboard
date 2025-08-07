@@ -12,11 +12,11 @@
 
   interface Props {
     close: () => void;
-    unstakeAmount?: bigint;
   }
 
-  let { close, unstakeAmount = $bindable(1n) }: Props = $props();
+  let { close }: Props = $props();
 
+  let unstakeAmount = $state(1n);
   let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
   let isLoading: boolean = $state(false);
 

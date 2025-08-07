@@ -6,7 +6,6 @@
   import { balanceToHuman } from '$lib/utils.js';
   import ListCard from '../../atoms/ListCard.svelte';
   import Stake from './Stake.svelte';
-  import { Button } from '@frequency-chain/style-guide';
   import Unstake from './Unstake.svelte';
 
   let capacityDetails: CapacityDetails = $state(defaultCapacityDetails);
@@ -42,7 +41,5 @@
 
 <ListCard title="Capacity" list={capacityList} errorMessage={errMsg}>
   <Stake />
-
-  <Button size="sm" onclick={() => (showUnstakeFromProvider = true)}>Unstake from Provider</Button>
-  <Unstake isOpen={showUnstakeFromProvider} close={() => (showUnstakeFromProvider = false)} />
+  <Unstake />
 </ListCard>
