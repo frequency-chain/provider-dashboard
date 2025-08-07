@@ -5,6 +5,7 @@
   import { Footer, Header } from '@frequency-chain/style-guide';
   import { base } from '$app/paths';
 
+
   interface Props {
     children?: import('svelte').Snippet;
   }
