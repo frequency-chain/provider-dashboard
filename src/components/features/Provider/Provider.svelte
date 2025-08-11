@@ -34,7 +34,6 @@
     { label: 'Transferable', value: balanceToHuman(accountBalances.transferable, $storeChainInfo.token) },
     { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
   ]);
-
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>

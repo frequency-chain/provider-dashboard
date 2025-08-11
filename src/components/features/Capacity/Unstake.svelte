@@ -6,11 +6,11 @@
 
 <Modal id="unstake-from-provider" title="Unstake from Provider">
   {#snippet trigger()}
-  <Button size="sm">Unstake from Provider</Button>
+    <Button size="sm">Unstake from Provider</Button>
   {/snippet}
   {#snippet body()}
     <div class="column gap-f16">
-      <UnstakeForm {close} />
+      <UnstakeForm />
 
       <span class="border-b-divider min-w-full border-b"></span>
 

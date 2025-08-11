@@ -9,21 +9,20 @@
 
   function onCancel() {
     selectedAccount = null;
-    close();
   }
 </script>
 
-<Modal id="add-account-id" close={onCancel} title={`Add Control Key to MSA (${$user.msaId}`}>
+<Modal id="add-account-id" onOutsideClick={onCancel} title={`Add Control Key to MSA (${$user.msaId}`}>
   {#snippet trigger()}
     <Button size="sm">Add Control Key</Button>
   {/snippet}
   {#snippet body()}
-  <div class="column gap-f16">
-    <AddControlKeyForm {onCancel} {selectedAccount} />
+    <div class="column gap-f16">
+      <AddControlKeyForm {onCancel} {selectedAccount} />
 
-    <span class="border-b-divider min-w-full border-b"></span>
+      <span class="border-b-divider min-w-full border-b"></span>
 
-    <AddControlKeyRequirements />
-  </div>
+      <AddControlKeyRequirements />
+    </div>
   {/snippet}
 </Modal>

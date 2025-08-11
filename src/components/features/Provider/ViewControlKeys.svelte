@@ -1,7 +1,7 @@
 <script lang="ts">
-  import AddToClipboard from "$atoms/AddToClipboard.svelte";
-  import { getControlKeys } from "$lib/polkadotApi";
-  import { Button, Modal } from "@frequency-chain/style-guide";
+  import AddToClipboard from '$atoms/AddToClipboard.svelte';
+  import { getControlKeys } from '$lib/polkadotApi';
+  import { Button, Modal } from '@frequency-chain/style-guide';
   import type { ApiPromise } from '@polkadot/api';
   import { user } from '$lib/stores/userStore';
   import { dotApi } from '$lib/stores';

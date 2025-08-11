@@ -6,11 +6,11 @@
 
 <Modal id="stake-to-provider" title="Stake to Provider">
   {#snippet trigger()}
-  <Button size="sm">Stake to Provider</Button>
+    <Button size="sm">Stake to Provider</Button>
   {/snippet}
   {#snippet body()}
     <div class="column gap-f16">
-      <StakeForm {close} />
+      <StakeForm />
 
       <span class="border-b-divider min-w-full border-b"></span>
 
@@ -23,5 +23,5 @@
         </ol>
       </div>
     </div>
-  {/snippet}  
+  {/snippet}
 </Modal>

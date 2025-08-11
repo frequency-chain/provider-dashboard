@@ -7,9 +7,9 @@
 
 <Modal id="connect-provider" title="Connect Provider">
   {#snippet trigger()}
-    <IconButton label="switch button" ><Switch /></IconButton>
+    <IconButton label="switch button"><Switch /></IconButton>
   {/snippet}
   {#snippet body()}
     <LoginForm onConnect={close} onCancel={close} />
   {/snippet}
-  </Modal>
+</Modal>
