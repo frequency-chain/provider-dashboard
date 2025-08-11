@@ -63,7 +63,7 @@
   "type": "module",
   "dependencies": {
     "@frequency-chain/api-augment": "^1.13.2",
-    "@frequency-chain/style-guide": "/Users/claireolmstead/Desktop/Amplica/style-guide/dist/frequency-chain-style-guide-0.0.0.tgz",
+    "@frequency-chain/style-guide": "^0.3.5",
     "@polkadot/api": "^15.9.2",
     "@polkadot/extension-dapp": "^0.58.8",
     "@polkadot/extension-inject": "^0.58.8",
