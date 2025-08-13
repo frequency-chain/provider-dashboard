@@ -18,6 +18,7 @@
   let { onCancel, selectedAccount = $bindable() }: Props = $props();
 
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
+  let error: string | undefined = $state();
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -25,25 +26,36 @@
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
-      onCancel();
-      await submitAddControlKey(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user,
-        $user.msaId
-      );
+      try {
+        await submitAddControlKey(
+          $dotApi.api as ApiPromise,
+          await getExtension($user),
+          selectedAccount,
+          $user,
+          $user.msaId
+        );
+        onCancel();
+      } catch (err) {
+        error = (err as Error).message;
+      }
     }
   };
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
   let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
+    error = undefined;
     const curAccount: Account | undefined = selectedAccountValue?.value
       ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
       : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
+
+  $effect(() => {
+    if ($unusedKeyAccountsStore.size === 0) {
+      error = 'No available Control Keys. Create a new Control Key without an MSA Id.';
+    }
+  });
 </script>
 
 <form class="column gap-f16">
@@ -54,12 +66,8 @@
     options={accountOptions || []}
     onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
+    {error}
   />
-  {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-error smText">
-      No available Control Keys. Create a new Control Key without an MSA Id.
-    </div>
-  {/if}
 
   <Dialog.Close class="text-left">
     <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>

@@ -18,6 +18,7 @@
   let isInProgress = $state(false);
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
+  let error: string | undefined = $state();
 
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
@@ -60,8 +61,13 @@
       return;
     }
     isInProgress = true;
-    recentTxnId = await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
-    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    try {
+      recentTxnId = await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
+      recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    } catch (err) {
+      error = (err as Error).message;
+      isInProgress = false;
+    }
   };
 </script>
 
@@ -74,7 +80,8 @@
     placeholder="Short name"
     maxlength={16}
     bind:value={newProviderName}
-    error={undefined}
+    oninput={() => (error = undefined)}
+    {error}
     disabled={false}
   />
   <div class="flex items-end justify-between">

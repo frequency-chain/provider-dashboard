@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { dotApi, storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import { balanceToHuman } from '$lib/utils';
+  import { getControlKeys } from '$lib/polkadotApi';
   import { getBalances } from '$lib/polkadotApi';
   import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from '../../atoms/ListCard.svelte';
@@ -13,27 +12,30 @@
 
   let accountBalances: AccountBalances = $state({ transferable: 0n, locked: 0n, total: 0n });
 
-  run(() => {
+  $effect(() => {
     // Easy way to tag a subscription onto this action.
     // This way we update the information when the log updates
     const _triggerReloadOnLogUpdate = $activityLog;
-    if ($dotApi.api) {
-      getBalances($dotApi.api, $user.address).then((info) => (accountBalances = info));
-    }
   });
-
-  let errMsg: string = '';
 
   const providerList: { label: string; value: string }[] = $derived([
     { label: 'Id', value: $user.msaId?.toString() ?? '' },
     { label: 'Name', value: $user.providerName ?? '' },
     {
       label: 'Total Balance',
-      value: balanceToHuman(accountBalances.total, $storeChainInfo.token),
+      value: balanceToHuman($user.balances?.total, $storeChainInfo.token),
     },
-    { label: 'Transferable', value: balanceToHuman(accountBalances.transferable, $storeChainInfo.token) },
-    { label: 'Locked', value: balanceToHuman(accountBalances.locked, $storeChainInfo.token) },
+    { label: 'Transferable', value: balanceToHuman($user.balances?.transferable, $storeChainInfo.token) },
+    { label: 'Locked', value: balanceToHuman($user.balances?.locked, $storeChainInfo.token) },
   ]);
+  let errMsg: string = '';
+
+  function handleGetControlKeys() {
+    if (!$user.msaId) return;
+    getControlKeys($dotApi.api as ApiPromise, $user.msaId).then((keys) => {
+      if (keys) controlKeys = keys;
+    });
+  }
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>

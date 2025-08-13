@@ -16,6 +16,7 @@
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
   let isInProgress = $state(false);
+  let error: string | null = $state(null);
 
   // a callback for when a transaction hits a final state
   let createMsaTxnFinished = async (succeeded: boolean) => {
@@ -44,7 +45,12 @@
 
   const doCreateMsa = async (_evt: Event) => {
     isInProgress = true;
-    recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
+    try {
+      recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
+    } catch (err) {
+      error = (err as Error).message;
+      isInProgress = false;
+    }
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
 </script>
@@ -55,6 +61,7 @@
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above.
   </p>
+  {#if error}<div class="text-error text-sm font-bold">{error}</div>{/if}
   <div class="flex w-[350px] items-end justify-between">
     <Button onclick={doCreateMsa} disabled={isInProgress}>
       {#if isInProgress}
