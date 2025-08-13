@@ -5,7 +5,7 @@
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitUnstake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
-  import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
+  import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
@@ -17,13 +17,14 @@
 
   let { close, unstakeAmount = $bindable(1n) }: Props = $props();
 
-  let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
+  let selectedAccount: Account | null = $state($providerAccountsStore.get($user.address) || null);
   let isLoading: boolean = $state(false);
-  let error: string = $state();
+  let error: string | undefined = $state();
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
 
   function handleInput(evt: Event) {
+    error = '';
     const target = evt.target as HTMLInputElement;
     if (target !== null && target.value === '') {
       unstakeAmount = 0n;
@@ -52,11 +53,11 @@
     isLoading = false;
   };
 
-  const controlKeyOptions = $derived(selectAccountOptions($allAccountsStore));
+  const controlKeyOptions = $derived(selectAccountOptions($providerAccountsStore));
 
   let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
     const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $allAccountsStore.get(selectedAccountValue.value)
+      ? $providerAccountsStore.get(selectedAccountValue.value)
       : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
@@ -69,7 +70,7 @@
     onSelectedChange={controlKeyChanged}
     placeholder="Select Control Key"
     options={controlKeyOptions}
-    disabled={$allAccountsStore.size === 0}
+    disabled={$providerAccountsStore.size === 0}
   />
 
   <Input

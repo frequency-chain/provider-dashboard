@@ -289,14 +289,12 @@ export async function submitCreateMsa(
     return;
   }
   // Get the estimated txn fee (does not submit txn)
-  const estTotalCost = (
-    await api.tx.msa.create().paymentInfo(signingAccount.address)
-  ).partialFee.toBigInt();
+  const estTotalCost = (await api.tx.msa.create().paymentInfo(signingAccount.address)).partialFee.toBigInt();
 
   // Check for adequate funds
   const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
   if (!hasFunds) throw new Error('User does not have sufficient funds.');
 
-    const extrinsic: SubmittableExtrinsic = api.tx.msa.create();
-    return submitExtinsic(extrinsic, signingAccount, extension);
+  const extrinsic: SubmittableExtrinsic = api.tx.msa.create();
+  return submitExtinsic(extrinsic, signingAccount, extension);
 }

@@ -129,12 +129,3 @@ async function updateAccountBalance(api: ApiPromise, account: Account): Promise<
   const { transferable, locked, total } = await getBalances(api, account.address);
   return { ...account, balances: { transferable, locked, total } };
 }
-
-// Auto-refresh balances when accounts or API change
-// allAccountsStore.subscribe(async (accounts) => {
-//   const api = get(dotApi)?.api;
-//   if (!api) return;
-//   if (accounts.size > 0) {
-//     await refreshAllBalances(api, accounts);
-//   }
-// });
