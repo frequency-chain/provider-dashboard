@@ -6,7 +6,7 @@
   import { DOLLARS, submitStake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
-  import { Button, Input, Select } from '@frequency-chain/style-guide';
+  import { Button, Input, Modal, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
 
@@ -19,6 +19,7 @@
 
   let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
   let isLoading: boolean = $state(false);
+  let error: string | undefined = $state();
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
 
@@ -35,15 +36,19 @@
   const stake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
-    close();
     isLoading = true;
-    await submitStake(
-      $dotApi.api as ApiPromise,
-      await getExtension($user),
-      selectedAccount,
-      $user.msaId,
-      stakeAmountInPlancks
-    );
+    try {
+      await submitStake(
+        $dotApi.api as ApiPromise,
+        await getExtension($user),
+        selectedAccount,
+        $user.msaId,
+        stakeAmountInPlancks
+      );
+      close();
+    } catch (err) {
+      error = (err as Error).message;
+    }
     isLoading = false;
   };
 
@@ -72,7 +77,7 @@
     min="0"
     value="1"
     oninput={handleInput}
-    error={undefined}
+    {error}
     disabled={false}
   />
 

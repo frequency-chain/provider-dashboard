@@ -6,7 +6,7 @@
   import { DOLLARS, submitUnstake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
-  import { Button, Select } from '@frequency-chain/style-guide';
+  import { Button, Input, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
 
@@ -19,6 +19,7 @@
 
   let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
   let isLoading: boolean = $state(false);
+  let error: string = $state();
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
 
@@ -35,15 +36,19 @@
   const unstake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
-    close();
     isLoading = true;
-    await submitUnstake(
-      $dotApi.api as ApiPromise,
-      await getExtension($user),
-      selectedAccount,
-      $user.msaId,
-      unstakeAmountInPlancks
-    );
+    try {
+      await submitUnstake(
+        $dotApi.api as ApiPromise,
+        await getExtension($user),
+        selectedAccount,
+        $user.msaId,
+        unstakeAmountInPlancks
+      );
+      close();
+    } catch (err) {
+      error = (err as Error).message;
+    }
     isLoading = false;
   };
 
@@ -67,13 +72,16 @@
     disabled={$allAccountsStore.size === 0}
   />
 
-  <div class="column gap-f8">
-    <label class="form-item-label text-[16px]" for="unstakingInput">
-      Amount in <span class="units">{$storeChainInfo.token}</span>
-    </label>
-
-    <input id="unstakingInput" type="number" min="0" value="1" oninput={handleInput} />
-  </div>
+  <Input
+    id="unstakingInput"
+    type="number"
+    label={`Amount in ${$storeChainInfo.token}`}
+    min="0"
+    value="1"
+    oninput={handleInput}
+    {error}
+    disabled={false}
+  />
 
   <div class="flex items-end justify-between">
     <Button onclick={unstake} disabled={isLoading}>Unstake</Button>
