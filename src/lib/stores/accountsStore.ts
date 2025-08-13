@@ -119,7 +119,6 @@ export async function fetchAccountsForNetwork(
 
   // trigger initial balance fetch
   if (apiPromise) {
-    console.log('HERE');
     await refreshAllBalances(apiPromise, allAccounts);
   }
 }

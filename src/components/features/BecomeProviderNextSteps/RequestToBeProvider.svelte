@@ -14,6 +14,7 @@
 
   let { hasRequestedToBeProvider = $bindable() } = $props();
 
+  let error: string | undefined = $state();
   let isInProgress = $state(false);
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
@@ -50,8 +51,13 @@
       return;
     }
     isInProgress = true;
-    recentTxnId = await submitRequestToBeProvider($dotApi.api, await getExtension($user), $user, newProviderName);
-    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    try {
+      recentTxnId = await submitRequestToBeProvider($dotApi.api, await getExtension($user), $user, newProviderName);
+      recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    } catch (err) {
+      error = (err as Error).message;
+      isInProgress = false;
+    }
   };
 </script>
 
@@ -64,10 +70,11 @@
           id="providerNameRtB"
           placeholder="Short name"
           bind:value={newProviderName}
+          oninput={() => (error = '')}
           type="text"
           required
           maxlength={16}
-          error={undefined}
+          {error}
           disabled={false}
         />
       </div>

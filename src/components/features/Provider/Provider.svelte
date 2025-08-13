@@ -24,10 +24,10 @@
     { label: 'Name', value: $user.providerName ?? '' },
     {
       label: 'Total Balance',
-      value: balanceToHuman($user.balances.total, $storeChainInfo.token),
+      value: balanceToHuman($user.balances?.total, $storeChainInfo.token),
     },
-    { label: 'Transferable', value: balanceToHuman($user.balances.transferable, $storeChainInfo.token) },
-    { label: 'Locked', value: balanceToHuman($user.balances.locked, $storeChainInfo.token) },
+    { label: 'Transferable', value: balanceToHuman($user.balances?.transferable, $storeChainInfo.token) },
+    { label: 'Locked', value: balanceToHuman($user.balances?.locked, $storeChainInfo.token) },
   ]);
   let errMsg: string = '';
 

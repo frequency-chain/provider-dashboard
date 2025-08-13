@@ -61,7 +61,7 @@
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above.
   </p>
-  {#if error}<div class="text-error font-bold text-sm">{error}</div>{/if}
+  {#if error}<div class="text-error text-sm font-bold">{error}</div>{/if}
   <div class="flex w-[350px] items-end justify-between">
     <Button onclick={doCreateMsa} disabled={isInProgress}>
       {#if isInProgress}

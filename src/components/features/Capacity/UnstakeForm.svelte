@@ -56,6 +56,7 @@
   const controlKeyOptions = $derived(selectAccountOptions($providerAccountsStore));
 
   let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    error = '';
     const curAccount: Account | undefined = selectedAccountValue?.value
       ? $providerAccountsStore.get(selectedAccountValue.value)
       : undefined;

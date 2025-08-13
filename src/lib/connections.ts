@@ -45,34 +45,43 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
-  const blockNumber = (await getBlockNumber(api)) as bigint;
-  if (api && (await api.isReady)) {
-    const rawPayload: AddKeyData = {
-      msaId: msaId.toString(),
-      expiration: (blockNumber + 100n).toString(),
-      newPublicKey: newAccount.address,
-    };
-
-    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
-
-    const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
-    const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
-
-    const ownerKeyProof = { Sr25519: ownerKeySignature };
-    const newKeyProof = { Sr25519: newKeySignature };
-    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
-
-    // Get estimated fee
-    const estTotalCost = (await extrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
-    // Check for adiquite funds
-    const transferable = BigInt(get(user).balances.transferable);
-    if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
-
-    // Submit txn
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
+  console.log('HERE');
+  if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
+    return;
   }
+  console.log('HERE2');
+
+  const blockNumber = (await getBlockNumber(api)) as bigint;
+  console.log('HERE3');
+
+  const rawPayload: AddKeyData = {
+    msaId: msaId.toString(),
+    expiration: (blockNumber + 100n).toString(),
+    newPublicKey: newAccount.address,
+  };
+
+  const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
+  console.log('HERE4');
+
+  const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
+  const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
+  console.log('HERE5');
+
+  const ownerKeyProof = { Sr25519: ownerKeySignature };
+  const newKeyProof = { Sr25519: newKeySignature };
+  const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  console.log('HERE6');
+
+  // Get estimated fee
+  const estTotalCost = (await extrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
+  console.log('estTotalCost: ', estTotalCost);
+  // Check for adiquite funds
+  const transferable = BigInt(get(user).balances.transferable);
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+
+  // Submit txn
+  submitExtinsic(extrinsic, signingAccount, extension);
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
@@ -83,6 +92,11 @@ export async function submitStake(
   providerId: number,
   stakeAmount: bigint
 ) {
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
+  }
+
   // Get the estimated transaction fee (does not submit txn)
   const { partialFee } = await api.tx.capacity.stake(providerId, stakeAmount).paymentInfo(signingAccount.address);
   // Get estimated total cost of txn
@@ -91,13 +105,9 @@ export async function submitStake(
   const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
   if (!hasFunds) throw new Error('User does not have sufficient funds.');
 
-  // If api is ready, submit txn
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
-    console.debug('api is not available.');
-  }
+  // Submit txn
+  const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
+  submitExtinsic(extrinsic, signingAccount, extension);
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
@@ -108,6 +118,11 @@ export async function submitUnstake(
   providerId: number,
   unstakeAmount: bigint
 ) {
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
+  }
+
   // Get the estimated transaction fee (does not submit txn)
   const { partialFee } = await api.tx.capacity.unstake(providerId, unstakeAmount).paymentInfo(signingAccount.address);
   // Get estimated total cost of txn
@@ -117,12 +132,8 @@ export async function submitUnstake(
   const hasFunds = BigInt(get(user).balances.locked) >= estTotalCost;
   if (!hasFunds) throw new Error('User does not have sufficient funds.');
 
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
-    console.debug('api is not available.');
-  }
+  const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
+  submitExtinsic(extrinsic, signingAccount, extension);
 }
 
 function submitExtinsic(

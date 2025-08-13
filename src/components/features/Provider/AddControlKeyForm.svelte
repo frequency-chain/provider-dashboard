@@ -18,6 +18,7 @@
   let { onCancel, selectedAccount = $bindable() }: Props = $props();
 
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
+  let error: string | undefined = $state();
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -25,20 +26,25 @@
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
-      onCancel();
-      await submitAddControlKey(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user,
-        $user.msaId
-      );
+      try {
+        await submitAddControlKey(
+          $dotApi.api as ApiPromise,
+          await getExtension($user),
+          selectedAccount,
+          $user,
+          $user.msaId
+        );
+        onCancel();
+      } catch (err) {
+        error = (err as Error).message;
+      }
     }
   };
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
   let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
+    error = undefined;
     const curAccount: Account | undefined = selectedAccountValue?.value
       ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
       : undefined;
@@ -54,6 +60,7 @@
     options={accountOptions || []}
     onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
+    {error}
   />
   {#if $unusedKeyAccountsStore.size === 0}
     <div id="network-error-msg" class="text-error smText">

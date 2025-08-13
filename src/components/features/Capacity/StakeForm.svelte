@@ -56,6 +56,7 @@
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 
   let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    error = '';
     const curAccount = (selectedAccountValue?.value && $providerAccountsStore.get(selectedAccountValue.value)) || null;
     if (curAccount) selectedAccount = curAccount;
   };
