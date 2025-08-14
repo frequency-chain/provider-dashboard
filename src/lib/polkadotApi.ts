@@ -55,7 +55,7 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
-  const received = result.unwrapOrDefault();
+  const received = result?.unwrapOrDefault();
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
@@ -90,7 +90,7 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 
   if (providerRegistry.isSome) {
     const detailsResult = (await apiPromise.query.capacity.capacityLedger(msaId)) as Option<CapacityDetails & Codec>;
-    const details = detailsResult.unwrapOrDefault();
+    const details = detailsResult?.unwrapOrDefault();
 
     capacityDetails = {
       remainingCapacity: details.remainingCapacity,

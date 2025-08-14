@@ -7,6 +7,7 @@ import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';
 import '@testing-library/jest-dom';
 import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
+import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
@@ -75,13 +76,40 @@ describe('Stake.svelte Unit Tests', () => {
 
   it('Stake button submits transaction', async () => {
     const createdApi = await mocks.ApiPromise.create();
-    storeChainInfo.update((val) => (val = { ...val, connected: true }));
 
-    render(Stake, { isOpen: true });
-    dotApi.update((val) => (val = { ...val, api: createdApi }));
+    // Mock stores so Select is rendered & enabled
+    storeChainInfo.update((val) => ({ ...val, connected: true }));
+    dotApi.update((val) => ({ ...val, api: createdApi }));
+    allAccountsStore.set(
+      new Map<string, Account>([
+        [
+          '5Ft7Wfr4FKTN3rYwBdZjpVpGQq3cFhNBWY1nHxySejos1dDa',
+          {
+            address: '5Ft7Wfr4FKTN3rYwBdZjpVpGQq3cFhNBWY1nHxySejos1dDa',
+            display: 'Account2',
+            injectedAccount: { address: '5Ft7Wfr4FKTN3rYwBdZjpVpGQq3cFhNBWY1nHxySejos1dDa', meta: {}, type: 'sr25519' },
+            isProvider: true,
+            keyringPair: undefined,
+            msaId: 76894,
+          },
+        ],
+      ])
+    );
 
-    const button = screen.getByRole('button', { name: 'Stake' });
+    render(Stake);
 
-    await fireEvent.click(button);
+    const [outerOpenButton] = screen.getAllByRole('button', { name: /Stake to Provider/i });
+    await userEvent.click(outerOpenButton);
+
+    const trigger = screen.getByRole('combobox', { id: 'stake-using-account-id' });
+    await userEvent.click(trigger);
+
+    const option = await screen.findByRole('option', {
+      name: /Provider #76894: 5Ft7Wfr4FKTN3rYwBdZjpVpGQq3cFhNBWY1nHxySejos1dD/i,
+    });
+    await userEvent.click(option);
+
+    const [outerSubmitButton] = screen.getAllByRole('button', { name: 'Stake' });
+    await userEvent.click(outerSubmitButton);
   });
 });

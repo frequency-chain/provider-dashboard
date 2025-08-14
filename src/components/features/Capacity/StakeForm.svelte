@@ -7,17 +7,12 @@
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
-  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
+  import { Dialog } from 'bits-ui';
   import type { Selected } from 'bits-ui';
 
-  interface Props {
-    close: () => void;
-    stakeAmount?: bigint;
-  }
+  let stakeAmount = $state(1n);
 
-  let { close, stakeAmount = $bindable(1n) }: Props = $props();
-
-  let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
+  let selectedAccount: Account | null = $state(null);
   let isLoading: boolean = $state(false);
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
@@ -35,7 +30,6 @@
   const stake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
-    close();
     isLoading = true;
     await submitStake(
       $dotApi.api as ApiPromise,
@@ -48,6 +42,7 @@
   };
 
   const accountOptions = $derived(selectAccountOptions($allAccountsStore));
+  console.log($allAccountsStore);
 
   let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
     const curAccount = (selectedAccountValue?.value && $allAccountsStore.get(selectedAccountValue.value)) || null;
@@ -76,8 +71,7 @@
     disabled={false}
   />
 
-  <div class="flex items-end justify-between">
-    <Button onclick={stake} disabled={isLoading}>Stake</Button>
-    <ButtonNoFill onclick={close}>Cancel</ButtonNoFill>
-  </div>
+  <Dialog.Close class="text-left">
+    <Button onclick={stake} disabled={isLoading || !selectedAccount || stakeAmount <= 0}>Stake</Button>
+  </Dialog.Close>
 </form>

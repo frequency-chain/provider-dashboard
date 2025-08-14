@@ -1,25 +1,16 @@
 <script lang="ts">
-  import Modal from '../../atoms/Modal.svelte';
   import StakeForm from './StakeForm.svelte';
   import { storeChainInfo } from '$lib/stores';
-
-  interface Props {
-    isOpen?: boolean;
-    close?: () => void;
-    stakeAmount?: bigint;
-  }
-
-  let { isOpen = false, close = () => {}, stakeAmount = 1n }: Props = $props();
+  import { Button, Modal } from '@frequency-chain/style-guide';
 </script>
 
-<Modal id="stake-to-provider" {isOpen} {close}>
-  {#snippet title()}
-    <span>Stake to Provider</span>
+<Modal id="stake-to-provider" title="Stake to Provider">
+  {#snippet trigger()}
+    <Button size="sm">Stake to Provider</Button>
   {/snippet}
-
   {#snippet body()}
     <div class="column gap-f16">
-      <StakeForm {close} {stakeAmount} />
+      <StakeForm />
 
       <span class="border-b-divider min-w-full border-b"></span>
 

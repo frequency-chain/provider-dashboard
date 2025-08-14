@@ -7,17 +7,10 @@
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Select } from '@frequency-chain/style-guide';
-  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
-  import type { Selected } from 'bits-ui';
+  import { Dialog, type Selected } from 'bits-ui';
 
-  interface Props {
-    close: () => void;
-    unstakeAmount?: bigint;
-  }
-
-  let { close, unstakeAmount = $bindable(1n) }: Props = $props();
-
-  let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
+  let unstakeAmount = $state(1n);
+  let selectedAccount: Account | null = $state(null);
   let isLoading: boolean = $state(false);
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
@@ -35,7 +28,6 @@
   const unstake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
-    close();
     isLoading = true;
     await submitUnstake(
       $dotApi.api as ApiPromise,
@@ -75,8 +67,7 @@
     <input id="unstakingInput" type="number" min="0" value="1" oninput={handleInput} />
   </div>
 
-  <div class="flex items-end justify-between">
-    <Button onclick={unstake} disabled={isLoading}>Unstake</Button>
-    <ButtonNoFill onclick={close}>Cancel</ButtonNoFill>
-  </div>
+  <Dialog.Close class="text-left">
+    <Button onclick={unstake} disabled={isLoading || !selectedAccount || unstakeAmount <= 0}>Unstake</Button>
+  </Dialog.Close>
 </form>

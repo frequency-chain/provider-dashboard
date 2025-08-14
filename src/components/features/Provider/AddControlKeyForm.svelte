@@ -6,8 +6,8 @@
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
-  import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
+  import { Dialog } from 'bits-ui';
   import type { OnChangeFn } from '$lib/storeTypes';
 
   interface Props {
@@ -61,8 +61,7 @@
     </div>
   {/if}
 
-  <div class="flex items-end justify-between">
+  <Dialog.Close class="text-left">
     <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
-    <ButtonNoFill onclick={onCancel}>Cancel</ButtonNoFill>
-  </div>
+  </Dialog.Close>
 </form>
