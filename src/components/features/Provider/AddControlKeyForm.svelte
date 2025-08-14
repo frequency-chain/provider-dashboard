@@ -50,6 +50,12 @@
       : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
+
+  $effect(() => {
+    if ($unusedKeyAccountsStore.size === 0) {
+      error = 'No available Control Keys. Create a new Control Key without an MSA Id.';
+    }
+  });
 </script>
 
 <form class="column gap-f16">
@@ -62,11 +68,6 @@
     disabled={$unusedKeyAccountsStore.size === 0}
     {error}
   />
-  {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-error smText">
-      No available Control Keys. Create a new Control Key without an MSA Id.
-    </div>
-  {/if}
 
   <div class="flex items-end justify-between">
     <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>

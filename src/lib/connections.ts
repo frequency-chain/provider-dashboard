@@ -45,15 +45,12 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
-  console.log('HERE');
   if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
     return;
   }
-  console.log('HERE2');
 
   const blockNumber = (await getBlockNumber(api)) as bigint;
-  console.log('HERE3');
 
   const rawPayload: AddKeyData = {
     msaId: msaId.toString(),
@@ -62,25 +59,29 @@ export async function submitAddControlKey(
   };
 
   const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
-  console.log('HERE4');
 
+  // mock signatures for fee estimation
+  const mockSignature = '0x' + '00'.repeat(64);
+  const mockProof = { Sr25519: mockSignature };
+  // mock extrinsic for fee estimation
+  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
+  // typecheck for testing
+  if (typeof mockExtrinsic.paymentInfo === 'function') {
+    // Get estimated total cost of txn & user's transferable balance
+    const estTotalCost = (await mockExtrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
+    const transferable = BigInt(get(user).balances.transferable);
+    // Check for adiquite funds
+    if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+  }
+
+  // Continue with getting real signatures
   const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
   const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
-  console.log('HERE5');
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
   const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
-  console.log('HERE6');
 
-  // Get estimated fee
-  const estTotalCost = (await extrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
-  console.log('estTotalCost: ', estTotalCost);
-  // Check for adiquite funds
-  const transferable = BigInt(get(user).balances.transferable);
-  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
-
-  // Submit txn
   submitExtinsic(extrinsic, signingAccount, extension);
 }
 
