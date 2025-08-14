@@ -1,4 +1,4 @@
-import { getMsaInfo } from '$lib/polkadotApi';
+import { getBalances, getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
@@ -12,12 +12,13 @@ import { derived, writable, type Readable } from 'svelte/store';
 export type SS58Address = string;
 
 export class Account {
-  network?: NetworkInfo;
   address: SS58Address = '';
+  isProvider: boolean = false;
+  balances: AccountBalances = { transferable: 0n, locked: 0n, total: 0n };
+  network?: NetworkInfo;
   keyringPair?: KeyringPair;
   injectedAccount?: InjectedAccountWithMeta;
   msaId?: number;
-  isProvider: boolean = false;
   providerName?: string;
   display?: string;
 
@@ -48,6 +49,15 @@ export const nonProviderAccountsStore = derived<Readable<Accounts>, Accounts>(al
   setFn(new Map([...all.entries()].filter(isNotProviderMsa)));
 });
 
+async function refreshAllBalances(api: ApiPromise, accounts: Accounts) {
+  const updatedAccounts = new Map<SS58Address, Readonly<Account>>();
+  for (const [address, account] of accounts.entries()) {
+    const updated = await updateAccountBalance(api, account);
+    updatedAccounts.set(address, updated);
+  }
+  allAccountsStore.set(updatedAccounts);
+}
+
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
   thisWeb3Enable: typeof web3Enable,
@@ -56,7 +66,6 @@ export async function fetchAccountsForNetwork(
 ): Promise<void> {
   const allAccounts: Accounts = new Map<SS58Address, Account>();
 
-  // If the network is localhost, add the default test accounts for the chain
   if (selectedNetwork.id === NetworkType.LOCALHOST) {
     const keyring = new Keyring({ type: 'sr25519' });
 
@@ -76,8 +85,8 @@ export async function fetchAccountsForNetwork(
       })
     );
   }
+
   try {
-    // Check if the Polkadot{.js} wallet extension is installed.
     if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
       const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
       if (!extensions || !extensions.length) {
@@ -85,11 +94,9 @@ export async function fetchAccountsForNetwork(
         throw new Error('Polkadot{.js} extension not found; please install it first.');
       }
 
-      // If so, add the wallet accounts for the selected network (chain)
       const walletAccounts = await thisWeb3Accounts();
       await Promise.all(
         walletAccounts.map(async (walletAccount: InjectedAccountWithMeta) => {
-          // include only the accounts allowed for this chain
           if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
             const account = new Account();
             account.network = selectedNetwork;
@@ -109,4 +116,15 @@ export async function fetchAccountsForNetwork(
     console.error('Unable to load extension accounts', e);
   }
   allAccountsStore.set(allAccounts);
+
+  // trigger initial balance fetch
+  if (apiPromise) {
+    await refreshAllBalances(apiPromise, allAccounts);
+  }
+}
+
+// Balance updater for logged in account
+async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
+  const { transferable, locked, total } = await getBalances(api, account.address);
+  return { ...account, balances: { transferable, locked, total } };
 }

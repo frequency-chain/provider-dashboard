@@ -5,8 +5,8 @@
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitUnstake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
-  import { type Account, allAccountsStore } from '$lib/stores/accountsStore';
-  import { Button, Select } from '@frequency-chain/style-guide';
+  import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
+  import { Button, Input, Select } from '@frequency-chain/style-guide';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
   import type { Selected } from 'bits-ui';
 
@@ -17,12 +17,14 @@
 
   let { close, unstakeAmount = $bindable(1n) }: Props = $props();
 
-  let selectedAccount: Account | null = $state($allAccountsStore.get($user.address) || null);
+  let selectedAccount: Account | null = $state($providerAccountsStore.get($user.address) || null);
   let isLoading: boolean = $state(false);
+  let error: string | undefined = $state();
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
 
   function handleInput(evt: Event) {
+    error = '';
     const target = evt.target as HTMLInputElement;
     if (target !== null && target.value === '') {
       unstakeAmount = 0n;
@@ -35,23 +37,28 @@
   const unstake = async (_evt: Event) => {
     if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
     if (!selectedAccount) throw new Error('Account not selected');
-    close();
     isLoading = true;
-    await submitUnstake(
-      $dotApi.api as ApiPromise,
-      await getExtension($user),
-      selectedAccount,
-      $user.msaId,
-      unstakeAmountInPlancks
-    );
+    try {
+      await submitUnstake(
+        $dotApi.api as ApiPromise,
+        await getExtension($user),
+        selectedAccount,
+        $user.msaId,
+        unstakeAmountInPlancks
+      );
+      close();
+    } catch (err) {
+      error = (err as Error).message;
+    }
     isLoading = false;
   };
 
-  const controlKeyOptions = $derived(selectAccountOptions($allAccountsStore));
+  const controlKeyOptions = $derived(selectAccountOptions($providerAccountsStore));
 
   let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    error = '';
     const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $allAccountsStore.get(selectedAccountValue.value)
+      ? $providerAccountsStore.get(selectedAccountValue.value)
       : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
@@ -64,16 +71,19 @@
     onSelectedChange={controlKeyChanged}
     placeholder="Select Control Key"
     options={controlKeyOptions}
-    disabled={$allAccountsStore.size === 0}
+    disabled={$providerAccountsStore.size === 0}
   />
 
-  <div class="column gap-f8">
-    <label class="form-item-label text-[16px]" for="unstakingInput">
-      Amount in <span class="units">{$storeChainInfo.token}</span>
-    </label>
-
-    <input id="unstakingInput" type="number" min="0" value="1" oninput={handleInput} />
-  </div>
+  <Input
+    id="unstakingInput"
+    type="number"
+    label={`Amount in ${$storeChainInfo.token}`}
+    min="0"
+    value="1"
+    oninput={handleInput}
+    {error}
+    disabled={false}
+  />
 
   <div class="flex items-end justify-between">
     <Button onclick={unstake} disabled={isLoading}>Unstake</Button>

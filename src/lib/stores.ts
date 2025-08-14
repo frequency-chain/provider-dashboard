@@ -24,7 +24,7 @@ export const logInPromise = derived([user], ([$user]) =>
 
 export const logout = () => {
   isLoggedIn.set(false);
-  user.set({ address: '', isProvider: false });
+  user.set({ address: '', isProvider: false, balances: { transferable: 0n, locked: 0n, total: 0n } });
   dotApi.set(defaultDotApi);
   storeChainInfo.set({ connected: false, blockNumber: 0n, epochNumber: 0n, token: '' });
   pageContent.login();
