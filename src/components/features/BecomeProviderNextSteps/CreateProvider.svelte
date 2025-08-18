@@ -14,8 +14,13 @@
   // TODO: uncomment on transition to svelte 5
   // import { base } from '$app/paths';
 
+  interface Props {
+    isLoading: boolean;
+  }
+
+  let { isLoading = $bindable(false) }: Props = $props();
+
   let newProviderName = $state('');
-  let isInProgress = $state(false);
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
   let error: string | undefined = $state();
@@ -27,7 +32,7 @@
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
-      isInProgress = false;
+      isLoading = false;
       // TODO: make nav reactive so we don't have to do this
       // TODO: uncomment on transition to svelte 5
       // goto(base + '/');
@@ -60,13 +65,13 @@
       alert('please reconnect to an endpoint');
       return;
     }
-    isInProgress = true;
+isLoading = true;
     try {
       recentTxnId = await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
       recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     } catch (err) {
       error = (err as Error).message;
-      isInProgress = false;
+      isLoading = false;
     }
   };
 </script>
@@ -86,7 +91,7 @@
   />
   <div class="flex items-end justify-between">
     <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isInProgress || newProviderName.length < 1}>
-      {#if isInProgress}
+      {#if isLoading}
         <LoadingIcon />
       {:else}
         Create Provider

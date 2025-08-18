@@ -16,6 +16,7 @@
     accountSelectorTitle?: string;
     accountSelectorPlaceholder?: string;
     noAccountsFoundErrorMsg?: string;
+    isLoading?: boolean;
   }
 
   let {
@@ -24,6 +25,7 @@
     accountSelectorTitle = 'Select an account',
     accountSelectorPlaceholder = 'Select an account',
     noAccountsFoundErrorMsg = 'No accounts found.',
+    isLoading = $bindable(false),
   }: Props = $props();
 
   // Wallet access
@@ -36,7 +38,6 @@
   let connectedToEndpoint: boolean = $state(false);
   let networkErrorMsg: string = $state('');
   let accountErrorMsg: string = $state('');
-  let isLoading: boolean = $state(false);
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {

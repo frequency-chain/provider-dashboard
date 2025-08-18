@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
   import { Button } from '@frequency-chain/style-guide';
   import { dotApi } from '$lib/stores';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
@@ -13,9 +12,14 @@
   import BackToRootButton from '$atoms/BackHomeButton.svelte';
   import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
 
+  interface Props {
+    isLoading: boolean;
+  }
+
+  let { isLoading = $bindable(false) }: Props = $props();
+
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
-  let isInProgress = $state(false);
   let error: string | null = $state(null);
 
   // a callback for when a transaction hits a final state
@@ -23,13 +27,13 @@
     if (succeeded) {
       const apiPromise = $dotApi.api as ApiPromise;
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
-      isInProgress = false;
+      isLoading = false;
       setTimeout(() => {
         $user.msaId = msaInfo.msaId;
       }, 1500);
       return;
     }
-    isInProgress = false;
+    isLoading = false;
   };
 
   const checkIsFinished = async () => {
@@ -38,18 +42,18 @@
     }
   };
 
-  run(() => {
+  $effect(() => {
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     checkIsFinished();
   });
 
   const doCreateMsa = async (_evt: Event) => {
-    isInProgress = true;
+isLoading = true;
     try {
       recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
     } catch (err) {
       error = (err as Error).message;
-      isInProgress = false;
+      isLoading = false;
     }
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
@@ -63,8 +67,8 @@
   </p>
   {#if error}<div class="text-error text-sm font-bold">{error}</div>{/if}
   <div class="flex w-[350px] items-end justify-between">
-    <Button onclick={doCreateMsa} disabled={isInProgress}>
-      {#if isInProgress}
+    <Button onclick={doCreateMsa} disabled={isLoading}>
+      {#if isLoading}
         <LoadingIcon />
       {:else}
         Create an MSA
