@@ -6,7 +6,7 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { u64 } from '@polkadot/types';
 import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
-import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
+import { BN, isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import { get } from 'svelte/store';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
@@ -69,7 +69,8 @@ export async function submitAddControlKey(
   if (typeof mockExtrinsic.paymentInfo === 'function') {
     // Get estimated total cost of txn & user's transferable balance
     const estTotalCost = (await mockExtrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
-    const transferable = BigInt(get(user).balances.transferable);
+    const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+    const transferable = BigInt(get(user).balances.transferable) - existentialDeposit;
     // Check for adequate funds
     if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
   }
@@ -103,8 +104,9 @@ export async function submitStake(
   // Get estimated total cost of txn
   const estTotalCost = BigInt(partialFee.toString()) + stakeAmount;
   // Check for adequate funds
-  const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
-  if (!hasFunds) throw new Error('User does not have sufficient funds.');
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transferable = BigInt(get(user).balances.total) - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
 
   // Submit txn
   const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
@@ -130,9 +132,10 @@ export async function submitUnstake(
   const estTotalCost = BigInt(partialFee.toString()) + unstakeAmount;
 
   // Check for adequate funds
-  const hasFunds = BigInt(get(user).balances.locked) >= estTotalCost;
-  if (!hasFunds) throw new Error('User does not have sufficient funds.');
-
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transferable = BigInt(get(user).balances.locked) - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+  
   const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
   submitExtinsic(extrinsic, signingAccount, extension);
 }
@@ -258,8 +261,9 @@ export async function submitCreateProvider(
   ).partialFee.toBigInt();
 
   // Check for adequate funds
-  const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
-  if (!hasFunds) throw new Error('User does not have sufficient funds.');
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transferable = BigInt(get(user).balances.transferable) - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
 
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
@@ -282,8 +286,9 @@ export async function submitRequestToBeProvider(
   ).partialFee.toBigInt();
 
   // Check for adequate funds
-  const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
-  if (!hasFunds) throw new Error('User does not have sufficient funds.');
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transferable = BigInt(get(user).balances.transferable) - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
 
   // submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.proposeToBeProvider(providerName);
@@ -304,8 +309,9 @@ export async function submitCreateMsa(
   const estTotalCost = (await api.tx.msa.create().paymentInfo(signingAccount.address)).partialFee.toBigInt();
 
   // Check for adequate funds
-  const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
-  if (!hasFunds) throw new Error('User does not have sufficient funds.');
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transferable = BigInt(get(user).balances.transferable) - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
 
   const extrinsic: SubmittableExtrinsic = api.tx.msa.create();
   return submitExtinsic(extrinsic, signingAccount, extension);

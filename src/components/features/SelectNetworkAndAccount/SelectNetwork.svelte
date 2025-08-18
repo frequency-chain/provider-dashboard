@@ -52,7 +52,7 @@
       await connectAndFetchAccounts(selectedNetwork!);
       connectedToEndpoint = true;
     }
-     
+
     newUser = {
       network: selectedNetwork!,
       address: '',
