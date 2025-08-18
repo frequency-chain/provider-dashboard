@@ -8,11 +8,10 @@
 
   // Props
   interface Props {
-    onConnect?: () => void;
-    onCancel?: (() => void) | undefined;
+    modalOpen?: boolean | null;
   }
 
-  let { onConnect = () => {}, onCancel = undefined }: Props = $props();
+  let { modalOpen = $bindable(null) }: Props = $props();
 
   // Get the matching account object safely
   let newUser: Account | null = $state($providerAccountsStore.get($user.address) ?? null);
@@ -31,7 +30,7 @@
     }
     if ($user.network) clearLog();
     $user = newUser;
-    onConnect();
+    if (modalOpen !== null) modalOpen = false;
   }
 </script>
 
@@ -47,8 +46,8 @@
   <div class="flex items-end justify-between">
     <Button disabled={!canConnect} onclick={connect}>Connect to Account</Button>
 
-    {#if onCancel}
-      <ButtonNoFill onclick={onCancel}>Cancel</ButtonNoFill>
+    {#if modalOpen !== null}
+      <ButtonNoFill onclick={() => (modalOpen = false)}>Cancel</ButtonNoFill>
     {/if}
   </div>
 </form>

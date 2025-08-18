@@ -5,7 +5,6 @@
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitUnstake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
-  import { Dialog } from 'bits-ui';
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
@@ -14,6 +13,8 @@
   let selectedAccount: Account | null = $state(null);
   let isLoading: boolean = $state(false);
   let error: string | undefined = $state();
+
+  let { modalOpen = $bindable(null) } = $props();
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
 
@@ -40,7 +41,7 @@
         $user.msaId,
         unstakeAmountInPlancks
       );
-      close();
+      modalOpen = false;
     } catch (err) {
       error = (err as Error).message;
     }
@@ -79,7 +80,5 @@
     disabled={false}
   />
 
-  <Dialog.Close class="text-left">
-    <Button onclick={unstake} disabled={isLoading || !selectedAccount || unstakeAmount <= 0}>Unstake</Button>
-  </Dialog.Close>
+  <Button onclick={unstake} disabled={isLoading || !selectedAccount || unstakeAmount <= 0}>Unstake</Button>
 </form>

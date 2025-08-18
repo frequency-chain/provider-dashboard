@@ -7,15 +7,14 @@
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
   import type { Selected } from 'bits-ui';
-  import { Dialog } from 'bits-ui';
   import type { OnChangeFn } from '$lib/storeTypes';
 
   interface Props {
-    onCancel: () => void;
     selectedAccount?: Account | null;
+    modalOpen?: boolean | null;
   }
 
-  let { onCancel, selectedAccount = $bindable() }: Props = $props();
+  let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
 
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
   let error: string | undefined = $state();
@@ -34,7 +33,7 @@
           $user,
           $user.msaId
         );
-        onCancel();
+        modalOpen = false;
       } catch (err) {
         error = (err as Error).message;
       }
@@ -69,7 +68,5 @@
     {error}
   />
 
-  <Dialog.Close class="text-left">
-    <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
-  </Dialog.Close>
+  <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
 </form>

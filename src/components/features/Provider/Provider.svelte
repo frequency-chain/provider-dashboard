@@ -1,16 +1,11 @@
 <script lang="ts">
-  import { dotApi, storeChainInfo } from '$lib/stores';
+  import { storeChainInfo } from '$lib/stores';
   import { user } from '$lib/stores/userStore';
   import { activityLog } from '$lib/stores/activityLogStore';
   import { balanceToHuman } from '$lib/utils';
-  import { getControlKeys } from '$lib/polkadotApi';
-  import { getBalances } from '$lib/polkadotApi';
-  import type { AccountBalances } from '$lib/polkadotApi';
   import ListCard from '../../atoms/ListCard.svelte';
   import AddControlKey from './AddControlKey.svelte';
   import ViewControlKeys from './ViewControlKeys.svelte';
-
-  let accountBalances: AccountBalances = $state({ transferable: 0n, locked: 0n, total: 0n });
 
   $effect(() => {
     // Easy way to tag a subscription onto this action.

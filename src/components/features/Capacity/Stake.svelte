@@ -2,15 +2,22 @@
   import StakeForm from './StakeForm.svelte';
   import { storeChainInfo } from '$lib/stores';
   import { Button, Modal } from '@frequency-chain/style-guide';
+
+  let modalOpen: boolean = $state(false);
 </script>
 
-<Modal id="stake-to-provider" title="Stake to Provider">
+<Modal
+  id="stake-to-provider"
+  title="Stake to Provider"
+  open={modalOpen}
+  onOpenChange={(val: boolean) => (modalOpen = val)}
+>
   {#snippet trigger()}
     <Button size="sm">Stake to Provider</Button>
   {/snippet}
   {#snippet body()}
     <div class="column gap-f16">
-      <StakeForm />
+      <StakeForm bind:modalOpen />
 
       <span class="border-b-divider min-w-full border-b"></span>
 

@@ -1,19 +1,18 @@
 <script lang="ts">
   import { user } from '$lib/stores/userStore';
-  import { storeChainInfo } from '$lib/stores';
-  import { dotApi } from '$lib/stores';
+  import { storeChainInfo, dotApi } from '$lib/stores';
   import type { ApiPromise } from '@polkadot/api';
   import { DOLLARS, submitStake } from '$lib/connections';
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
-  import { Dialog } from 'bits-ui';
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import type { Selected } from 'bits-ui';
 
-  let stakeAmount = $state(1n);
+  let { modalOpen = $bindable(null) } = $props();
 
+  let stakeAmount = $state(1n);
   let selectedAccount: Account | null = $state(null);
-  let isLoading: boolean = $state(false);
+  let isLoading = $state(false);
   let error: string | undefined = $state();
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
@@ -29,9 +28,17 @@
     }
   }
 
-  const stake = async (_evt: Event) => {
-    if ($user.msaId === undefined || $user.msaId === 0) throw new Error('Undefined MSA ID');
-    if (!selectedAccount) throw new Error('Account not selected');
+  const stake = async (e: Event) => {
+    e.preventDefault();
+    if ($user.msaId === undefined || $user.msaId === 0) {
+      error = 'Undefined MSA ID';
+      return;
+    }
+    if (!selectedAccount) {
+      error = 'Account not selected';
+      return;
+    }
+
     isLoading = true;
     try {
       await submitStake(
@@ -41,19 +48,21 @@
         $user.msaId,
         stakeAmountInPlancks
       );
-      close();
+      modalOpen = false;
     } catch (err) {
       error = (err as Error).message;
+    } finally {
+      isLoading = false;
     }
-    isLoading = false;
   };
 
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 
-  let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+  const accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
     error = '';
-    const curAccount = (selectedAccountValue?.value && $providerAccountsStore.get(selectedAccountValue.value)) || null;
-    if (curAccount) selectedAccount = curAccount;
+    selectedAccount = selectedAccountValue?.value
+      ? ($providerAccountsStore.get(selectedAccountValue.value) ?? null)
+      : null;
   };
 </script>
 
@@ -75,10 +84,11 @@
     value="1"
     oninput={handleInput}
     {error}
-    disabled={false}
+    disabled={isLoading}
   />
 
-  <Dialog.Close class="text-left">
-    <Button onclick={stake} disabled={isLoading || !selectedAccount || stakeAmount <= 0}>Stake</Button>
-  </Dialog.Close>
+  <!-- prevent default form submit -->
+  <Button onclick={stake} disabled={isLoading || !selectedAccount || stakeAmount <= 0}>
+    {isLoading ? 'Staking…' : 'Stake'}
+  </Button>
 </form>
