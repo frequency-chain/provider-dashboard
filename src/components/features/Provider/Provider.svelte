@@ -29,13 +29,6 @@
     { label: 'Locked', value: balanceToHuman($user.balances?.locked, $storeChainInfo.token) },
   ]);
   let errMsg: string = '';
-
-  function handleGetControlKeys() {
-    if (!$user.msaId) return;
-    getControlKeys($dotApi.api as ApiPromise, $user.msaId).then((keys) => {
-      if (keys) controlKeys = keys;
-    });
-  }
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>

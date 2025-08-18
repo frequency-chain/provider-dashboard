@@ -70,7 +70,7 @@ export async function submitAddControlKey(
     // Get estimated total cost of txn & user's transferable balance
     const estTotalCost = (await mockExtrinsic.paymentInfo(signingAccount.address)).partialFee.toBigInt();
     const transferable = BigInt(get(user).balances.transferable);
-    // Check for adiquite funds
+    // Check for adequate funds
     if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
   }
 
@@ -102,7 +102,7 @@ export async function submitStake(
   const { partialFee } = await api.tx.capacity.stake(providerId, stakeAmount).paymentInfo(signingAccount.address);
   // Get estimated total cost of txn
   const estTotalCost = BigInt(partialFee.toString()) + stakeAmount;
-  // Check for adiquite funds
+  // Check for adequate funds
   const hasFunds = BigInt(get(user).balances.transferable) >= estTotalCost;
   if (!hasFunds) throw new Error('User does not have sufficient funds.');
 
@@ -129,7 +129,7 @@ export async function submitUnstake(
   // Get estimated total cost of txn
   const estTotalCost = BigInt(partialFee.toString()) + unstakeAmount;
 
-  // Check for adiquite funds
+  // Check for adequate funds
   const hasFunds = BigInt(get(user).balances.locked) >= estTotalCost;
   if (!hasFunds) throw new Error('User does not have sufficient funds.');
 
