@@ -8,6 +8,7 @@
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
   import type { Selected } from 'bits-ui';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   let unstakeAmount = $state(1n);
   let selectedAccount: Account | null = $state(null);
@@ -34,6 +35,7 @@
     if (!selectedAccount) throw new Error('Account not selected');
     isLoading = true;
     try {
+      console.log('unstakeAmountInPlancks', unstakeAmountInPlancks);
       await submitUnstake(
         $dotApi.api as ApiPromise,
         await getExtension($user),
@@ -80,5 +82,11 @@
     disabled={false}
   />
 
-  <Button onclick={unstake} disabled={isLoading || !selectedAccount || unstakeAmount <= 0}>Unstake</Button>
+  <Button onclick={unstake} disabled={isLoading || !selectedAccount || unstakeAmount <= 0}
+    >{#if isLoading}
+      <LoadingIcon />
+    {:else}
+      Stake
+    {/if}</Button
+  >
 </form>

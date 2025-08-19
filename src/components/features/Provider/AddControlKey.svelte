@@ -11,7 +11,7 @@
 
 <Modal
   id="add-account-id"
-  title={`Add Control Key to MSA (${$user.msaId}`}
+  title={`Add Control Key to MSA (${$user.msaId})`}
   open={modalOpen}
   onOpenChange={(val: boolean) => (modalOpen = val)}
 >

@@ -8,6 +8,7 @@
   import { ApiPromise } from '@polkadot/api';
   import type { Selected } from 'bits-ui';
   import type { OnChangeFn } from '$lib/storeTypes';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   interface Props {
     selectedAccount?: Account | null;
@@ -16,8 +17,9 @@
 
   let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
 
-  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
   let error: string | undefined = $state();
+  let isLoading: boolean = $state(false);
+  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -26,6 +28,7 @@
       alert('Invalid provider.');
     } else {
       try {
+        isLoading = true;
         await submitAddControlKey(
           $dotApi.api as ApiPromise,
           await getExtension($user),
@@ -36,6 +39,7 @@
         modalOpen = false;
       } catch (err) {
         error = (err as Error).message;
+        isLoading = false;
       }
     }
   };
@@ -68,5 +72,11 @@
     {error}
   />
 
-  <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
+  <Button onclick={addControlKey} disabled={isSubmitDisabled}>
+    {#if isLoading}
+      <LoadingIcon />
+    {:else}
+      Add Control Key
+    {/if}</Button
+  >
 </form>

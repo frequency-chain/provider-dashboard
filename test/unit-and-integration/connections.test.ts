@@ -127,7 +127,7 @@ describe('submitAddControlKey', async () => {
     const msaId = 4;
     await submitAddControlKey(api, extension, bob, alice, msaId);
     expect(api.tx.msa.addPublicKeyToMsa).toHaveBeenCalled();
-  });
+  }, 7000);
 });
 
 describe('signPayloadWithKeyring', () => {

@@ -1,8 +1,11 @@
+import type { ApiPromise } from '@polkadot/api';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
+import { get } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
 import type { Account, Accounts } from './stores/accountsStore';
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
+import { user } from './stores/userStore';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -137,3 +140,14 @@ export const getExtension = async (account: Account) => {
   }
   return undefined;
 };
+
+export async function checkFundsForExtrinsic(api: ApiPromise, extrinsic: any, address: string, additionalCost = 0n) {
+  const { partialFee } = await extrinsic.paymentInfo(address);
+  // Get estimated total cost of txn
+  const estTotalCost = partialFee.toBigInt() + BigInt(additionalCost);
+  // Check for adequate funds
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const userTotalBalance = BigInt(get(user).balances.total);
+  const transferable = userTotalBalance - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+}

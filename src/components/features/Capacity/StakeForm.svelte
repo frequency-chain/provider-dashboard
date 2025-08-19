@@ -7,6 +7,7 @@
   import { Button, Input, Select } from '@frequency-chain/style-guide';
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import type { Selected } from 'bits-ui';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   let { modalOpen = $bindable(null) } = $props();
 
@@ -89,6 +90,10 @@
 
   <!-- prevent default form submit -->
   <Button onclick={stake} disabled={isLoading || !selectedAccount || stakeAmount <= 0}>
-    {isLoading ? 'Staking…' : 'Stake'}
+    {#if isLoading}
+      <LoadingIcon />
+    {:else}
+      Stake
+    {/if}
   </Button>
 </form>
