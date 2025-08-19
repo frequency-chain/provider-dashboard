@@ -6,19 +6,21 @@
   import { Button, Modal } from '@frequency-chain/style-guide';
 
   let selectedAccount: Account | null = $state(null);
-
-  function onCancel() {
-    selectedAccount = null;
-  }
+  let modalOpen: boolean = $state(false);
 </script>
 
-<Modal id="add-account-id" onOutsideClick={onCancel} title={`Add Control Key to MSA (${$user.msaId}`}>
+<Modal
+  id="add-account-id"
+  title={`Add Control Key to MSA (${$user.msaId})`}
+  open={modalOpen}
+  onOpenChange={(val: boolean) => (modalOpen = val)}
+>
   {#snippet trigger()}
     <Button size="sm">Add Control Key</Button>
   {/snippet}
   {#snippet body()}
     <div class="column gap-f16">
-      <AddControlKeyForm {onCancel} {selectedAccount} />
+      <AddControlKeyForm bind:selectedAccount bind:modalOpen />
 
       <span class="border-b-divider min-w-full border-b"></span>
 

@@ -52,8 +52,13 @@
       await connectAndFetchAccounts(selectedNetwork!);
       connectedToEndpoint = true;
     }
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    newUser = { network: selectedNetwork!, address: '', isProvider: false };
+
+    newUser = {
+      network: selectedNetwork!,
+      address: '',
+      isProvider: false,
+      balances: { transferable: 0n, locked: 0n, total: 0n },
+    };
     isLoading = false;
   }
 

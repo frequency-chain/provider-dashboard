@@ -2,15 +2,22 @@
   import UnstakeForm from './UnstakeForm.svelte';
   import { storeChainInfo } from '$lib/stores';
   import { Button, Modal } from '@frequency-chain/style-guide';
+
+  let modalOpen: boolean = $state(false);
 </script>
 
-<Modal id="unstake-from-provider" title="Unstake from Provider">
+<Modal
+  id="unstake-from-provider"
+  title="Unstake from Provider"
+  open={modalOpen}
+  onOpenChange={(val: boolean) => (modalOpen = val)}
+>
   {#snippet trigger()}
     <Button size="sm">Unstake from Provider</Button>
   {/snippet}
   {#snippet body()}
     <div class="column gap-f16">
-      <UnstakeForm />
+      <UnstakeForm bind:modalOpen />
 
       <span class="border-b-divider min-w-full border-b"></span>
 

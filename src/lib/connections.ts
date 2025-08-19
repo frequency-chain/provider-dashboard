@@ -4,11 +4,12 @@ import type { ApiPromise } from '@polkadot/api/promise';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { u64 } from '@polkadot/types';
+import type { Option, u64 } from '@polkadot/types';
 import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
+import { checkFundsForExtrinsic } from './utils';
 
 interface AddKeyData {
   msaId: string;
@@ -43,26 +44,58 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
-  const blockNumber = (await getBlockNumber(api)) as bigint;
-  if (api && (await api.isReady)) {
-    const rawPayload: AddKeyData = {
-      msaId: msaId.toString(),
-      expiration: (blockNumber + 100n).toString(),
-      newPublicKey: newAccount.address,
-    };
-
-    const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
-
-    const ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
-    const newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
-
-    const ownerKeyProof = { Sr25519: ownerKeySignature };
-    const newKeyProof = { Sr25519: newKeySignature };
-    const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
+  if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
+    return;
   }
+
+  const blockNumber = (await getBlockNumber(api)) as bigint;
+
+  const rawPayload: AddKeyData = {
+    msaId: msaId.toString(),
+    expiration: (blockNumber + 100n).toString(),
+    newPublicKey: newAccount.address,
+  };
+
+  const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
+
+  // mock signatures for fee estimation
+  const mockSignature = '0x' + '00'.repeat(64);
+  const mockProof = { Sr25519: mockSignature };
+  // mock extrinsic for fee estimation
+  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
+  // typecheck for testing
+  if (typeof mockExtrinsic.paymentInfo === 'function') {
+    await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
+  }
+
+  // Continue with getting real signatures
+  let ownerKeySignature;
+  let newKeySignature;
+  try {
+    ownerKeySignature = await signPayload(newKeyPayload, signingAccount, extension);
+    // Must wait or else a rate limit exceeded error occurs.
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('ownerKeySignature loaded successfully!');
+      }, 3000);
+    });
+    newKeySignature = await signPayload(newKeyPayload, newAccount, extension);
+    // Must wait or else a rate limit exceeded error occurs.
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        resolve('newKeySignature loaded successfully!');
+      }, 3000);
+    });
+  } catch (err: any) {
+    throw new Error(err?.message || 'Signing Canceled');
+  }
+
+  const ownerKeyProof = { Sr25519: ownerKeySignature };
+  const newKeyProof = { Sr25519: newKeySignature };
+  const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+
+  await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
@@ -73,12 +106,15 @@ export async function submitStake(
   providerId: number,
   stakeAmount: bigint
 ) {
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
+  if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
+    return;
   }
+
+  // Submit txn
+  const extrinsic = api.tx.capacity?.stake(providerId, stakeAmount);
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address, stakeAmount);
+  await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
 // creates the payloads and gets or creates the signatures, then submits the extrinsic
@@ -89,15 +125,20 @@ export async function submitUnstake(
   providerId: number,
   unstakeAmount: bigint
 ) {
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
-    submitExtinsic(extrinsic, signingAccount, extension);
-  } else {
+  if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
+    return;
   }
+
+  const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address, unstakeAmount);
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
+  const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
+  if (totalTokensStaked < unstakeAmount) throw new Error('User does not have the requested amount staked to unstake.');
+  await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
-function submitExtinsic(
+function submitExtrinsic(
   extrinsic: SubmittableExtrinsic,
   account: Account,
   extension: InjectedExtension | undefined
@@ -122,6 +163,7 @@ async function submitExtrinsicWithExtension(
     console.debug('caught exception:', message);
     if (message.match(/timeout/i) === null) {
       handleTxnError(extrinsic.hash.toString(), message);
+      throw new Error(message);
     }
   }
   return extrinsic.hash.toString();
@@ -143,7 +185,7 @@ async function submitExtrinsicWithKeyring(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
   if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
-  if (extension) return await signPayloadWithExtension(extension, account.address, payload);
+  if (extension) return signPayloadWithExtension(extension, account.address, payload);
   throw new Error('Unable to find wallet extension');
 }
 
@@ -170,13 +212,12 @@ export async function signPayloadWithExtension(
     try {
       signed = await signer.signRaw(signerPayloadRaw);
       return signed?.signature;
-    } catch (e: unknown) {
-      if (e instanceof Error) {
-        return 'ERROR ' + e.message;
-      }
+    } catch (e: any) {
+      console.log(`Error: ${e?.message}`);
+      throw new Error(e?.message);
     }
   }
-  return 'Unknown error';
+  throw new Error('Unknown error');
 }
 
 // Use the built-in Alice..Ferdie accounts to sign some data
@@ -194,24 +235,26 @@ export function signPayloadWithKeyring(signingAccount: KeyringPair, payload: any
   }
 }
 
-//   api: ApiPromise,
-//   extension: InjectedExtension | undefined,
-//   endpointURL: string,
-//   signingAccount: Account,
-//   providerName: number,
-//   txnStatusCallback: (statusStr: string) => void
-//   txnFinishedCallback: () => void
 export async function submitCreateProvider(
   api: ApiPromise | undefined,
   extension: InjectedExtension | undefined,
   signingAccount: Account,
   providerName: string
 ): Promise<string | undefined> {
-  if (api && (await api.isReady)) {
-    const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
-    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
-    return txnId;
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
   }
+
+  // Get the estimated txn fee (does not submit txn)
+  const estTotalCost = (
+    await api.tx.msa.createProvider(providerName).paymentInfo(signingAccount.address)
+  ).partialFee.toBigInt();
+
+  // Submit txn
+  const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
+  return submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
 export async function submitRequestToBeProvider(
@@ -220,12 +263,15 @@ export async function submitRequestToBeProvider(
   signingAccount: Account,
   providerName: string
 ): Promise<string | undefined> {
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.msa.proposeToBeProvider(providerName);
-    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
-    return txnId;
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
   }
-  console.error('submit failed because api is', api);
+
+  // submit txn
+  const extrinsic: SubmittableExtrinsic = api.tx.msa.proposeToBeProvider(providerName);
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
+  return submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
 //Use the current api and signing account to create an MSA for this account
@@ -234,9 +280,12 @@ export async function submitCreateMsa(
   extension: InjectedExtension | undefined,
   signingAccount: Account
 ): Promise<string | undefined> {
-  if (api && (await api.isReady)) {
-    const extrinsic = api.tx.msa.create();
-    const txnId = submitExtinsic(extrinsic, signingAccount, extension);
-    return txnId;
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
   }
+
+  const extrinsic: SubmittableExtrinsic = api.tx.msa.create();
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
+  return submitExtrinsic(extrinsic, signingAccount, extension);
 }

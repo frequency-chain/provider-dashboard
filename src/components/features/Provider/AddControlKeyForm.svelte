@@ -7,17 +7,19 @@
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
   import type { Selected } from 'bits-ui';
-  import { Dialog } from 'bits-ui';
   import type { OnChangeFn } from '$lib/storeTypes';
+  import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   interface Props {
-    onCancel: () => void;
     selectedAccount?: Account | null;
+    modalOpen?: boolean | null;
   }
 
-  let { onCancel, selectedAccount = $bindable() }: Props = $props();
+  let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
 
-  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null);
+  let error: string | undefined = $state();
+  let isLoading: boolean = $state(false);
+  let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -25,25 +27,38 @@
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {
-      onCancel();
-      await submitAddControlKey(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user,
-        $user.msaId
-      );
+      try {
+        isLoading = true;
+        await submitAddControlKey(
+          $dotApi.api as ApiPromise,
+          await getExtension($user),
+          selectedAccount,
+          $user,
+          $user.msaId
+        );
+        modalOpen = false;
+      } catch (err) {
+        error = (err as Error).message;
+        isLoading = false;
+      }
     }
   };
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
   let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
+    error = undefined;
     const curAccount: Account | undefined = selectedAccountValue?.value
       ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
       : undefined;
     if (curAccount) selectedAccount = curAccount;
   };
+
+  $effect(() => {
+    if ($unusedKeyAccountsStore.size === 0) {
+      error = 'No available Control Keys. Create a new Control Key without an MSA Id.';
+    }
+  });
 </script>
 
 <form class="column gap-f16">
@@ -54,14 +69,14 @@
     options={accountOptions || []}
     onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
+    {error}
   />
-  {#if $unusedKeyAccountsStore.size === 0}
-    <div id="network-error-msg" class="text-error smText">
-      No available Control Keys. Create a new Control Key without an MSA Id.
-    </div>
-  {/if}
 
-  <Dialog.Close class="text-left">
-    <Button onclick={addControlKey} disabled={isSubmitDisabled}>Add Control Key</Button>
-  </Dialog.Close>
+  <Button onclick={addControlKey} disabled={isSubmitDisabled}>
+    {#if isLoading}
+      <LoadingIcon />
+    {:else}
+      Add Control Key
+    {/if}</Button
+  >
 </form>
