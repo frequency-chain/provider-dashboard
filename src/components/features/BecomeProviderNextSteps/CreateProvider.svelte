@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import { dotApi } from '$lib/stores';
   import { getExtension, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider } from '$lib/connections';
@@ -42,7 +40,7 @@
     }
   };
 
-  run(() => {
+  $effect(() => {
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     checkIsFinished();
   });
@@ -68,21 +66,19 @@
 </script>
 
 <form id="create-provider" class="column gap-f16">
-  <div>
-    <Input
-      label="Provider name"
-      id="providerNameCB"
-      type="text"
-      required
-      placeholder="Short name"
-      maxlength={16}
-      bind:value={newProviderName}
-      error={undefined}
-      disabled={false}
-    />
-  </div>
+  <Input
+    label="Provider name"
+    id="providerNameCB"
+    type="text"
+    required
+    placeholder="Short name"
+    maxlength={16}
+    bind:value={newProviderName}
+    error={undefined}
+    disabled={false}
+  />
   <div class="flex items-end justify-between">
-    <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isInProgress}>
+    <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isInProgress || newProviderName.length < 1}>
       {#if isInProgress}
         <LoadingIcon />
       {:else}

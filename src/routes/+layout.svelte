@@ -4,6 +4,7 @@
   import { getBlockNumber, getEpoch } from '$lib/connections';
   import { Footer, Header } from '@frequency-chain/style-guide';
   import { base } from '$app/paths';
+  import NoExtensionError from '$features/NoExtensionError.svelte';
 
   interface Props {
     children?: import('svelte').Snippet;
@@ -77,3 +78,4 @@
 <div class="mt-f16 md:mt-f96">
   <Footer intent="light" />
 </div>
+<NoExtensionError />
