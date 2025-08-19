@@ -184,7 +184,6 @@ async function submitExtrinsicWithKeyring(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
-  console.log('SIGN PAYLOAD STARTING....');
   if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
   if (extension) return signPayloadWithExtension(extension, account.address, payload);
   throw new Error('Unable to find wallet extension');
