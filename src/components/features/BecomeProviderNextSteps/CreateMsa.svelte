@@ -53,6 +53,7 @@ isLoading = true;
       recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
     } catch (err) {
       error = (err as Error).message;
+    } finally {
       isLoading = false;
     }
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);

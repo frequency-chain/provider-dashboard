@@ -19,6 +19,7 @@
         accountSelectorTitle="Select an Control Key"
         accountSelectorPlaceholder="Select an Control Key"
         noAccountsFoundErrorMsg="No accounts found.  Add an Control Key to your wallet."
+        canCopyAddress={true}
       />
     {/if}
     <BecomeProviderNextSteps bind:hasRequestedToBeProvider bind:isLoading />

@@ -24,7 +24,7 @@
     {#each controlKeys as key (key)}
       <div class="gap-f4 items-top pt-f20 flex border-t">
         <div class="font-bold wrap-anywhere">{key}</div>
-        <AddToClipboard />
+        <AddToClipboard copyValue={key} />
       </div>
     {/each}
   {/snippet}

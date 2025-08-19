@@ -65,12 +65,13 @@
       alert('please reconnect to an endpoint');
       return;
     }
-isLoading = true;
+    isLoading = true;
     try {
       recentTxnId = await submitCreateProvider($dotApi.api, await getExtension($user), $user, newProviderName);
       recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     } catch (err) {
       error = (err as Error).message;
+    } finally {
       isLoading = false;
     }
   };
@@ -90,7 +91,7 @@ isLoading = true;
     disabled={false}
   />
   <div class="flex items-end justify-between">
-    <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isInProgress || newProviderName.length < 1}>
+    <Button id="create-provider-btn" onclick={doCreateProvider} disabled={isLoading || newProviderName.length < 1}>
       {#if isLoading}
         <LoadingIcon />
       {:else}

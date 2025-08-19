@@ -17,6 +17,7 @@
     accountSelectorPlaceholder?: string;
     noAccountsFoundErrorMsg?: string;
     isLoading?: boolean;
+    canCopyAddress?: boolean;
   }
 
   let {
@@ -26,6 +27,7 @@
     accountSelectorPlaceholder = 'Select an account',
     noAccountsFoundErrorMsg = 'No accounts found.',
     isLoading = $bindable(false),
+    canCopyAddress = false,
   }: Props = $props();
 
   // Wallet access
@@ -100,4 +102,5 @@
   {accountSelectorPlaceholder}
   bind:accountErrorMsg
   {isLoading}
+  {canCopyAddress}
 />

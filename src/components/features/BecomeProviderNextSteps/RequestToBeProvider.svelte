@@ -15,7 +15,7 @@
   let { hasRequestedToBeProvider = $bindable() } = $props();
 
   let error: string | undefined = $state();
-  let isInProgress = $state(false);
+  let isLoading = $state(false);
   let recentActivityItem: Activity | undefined = $state();
   let recentTxnId: Activity['txnId'] | undefined = $state();
   let newProviderName = $state('');
@@ -28,7 +28,7 @@
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
-      isInProgress = false;
+      isLoading = false;
       hasRequestedToBeProvider = true;
     }
   };
@@ -36,7 +36,7 @@
   const checkIsFinished = async () => {
     if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
       await requestToBeProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
-      if (recentActivityItem.txnStatus === TxnStatus.FAILURE) isInProgress = false;
+      if (recentActivityItem.txnStatus === TxnStatus.FAILURE) isLoading = false;
     }
   };
 
@@ -50,13 +50,13 @@
       alert('please reconnect to an endpoint');
       return;
     }
-    isInProgress = true;
+    isLoading = true;
     try {
       recentTxnId = await submitRequestToBeProvider($dotApi.api, await getExtension($user), $user, newProviderName);
       recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     } catch (err) {
       error = (err as Error).message;
-      isInProgress = false;
+      isLoading = false;
     }
   };
 </script>
@@ -81,10 +81,10 @@
       <div class="flex w-[350px] justify-between">
         <Button
           onclick={doProposeToBeProvider}
-          disabled={newProviderName === '' || isInProgress}
+          disabled={newProviderName === '' || isLoading}
           id="request-2b-provider-btn"
         >
-          {#if isInProgress}
+          {#if isLoading}
             <LoadingIcon />
           {:else}
             Request To Be Provider
