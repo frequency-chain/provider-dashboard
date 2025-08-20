@@ -48,7 +48,7 @@
   });
 
   const doCreateMsa = async (_evt: Event) => {
-isLoading = true;
+    isLoading = true;
     try {
       recentTxnId = await submitCreateMsa($dotApi.api, await getExtension($user), $user);
     } catch (err) {
