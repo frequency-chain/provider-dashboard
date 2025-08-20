@@ -1,12 +1,11 @@
-import { getBalances, getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
+import { getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
 import { Keyring, type ApiPromise } from '@polkadot/api';
-import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3AccountsSubscribe, type web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import { isFunction } from '@polkadot/util';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export type SS58Address = string;
@@ -61,10 +60,12 @@ async function refreshAllBalances(api: ApiPromise, accounts: Accounts) {
   allAccountsStore.set(updatedAccounts);
 }
 
+let unsubscribeExtension: (() => void) | null = null;
+
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
   thisWeb3Enable: typeof web3Enable,
-  thisWeb3Accounts: typeof web3Accounts,
+  thisWeb3AccountsSubscribe: typeof web3AccountsSubscribe,
   apiPromise: ApiPromise
 ): Promise<void> {
   const allAccounts: Accounts = new Map<SS58Address, Account>();
@@ -87,49 +88,65 @@ export async function fetchAccountsForNetwork(
         allAccounts.set(account.address, account);
       })
     );
+
+    allAccountsStore.set(allAccounts);
+    await refreshAllBalances(apiPromise, allAccounts);
+    return;
   }
 
   try {
-    if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
-      const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-      const extensionCheck = !!extensions && !!extensions.length;
-      hasExtension.set(extensionCheck);
-      // If no wallet extension found, throw error.
-      if (!extensionCheck) throw new Error('Polkadot{.js} extension not found; please install it first.');
+    console.log('Fetching extension accounts for network:', selectedNetwork.name);
+    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
+    const extensionCheck = !!extensions && !!extensions.length;
+    hasExtension.set(extensionCheck);
+    if (!extensionCheck) throw new Error('Polkadot{.js} extension not found; please install it first.');
+    console.log('Extensions found:', extensions.map((ext) => ext.name).join(', '));
+    // stop previous subscription if any
+    // stopAccountSubscription();
+    await web3AccountsSubscribe(async (accounts) => {
+      console.log('******Got accounts from extension:', accounts);
 
-      // If so, add the wallet accounts for the selected network (chain)
-      const walletAccounts = await thisWeb3Accounts();
       await Promise.all(
-        walletAccounts.map(async (walletAccount: InjectedAccountWithMeta) => {
+        accounts.map(async (walletAccount: InjectedAccountWithMeta) => {
           // include only the accounts allowed for this chain
           if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
             const account = new Account();
             account.network = selectedNetwork;
             account.address = walletAccount.address;
             account.injectedAccount = walletAccount;
+            console.log('****apiPromise:', apiPromise);
+
             const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
             account.msaId = msaInfo.msaId;
             account.isProvider = msaInfo.isProvider;
             account.providerName = providerNameToHuman(msaInfo.providerName);
             account.display = walletAccount.meta.name;
+            console.log('****meta:', account);
+
             allAccounts.set(account.address, account);
           }
         })
       );
-    }
+
+      allAccountsStore.set(allAccounts);
+
+      if (apiPromise) {
+        await refreshAllBalances(apiPromise, allAccounts);
+      }
+    });
   } catch (e) {
     console.error('Unable to load extension accounts', e);
   }
-  allAccountsStore.set(allAccounts);
-
-  // trigger initial balance fetch
-  if (apiPromise) {
-    await refreshAllBalances(apiPromise, allAccounts);
-  }
 }
-
 // Balance updater for logged in account
-async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
-  const { transferable, locked, total } = await getBalances(api, account.address);
-  return { ...account, balances: { transferable, locked, total } };
-}
+// async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
+//   const { transferable, locked, total } = await getBalances(api, account.address);
+//   return { ...account, balances: { transferable, locked, total } };
+// }
+
+// export function stopAccountSubscription() {
+//   if (unsubscribeExtension) {
+//     unsubscribeExtension();
+//     unsubscribeExtension = null;
+//   }
+// }

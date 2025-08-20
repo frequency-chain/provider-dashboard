@@ -54,13 +54,27 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
+  console.log('line 1 publicKey', publicKey);
+  apiPromise.on('disconnected', () => console.warn('API disconnected'));
+  apiPromise.on('connected', () => console.log('API connected'));
+  apiPromise.on('ready', () => console.log('API ready'));
+
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
+  console.log('result', result);
   const received = result?.unwrapOrDefault();
+  console.log('received', received);
+
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+  console.log('msaInfo', msaInfo);
+
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
+    console.log('msaInfo.msaId > 0', msaInfo.msaId > 0);
+
     const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId)) as Option<any>;
     if (providerRegistry.isSome) {
+      console.log('msaInfo.isProvider', msaInfo.isProvider);
+
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
       msaInfo.providerName = registryEntry.providerName.toString();
