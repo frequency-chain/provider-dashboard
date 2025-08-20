@@ -38,7 +38,7 @@
     }
   };
 
-  run(() => {
+  $effect(() => {
     recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
     checkIsFinished();
   });
@@ -55,14 +55,15 @@
   };
 </script>
 
-<div id="create-msa" class="flex flex-col gap-3.5">
-  <div class="label">Create MSA Id</div>
+<div id="create-msa">
+  <div class="form-item-label">Create MSA Id</div>
   <p class="smText">
     An MSA (Message Source Account) is required to become a provider. This action will create an MSA Id that is
     controlled by the selected Transaction Signing Address above.
   </p>
-  {#if error}<div class="text-error text-sm font-bold">{error}</div>{/if}
-  <div class="flex w-[350px] items-end justify-between">
+  {#if error}<div class="text-error form-item-label">{error}</div>{/if}
+
+  <div class="mt-f16 flex w-[350px] items-end justify-between">
     <Button onclick={doCreateMsa} disabled={isInProgress}>
       {#if isInProgress}
         <LoadingIcon />
@@ -73,6 +74,7 @@
     <BackToRootButton />
   </div>
 </div>
+
 {#if recentActivityItem}
   <ActivityLogPreviewItem activity={recentActivityItem} />
 {/if}
