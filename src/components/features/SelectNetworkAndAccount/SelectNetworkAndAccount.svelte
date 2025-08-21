@@ -5,7 +5,7 @@
 
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
-  import type { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
+  import type { web3Enable, web3AccountsSubscribe, web3Accounts } from '@polkadot/extension-dapp';
   import { createApi } from '$lib/polkadotApi';
   import SelectNetwork from './SelectNetwork.svelte';
   import SelectAccount from './SelectAccount.svelte';
@@ -28,7 +28,7 @@
 
   // Wallet access
   let thisWeb3Enable: typeof web3Enable;
-  let thisWeb3Accounts: typeof web3Accounts;
+  let thisWeb3AccountsSubscribe: typeof web3AccountsSubscribe;
 
   let selectedAccount: Account | null = $state(newUser);
   let selectedNetwork: NetworkInfo | null = $state(newUser?.network ?? null);
@@ -44,7 +44,7 @@
     // Since this project is precompiled, there will be no window until onMount
     const polkadotExt = await import('@polkadot/extension-dapp');
     thisWeb3Enable = polkadotExt.web3Enable;
-    thisWeb3Accounts = polkadotExt.web3Accounts;
+    thisWeb3AccountsSubscribe = polkadotExt.web3AccountsSubscribe;
   });
 
   async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
@@ -54,7 +54,7 @@
         accountErrorMsg = '';
         if (!network.endpoint) throw new Error('Undefined endpoint.');
         const curApi = await createApi(network.endpoint);
-        await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
+        await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3AccountsSubscribe, curApi.api as ApiPromise);
         await curApi.api?.disconnect();
       } catch (e) {
         console.log(e);

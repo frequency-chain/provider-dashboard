@@ -10,8 +10,6 @@
   import type { web3Enable, web3AccountsSubscribe } from '@polkadot/extension-dapp';
   import ChainStatus from '$features/ChainStatus/ChainStatus.svelte';
 
-  // let thisWeb3Accounts: typeof web3Accounts | undefined = $state();
-
   let thisWeb3AccountsSubscribe: typeof web3AccountsSubscribe | undefined = $state();
   let thisWeb3Enable: typeof web3Enable | undefined = $state();
 
@@ -19,7 +17,6 @@
     const extension = await import('@polkadot/extension-dapp');
     thisWeb3AccountsSubscribe = extension.web3AccountsSubscribe;
     thisWeb3Enable = extension.web3Enable;
-    console.log('thisWeb3AccountsSubscribe', thisWeb3AccountsSubscribe);
   });
 
   $effect(() => {

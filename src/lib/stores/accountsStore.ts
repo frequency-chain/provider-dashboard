@@ -1,4 +1,4 @@
-import { getMsaInfo, type AccountBalances, getBalances } from '$lib/polkadotApi';
+import { getBalances, getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
@@ -6,6 +6,7 @@ import { Keyring, type ApiPromise } from '@polkadot/api';
 import { web3AccountsSubscribe, type web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
+import { isFunction } from '@polkadot/util';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export type SS58Address = string;
@@ -89,51 +90,54 @@ export async function fetchAccountsForNetwork(
       })
     );
 
-    allAccountsStore.set(allAccounts);
-    await refreshAllBalances(apiPromise, allAccounts);
-    return;
+    // allAccountsStore.set(allAccounts);
+    // await refreshAllBalances(apiPromise, allAccounts);
+    // return;
   }
 
   try {
-    console.log('Fetching extension accounts for network:', selectedNetwork.name);
-    const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
-    const extensionCheck = !!extensions && !!extensions.length;
-    hasExtension.set(extensionCheck);
-    if (!extensionCheck) throw new Error('Polkadot{.js} extension not found; please install it first.');
-    console.log('Extensions found:', extensions.map((ext) => ext.name).join(', '));
-    // stop previous subscription if any
-    // stopAccountSubscription();
-    await web3AccountsSubscribe(async (accounts) => {
-      console.log('******Got accounts from extension:', accounts);
+    if (isFunction(thisWeb3AccountsSubscribe) && isFunction(thisWeb3Enable)) {
+      console.log('Fetching extension accounts for network:', selectedNetwork.name);
+      const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
+      const extensionCheck = !!extensions && !!extensions.length;
+      hasExtension.set(extensionCheck);
+      // If no wallet extension found, throw error.
+      if (!extensionCheck) throw new Error('Polkadot{.js} extension not found; please install it first.');
 
-      await Promise.all(
-        accounts.map(async (walletAccount: InjectedAccountWithMeta) => {
-          // include only the accounts allowed for this chain
-          if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
-            const account = new Account();
-            account.network = selectedNetwork;
-            account.address = walletAccount.address;
-            account.injectedAccount = walletAccount;
-            console.log('****apiPromise:', apiPromise);
+      console.log('Extensions found:', extensions.map((ext) => ext.name).join(', '));
+      // stop previous subscription if any
+      // stopAccountSubscription();
+      await web3AccountsSubscribe(async (accounts) => {
+        console.log('******Got accounts from extension:', accounts);
 
-            const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
-            account.msaId = msaInfo.msaId;
-            account.isProvider = msaInfo.isProvider;
-            account.providerName = providerNameToHuman(msaInfo.providerName);
-            account.display = walletAccount.meta.name;
-            console.log('****meta:', account);
+        await Promise.all(
+          accounts.map(async (walletAccount: InjectedAccountWithMeta) => {
+            // include only the accounts allowed for this chain
+            if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
+              const account = new Account();
+              account.network = selectedNetwork;
+              account.address = walletAccount.address;
+              account.injectedAccount = walletAccount;
 
-            allAccounts.set(account.address, account);
-          }
-        })
-      );
+              const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+              account.msaId = msaInfo.msaId;
+              account.isProvider = msaInfo.isProvider;
+              account.providerName = providerNameToHuman(msaInfo.providerName);
+              account.display = walletAccount.meta.name;
+              console.log('****meta:', account);
 
-      allAccountsStore.set(allAccounts);
+              allAccounts.set(account.address, account);
+            }
+          })
+        );
 
-      if (apiPromise) {
-        await refreshAllBalances(apiPromise, allAccounts);
-      }
-    });
+        allAccountsStore.set(allAccounts);
+
+        if (apiPromise) {
+          await refreshAllBalances(apiPromise, allAccounts);
+        }
+      });
+    }
   } catch (e) {
     console.error('Unable to load extension accounts', e);
   }

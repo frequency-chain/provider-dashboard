@@ -58,6 +58,7 @@ export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Pro
   apiPromise.on('disconnected', () => console.warn('API disconnected'));
   apiPromise.on('connected', () => console.log('API connected'));
   apiPromise.on('ready', () => console.log('API ready'));
+  console.log('line 1 apiPromise', apiPromise);
 
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
   console.log('result', result);
