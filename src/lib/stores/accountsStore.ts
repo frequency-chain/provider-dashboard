@@ -1,4 +1,4 @@
-import { getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
+import { getMsaInfo, type AccountBalances, getBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman } from '$lib/utils';
@@ -139,10 +139,10 @@ export async function fetchAccountsForNetwork(
   }
 }
 // Balance updater for logged in account
-// async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
-//   const { transferable, locked, total } = await getBalances(api, account.address);
-//   return { ...account, balances: { transferable, locked, total } };
-// }
+async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
+  const { transferable, locked, total } = await getBalances(api, account.address);
+  return { ...account, balances: { transferable, locked, total } };
+}
 
 // export function stopAccountSubscription() {
 //   if (unsubscribeExtension) {
