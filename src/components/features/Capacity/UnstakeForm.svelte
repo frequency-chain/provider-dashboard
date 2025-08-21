@@ -35,7 +35,6 @@
     if (!selectedAccount) throw new Error('Account not selected');
     isLoading = true;
     try {
-      console.log('unstakeAmountInPlancks', unstakeAmountInPlancks);
       await submitUnstake(
         $dotApi.api as ApiPromise,
         await getExtension($user),
@@ -86,7 +85,7 @@
     >{#if isLoading}
       <LoadingIcon />
     {:else}
-      Stake
+      Unstake
     {/if}</Button
   >
 </form>
