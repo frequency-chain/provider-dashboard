@@ -5,6 +5,8 @@
   import { Footer, Header } from '@frequency-chain/style-guide';
   import { base } from '$app/paths';
   import NoExtensionError from '$features/NoExtensionError.svelte';
+  import { user } from '$lib/stores/userStore';
+  import { subscribeToAccounts } from '$lib/utils';
 
   interface Props {
     children?: import('svelte').Snippet;
@@ -31,6 +33,12 @@
           });
       }
     });
+  });
+
+  $effect(() => {
+    if ($user.network && $dotApi.api) {
+      subscribeToAccounts($user.network, $dotApi.api);
+    }
   });
 
   interface MenuItem {
