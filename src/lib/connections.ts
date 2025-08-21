@@ -9,7 +9,7 @@ import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/typ
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
-import { checkFundsForExtrinsic } from './utils';
+import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
 
 interface AddKeyData {
   msaId: string;
@@ -66,6 +66,11 @@ export async function submitAddControlKey(
   const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
   // typecheck for testing
   if (typeof mockExtrinsic.paymentInfo === 'function') {
+    const capacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount.address);
+    if (capacity > 0n) {
+      // TODO: suffiecient capacity. continue to use capacity payment
+    }
+    // TODO: not enough capacity, check funds instead
     await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
 
@@ -94,7 +99,7 @@ export async function submitAddControlKey(
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
   const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
-
+  const capacityCall = api.tx.capacity.payWithCapacity(extrinsic);
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 

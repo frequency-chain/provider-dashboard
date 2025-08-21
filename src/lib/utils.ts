@@ -1,6 +1,7 @@
 import type { ApiPromise } from '@polkadot/api';
 import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import type { Option } from '@polkadot/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
@@ -145,15 +146,39 @@ export const getExtension = async (account: Account) => {
   return undefined;
 };
 
-export async function checkFundsForExtrinsic(api: ApiPromise, extrinsic: any, address: string, additionalCost = 0n) {
+export async function getTransactionCost(extrinsic: any, address: string, additionalCost = 0n): Promise<bigint> {
   const { partialFee } = await extrinsic.paymentInfo(address);
   // Get estimated total cost of txn
-  const estTotalCost = partialFee.toBigInt() + BigInt(additionalCost);
+  const estTotalCost: bigint = partialFee.toBigInt() + BigInt(additionalCost);
+  return estTotalCost;
+}
+
+export async function checkFundsForExtrinsic(
+  api: ApiPromise,
+  extrinsic: any,
+  address: string,
+  additionalCost = 0n
+): Promise<bigint> {
+  const estTotalCost = await getTransactionCost(extrinsic, address, additionalCost);
   // Check for adequate funds
   const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
   const userTotalBalance = BigInt(get(user).balances.total);
   const transferable = userTotalBalance - existentialDeposit;
   if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+  return estTotalCost;
+}
+
+export async function checkCapacityForExtrinsic(api: ApiPromise, extrinsic: any, address: string): Promise<bigint> {
+  const estTotalCost = await getTransactionCost(extrinsic, address);
+  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const capacityLedger = await api.query.capacity.capacityLedger<Option<any>>(address);
+  if (capacityLedger.isSome) {
+    const ledger = capacityLedger.unwrap();
+    const transferable = ledger - existentialDeposit;
+    if (transferable < estTotalCost) throw new Error('User does not have sufficient capacity.');
+    return ledger;
+  }
+  return 0n;
 }
 
 // Balance updater for logged in account
