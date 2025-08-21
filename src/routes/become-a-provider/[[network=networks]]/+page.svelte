@@ -16,8 +16,8 @@
         bind:newUser={$user}
         bind:isLoading
         accounts={$nonProviderAccountsStore}
-        accountSelectorTitle="Select an Control Key"
-        accountSelectorPlaceholder="Select an Control Key"
+        accountSelectorTitle="Select a Control Key"
+        accountSelectorPlaceholder="Select a Control Key"
         noAccountsFoundErrorMsg="No accounts found.  Add an Control Key to your wallet."
         canCopyAddress={true}
       />
