@@ -65,13 +65,19 @@ export async function submitAddControlKey(
   // mock extrinsic for fee estimation
   const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
   // typecheck for testing
+  let isPayingWithCapacity;
   if (typeof mockExtrinsic.paymentInfo === 'function') {
-    const capacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount.address);
-    if (capacity > 0n) {
-      // TODO: suffiecient capacity. continue to use capacity payment
+    try {
+      const transferableCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount);
+      if (transferableCapacity > 0n) {
+        // Suffiecient capacity. Continue to use capacity for payment
+        isPayingWithCapacity = true;
+      }
+    } catch {
+      // Not enough capacity, check funds instead
+      await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
+      isPayingWithCapacity = false;
     }
-    // TODO: not enough capacity, check funds instead
-    await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
 
   // Continue with getting real signatures
@@ -98,8 +104,15 @@ export async function submitAddControlKey(
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
-  const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
-  const capacityCall = api.tx.capacity.payWithCapacity(extrinsic);
+  const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  let extrinsic: any;
+  if (isPayingWithCapacity) {
+    console.log('Paying for add key extrinsic with capacity');
+    extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
+  } else {
+    extrinsic = addKeyCall;
+  }
+
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
