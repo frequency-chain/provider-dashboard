@@ -165,20 +165,21 @@ export async function checkFundsForExtrinsic(
   const userTotalBalance = BigInt(get(user).balances.total);
   const transferable = userTotalBalance - existentialDeposit;
   if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
-  return estTotalCost;
+  return transferable;
 }
 
-export async function checkCapacityForExtrinsic(api: ApiPromise, extrinsic: any, address: string): Promise<bigint> {
-  const estTotalCost = await getTransactionCost(extrinsic, address);
+export async function checkCapacityForExtrinsic(
+  api: ApiPromise,
+  extrinsic: any,
+  signingAccount: Account
+): Promise<bigint> {
+  const estTotalCost = await getTransactionCost(extrinsic, signingAccount.address);
   const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
-  const capacityLedger = await api.query.capacity.capacityLedger<Option<any>>(address);
-  if (capacityLedger.isSome) {
-    const ledger = capacityLedger.unwrap();
-    const transferable = ledger - existentialDeposit;
-    if (transferable < estTotalCost) throw new Error('User does not have sufficient capacity.');
-    return ledger;
-  }
-  return 0n;
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
+  const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
+  const transferable = totalTokensStaked - existentialDeposit;
+  if (transferable < estTotalCost) throw new Error('User does not have sufficient capacity.');
+  return transferable;
 }
 
 // Balance updater for logged in account
