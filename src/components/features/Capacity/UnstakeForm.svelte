@@ -85,7 +85,7 @@
     >{#if isLoading}
       <LoadingIcon />
     {:else}
-      Stake
+      Unstake
     {/if}</Button
   >
 </form>
