@@ -56,7 +56,9 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
   const received = result?.unwrapOrDefault();
+
   const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+
   msaInfo.msaId = received?.toNumber();
   if (msaInfo.msaId > 0) {
     const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId)) as Option<any>;

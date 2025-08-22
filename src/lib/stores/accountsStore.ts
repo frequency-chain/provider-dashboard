@@ -1,9 +1,9 @@
 import { getBalances, getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
-import { providerNameToHuman } from '$lib/utils';
+import { providerNameToHuman, refreshAllBalances } from '$lib/utils';
 import { Keyring, type ApiPromise } from '@polkadot/api';
-import type { web3Accounts, web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts, web3AccountsSubscribe, type web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import { isFunction } from '@polkadot/util';
@@ -51,15 +51,6 @@ export const nonProviderAccountsStore = derived<Readable<Accounts>, Accounts>(al
 
 // Checks for wallet/extension
 export const hasExtension = writable<boolean | null>(null);
-
-async function refreshAllBalances(api: ApiPromise, accounts: Accounts) {
-  const updatedAccounts = new Map<SS58Address, Readonly<Account>>();
-  for (const [address, account] of accounts.entries()) {
-    const updated = await updateAccountBalance(api, account);
-    updatedAccounts.set(address, updated);
-  }
-  allAccountsStore.set(updatedAccounts);
-}
 
 export async function fetchAccountsForNetwork(
   selectedNetwork: NetworkInfo,
@@ -126,10 +117,4 @@ export async function fetchAccountsForNetwork(
   if (apiPromise) {
     await refreshAllBalances(apiPromise, allAccounts);
   }
-}
-
-// Balance updater for logged in account
-async function updateAccountBalance(api: ApiPromise, account: Account): Promise<Account> {
-  const { transferable, locked, total } = await getBalances(api, account.address);
-  return { ...account, balances: { transferable, locked, total } };
 }

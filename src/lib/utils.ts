@@ -1,11 +1,15 @@
 import type { ApiPromise } from '@polkadot/api';
+import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
+import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
-import type { Account, Accounts } from './stores/accountsStore';
+import { getBalances, getMsaInfo } from './polkadotApi';
+import { Account, allAccountsStore, type Accounts, type SS58Address } from './stores/accountsStore';
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 import { user } from './stores/userStore';
+import type { MsaInfo } from './storeTypes';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -150,4 +154,45 @@ export async function checkFundsForExtrinsic(api: ApiPromise, extrinsic: any, ad
   const userTotalBalance = BigInt(get(user).balances.total);
   const transferable = userTotalBalance - existentialDeposit;
   if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+}
+
+// Balance updater for logged in account
+export async function refreshAllBalances(api: ApiPromise, accounts: Accounts) {
+  const updatedAccounts = new Map<SS58Address, Readonly<Account>>();
+  for (const [address, account] of accounts.entries()) {
+    const { transferable, locked, total } = await getBalances(api, account.address);
+    const updated = { ...account, balances: { transferable, locked, total } };
+    updatedAccounts.set(address, updated);
+  }
+  allAccountsStore.set(updatedAccounts);
+}
+
+export async function subscribeToAccounts(selectedNetwork: NetworkInfo, apiPromise: ApiPromise): Promise<void> {
+  const allAccounts: Accounts = new Map<SS58Address, Account>();
+
+  await web3AccountsSubscribe(async (accounts) => {
+    await Promise.all(
+      accounts.map(async (walletAccount: InjectedAccountWithMeta) => {
+        // include only the accounts allowed for this chain
+        if (!walletAccount.meta.genesisHash || selectedNetwork.genesisHash === walletAccount.meta.genesisHash) {
+          const account = new Account();
+          account.network = selectedNetwork;
+          account.address = walletAccount.address;
+          account.injectedAccount = walletAccount;
+          const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+          account.msaId = msaInfo.msaId;
+          account.isProvider = msaInfo.isProvider;
+          account.providerName = providerNameToHuman(msaInfo.providerName);
+          account.display = walletAccount.meta.name;
+          allAccounts.set(account.address, account);
+        }
+      })
+    );
+
+    allAccountsStore.set(allAccounts);
+
+    if (apiPromise) {
+      await refreshAllBalances(apiPromise, allAccounts);
+    }
+  });
 }

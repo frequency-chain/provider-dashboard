@@ -1,6 +1,4 @@
 <script lang="ts">
-  import { run } from 'svelte/legacy';
-
   import Capacity from '$features/Capacity/Capacity.svelte';
   import Provider from '$features/Provider/Provider.svelte';
   import ProfileOverview from '$features/ProfileOverview/ProfileOverview.svelte';
@@ -21,7 +19,7 @@
     thisWeb3Enable = extension.web3Enable;
   });
 
-  run(() => {
+  $effect(() => {
     if ($user.network && thisWeb3Enable && thisWeb3Accounts) {
       fetchAccountsForNetwork($user.network, thisWeb3Enable, thisWeb3Accounts, $dotApi.api as ApiPromise).then(() =>
         console.info('Accounts store updated.')
