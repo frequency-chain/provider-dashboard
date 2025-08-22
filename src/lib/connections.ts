@@ -131,7 +131,7 @@ export async function submitUnstake(
   }
 
   const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
-  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address, unstakeAmount);
+  await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
   const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
   const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
   if (totalTokensStaked < unstakeAmount) throw new Error('User does not have the requested amount staked to unstake.');

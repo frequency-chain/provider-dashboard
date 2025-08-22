@@ -55,8 +55,11 @@
   };
 
   $effect(() => {
+    let noControlKeysError = 'No available Control Keys. Create a new Control Key without an MSA Id.';
     if ($unusedKeyAccountsStore.size === 0) {
-      error = 'No available Control Keys. Create a new Control Key without an MSA Id.';
+      error = noControlKeysError;
+    } else if (error === noControlKeysError) {
+      error = undefined;
     }
   });
 </script>

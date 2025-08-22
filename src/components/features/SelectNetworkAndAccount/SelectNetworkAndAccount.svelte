@@ -58,7 +58,7 @@
         if (!network.endpoint) throw new Error('Undefined endpoint.');
         const curApi = await createApi(network.endpoint);
         await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
-        await curApi.api?.disconnect();
+        await curApi?.api?.disconnect();
       } catch (e) {
         console.log(e);
         networkErrorMsg = `Could not connect to ${
