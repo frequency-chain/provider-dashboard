@@ -34,6 +34,10 @@ export default defineConfig(({ mode }) => ({
     coverage: {
       include: ['src/**'],
     },
-    include: ['test/e2e/*.{test,spec}.?(c|m)[jt]s?(x)', 'test/unit-and-integration/*.{test,spec}.?(c|m)[jt]s?(x)'],
+    include: [
+      'test/e2e/*.{test,spec}.?(c|m)[jt]s?(x)',
+      'test/unit-and-integration/*.{test,spec}.?(c|m)[jt]s?(x)',
+      'test/componentTests/*.{test,spec}.?(c|m)[jt]s?(x)',
+    ],
   },
 }));

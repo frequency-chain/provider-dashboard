@@ -1,9 +1,9 @@
-import { getBalances, getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
+import { getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman, refreshAllBalances } from '$lib/utils';
 import { Keyring, type ApiPromise } from '@polkadot/api';
-import { web3Accounts, web3AccountsSubscribe, type web3Enable } from '@polkadot/extension-dapp';
+import { web3Accounts, type web3Enable } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import { isFunction } from '@polkadot/util';
