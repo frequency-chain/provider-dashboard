@@ -173,11 +173,12 @@ export async function checkCapacityForExtrinsic(
   extrinsic: any,
   signingAccount: Account
 ): Promise<bigint> {
-  const estTotalCost = await getTransactionCost(extrinsic, signingAccount.address);
-  const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
+  const transaction = api.tx.frequencyTxPayment.payWithCapacity(extrinsic);
+  const estTotalCost = api.tx.frequencyTxPayment.computeCapacityFeeDetails(transaction);
+
   const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
-  const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
-  const transferable = totalTokensStaked - existentialDeposit;
+  const transferable = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().remainingCapacity.toBigInt() : 0n;
+
   if (transferable < estTotalCost) throw new Error('User does not have sufficient capacity.');
   return transferable;
 }
