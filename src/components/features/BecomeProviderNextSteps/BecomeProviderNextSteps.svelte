@@ -8,18 +8,19 @@
 
   interface Props {
     hasRequestedToBeProvider: boolean;
+    isLoading: boolean;
   }
 
-  let { hasRequestedToBeProvider = $bindable() }: Props = $props();
+  let { hasRequestedToBeProvider = $bindable(), isLoading = $bindable(false) }: Props = $props();
 </script>
 
 {#if $user && $user?.address !== ''}
   {#if $user?.msaId === 0}
-    <CreateMsa />
+    <CreateMsa bind:isLoading />
   {:else if $user?.network?.id === NetworkType.MAINNET}
     <RequestToBeProvider bind:hasRequestedToBeProvider />
   {:else}
-    <CreateProvider />
+    <CreateProvider bind:isLoading />
   {/if}
 {:else}
   <BackHomeButton cancelText="Back" />

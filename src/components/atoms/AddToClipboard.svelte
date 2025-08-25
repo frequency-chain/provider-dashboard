@@ -6,7 +6,7 @@
   let fill = $state(origFill);
   let isClicked = $state(false);
 
-  let { copyValue = '', classes = '' } = $props();
+  let { copyValue = '', disabled = false, classes = '' } = $props();
 
   function handleMouseEnter() {
     fill = '#790E70';
@@ -17,6 +17,7 @@
   }
 
   function handleClick() {
+    if (disabled) return;
     copyText();
     fill = '#790E70';
     isClicked = true;
@@ -36,6 +37,12 @@
 </script>
 
 <div class="{classes} relative flex flex-col">
-  <CopyIcon class="relative" {fill} {handleClick} {handleMouseEnter} {handleMouseLeave} />
+  <CopyIcon
+    class={`relative ${disabled && 'cursor-not-allowed'}`}
+    fill={disabled ? '#8b8b8b' : fill}
+    {handleClick}
+    {handleMouseEnter}
+    {handleMouseLeave}
+  />
   <span class="top-f24 xsText absolute whitespace-nowrap {!isClicked && 'hidden'}">Copied</span>
 </div>

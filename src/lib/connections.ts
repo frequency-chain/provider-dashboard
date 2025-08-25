@@ -245,10 +245,13 @@ export async function submitCreateProvider(
     console.debug('api is not available.');
     return;
   }
-
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
+  console.log('HERE1');
+
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
+  console.log('HERE2');
+
   return submitExtrinsic(extrinsic, signingAccount, extension);
 }
 

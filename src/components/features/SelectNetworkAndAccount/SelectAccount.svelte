@@ -1,4 +1,5 @@
 <script lang="ts">
+  import AddToClipboard from '$atoms/AddToClipboard.svelte';
   import { type Account, type Accounts } from '$lib/stores/accountsStore';
   import { selectAccountOptions } from '$lib/utils';
   import { Select } from '@frequency-chain/style-guide';
@@ -12,6 +13,7 @@
     accountSelectorPlaceholder: string;
     accountErrorMsg: string;
     isLoading: boolean;
+    canCopyAddress?: boolean;
   }
 
   let {
@@ -22,6 +24,7 @@
     accountSelectorPlaceholder,
     accountErrorMsg = $bindable(),
     isLoading,
+    canCopyAddress = false,
   }: Props = $props();
   const accountOptions = $derived(selectAccountOptions(accounts));
 
@@ -34,12 +37,20 @@
   };
 </script>
 
-<Select
-  id="controlkeys"
-  label={accountSelectorTitle}
-  onSelectedChange={accountChanged}
-  placeholder={accountSelectorPlaceholder}
-  options={accountOptions}
-  disabled={accounts.size === 0 || isLoading}
-  error={accountErrorMsg}
-/>
+<div class="flex items-end gap-2">
+  <div class="flex-1 max-w-[388px]">
+    <Select
+      id="controlkeys"
+      label={accountSelectorTitle}
+      onSelectedChange={accountChanged}
+      placeholder={accountSelectorPlaceholder}
+      options={accountOptions}
+      disabled={accounts.size === 0 || isLoading}
+      error={accountErrorMsg}
+    />
+  </div>
+
+  {#if canCopyAddress}
+    <AddToClipboard classes="my-2" copyValue={selectedAccount?.address} disabled={!selectedAccount?.address} />
+  {/if}
+</div>

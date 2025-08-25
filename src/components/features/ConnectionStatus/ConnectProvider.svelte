@@ -5,6 +5,7 @@
   import Switch from '$lib/assets/Switch.svelte';
 
   let modalOpen: boolean = $state(false);
+  let disabled = $state(false);
 </script>
 
 <Modal
@@ -14,7 +15,7 @@
   onOpenChange={(val: boolean) => (modalOpen = val)}
 >
   {#snippet trigger()}
-    <IconButton label="switch button"><Switch /></IconButton>
+    <IconButton label="switch button" {disabled}><Switch /></IconButton>
   {/snippet}
   {#snippet body()}
     <LoginForm bind:modalOpen />

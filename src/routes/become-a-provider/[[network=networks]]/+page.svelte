@@ -6,6 +6,7 @@
   import BecomeProviderNextSteps from '$features/BecomeProviderNextSteps/BecomeProviderNextSteps.svelte';
 
   let hasRequestedToBeProvider = $state(false);
+  let isLoading = $state(false);
 </script>
 
 <BlockSection id="become-a-provider" title="Become a Provider">
@@ -13,13 +14,15 @@
     {#if hasRequestedToBeProvider === false}
       <SelectNetworkAndAccount
         bind:newUser={$user}
+        bind:isLoading
         accounts={$nonProviderAccountsStore}
         accountSelectorTitle="Select a Control Key"
         accountSelectorPlaceholder="Select a Control Key"
         noAccountsFoundErrorMsg="No accounts found.  Add an Control Key to your wallet."
+        canCopyAddress={true}
       />
     {/if}
-    <BecomeProviderNextSteps bind:hasRequestedToBeProvider />
+    <BecomeProviderNextSteps bind:hasRequestedToBeProvider bind:isLoading />
   </form>
 </BlockSection>
 

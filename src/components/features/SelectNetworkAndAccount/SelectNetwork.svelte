@@ -99,7 +99,7 @@
   />
 {:else}
   <p class="gap-f8 flex items-center">
-    <IconButton label="switch button" onclick={resetState}><Switch /></IconButton>
+    <IconButton label="switch button" onclick={resetState} disabled={isLoading}><Switch /></IconButton>
     <span class="text-primary smText font-bold">Connected to {selectedNetwork?.name || 'Custom'}</span>
   </p>
 {/if}

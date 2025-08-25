@@ -16,6 +16,8 @@
     accountSelectorTitle?: string;
     accountSelectorPlaceholder?: string;
     noAccountsFoundErrorMsg?: string;
+    isLoading?: boolean;
+    canCopyAddress?: boolean;
   }
 
   let {
@@ -24,6 +26,8 @@
     accountSelectorTitle = 'Select an account',
     accountSelectorPlaceholder = 'Select an account',
     noAccountsFoundErrorMsg = 'No accounts found.',
+    isLoading = $bindable(false),
+    canCopyAddress = false,
   }: Props = $props();
 
   // Wallet access
@@ -36,7 +40,6 @@
   let connectedToEndpoint: boolean = $state(false);
   let networkErrorMsg: string = $state('');
   let accountErrorMsg: string = $state('');
-  let isLoading: boolean = $state(false);
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -99,4 +102,5 @@
   {accountSelectorPlaceholder}
   bind:accountErrorMsg
   {isLoading}
+  {canCopyAddress}
 />
