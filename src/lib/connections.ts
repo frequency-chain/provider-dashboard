@@ -9,7 +9,7 @@ import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/typ
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
-import { checkFundsForExtrinsic } from './utils';
+import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
 
 interface AddKeyData {
   msaId: string;
@@ -65,8 +65,19 @@ export async function submitAddControlKey(
   // mock extrinsic for fee estimation
   const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
   // typecheck for testing
+  let isPayingWithCapacity;
   if (typeof mockExtrinsic.paymentInfo === 'function') {
-    await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
+    try {
+      const transferableCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount);
+      if (transferableCapacity > 0n) {
+        // Suffiecient capacity. Continue to use capacity for payment
+        isPayingWithCapacity = true;
+      }
+    } catch {
+      // Not enough capacity, check funds instead
+      await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
+      isPayingWithCapacity = false;
+    }
   }
 
   // Continue with getting real signatures
@@ -93,7 +104,14 @@ export async function submitAddControlKey(
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
-  const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  let extrinsic: any;
+  if (isPayingWithCapacity) {
+    console.log('Paying for add key extrinsic with capacity');
+    extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
+  } else {
+    extrinsic = addKeyCall;
+  }
 
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
@@ -247,11 +265,7 @@ export async function submitCreateProvider(
   }
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
-  console.log('HERE1');
-
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
-  console.log('HERE2');
-
   return submitExtrinsic(extrinsic, signingAccount, extension);
 }
 

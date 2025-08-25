@@ -38,7 +38,7 @@
 </script>
 
 <div class="flex items-end gap-2">
-  <div class="flex-1 max-w-[388px]">
+  <div class="max-w-[388px] flex-1">
     <Select
       id="controlkeys"
       label={accountSelectorTitle}
