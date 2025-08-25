@@ -245,7 +245,6 @@ export async function submitCreateProvider(
     console.debug('api is not available.');
     return;
   }
-  console.log('HERE');
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
   console.log('HERE1');
