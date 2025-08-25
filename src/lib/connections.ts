@@ -246,11 +246,6 @@ export async function submitCreateProvider(
     return;
   }
 
-  // Get the estimated txn fee (does not submit txn)
-  const estTotalCost = (
-    await api.tx.msa.createProvider(providerName).paymentInfo(signingAccount.address)
-  ).partialFee.toBigInt();
-
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
