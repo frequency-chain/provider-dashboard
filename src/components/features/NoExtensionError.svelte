@@ -7,6 +7,7 @@
   open={$hasExtension === false}
   title="Extension Not Found"
   description={`Polkadot{.js} extension not found. Please install it first.`}
+  id="no-extension-modal"
 >
   {#snippet body()}
     <div class="gap-f16 flex flex-col items-center">
