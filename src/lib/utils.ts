@@ -174,7 +174,10 @@ export async function checkCapacityForExtrinsic(
   signingAccount: Account
 ): Promise<bigint> {
   const transaction = api.tx.frequencyTxPayment.payWithCapacity(extrinsic);
-  const estTotalCost = api.tx.frequencyTxPayment.computeCapacityFeeDetails(transaction);
+// Need to sign the transaction in order for the Capacity estimate to be accurate
+await transaction.signAsync(dummyKeys);
+const { baseFee, lenFee, adjustedWeightFee } = (await api.tx.frequencyTxPayment.computeCapacityFeeDetails(transaction)).unwrap();
+const estTotalCost = baseFee.toNumber() + lenFee.toNumber() + adjustedWeightFee.toNumber();
 
   const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
   const transferable = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().remainingCapacity.toBigInt() : 0n;
