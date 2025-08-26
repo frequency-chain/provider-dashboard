@@ -1,7 +1,6 @@
-// CreateMsa.test.ts
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
-import { vi } from 'vitest';
-import { writableActivityLog } from '../../src/lib/stores/activityLogStore';
+import { Mock, vi } from 'vitest';
+import { handleResult } from '../../src/lib/stores/activityLogStore';
 import { user } from '../../src/lib/stores/userStore';
 
 vi.mock('$lib/connections', async () => {
@@ -12,9 +11,17 @@ vi.mock('$lib/connections', async () => {
   };
 });
 
+vi.mock('$lib/polkadotApi', () => ({
+  getMsaInfo: vi.fn().mockResolvedValue({ msaId: 42 }),
+}));
+
+import { ExtrinsicStatus, Hash } from '@polkadot/types/interfaces';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { u8aToHex } from '@polkadot/util';
+import { tick } from 'svelte';
+import { get } from 'svelte/store';
 import CreateMsa from '../../src/components/features/BecomeProviderNextSteps/CreateMsa.svelte';
 import { submitCreateMsa } from '../../src/lib/connections';
-import { TxnStatus } from '../../src/lib/storeTypes';
 
 vi.mock('$lib/utils', async () => {
   const actual = await vi.importActual<typeof import('../../src/lib/utils')>('../../src/lib/utils');
@@ -28,7 +35,6 @@ vi.mock('$lib/utils', async () => {
 describe('CreateMsa', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    writableActivityLog.set([]);
     user.set({ address: '0x123', msaId: null });
   });
 
@@ -49,20 +55,41 @@ describe('CreateMsa', () => {
     expect(screen.getByTestId('loading-icon')).toBeDefined();
   });
 
-  it('calls submitCreateMsa on click', async () => {
-    render(CreateMsa);
-    const btn = screen.getByRole('button', { name: /Create an MSA/i });
+  it('calls submitCreateMsa and updates user.msaId', async () => {
+    (submitCreateMsa as Mock).mockImplementation(async (_api, cb: (succeeded: boolean) => void) => {
+      cb(true);
+      return '0x123456';
+    });
 
+    render(CreateMsa);
+
+    const btn = screen.getByRole('button', { name: /Create an MSA/i });
+    await fireEvent.click(btn);
+
+    await new Promise((resolve) => setTimeout(resolve, 1600));
+
+    expect(get(user).msaId).toBe(42);
+  });
+
+  it('sets isLoading = false if transaction did not succeed', async () => {
+    const mockSubmit = vi.fn().mockImplementation(async (_: any, callback: (succeeded: boolean) => void) => {
+      callback(false);
+    });
+
+    render(CreateMsa, { submitCreateMsa: mockSubmit });
+
+    const btn = screen.getByRole('button', { name: /Create an MSA/i });
     await fireEvent.click(btn);
 
     await waitFor(() => {
-      expect(submitCreateMsa).toHaveBeenCalled();
-      expect(screen.getByTestId('loading-icon')).toBeDefined();
+      expect(screen.queryByTestId('loading-icon')).toBeNull();
     });
+
+    expect(get(user).msaId).toBeNull();
   });
 
   it('shows error message if submitCreateMsa throws', async () => {
-    (submitCreateMsa as jest.Mock).mockRejectedValueOnce(new Error('test error'));
+    (submitCreateMsa as Mock).mockRejectedValueOnce(new Error('test error'));
 
     render(CreateMsa);
 
@@ -72,16 +99,73 @@ describe('CreateMsa', () => {
     expect(await screen.findByText('test error')).toBeDefined();
   });
 
-  it('renders ActivityLogPreviewItem if recentActivityItem exists', async () => {
-    writableActivityLog.set([{ txnId: 'txn-123', txnStatus: TxnStatus.SUCCESS }]);
+  it('renders ActivityLogPreviewItem after submitCreateMsa', async () => {
+    const txnId = 'txn-123';
+
+    // Mock the submitCreateMsa call
+    (submitCreateMsa as Mock).mockResolvedValueOnce(txnId);
 
     render(CreateMsa);
 
-    await fireEvent.click(screen.getByRole('button', { name: /Create an MSA/i }));
-    (submitCreateMsa as jest.Mock).mockRejectedValueOnce('0x123456');
+    // Click the "Create an MSA" button
+    const btn = screen.getByRole('button', { name: /Create an MSA/i });
+    await fireEvent.click(btn);
 
-    console.log('***screen', screen);
+    // Create a fully finalized mock result
+    const mockResult = createMockSubmittableResult({
+      txHash: { toString: () => txnId } as any,
+      status: {
+        isFinalized: true,
+        asFinalized: { toHex: () => '0x123456' },
+        toString: () => 'Finalized',
+      } as unknown as ExtrinsicStatus,
+      isFinalized: true,
+      isInBlock: false,
+      events: [{ event: { section: 'system', method: 'ExtrinsicSuccess', data: [] } } as any],
+    });
 
-    expect(await screen.findByText(/Hash:/i)).toBeDefined();
+    handleResult(mockResult);
+
+    await tick();
+
+    await waitFor(() => {
+      expect(screen.getByText(/Transaction succeeded/i)).toBeDefined();
+      expect(screen.getByText(/0x123456/)).toBeDefined(); // or match the exact rendered message
+    });
   });
 });
+
+export function createMockSubmittableResult(overrides: Partial<ISubmittableResult> = {}): ISubmittableResult {
+  // Default status is finalized
+  const defaultStatus: ExtrinsicStatus = {
+    isInBlock: false,
+    isFinalized: true,
+    isBroadcast: false,
+    isInvalid: false,
+    isUsurped: false,
+    asFinalized: { toHex: () => '0x123456' } as any,
+    asInBlock: { toHex: () => '0x0' } as any,
+    toString: () => 'Finalized',
+  } as unknown as ExtrinsicStatus;
+
+  const defaultTxHash: Hash = u8aToHex(new Uint8Array(32)) as unknown as Hash;
+
+  return {
+    dispatchError: undefined,
+    dispatchInfo: undefined,
+    internalError: undefined,
+    events: [],
+    status: defaultStatus,
+    isCompleted: true,
+    isError: false,
+    isFinalized: true,
+    isInBlock: false,
+    isWarning: false,
+    txHash: defaultTxHash,
+    txIndex: 0,
+    filterRecords: (_section: string, _method: string) => [],
+    findRecord: (_section: string, _method: string) => undefined,
+    toHuman: (_isExtended?: boolean) => ({}),
+    ...overrides,
+  } as ISubmittableResult;
+}

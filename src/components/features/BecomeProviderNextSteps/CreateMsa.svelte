@@ -18,7 +18,7 @@
 
   let { isLoading = $bindable(false) }: Props = $props();
 
-  let recentActivityItem: Activity | undefined = $state();
+  let recentActivityItem: Activity | undefined = $derived($activityLog.find((value) => value.txnId === recentTxnId));
   let recentTxnId: Activity['txnId'] | undefined = $state();
   let error: string | null = $state(null);
 
@@ -26,24 +26,27 @@
   let createMsaTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       const apiPromise = $dotApi.api as ApiPromise;
+      console.log('createMsaTxnFinished called with $user.address =', $user.address);
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
       isLoading = false;
       setTimeout(() => {
-        $user.msaId = msaInfo.msaId;
+        user.update((curUser) => ({ ...curUser, msaId: msaInfo.msaId }));
       }, 1500);
       return;
     }
     isLoading = false;
   };
 
-  const checkIsFinished = async () => {
-    if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
-      await createMsaTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
-    }
-  };
-
   $effect(() => {
-    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+    console.log('recentTxnId changed:', recentTxnId);
+    console.log('$activityLog', $activityLog);
+    const checkIsFinished = async () => {
+      if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
+        console.log('HERE!!!');
+        await createMsaTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
+      }
+    };
+
     checkIsFinished();
   });
 
@@ -56,7 +59,6 @@
     } finally {
       isLoading = false;
     }
-    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
   };
 </script>
 

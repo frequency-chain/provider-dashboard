@@ -54,6 +54,7 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
 }
 
 export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
+  console.log('Fetching MSA info for public key:', publicKey);
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
   const received = result?.unwrapOrDefault();
 
