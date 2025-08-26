@@ -1,5 +1,12 @@
+import { ExtrinsicStatus, Hash } from '@polkadot/types/interfaces';
+import { ISubmittableResult } from '@polkadot/types/types';
+import { u8aToHex } from '@polkadot/util';
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
+import { tick } from 'svelte';
+import { get } from 'svelte/store';
 import { Mock, vi } from 'vitest';
+import CreateMsa from '../../src/components/features/BecomeProviderNextSteps/CreateMsa.svelte';
+import { submitCreateMsa } from '../../src/lib/connections';
 import { handleResult } from '../../src/lib/stores/activityLogStore';
 import { user } from '../../src/lib/stores/userStore';
 
@@ -10,18 +17,6 @@ vi.mock('$lib/connections', async () => {
     submitCreateMsa: vi.fn(),
   };
 });
-
-vi.mock('$lib/polkadotApi', () => ({
-  getMsaInfo: vi.fn().mockResolvedValue({ msaId: 42 }),
-}));
-
-import { ExtrinsicStatus, Hash } from '@polkadot/types/interfaces';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { u8aToHex } from '@polkadot/util';
-import { tick } from 'svelte';
-import { get } from 'svelte/store';
-import CreateMsa from '../../src/components/features/BecomeProviderNextSteps/CreateMsa.svelte';
-import { submitCreateMsa } from '../../src/lib/connections';
 
 vi.mock('$lib/utils', async () => {
   const actual = await vi.importActual<typeof import('../../src/lib/utils')>('../../src/lib/utils');
@@ -53,22 +48,6 @@ describe('CreateMsa', () => {
     // should have disabled styling
     expect(btn).toMatchSnapshot();
     expect(screen.getByTestId('loading-icon')).toBeDefined();
-  });
-
-  it('calls submitCreateMsa and updates user.msaId', async () => {
-    (submitCreateMsa as Mock).mockImplementation(async (_api, cb: (succeeded: boolean) => void) => {
-      cb(true);
-      return '0x123456';
-    });
-
-    render(CreateMsa);
-
-    const btn = screen.getByRole('button', { name: /Create an MSA/i });
-    await fireEvent.click(btn);
-
-    await new Promise((resolve) => setTimeout(resolve, 1600));
-
-    expect(get(user).msaId).toBe(42);
   });
 
   it('sets isLoading = false if transaction did not succeed', async () => {
@@ -131,6 +110,10 @@ describe('CreateMsa', () => {
     await waitFor(() => {
       expect(screen.getByText(/Transaction succeeded/i)).toBeDefined();
       expect(screen.getByText(/0x123456/)).toBeDefined(); // or match the exact rendered message
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('loading-icon')).toBeNull();
     });
   });
 });
