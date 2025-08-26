@@ -5,7 +5,8 @@ import { readonly } from 'svelte/store';
 import { storable } from './storable';
 
 //writableActivityLog: Oldest to Newest
-const writableActivityLog = storable<Activity[]>('ActivityLog', []);
+// the writeable store is only being exported for testing purposes
+export const writableActivityLog = storable<Activity[]>('ActivityLog', []);
 export const activityLog = readonly(writableActivityLog);
 
 export const handleResult = async (result: ISubmittableResult) => {
