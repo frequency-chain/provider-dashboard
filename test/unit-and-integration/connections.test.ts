@@ -60,11 +60,46 @@ const mocks = vi.hoisted(() => {
   const resolvedCurrentEpochChain = {
     isReady: vi.fn().mockResolvedValue(true),
     query: {
-      capacity: { currentEpoch: vi.fn().mockResolvedValue(epochNumber) },
+      capacity: {
+        currentEpoch: vi.fn().mockResolvedValue(epochNumber),
+        capacityLedger: vi.fn().mockResolvedValue({
+          isSome: true,
+          unwrap: () => ({
+            remainingCapacity: { toBigInt: () => 1000n },
+          }),
+        }),
+      },
     },
-    rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },
+    rpc: {
+      chain: { getBlock: vi.fn().mockResolvedValue(blockData) },
+      frequencyTxPayment: {
+        computeCapacityFeeDetails: vi.fn().mockResolvedValue({
+          inclusionFee: {
+            unwrap: vi.fn().mockReturnValue({
+              baseFee: { toNumber: () => 1, toBigInt: () => 1n },
+              lenFee: { toNumber: () => 2, toBigInt: () => 2n },
+              adjustedWeightFee: { toNumber: () => 3, toBigInt: () => 3n },
+            }),
+          },
+        }),
+      },
+    },
     registry: { createType: vi.fn().mockReturnValue(mockCreatedType) },
-    tx: { msa: { addPublicKeyToMsa: vi.fn(() => ({ signAndSend: vi.fn(), hash: '0x123456' })) } },
+    tx: {
+      msa: {
+        addPublicKeyToMsa: vi.fn(() => ({
+          signAndSend: vi.fn(),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+      },
+      frequencyTxPayment: {
+        payWithCapacity: vi.fn(() => ({
+          signAsync: vi.fn().mockResolvedValue(true),
+          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+      },
+    },
   };
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
 
@@ -78,9 +113,18 @@ const mocks = vi.hoisted(() => {
   };
 });
 
-vi.mock('@polkadot/api', async () => {
-  return { ApiPromise: mocks.ApiPromise };
+vi.mock('@polkadot/api', () => {
+  class MockKeyring {
+    addFromUri = vi.fn().mockReturnValue({
+      sign: vi.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
+    });
+  }
+  return {
+    Keyring: MockKeyring,
+    ApiPromise: mocks.ApiPromise,
+  };
 });
+
 vi.mock('@polkadot/extension-inject/types', async () => {
   return { InjectedExtension: mocks.InjectedExtension };
 });
