@@ -1,12 +1,13 @@
 import '@frequency-chain/api-augment';
-import type { ApiPromise } from '@polkadot/api/promise';
+import { type ApiPromise, Keyring } from '@polkadot/api';
 
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { Option, u64 } from '@polkadot/types';
-import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import type { IKeyringPair, Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
+import { mnemonicGenerate } from '@polkadot/util-crypto';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
@@ -44,6 +45,7 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
+  console.log('submitAddControlKey called with msaId:', msaId);
   if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
     return;
@@ -60,24 +62,20 @@ export async function submitAddControlKey(
   const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
 
   // mock signatures for fee estimation
-  const mockSignature = '0x' + '00'.repeat(64);
-  const mockProof = { Sr25519: mockSignature };
+  const mnemonic = mnemonicGenerate(12);
+  const keyring = new Keyring({ type: 'sr25519' });
+  let keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
+  const mockProof = { Sr25519: u8aToHex(keyringPair.sign(u8aWrapBytes(newKeyPayload.toU8a()))) };
+
   // mock extrinsic for fee estimation
-  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
-  // typecheck for testing
-  let isPayingWithCapacity;
-  if (typeof mockExtrinsic.paymentInfo === 'function') {
-    try {
-      const transferableCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount);
-      if (transferableCapacity > 0n) {
-        // Suffiecient capacity. Continue to use capacity for payment
-        isPayingWithCapacity = true;
-      }
-    } catch {
-      // Not enough capacity, check funds instead
-      await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
-      isPayingWithCapacity = false;
-    }
+  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, rawPayload);
+
+  let isPayingWithCapacity = false;
+  isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
+
+  if (!isPayingWithCapacity && typeof mockExtrinsic.paymentInfo === 'function') {
+    // Not enough capacity, check funds instead
+    await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
 
   // Continue with getting real signatures
