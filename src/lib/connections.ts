@@ -4,7 +4,7 @@ import { type ApiPromise, Keyring } from '@polkadot/api';
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { Option, u64 } from '@polkadot/types';
+import type { Option } from '@polkadot/types';
 import type { IKeyringPair, Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
@@ -32,7 +32,7 @@ export async function getBlockNumber(api: ApiPromise): Promise<bigint> {
 
 export async function getEpoch(api: ApiPromise): Promise<bigint> {
   if (api && (await api.isReady)) {
-    return ((await api.query.capacity.currentEpoch()) as u64).toBigInt();
+    return (await api.query.capacity.currentEpoch()).toBigInt();
   }
   return 0n;
 }
@@ -102,7 +102,7 @@ export async function submitAddControlKey(
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
-  const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, rawPayload);
   let extrinsic: any;
   if (isPayingWithCapacity) {
     console.log('Paying for add key extrinsic with capacity');
