@@ -5,7 +5,6 @@ import type { KeyringPair } from '@polkadot/keyring/types';
 import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
-import type { Codec } from '@polkadot/types/types';
 
 export type AccountMap = Record<string, KeyringPair>;
 
@@ -92,7 +91,9 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
   let capacityDetails = defaultCapacityDetails;
 
   if (providerRegistry.isSome) {
-    const detailsResult = (await apiPromise.query.capacity.capacityLedger(msaId)) as Option<PalletCapacityCapacityDetails>;
+    const detailsResult = (await apiPromise.query.capacity.capacityLedger(
+      msaId
+    )) as Option<PalletCapacityCapacityDetails>;
     const details = detailsResult?.unwrapOrDefault();
 
     capacityDetails = {
