@@ -1,15 +1,16 @@
 import '@frequency-chain/api-augment';
-import type { ApiPromise } from '@polkadot/api/promise';
+import { type ApiPromise, Keyring } from '@polkadot/api';
 
 import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
-import type { Option, u64 } from '@polkadot/types';
-import type { Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
+import type { Option } from '@polkadot/types';
+import type { IKeyringPair, Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
+import { mnemonicGenerate } from '@polkadot/util-crypto';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
-import { checkFundsForExtrinsic } from './utils';
+import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
 
 interface AddKeyData {
   msaId: string;
@@ -31,7 +32,7 @@ export async function getBlockNumber(api: ApiPromise): Promise<bigint> {
 
 export async function getEpoch(api: ApiPromise): Promise<bigint> {
   if (api && (await api.isReady)) {
-    return ((await api.query.capacity.currentEpoch()) as u64).toBigInt();
+    return (await api.query.capacity.currentEpoch()).toBigInt();
   }
   return 0n;
 }
@@ -44,6 +45,7 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
+  console.log('submitAddControlKey called with msaId:', msaId);
   if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
     return;
@@ -60,12 +62,19 @@ export async function submitAddControlKey(
   const newKeyPayload = api.registry.createType('PalletMsaAddKeyData', rawPayload);
 
   // mock signatures for fee estimation
-  const mockSignature = '0x' + '00'.repeat(64);
-  const mockProof = { Sr25519: mockSignature };
+  const mnemonic = mnemonicGenerate(12);
+  const keyring = new Keyring({ type: 'sr25519' });
+  let keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
+  const mockProof = { Sr25519: u8aToHex(keyringPair.sign(u8aWrapBytes(newKeyPayload.toU8a()))) };
+
   // mock extrinsic for fee estimation
-  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, newKeyPayload);
-  // typecheck for testing
-  if (typeof mockExtrinsic.paymentInfo === 'function') {
+  const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, rawPayload);
+
+  let isPayingWithCapacity = false;
+  isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
+
+  if (!isPayingWithCapacity && typeof mockExtrinsic.paymentInfo === 'function') {
+    // Not enough capacity, check funds instead
     await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
 
@@ -93,7 +102,14 @@ export async function submitAddControlKey(
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
-  const extrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, newKeyPayload);
+  const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, rawPayload);
+  let extrinsic: any;
+  if (isPayingWithCapacity) {
+    console.log('Paying for add key extrinsic with capacity');
+    extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
+  } else {
+    extrinsic = addKeyCall;
+  }
 
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
@@ -247,11 +263,7 @@ export async function submitCreateProvider(
   }
   // Submit txn
   const extrinsic: SubmittableExtrinsic = api.tx.msa.createProvider(providerName);
-  console.log('HERE1');
-
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
-  console.log('HERE2');
-
   return submitExtrinsic(extrinsic, signingAccount, extension);
 }
 

@@ -1,6 +1,8 @@
-import type { ApiPromise } from '@polkadot/api';
+import { type ApiPromise } from '@polkadot/api';
 import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import type { Option } from '@polkadot/types';
+import type { IKeyringPair } from '@polkadot/types/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
@@ -145,15 +147,48 @@ export const getExtension = async (account: Account) => {
   return undefined;
 };
 
-export async function checkFundsForExtrinsic(api: ApiPromise, extrinsic: any, address: string, additionalCost = 0n) {
+export async function getTransactionCost(extrinsic: any, address: string, additionalCost = 0n): Promise<bigint> {
   const { partialFee } = await extrinsic.paymentInfo(address);
   // Get estimated total cost of txn
-  const estTotalCost = partialFee.toBigInt() + BigInt(additionalCost);
+  const estTotalCost: bigint = partialFee.toBigInt() + BigInt(additionalCost);
+  return estTotalCost;
+}
+
+export async function checkFundsForExtrinsic(
+  api: ApiPromise,
+  extrinsic: any,
+  address: string,
+  additionalCost = 0n
+): Promise<bigint> {
+  const estTotalCost = await getTransactionCost(extrinsic, address, additionalCost);
   // Check for adequate funds
   const existentialDeposit = BigInt(api.consts.balances.existentialDeposit.toString());
   const userTotalBalance = BigInt(get(user).balances.total);
   const transferable = userTotalBalance - existentialDeposit;
   if (transferable < estTotalCost) throw new Error('User does not have sufficient funds.');
+  return transferable;
+}
+
+export async function checkCapacityForExtrinsic(
+  api: ApiPromise,
+  extrinsic: any,
+  signingAccount: Account,
+  keyringPair: IKeyringPair
+): Promise<boolean> {
+  const transaction = api.tx.frequencyTxPayment.payWithCapacity(extrinsic);
+  // Need to sign the transaction with mock keypair in order for the Capacity estimate to be accurate
+  await transaction.signAsync(keyringPair);
+
+  const { baseFee, lenFee, adjustedWeightFee } = (
+    await api.rpc.frequencyTxPayment.computeCapacityFeeDetails(transaction.toHex(), null)
+  ).inclusionFee.unwrap();
+
+  const estTotalCost = baseFee.toNumber() + lenFee.toNumber() + adjustedWeightFee.toNumber();
+
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
+  const transferable = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().remainingCapacity.toBigInt() : 0n;
+
+  return transferable > estTotalCost;
 }
 
 // Balance updater for logged in account
