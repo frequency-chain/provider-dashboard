@@ -27,8 +27,6 @@
 
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
-    console.log('HERE2');
-
     if (succeeded) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
