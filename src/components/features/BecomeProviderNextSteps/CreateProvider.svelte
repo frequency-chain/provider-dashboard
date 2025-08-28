@@ -27,6 +27,8 @@
 
   // a callback for when a transaction hits a final state
   let createProviderTxnFinished = async (succeeded: boolean) => {
+    console.log('HERE2');
+
     if (succeeded) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
@@ -40,15 +42,19 @@
     }
   };
 
-  const checkIsFinished = async () => {
-    if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
-      await createProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
-    }
-  };
+  let handledTxnIds = new Set<string>();
 
   $effect(() => {
-    recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
-    checkIsFinished();
+    const recentActivityItem = $activityLog.find((value) => value.txnId === recentTxnId);
+
+    if (
+      recentActivityItem &&
+      recentActivityItem.txnStatus !== TxnStatus.LOADING &&
+      !handledTxnIds.has(recentActivityItem.txnId)
+    ) {
+      handledTxnIds.add(recentActivityItem.txnId);
+      createProviderTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
+    }
   });
 
   const doCreateProvider = async (_evt: Event) => {
