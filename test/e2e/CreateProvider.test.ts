@@ -16,6 +16,10 @@ vi.mock('$lib/connections', () => ({
   submitCreateProvider: vi.fn().mockResolvedValue('mock-txn-id'),
 }));
 
+vi.mock('$lib/polkadotApi', () => ({
+  getMsaInfo: vi.fn(),
+}));
+
 vi.mock('$lib/utils', async () => {
   const actual = await vi.importActual<typeof import('../../src/lib/utils')>('../../src/lib/utils');
   return {
