@@ -45,7 +45,6 @@ export async function submitAddControlKey(
   signingAccount: Account,
   msaId: number
 ) {
-  console.log('submitAddControlKey called with msaId:', msaId);
   if (!api || !(await api.isReady)) {
     console.debug('api is not available.');
     return;
