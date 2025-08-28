@@ -122,4 +122,24 @@ describe('SelectNetwork component', () => {
       expect(connectAndFetchAccountsMock).toHaveBeenCalledWith(testNetwork);
     });
   });
+
+  it('returns early if onSelectNetworkChanged receives undefined', async () => {
+    const connectAndFetchAccountsMock = vi.fn();
+
+    const { component } = render(SelectNetwork, {
+      accounts: new Map(),
+      newUser: null,
+      resetState: vi.fn(),
+      connectAndFetchAccounts: connectAndFetchAccountsMock,
+      selectedNetwork: null,
+      isCustomNetwork: false,
+      connectedToEndpoint: false,
+      networkErrorMsg: '',
+      isLoading: false,
+    });
+
+    await (component as any).onSelectNetworkChanged(undefined);
+
+    expect(connectAndFetchAccountsMock).not.toHaveBeenCalled();
+  });
 });
