@@ -63,9 +63,10 @@
   }
 
   const onSelectNetworkChanged = (selectedNetworkOption: Selected<string> | undefined) => {
-    const curNetwork: NetworkInfo | undefined = selectedNetworkOption?.value
+    const curNetwork: NetworkInfo | undefined = selectedNetworkOption
       ? $allNetworks.find((network) => network.name === selectedNetworkOption.value)
       : undefined;
+
     if (curNetwork) {
       selectedNetwork = curNetwork;
     }
