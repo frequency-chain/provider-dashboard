@@ -38,8 +38,6 @@
   };
 
   $effect(() => {
-    console.log('recentTxnId changed:', recentTxnId);
-    console.log('$activityLog', $activityLog);
     const checkIsFinished = async () => {
       if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
         console.log('HERE!!!');
