@@ -40,7 +40,6 @@
   $effect(() => {
     const checkIsFinished = async () => {
       if (recentActivityItem && recentActivityItem.txnStatus !== TxnStatus.LOADING) {
-        console.log('HERE!!!');
         await createMsaTxnFinished(recentActivityItem.txnStatus === TxnStatus.SUCCESS);
       }
     };
