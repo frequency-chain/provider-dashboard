@@ -16,7 +16,7 @@
 
   $effect(() => {
     $logInPromise.then(() => {
-      console.log('Set login in promise');
+      console.info('Set login in promise');
     });
   });
 
