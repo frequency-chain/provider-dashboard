@@ -19,36 +19,41 @@
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
 
   function handleInput(evt: Event) {
+    console.log('handleInput', evt?.target?.value!);
     error = '';
     const target = evt.target as HTMLInputElement;
     if (target !== null && target.value === '') {
       stakeAmount = 0n;
     } else if (target !== null && target.value !== null) {
       stakeAmount = BigInt(target.value);
+      console.log('stakeAmount', stakeAmount);
       return;
     }
   }
 
   const stake = async (e: Event) => {
-    e.preventDefault();
+    console.log('here');
+    isLoading = true;
+
     if ($user.msaId === undefined || $user.msaId === 0) {
+      console.log('here2');
+
       error = 'Undefined MSA ID';
       return;
     }
     if (!selectedAccount) {
+      console.log('here3');
+
       error = 'Account not selected';
       return;
     }
 
-    isLoading = true;
+    console.log('here4');
     try {
-      await submitStake(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user.msaId,
-        stakeAmountInPlancks
-      );
+      const extension = await getExtension($user);
+      expect(extension).toBeDefined();
+      console.log('about to call submitStake');
+      await submitStake($dotApi.api as ApiPromise, extension, selectedAccount, $user.msaId, stakeAmountInPlancks);
       modalOpen = false;
     } catch (err) {
       error = (err as Error).message;
@@ -60,11 +65,19 @@
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 
   const accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+    console.log('selectedAccountValue', selectedAccountValue);
     error = '';
     selectedAccount = selectedAccountValue?.value
       ? ($providerAccountsStore.get(selectedAccountValue.value) ?? null)
       : null;
   };
+
+  $effect(() => {
+    console.log('isLoading', isLoading);
+    console.log('!selectedAccount', !selectedAccount);
+    console.log('selectedAccount', selectedAccount);
+    console.log('stakeAmount <= 0', stakeAmount <= 0);
+  });
 </script>
 
 <form class="column gap-f16">
@@ -79,8 +92,10 @@
 
   <Input
     id="stakingInput"
+    data-testid="staking-input"
     type="number"
     label={`Amount in ${$storeChainInfo.token}`}
+    placeholder="Amount to stake"
     min="0"
     value="1"
     oninput={handleInput}
