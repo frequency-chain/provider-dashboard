@@ -1,6 +1,4 @@
-import { ExtrinsicStatus, Hash } from '@polkadot/types/interfaces';
-import { ISubmittableResult } from '@polkadot/types/types';
-import { u8aToHex } from '@polkadot/util';
+import { ExtrinsicStatus } from '@polkadot/types/interfaces';
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { get } from 'svelte/store';
@@ -9,6 +7,7 @@ import CreateMsa from '../../src/components/features/BecomeProviderNextSteps/Cre
 import { submitCreateMsa } from '../../src/lib/connections';
 import { handleResult } from '../../src/lib/stores/activityLogStore';
 import { user } from '../../src/lib/stores/userStore';
+import { createMockSubmittableResult } from '../helpers';
 
 vi.mock('$lib/connections', async () => {
   const actual = await vi.importActual<typeof import('../../src/lib/connections')>('../../src/lib/connections');
@@ -117,38 +116,3 @@ describe('CreateMsa', () => {
     });
   });
 });
-
-export function createMockSubmittableResult(overrides: Partial<ISubmittableResult> = {}): ISubmittableResult {
-  // Default status is finalized
-  const defaultStatus: ExtrinsicStatus = {
-    isInBlock: false,
-    isFinalized: true,
-    isBroadcast: false,
-    isInvalid: false,
-    isUsurped: false,
-    asFinalized: { toHex: () => '0x123456' } as any,
-    asInBlock: { toHex: () => '0x0' } as any,
-    toString: () => 'Finalized',
-  } as unknown as ExtrinsicStatus;
-
-  const defaultTxHash: Hash = u8aToHex(new Uint8Array(32)) as unknown as Hash;
-
-  return {
-    dispatchError: undefined,
-    dispatchInfo: undefined,
-    internalError: undefined,
-    events: [],
-    status: defaultStatus,
-    isCompleted: true,
-    isError: false,
-    isFinalized: true,
-    isInBlock: false,
-    isWarning: false,
-    txHash: defaultTxHash,
-    txIndex: 0,
-    filterRecords: (_section: string, _method: string) => [],
-    findRecord: (_section: string, _method: string) => undefined,
-    toHuman: (_isExtended?: boolean) => ({}),
-    ...overrides,
-  } as ISubmittableResult;
-}

@@ -26,7 +26,6 @@
   let createMsaTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       const apiPromise = $dotApi.api as ApiPromise;
-      console.log('createMsaTxnFinished called with $user.address =', $user.address);
       const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
       isLoading = false;
       setTimeout(() => {
