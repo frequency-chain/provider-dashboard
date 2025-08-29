@@ -19,6 +19,7 @@ export function createMockSubmittableResult(overrides: Partial<ISubmittableResul
   const defaultStatus: ExtrinsicStatus = {
     isInBlock: false,
     isFinalized: true,
+    isError: false,
     isBroadcast: false,
     isInvalid: false,
     isUsurped: false,
