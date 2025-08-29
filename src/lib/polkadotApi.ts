@@ -111,7 +111,7 @@ export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Pro
   const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
   const keys = keyInfoResponse?.msa_keys;
   if (keys) {
-    console.log('Successfully found keys.', keys);
+    console.info('Successfully found keys.', keys);
     return keys;
   }
   throw Error(`Keys not found for ${msaId}`);

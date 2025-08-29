@@ -63,7 +63,7 @@ export async function submitAddControlKey(
   // mock signatures for fee estimation
   const mnemonic = mnemonicGenerate(12);
   const keyring = new Keyring({ type: 'sr25519' });
-  let keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
+  const keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
   const mockProof = { Sr25519: u8aToHex(keyringPair.sign(u8aWrapBytes(newKeyPayload.toU8a()))) };
 
   // mock extrinsic for fee estimation
@@ -104,7 +104,7 @@ export async function submitAddControlKey(
   const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, rawPayload);
   let extrinsic: any;
   if (isPayingWithCapacity) {
-    console.log('Paying for add key extrinsic with capacity');
+    console.info('Paying for add key extrinsic with capacity');
     extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
   } else {
     extrinsic = addKeyCall;
@@ -228,7 +228,7 @@ export async function signPayloadWithExtension(
       signed = await signer.signRaw(signerPayloadRaw);
       return signed?.signature;
     } catch (e: any) {
-      console.log(`Error: ${e?.message}`);
+      console.error(`Error: ${e?.message}`);
       throw new Error(e?.message);
     }
   }
