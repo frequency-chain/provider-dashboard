@@ -37,6 +37,8 @@
       error = 'Undefined MSA ID';
       return;
     }
+    if (!selectedAccount) throw new Error('Account not selected');
+
     try {
       const extension = await getExtension($user);
       await submitStake($dotApi.api as ApiPromise, extension, selectedAccount, $user.msaId, stakeAmountInPlancks);
@@ -44,7 +46,6 @@
     } catch (err) {
       error = (err as Error).message;
     } finally {
-      console.log('***here5****');
       isLoading = false;
     }
   };
