@@ -19,75 +19,55 @@
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
 
   function handleInput(evt: Event) {
-    console.log('handleInput', evt?.target?.value!);
     error = '';
     const target = evt.target as HTMLInputElement;
     if (target !== null && target.value === '') {
       stakeAmount = 0n;
     } else if (target !== null && target.value !== null) {
       stakeAmount = BigInt(target.value);
-      console.log('stakeAmount', stakeAmount);
       return;
     }
   }
 
   const stake = async (e: Event) => {
-    console.log('here');
+    e.preventDefault();
     isLoading = true;
 
     if ($user.msaId === undefined || $user.msaId === 0) {
-      console.log('here2');
-
       error = 'Undefined MSA ID';
       return;
     }
-    if (!selectedAccount) {
-      console.log('here3');
-
-      error = 'Account not selected';
-      return;
-    }
-
-    console.log('here4');
     try {
       const extension = await getExtension($user);
-      expect(extension).toBeDefined();
-      console.log('about to call submitStake');
       await submitStake($dotApi.api as ApiPromise, extension, selectedAccount, $user.msaId, stakeAmountInPlancks);
       modalOpen = false;
     } catch (err) {
       error = (err as Error).message;
     } finally {
+      console.log('***here5****');
       isLoading = false;
     }
   };
 
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 
-  const accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    console.log('selectedAccountValue', selectedAccountValue);
+  let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
     error = '';
-    selectedAccount = selectedAccountValue?.value
-      ? ($providerAccountsStore.get(selectedAccountValue.value) ?? null)
-      : null;
+    const curAccount: Account | undefined = selectedAccountValue?.value
+      ? $providerAccountsStore.get(selectedAccountValue.value)
+      : undefined;
+    if (curAccount) selectedAccount = curAccount;
   };
-
-  $effect(() => {
-    console.log('isLoading', isLoading);
-    console.log('!selectedAccount', !selectedAccount);
-    console.log('selectedAccount', selectedAccount);
-    console.log('stakeAmount <= 0', stakeAmount <= 0);
-  });
 </script>
 
-<form class="column gap-f16">
+<form class="column gap-f16" data-testid="stake-form">
   <Select
     disabled={$providerAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"
     options={accountOptions}
-    onSelectedChange={accountChanged}
+    onSelectedChange={controlKeyChanged}
   />
 
   <Input

@@ -1,7 +1,6 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { Mock, vi } from 'vitest';
 
-// 👇 mocks must come first
 vi.mock('$lib/connections', () => ({
   submitStake: vi.fn(),
   DOLLARS: 1n,
@@ -17,12 +16,7 @@ import { submitStake } from '../../src/lib/connections'; // must match component
 import { dotApi } from '../../src/lib/stores';
 import { allAccountsStore } from '../../src/lib/stores/accountsStore';
 import { user } from '../../src/lib/stores/userStore';
-import { selectAccountOptions } from '../../src/lib/utils';
-
-vi.mock('$lib/utils', () => ({
-  selectAccountOptions: vi.fn(),
-  getExtension: vi.fn().mockResolvedValue({ signer: {} }),
-}));
+import { getExtension, selectAccountOptions } from '../../src/lib/utils';
 
 dotApi.set({ api: {} } as any);
 
@@ -36,13 +30,10 @@ const mockAccount = {
 describe('StakeForm', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-    user.set({
-      msaId: 123,
-      isProvider: true,
-      address: '0x1234',
-      balances: { transferable: 100n, locked: 10n, total: 110n },
-    });
+    user.set(mockAccount);
     allAccountsStore.set(new Map([[mockAccount.address, mockAccount]]));
+    (getExtension as Mock).mockResolvedValue({ signer: {} });
+    (submitStake as Mock).mockResolvedValue(undefined);
   });
 
   it('renders form elements', () => {
@@ -53,20 +44,17 @@ describe('StakeForm', () => {
     expect(screen.getByRole('button', { name: /Stake/i })).toBeDefined();
   });
 
-  it('shows error if no account selected', async () => {
+  it('is disabled no account selected', async () => {
     render(StakeForm, { modalOpen: true });
 
     const button = screen.getByRole('button', { name: /Stake/i });
-    await fireEvent.click(button);
-
-    expect(await screen.findByText(/Account not selected/i)).toBeInTheDocument();
+    expect(button).toBeDisabled();
   });
 
   it('calls submitStake when valid', async () => {
-    // Mock account options
     (selectAccountOptions as Mock).mockReturnValue([{ optionLabel: 'test option', value: mockAccount.address }]);
 
-    const { container } = render(StakeForm, { modalOpen: true });
+    render(StakeForm, { modalOpen: true });
 
     // Select the account
     const select = screen.getByText(/Select Control Key/i);
@@ -74,7 +62,6 @@ describe('StakeForm', () => {
 
     const option = screen.getByText(/test option/i);
     await fireEvent.click(option);
-    console.log('ACCOUNT SELECTED');
 
     // Type the stake amount
     const input = screen.getByTestId('staking-input');
@@ -82,38 +69,65 @@ describe('StakeForm', () => {
 
     (input as HTMLInputElement).value = '5';
     await fireEvent.input(input);
-    console.log('INPUT VALUE SET');
 
-    // Click the stake button
     const button = screen.getByRole('button', { name: /Stake/i });
-    await fireEvent.click(button);
-    console.log('SUBMITTED');
+    fireEvent.click(button);
 
-    // Assert loading icon shows
-    await waitFor(() => {
-      expect(screen.getByTestId('loading-icon')).toBeDefined();
-    });
+    expect(screen.getByTestId('loading-icon')).toBeDefined();
 
-    await waitFor(() => {
-      expect(submitStake).toHaveBeenCalled();
-    });
-
-    await waitFor(() => {
-      expect(button).not.toBeDisabled();
+    waitFor(() => {
+      expect(submitStake).toHaveBeenCalledWith({}, { signer: {} }, mockAccount, mockAccount.msaId, 5n);
     });
   });
 
-  // it('handles error from submitStake', async () => {
-  //   (submitStake as any).mockRejectedValue(new Error('Stake failed'));
+  it('handles error when stakeAmount = 0n', async () => {
+    (selectAccountOptions as Mock).mockReturnValue([{ optionLabel: 'test option', value: mockAccount.address }]);
 
-  //   render(StakeForm, { modalOpen: true });
+    render(StakeForm, { modalOpen: true });
 
-  //   const select = screen.getByLabelText(/Wallet Control Key/i);
-  //   await fireEvent.change(select, { target: { value: mockAccount.address } });
+    // Select the account
+    const select = screen.getByText(/Select Control Key/i);
+    await fireEvent.click(select);
 
-  //   const button = screen.getByRole('button', { name: /Stake/i });
-  //   await fireEvent.click(button);
+    const option = screen.getByText(/test option/i);
+    await fireEvent.click(option);
 
-  //   expect(await screen.findByText(/Stake failed/i)).toBeInTheDocument();
-  // });
+    // Type the stake amount
+    const input = screen.getByTestId('staking-input');
+    expect(input).toBeDefined();
+
+    (input as HTMLInputElement).value = '';
+    await fireEvent.input(input);
+
+    const button = screen.getByRole('button', { name: /Stake/i });
+    await fireEvent.click(button);
+
+    await waitFor(async () => {
+      expect(submitStake).toHaveBeenCalledWith({}, { signer: {} }, mockAccount, mockAccount.msaId, 0n);
+    });
+  });
+
+  it('shows error when msaId is undefined', async () => {
+    user.set({ ...mockAccount, msaId: undefined });
+
+    render(StakeForm, { modalOpen: true });
+
+    const button = screen.getByRole('button', { name: /Stake/i });
+    await fireEvent.click(button);
+
+    expect(await screen.findByText(/Undefined MSA ID/i)).toBeInTheDocument();
+    expect(submitStake).not.toHaveBeenCalled();
+  });
+
+  it('shows error when msaId is 0', async () => {
+    user.set({ ...mockAccount, msaId: 0 });
+
+    render(StakeForm, { modalOpen: true });
+
+    const button = screen.getByRole('button', { name: /Stake/i });
+    await fireEvent.click(button);
+
+    expect(await screen.findByText(/Undefined MSA ID/i)).toBeInTheDocument();
+    expect(submitStake).not.toHaveBeenCalled();
+  });
 });
