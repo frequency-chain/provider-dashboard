@@ -31,24 +31,17 @@
 
   const stake = async (e: Event) => {
     e.preventDefault();
+    isLoading = true;
+
     if ($user.msaId === undefined || $user.msaId === 0) {
       error = 'Undefined MSA ID';
       return;
     }
-    if (!selectedAccount) {
-      error = 'Account not selected';
-      return;
-    }
+    if (!selectedAccount) throw new Error('Account not selected');
 
-    isLoading = true;
     try {
-      await submitStake(
-        $dotApi.api as ApiPromise,
-        await getExtension($user),
-        selectedAccount,
-        $user.msaId,
-        stakeAmountInPlancks
-      );
+      const extension = await getExtension($user);
+      await submitStake($dotApi.api as ApiPromise, extension, selectedAccount, $user.msaId, stakeAmountInPlancks);
       modalOpen = false;
     } catch (err) {
       error = (err as Error).message;
@@ -59,28 +52,31 @@
 
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 
-  const accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
+  let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
     error = '';
-    selectedAccount = selectedAccountValue?.value
-      ? ($providerAccountsStore.get(selectedAccountValue.value) ?? null)
-      : null;
+    const curAccount: Account | undefined = selectedAccountValue?.value
+      ? $providerAccountsStore.get(selectedAccountValue.value)
+      : undefined;
+    if (curAccount) selectedAccount = curAccount;
   };
 </script>
 
-<form class="column gap-f16">
+<form class="column gap-f16" data-testid="stake-form">
   <Select
     disabled={$providerAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"
     options={accountOptions}
-    onSelectedChange={accountChanged}
+    onSelectedChange={controlKeyChanged}
   />
 
   <Input
     id="stakingInput"
+    data-testid="staking-input"
     type="number"
     label={`Amount in ${$storeChainInfo.token}`}
+    placeholder="Amount to stake"
     min="0"
     value="1"
     oninput={handleInput}
