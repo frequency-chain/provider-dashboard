@@ -31,7 +31,6 @@
     isLoading = $bindable(false),
   }: Props = $props();
 
-  console.log('allNetworks', $allNetworks);
   // if there is a selected network from the store, use it
   onMount(async () => {
     if (selectedNetwork) {
