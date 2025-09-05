@@ -73,8 +73,7 @@
     }
   }
 
-  // export for testing purposes
-  export const resetState = () => {
+  const resetState = () => {
     selectedNetwork = null;
     selectedAccount = null;
     isCustomNetwork = false;
