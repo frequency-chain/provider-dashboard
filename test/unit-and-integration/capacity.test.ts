@@ -2,6 +2,7 @@ import Capacity from '$features/Capacity/Capacity.svelte';
 import { dotApi, storeChainInfo } from '$lib/stores';
 import { user } from '$lib/stores/userStore';
 import { ChainInfo } from '$lib/storeTypes';
+import Keyring from '@polkadot/keyring';
 import '@testing-library/jest-dom';
 import { cleanup, render, waitFor } from '@testing-library/svelte';
 import { vi } from 'vitest';
@@ -16,7 +17,7 @@ const mocks = vi.hoisted(() => {
       return this.value;
     }
     toNumber(): number {
-      return this.value as number;
+      return Number(this.value);
     }
     unwrapOrDefault(): TestCodec {
       return this;
@@ -144,23 +145,70 @@ describe('Capacity.svelte', () => {
       });
     });
 
-    // TODO: This test is not working as expected, it is not showing the expected values
-    // it('Shows the expected values for Capacity, block and epoch', async () => {
-    //   // render component first
-    //   const createdApi = await __mocks__.ApiPromise.create();
-    //   const { container } = render(Capacity, { token: 'FLARP' });
+    it('Shows the expected values for Capacity, block and epoch', async () => {
+      // render component first
+      const createdApi = await mocks.ApiPromise.create();
+      const { getByText } = render(Capacity);
 
-    //   // trigger changes as if user clicked Connect and such
-    //   await dotApi.update((val) => (val = { ...val, api: createdApi }));
-    //   // transactionSigningAddress.set('0xf00bead');
-    //   user.update((u) => (u = { ...u, address: '0xdeadbeef' }));
-    //   await waitFor(() => {
-    //     expect(getByTextContent('Remaining 5.0100 micro CAP')).toBeInTheDocument();
-    //     expect(getByTextContent('Total Issued 10.0000 micro CAP')).toBeInTheDocument();
-    //     expect(getByTextContent('Last Replenished Epoch 59')).toBeInTheDocument();
-    //     expect(getByTextContent('Staked Token 10.0000 micro FLARP')).toBeInTheDocument();
-    //     expect(container.innerHTML.includes('Epoch 59')).toBe(true);
-    //   });
-    // });
+      // trigger changes as if user clicked Connect and such
+      await dotApi.update((val) => (val = { ...val, api: createdApi }));
+      // transactionSigningAddress.set('0xf00bead');
+      user.set({
+        address: '0x1234',
+        isProvider: true,
+        msaId: null,
+        providerName: 'Alice',
+        injectedAccount: {
+          address: '0x1234',
+          meta: {
+            genesisHash: '1234',
+            name: 'Alice',
+            source: 'polkadot-js',
+          },
+        },
+        keyringPair: new Keyring({ type: 'sr25519' }).addFromUri('//Alice'),
+      });
+      waitFor(() => {
+        expect(getByText('No MSA ID.  Please create one.')).toBeDefined();
+      });
+    });
+
+    it('Shows the expected values for Capacity, block and epoch', async () => {
+      // render component first
+      const createdApi = await mocks.ApiPromise.create();
+      const { container, getByText } = render(Capacity, { token: 'FLARP' });
+
+      // trigger changes as if user clicked Connect and such
+      await dotApi.update((val) => (val = { ...val, api: createdApi }));
+      // transactionSigningAddress.set('0xf00bead');
+      user.set({
+        address: '0x1234',
+        isProvider: true,
+        msaId: 1234,
+        providerName: 'Alice',
+        injectedAccount: {
+          address: '0x1234',
+          meta: {
+            genesisHash: '1234',
+            name: 'Alice',
+            source: 'polkadot-js',
+          },
+        },
+        keyringPair: new Keyring({ type: 'sr25519' }).addFromUri('//Alice'),
+      });
+      await waitFor(() => {
+        expect(getByText('Remaining')).toBeInTheDocument();
+        expect(getByText('5.0100 micro CAP')).toBeInTheDocument();
+
+        expect(getByText('Total Issued')).toBeInTheDocument();
+        expect(getByText('10.0000 micro CAP')).toBeInTheDocument();
+
+        expect(getByText('Last Replenished')).toBeInTheDocument();
+        expect(getByText('Epoch 59')).toBeInTheDocument();
+
+        expect(getByText('Staked Token')).toBeInTheDocument();
+        expect(getByText('50.0000 micro')).toBeInTheDocument();
+      });
+    });
   });
 });
