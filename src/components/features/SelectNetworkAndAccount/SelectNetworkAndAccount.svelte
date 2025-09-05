@@ -50,7 +50,8 @@
     thisWeb3Accounts = polkadotExt.web3Accounts;
   });
 
-  async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
+  // export only for testing purposes
+  export async function connectAndFetchAccounts(network: NetworkInfo | null): Promise<void> {
     if (network) {
       try {
         networkErrorMsg = '';
@@ -72,7 +73,8 @@
     }
   }
 
-  const resetState = () => {
+  // export for testing purposes
+  export const resetState = () => {
     selectedNetwork = null;
     selectedAccount = null;
     isCustomNetwork = false;
