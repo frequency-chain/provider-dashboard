@@ -69,10 +69,9 @@ export async function submitAddControlKey(
   // mock extrinsic for fee estimation
   const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, rawPayload);
 
-  let isPayingWithCapacity = false;
-  isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
+  const isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
 
-  if (!isPayingWithCapacity && typeof mockExtrinsic.paymentInfo === 'function') {
+  if (!isPayingWithCapacity) {
     // Not enough capacity, check funds instead
     await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
@@ -197,8 +196,13 @@ async function submitExtrinsicWithKeyring(
   return extrinsic.hash.toString();
 }
 
+// only exporting for testing purposes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
+export async function signPayload(
+  payload: any,
+  account: Account,
+  extension: InjectedExtension | undefined
+): Promise<string> {
   if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
   if (extension) return signPayloadWithExtension(extension, account.address, payload);
   throw new Error('Unable to find wallet extension');
