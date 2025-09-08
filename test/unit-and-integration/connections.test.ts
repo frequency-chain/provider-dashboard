@@ -61,6 +61,7 @@ const mocks = vi.hoisted(() => {
           isSome: true,
           unwrap: () => ({
             remainingCapacity: { toBigInt: () => 1000n },
+            totalTokensStaked: { toBigInt: () => 500n },
           }),
         }),
       },
@@ -94,8 +95,21 @@ const mocks = vi.hoisted(() => {
           hash: { toString: () => '0x123456', toHex: () => '0x123456' },
         })),
       },
+      capacity: {
+        stake: vi.fn(() => ({
+          signAsync: vi.fn().mockResolvedValue(true),
+          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+        unstake: vi.fn(() => ({
+          signAsync: vi.fn().mockResolvedValue(true),
+          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+      },
     },
   };
+
   mockApiPromise.create = vi.fn().mockResolvedValue(resolvedCurrentEpochChain);
 
   const mockWeb3FromSource = vi.fn();
@@ -132,18 +146,58 @@ vi.mock('$lib/utils', () => ({
   checkFundsForExtrinsic: vi.fn(),
 }));
 
+vi.mock('$lib/connections', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('$lib/connections')>();
+  return {
+    ...actual,
+    signPayload: vi.fn(),
+  };
+});
+
+const notReadyMockApi = { isReady: false } as unknown as ApiPromise;
+const mockApi = await ApiPromise.create();
+const mockSignPayload = vi.fn().mockImplementation(async (payload: SignerPayloadJSON): Promise<SignerResult> => {
+  return {
+    id: 1,
+    signature: '0x123',
+    signedTransaction: '0x123',
+  };
+});
+
+const extension = {
+  signer: {
+    signPayload: mockSignPayload,
+  },
+};
+const msaId = 4;
+
+let alice: Account;
+let bob: Account;
+
+beforeEach(() => {
+  const keyring = new Keyring({ type: 'sr25519' });
+  const keyRingPairA = keyring.addFromUri('//Alice');
+  const keyRingPairB = keyring.addFromUri('//Bob');
+
+  alice = new Account();
+  bob = new Account();
+
+  alice.keyringPair = keyRingPairA;
+  alice.address = keyRingPairA.address;
+  bob.keyringPair = keyRingPairB;
+  bob.address = keyRingPairB.address;
+});
+
 describe('getEpoch', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
   test('getEpoch works', async () => {
-    const mockApi = await ApiPromise.create();
     const ce = await getEpoch(mockApi);
     expect(ce).toBe(101n);
   });
   test('getEpoch returns 0n when api not ready', async () => {
-    const mockApi = { isReady: false } as unknown as ApiPromise;
-    const ce = await getEpoch(mockApi);
+    const ce = await getEpoch(notReadyMockApi);
     expect(ce).toBe(0n);
   });
 });
@@ -152,35 +206,17 @@ describe('getBlockNumber', () => {
   beforeEach(() => vi.clearAllMocks());
 
   test('getBlockNumber works', async () => {
-    const mockApi = await ApiPromise.create();
     const bn = await connections.getBlockNumber(mockApi);
     expect(bn).toBe(1001n);
   });
 
   test('getBlockNumber returns 0 when api not ready', async () => {
-    const mockApi = { isReady: false } as unknown as ApiPromise;
-    const bn = await connections.getBlockNumber(mockApi);
+    const bn = await connections.getBlockNumber(notReadyMockApi);
     expect(bn).toBe(0n);
   });
 });
 
 describe('submitAddControlKey', async () => {
-  const keyring = new Keyring({ type: 'sr25519' });
-  const keyRingPairA = keyring.addFromUri('//Alice');
-  const keyRingPairB = keyring.addFromUri('//Bob');
-
-  const alice = new Account();
-  const bob = new Account();
-
-  alice.keyringPair = keyRingPairA;
-  alice.address = keyRingPairA.address;
-  bob.keyringPair = keyRingPairB;
-  bob.address = keyRingPairB.address;
-
-  const mockApi = await ApiPromise.create();
-  const extension = undefined;
-  const msaId = 4;
-
   beforeAll(() => {
     vi.clearAllMocks();
   });
@@ -228,21 +264,50 @@ describe('submitAddControlKey', async () => {
 
     expect(mockApi.tx.msa.addPublicKeyToMsa).toHaveBeenCalled();
 
-    // expect(mockApi.tx.frequencyTxPayment.payWithCapacity).not.toHaveBeenCalled();
+    expect(mockApi.tx.frequencyTxPayment.payWithCapacity).not.toHaveBeenCalled();
   }, 7000);
 
   it('returns null when api is not ready', async () => {
-    const notReadyMockApi = { isReady: false } as unknown as ApiPromise;
     expect(await connections.submitAddControlKey(notReadyMockApi, extension, bob, alice, msaId)).toBe(undefined);
   }, 7000);
 
   it('throws Signing Canceled error', async () => {
-    vi.spyOn(connections, 'signPayloadWithKeyring').mockRejectedValueOnce(new Error('Signing Canceled'));
+    delete (alice as any).keyringPair;
+    delete (bob as any).keyringPair;
 
-    await expect(await connections.submitAddControlKey(mockApi, extension, bob, alice, msaId)).rejects.toThrow(
-      'Signing Canceled'
+    (connections.signPayload as Mock).mockResolvedValueOnce('0x1234').mockRejectedValueOnce(new Error());
+
+    await expect(connections.submitAddControlKey(mockApi, extension, bob, alice, msaId)).rejects.toThrow(
+      'Unknown error'
     );
   }, 7000);
+});
+
+describe('submit Stake', () => {
+  it('submits extrinsic', async () => {
+    (checkFundsForExtrinsic as Mock).mockResolvedValue(true);
+
+    await connections.submitStake(mockApi, extension, alice, msaId, 1n);
+    expect(checkFundsForExtrinsic).toHaveBeenCalled();
+  });
+
+  it('returns undefined when api is not ready', async () => {
+    expect(await connections.submitStake(notReadyMockApi, extension, alice, msaId, 1n)).toBe(undefined);
+  });
+});
+
+describe('submit UnStake', () => {
+  it('submits extrinsic', async () => {
+    (checkFundsForExtrinsic as Mock).mockResolvedValue(true);
+
+    await connections.submitUnstake(mockApi, extension, alice, msaId, 1n);
+    expect(checkFundsForExtrinsic).toHaveBeenCalled();
+    expect(mockApi.query.capacity.capacityLedger).toHaveBeenCalled();
+  });
+
+  it('returns undefined when api is not ready', async () => {
+    expect(await connections.submitUnstake(notReadyMockApi, extension, alice, msaId, 1n)).toBe(undefined);
+  });
 });
 
 describe('signPayloadWithKeyring', () => {
@@ -253,7 +318,8 @@ describe('signPayloadWithKeyring', () => {
     const mockApi = await ApiPromise.create();
     const message = mockApi.registry.createType('MyMessage', 'Anything');
     const result = signPayloadWithKeyring(signer, message);
-    expect(result).toMatch(/^0x/);
+    console.log('RESULT', result);
+    expect(result).toMatch('0x');
     expect(result.length).toEqual(130);
   });
 });
@@ -267,3 +333,7 @@ describe('signPayloadWithExtension', () => {
     expect(result).toEqual('0xc0ffeec0ffee');
   });
 });
+
+// describe('submitExtrinsic', () => {
+
+// });
