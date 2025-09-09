@@ -1,6 +1,7 @@
 import * as connections from '$lib/connections';
 import { Account } from '$lib/stores/accountsStore';
 import { ApiPromise } from '@polkadot/api';
+import { SubmittableExtrinsic } from '@polkadot/api/types';
 import { Keyring } from '@polkadot/keyring';
 import { SignerPayloadJSON, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { stringToU8a } from '@polkadot/util';
@@ -52,6 +53,11 @@ const mocks = vi.hoisted(() => {
   const blockData = {
     block: { header: { number: new TestCodec(1001n) } },
   };
+  const mockExtrinsic = {
+    signAsync: vi.fn().mockResolvedValue(true),
+    toHex: vi.fn().mockReturnValue('0xdeadbeef'),
+    hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+  };
   const resolvedCurrentEpochChain = {
     isReady: vi.fn().mockResolvedValue(true),
     query: {
@@ -89,23 +95,11 @@ const mocks = vi.hoisted(() => {
         })),
       },
       frequencyTxPayment: {
-        payWithCapacity: vi.fn(() => ({
-          signAsync: vi.fn().mockResolvedValue(true),
-          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
-          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
-        })),
+        payWithCapacity: vi.fn(() => mockExtrinsic),
       },
       capacity: {
-        stake: vi.fn(() => ({
-          signAsync: vi.fn().mockResolvedValue(true),
-          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
-          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
-        })),
-        unstake: vi.fn(() => ({
-          signAsync: vi.fn().mockResolvedValue(true),
-          toHex: vi.fn().mockReturnValue('0xdeadbeef'),
-          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
-        })),
+        stake: vi.fn(() => mockExtrinsic),
+        unstake: vi.fn(() => mockExtrinsic),
       },
     },
   };
@@ -334,6 +328,37 @@ describe('signPayloadWithExtension', () => {
   });
 });
 
-// describe('submitExtrinsic', () => {
+describe('submitExtrinsic', () => {
+  it('calls submitExtrinsicWithKeyring when account has keyringPair', async () => {
+    const mockExtrinsic = {
+      signAndSend: vi.fn().mockResolvedValue('txHash'),
+      signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
+      toHex: vi.fn().mockReturnValue('0x1234'),
+      hash: { toHex: () => '0x1234', toString: () => '0x1234' },
+    } as unknown as SubmittableExtrinsic<'promise'>;
 
-// });
+    const result = await connections.submitExtrinsic(mockExtrinsic, alice, undefined);
+
+    expect(await connections.submitExtrinsicWithKeyring(mockExtrinsic, alice)).toEqual('0x1234');
+
+    expect(result).toEqual('0x1234');
+  });
+
+  it('calls submitExtrinsicWithExtension when account has extension and no keyring', async () => {
+    const mockExtrinsic = {
+      signAndSend: vi.fn().mockResolvedValue('txHash'),
+      signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
+      toHex: vi.fn().mockReturnValue('0x1234'),
+      hash: { toHex: () => '0x1234', toString: () => '0x1234' },
+    } as unknown as SubmittableExtrinsic<'promise'>;
+
+    delete (alice as any).keyringPair;
+    delete (bob as any).keyringPair;
+
+    const result = await connections.submitExtrinsic(mockExtrinsic, alice, extension);
+
+    expect(await connections.submitExtrinsicWithExtension(extension, mockExtrinsic, alice.address)).toEqual('0x1234');
+
+    expect(result).toEqual('0x1234');
+  });
+});

@@ -152,19 +152,20 @@ export async function submitUnstake(
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
-function submitExtrinsic(
+// only exporting for testing purposes
+export function submitExtrinsic(
   extrinsic: SubmittableExtrinsic,
   account: Account,
   extension: InjectedExtension | undefined
 ): Promise<string> {
-  console.log('extrinsic****', extrinsic);
+  console.log('Submitting extrinsic:', account);
   if (account.keyringPair) return submitExtrinsicWithKeyring(extrinsic, account.keyringPair);
   if (extension) return submitExtrinsicWithExtension(extension, extrinsic, account.address);
   throw new Error('Unable to find wallet extension');
 }
 
 // use the Polkadot extension the user selected to submit the provided extrinsic
-async function submitExtrinsicWithExtension(
+export async function submitExtrinsicWithExtension(
   extension: InjectedExtension,
   extrinsic: SubmittableExtrinsic,
   signingAddress: string
@@ -185,7 +186,7 @@ async function submitExtrinsicWithExtension(
 }
 
 // Use the built-in test accounts to submit an extrinsic
-async function submitExtrinsicWithKeyring(
+export async function submitExtrinsicWithKeyring(
   extrinsic: SubmittableExtrinsic,
   signingAccount: KeyringPair
 ): Promise<string> {
