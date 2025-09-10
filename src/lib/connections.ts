@@ -95,7 +95,7 @@ export async function submitAddControlKey(
       }, 3000);
     });
   } catch (err: any) {
-    throw new Error(err?.message || 'Signing Canceled');
+    throw new Error(err.message);
   }
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
@@ -193,6 +193,7 @@ export async function submitExtrinsicWithKeyring(
     await extrinsic.signAndSend(signingAccount, { nonce: -1 }, handleResult);
   } catch (e: unknown) {
     handleTxnError(extrinsic?.hash.toString(), `${e}`);
+    throw new Error(`${e}`);
   }
   return extrinsic.hash.toString();
 }
