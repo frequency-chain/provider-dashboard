@@ -158,7 +158,6 @@ export function submitExtrinsic(
   account: Account,
   extension: InjectedExtension | undefined
 ): Promise<string> {
-  console.log('Submitting extrinsic:', account);
   if (account.keyringPair) return submitExtrinsicWithKeyring(extrinsic, account.keyringPair);
   if (extension) return submitExtrinsicWithExtension(extension, extrinsic, account.address);
   throw new Error('Unable to find wallet extension');

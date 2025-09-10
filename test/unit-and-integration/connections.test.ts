@@ -318,13 +318,27 @@ describe('signPayloadWithKeyring', () => {
   });
 });
 
-describe('signPayloadWithExtension', () => {
+describe('signPayloadWithExtension', async () => {
+  const message = mockApi.registry.createType('MyMessage', 'Anything');
+  const injected = await mocks.InjectedExtension();
+
   it("returns the expected 'signature'", async () => {
-    const mockApi = await ApiPromise.create();
-    const message = mockApi.registry.createType('MyMessage', 'Anything');
-    const injected = await mocks.InjectedExtension();
     const result = await signPayloadWithExtension(injected, '//Someone', message);
     expect(result).toEqual('0xc0ffeec0ffee');
+  });
+
+  it('handles error on signRaw', async () => {
+    const throwsErrorInjected = {
+      ...injected,
+      signer: {
+        signRaw: async () => {
+          throw new Error('Error when trying to sign');
+        },
+      },
+    };
+    expect(signPayloadWithExtension(throwsErrorInjected, '//Someone', message)).rejects.toThrow(
+      'Error when trying to sign'
+    );
   });
 });
 
@@ -353,12 +367,41 @@ describe('submitExtrinsic', () => {
     } as unknown as SubmittableExtrinsic<'promise'>;
 
     delete (alice as any).keyringPair;
-    delete (bob as any).keyringPair;
 
     const result = await connections.submitExtrinsic(mockExtrinsic, alice, extension);
 
     expect(await connections.submitExtrinsicWithExtension(extension, mockExtrinsic, alice.address)).toEqual('0x1234');
 
     expect(result).toEqual('0x1234');
+  });
+
+  it('calls submitExtrinsicWithExtension when account has extension and no keyring but fails to signAndSend', async () => {
+    const mockExtrinsic = {
+      signAndSend: vi.fn().mockRejectedValue(new Error('Failed to sign and send')),
+      signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
+      toHex: vi.fn().mockReturnValue('0x1234'),
+      hash: { toHex: () => '0x1234', toString: () => '0x1234' },
+    } as unknown as SubmittableExtrinsic<'promise'>;
+
+    delete (alice as any).keyringPair;
+
+    await expect(connections.submitExtrinsicWithExtension(extension, mockExtrinsic, alice.address)).rejects.toThrow(
+      'Failed to sign and send'
+    );
+  });
+
+  it('throws error when account has extension and no keyring', async () => {
+    const mockExtrinsic = {
+      signAndSend: vi.fn().mockResolvedValue('txHash'),
+      signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
+      toHex: vi.fn().mockReturnValue('0x1234'),
+      hash: { toHex: () => '0x1234', toString: () => '0x1234' },
+    } as unknown as SubmittableExtrinsic<'promise'>;
+
+    delete (alice as any).keyringPair;
+
+    expect(() => connections.submitExtrinsic(mockExtrinsic, alice, undefined)).toThrow(
+      'Unable to find wallet extension'
+    );
   });
 });
