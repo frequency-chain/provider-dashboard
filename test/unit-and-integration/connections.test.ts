@@ -93,6 +93,18 @@ const mocks = vi.hoisted(() => {
           signAndSend: vi.fn(),
           hash: { toString: () => '0x123456', toHex: () => '0x123456' },
         })),
+        proposeToBeProvider: vi.fn(() => ({
+          signAndSend: vi.fn(),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+        createProvider: vi.fn(() => ({
+          signAndSend: vi.fn(),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
+        create: vi.fn(() => ({
+          signAndSend: vi.fn(),
+          hash: { toString: () => '0x123456', toHex: () => '0x123456' },
+        })),
       },
       frequencyTxPayment: {
         payWithCapacity: vi.fn(() => mockExtrinsic),
@@ -147,7 +159,12 @@ vi.mock('$lib/connections', async (importOriginal) => {
     signPayload: vi.fn(),
   };
 });
-
+const mockExtrinsic = {
+  signAndSend: vi.fn().mockResolvedValue('txHash'),
+  signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
+  toHex: vi.fn().mockReturnValue('0x1234'),
+  hash: { toHex: () => '0x1234', toString: () => '0x1234' },
+} as unknown as SubmittableExtrinsic<'promise'>;
 const notReadyMockApi = { isReady: false } as unknown as ApiPromise;
 const mockApi = await ApiPromise.create();
 const mockSignPayload = vi.fn().mockImplementation(async (payload: SignerPayloadJSON): Promise<SignerResult> => {
@@ -391,17 +408,73 @@ describe('submitExtrinsic', () => {
   });
 
   it('throws error when account has extension and no keyring', async () => {
-    const mockExtrinsic = {
-      signAndSend: vi.fn().mockResolvedValue('txHash'),
-      signAsync: vi.fn().mockResolvedValue('signedExtrinsic'),
-      toHex: vi.fn().mockReturnValue('0x1234'),
-      hash: { toHex: () => '0x1234', toString: () => '0x1234' },
-    } as unknown as SubmittableExtrinsic<'promise'>;
-
     delete (alice as any).keyringPair;
 
     expect(() => connections.submitExtrinsic(mockExtrinsic, alice, undefined)).toThrow(
       'Unable to find wallet extension'
     );
+  });
+});
+
+describe('submitCreateProvider', () => {
+  const providerName = 'MyProvider';
+
+  it('submits extrinsic', async () => {
+    (checkFundsForExtrinsic as Mock).mockResolvedValue(true);
+
+    const result = await connections.submitCreateProvider(mockApi, extension, alice, providerName);
+
+    expect(mockApi.tx.msa.createProvider).toHaveBeenCalledWith(providerName);
+
+    expect(checkFundsForExtrinsic).toHaveBeenCalled();
+
+    expect(() => connections.submitExtrinsic(mockExtrinsic, alice, undefined)).not.toThrow();
+
+    expect(result).toEqual('0x123456');
+  });
+
+  it('returns undfined if api is not ready', async () => {
+    const result = await connections.submitCreateProvider(notReadyMockApi, extension, alice, providerName);
+    expect(result).toBe(undefined);
+  });
+});
+
+describe('submitRequestToBeProvider', () => {
+  const providerName = 'MyProvider';
+
+  it('submits extrinsic', async () => {
+    (checkFundsForExtrinsic as Mock).mockResolvedValue(true);
+
+    const result = await connections.submitRequestToBeProvider(mockApi, extension, alice, providerName);
+
+    expect(mockApi.tx.msa.proposeToBeProvider).toHaveBeenCalledWith(providerName);
+
+    expect(checkFundsForExtrinsic).toHaveBeenCalled();
+
+    expect(() => connections.submitExtrinsic(mockExtrinsic, alice, undefined)).not.toThrow();
+
+    expect(result).toEqual('0x123456');
+  });
+
+  it('returns undfined if api is not ready', async () => {
+    const result = await connections.submitRequestToBeProvider(notReadyMockApi, extension, alice, providerName);
+    expect(result).toBe(undefined);
+  });
+});
+
+describe('submitCreateMsa', () => {
+  it('submits extrinsic', async () => {
+    (checkFundsForExtrinsic as Mock).mockResolvedValue(true);
+
+    const result = await connections.submitCreateMsa(mockApi, extension, alice);
+
+    expect(checkFundsForExtrinsic).toHaveBeenCalled();
+
+    expect(result).toEqual('0x123456');
+  });
+
+  it('returns undfined if api is not ready', async () => {
+    const result = await connections.submitCreateMsa(notReadyMockApi, extension, alice);
+    expect(result).toBe(undefined);
   });
 });
