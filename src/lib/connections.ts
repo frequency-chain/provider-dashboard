@@ -69,10 +69,9 @@ export async function submitAddControlKey(
   // mock extrinsic for fee estimation
   const mockExtrinsic = api.tx.msa.addPublicKeyToMsa(signingAccount.address, mockProof, mockProof, rawPayload);
 
-  let isPayingWithCapacity = false;
-  isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
+  const isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
 
-  if (!isPayingWithCapacity && typeof mockExtrinsic.paymentInfo === 'function') {
+  if (!isPayingWithCapacity) {
     // Not enough capacity, check funds instead
     await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
@@ -96,7 +95,7 @@ export async function submitAddControlKey(
       }, 3000);
     });
   } catch (err: any) {
-    throw new Error(err?.message || 'Signing Canceled');
+    throw new Error(err.message);
   }
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
@@ -153,7 +152,8 @@ export async function submitUnstake(
   await submitExtrinsic(extrinsic, signingAccount, extension);
 }
 
-function submitExtrinsic(
+// only exporting for testing purposes
+export function submitExtrinsic(
   extrinsic: SubmittableExtrinsic,
   account: Account,
   extension: InjectedExtension | undefined
@@ -164,7 +164,7 @@ function submitExtrinsic(
 }
 
 // use the Polkadot extension the user selected to submit the provided extrinsic
-async function submitExtrinsicWithExtension(
+export async function submitExtrinsicWithExtension(
   extension: InjectedExtension,
   extrinsic: SubmittableExtrinsic,
   signingAddress: string
@@ -185,20 +185,26 @@ async function submitExtrinsicWithExtension(
 }
 
 // Use the built-in test accounts to submit an extrinsic
-async function submitExtrinsicWithKeyring(
+export async function submitExtrinsicWithKeyring(
   extrinsic: SubmittableExtrinsic,
   signingAccount: KeyringPair
 ): Promise<string> {
   try {
     await extrinsic.signAndSend(signingAccount, { nonce: -1 }, handleResult);
   } catch (e: unknown) {
-    handleTxnError(extrinsic.hash.toString(), `${e}`);
+    handleTxnError(extrinsic?.hash.toString(), `${e}`);
+    throw new Error(`${e}`);
   }
   return extrinsic.hash.toString();
 }
 
+// only exporting for testing purposes
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function signPayload(payload: any, account: Account, extension: InjectedExtension | undefined): Promise<string> {
+export async function signPayload(
+  payload: any,
+  account: Account,
+  extension: InjectedExtension | undefined
+): Promise<string> {
   if (account.keyringPair) return signPayloadWithKeyring(account.keyringPair, payload);
   if (extension) return signPayloadWithExtension(extension, account.address, payload);
   throw new Error('Unable to find wallet extension');
