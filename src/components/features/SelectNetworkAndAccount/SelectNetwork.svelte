@@ -48,8 +48,7 @@
     accounts = new Map();
 
     await connectAndFetchAccounts(selectedNetwork!);
-    connectedToEndpoint = true;
-
+    
     newUser = {
       network: selectedNetwork!,
       address: '',

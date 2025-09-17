@@ -35,7 +35,6 @@
   let thisWeb3Accounts: typeof web3Accounts;
 
   let accountValue: Account['address'] | undefined = $state();
-  let selectedAccount: Account | null = $derived(newUser);
 
   let networkValue: NetworkInfo['name'] | undefined = $state(newUser?.network?.name);
   let selectedNetwork: NetworkInfo | null = $derived($allNetworks.find((n) => n.name === networkValue) ?? null);
@@ -47,7 +46,8 @@
     console.log('isCustomNetwork:', isCustomNetwork);
   });
 
-  let connectedToEndpoint: boolean = $state(false);
+  let connectedToEndpoint: boolean = $derived(!!selectedNetwork?.endpoint && accounts.size > 0);
+
   let networkErrorMsg: string = $state('');
   let accountErrorMsg: string = $state('');
 
@@ -85,7 +85,7 @@
 
   const resetState = () => {
     networkValue = undefined;
-    selectedAccount = null;
+    accountValue = undefined;
     connectedToEndpoint = false;
     networkErrorMsg = '';
     accountErrorMsg = '';
@@ -108,7 +108,6 @@
 <SelectAccount
   {accounts}
   bind:accountValue
-  bind:selectedAccount
   {accountSelectorTitle}
   {accountSelectorPlaceholder}
   bind:accountErrorMsg

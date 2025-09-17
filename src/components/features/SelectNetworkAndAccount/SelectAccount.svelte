@@ -7,7 +7,6 @@
   interface Props {
     accounts: Accounts;
     accountValue?: Account['address'];
-    selectedAccount: Account | null;
     accountSelectorTitle: string;
     accountSelectorPlaceholder: string;
     accountErrorMsg: string;
@@ -18,7 +17,6 @@
   let {
     accounts,
     accountValue = $bindable(),
-    selectedAccount = $bindable(null),
     accountSelectorTitle,
     accountSelectorPlaceholder,
     accountErrorMsg = $bindable(),
@@ -43,6 +41,6 @@
   </div>
 
   {#if canCopyAddress}
-    <AddToClipboard classes="my-2" copyValue={selectedAccount?.address} disabled={!selectedAccount?.address} />
+    <AddToClipboard classes="my-2" copyValue={accountValue} disabled={!accountValue} />
   {/if}
 </div>
