@@ -3,11 +3,10 @@
   import { type Account, type Accounts } from '$lib/stores/accountsStore';
   import { selectAccountOptions } from '$lib/utils';
   import { Select } from '@frequency-chain/style-guide';
-  import type { Selected } from 'bits-ui';
 
   interface Props {
     accounts: Accounts;
-    newUser: Account | null;
+    accountValue?: Account['address'];
     selectedAccount: Account | null;
     accountSelectorTitle: string;
     accountSelectorPlaceholder: string;
@@ -18,7 +17,7 @@
 
   let {
     accounts,
-    newUser = $bindable(null),
+    accountValue = $bindable(),
     selectedAccount = $bindable(null),
     accountSelectorTitle,
     accountSelectorPlaceholder,
@@ -26,23 +25,16 @@
     isLoading,
     canCopyAddress = false,
   }: Props = $props();
-  const accountOptions = $derived(selectAccountOptions(accounts));
 
-  let accountChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    const curAccount = (selectedAccountValue?.value && accounts.get(selectedAccountValue.value)) || null;
-    if (curAccount) {
-      selectedAccount = curAccount;
-      newUser = selectedAccount;
-    }
-  };
+  const accountOptions = $derived(selectAccountOptions(accounts));
 </script>
 
 <div class="flex items-end gap-2">
   <div class="max-w-[388px] flex-1">
     <Select
+      bind:value={accountValue}
       id="controlkeys"
       label={accountSelectorTitle}
-      onSelectedChange={accountChanged}
       placeholder={accountSelectorPlaceholder}
       options={accountOptions}
       disabled={accounts.size === 0 || isLoading}

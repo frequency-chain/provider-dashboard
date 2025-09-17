@@ -79,7 +79,7 @@ export function selectNetworkOptions(networks: NetworkInfo[]) {
       label = network.name;
     }
     return {
-      optionLabel: label,
+      label,
       value: network.name,
     };
   });
@@ -89,12 +89,12 @@ export function selectAccountOptions(accounts: Accounts) {
   const accountsArray = Array.from(accounts.values());
 
   return accountsArray.map((account) => {
-    let optionLabel = `${account.display}${account.display && ':'} ${account.address}`;
+    let label = `${account.display}${account.display && ':'} ${account.address}`;
     if (account.isProvider) {
-      optionLabel = `${account.providerName || `Provider #${account.msaId}`}: ${account.address}`;
+      label = `${account.providerName || `Provider #${account.msaId}`}: ${account.address}`;
     }
     return {
-      optionLabel,
+      label,
       value: account.address,
     };
   });
@@ -203,8 +203,10 @@ export async function refreshAllBalances(api: ApiPromise, accounts: Accounts) {
 }
 
 export async function subscribeToAccounts(selectedNetwork: NetworkInfo, apiPromise: ApiPromise): Promise<void> {
-  const allAccounts: Accounts = new Map<SS58Address, Account>();
+  const extension = await import('@polkadot/extension-dapp');
+  await extension.web3Enable('Subscribe to accounts');
 
+  const allAccounts: Accounts = new Map<SS58Address, Account>();
   await web3AccountsSubscribe(async (accounts) => {
     await Promise.all(
       accounts.map(async (walletAccount: InjectedAccountWithMeta) => {

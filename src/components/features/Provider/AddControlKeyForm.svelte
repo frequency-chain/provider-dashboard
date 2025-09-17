@@ -6,8 +6,6 @@
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
-  import type { Selected } from 'bits-ui';
-  import type { OnChangeFn } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   interface Props {
@@ -17,6 +15,7 @@
 
   let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
 
+  let value: string | undefined = $state();
   let error: string | undefined = $state();
   let isLoading: boolean = $state(false);
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
@@ -46,13 +45,13 @@
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
-  let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
+  $effect(() => {
     error = undefined;
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
+    const curAccount: Account | undefined = value
+      ? $unusedKeyAccountsStore.get(value)
       : undefined;
     if (curAccount) selectedAccount = curAccount;
-  };
+  });
 
   $effect(() => {
     let noControlKeysError = 'No available Control Keys. Create a new Control Key without an MSA Id.';
@@ -66,11 +65,11 @@
 
 <form class="column gap-f16">
   <Select
+    bind:value
     id="AddControlKey"
     label="Control Key to Add"
     placeholder="Select Id..."
     options={accountOptions || []}
-    onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
     {error}
   />

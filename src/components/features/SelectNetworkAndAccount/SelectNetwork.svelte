@@ -1,13 +1,13 @@
 <script lang="ts">
   import Switch from '$lib/assets/Switch.svelte';
   import type { Account, Accounts } from '$lib/stores/accountsStore';
-  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, type NetworkInfo } from '$lib/stores/networksStore';
   import { isValidURL, selectNetworkOptions } from '$lib/utils';
-  import { IconButton, Select } from '@frequency-chain/style-guide';
-  import type { Selected } from 'bits-ui';
+  import { IconButton, Input, Select } from '@frequency-chain/style-guide';
   import { onMount } from 'svelte';
 
   interface Props {
+    networkValue: NetworkInfo['name'] | undefined;
     accounts: Accounts;
     newUser: Account | null;
     resetState: () => void;
@@ -20,6 +20,7 @@
   }
 
   let {
+    networkValue = $bindable(),
     accounts = $bindable(),
     newUser = $bindable(null),
     resetState,
@@ -44,14 +45,10 @@
 
   async function networkChanged() {
     isLoading = true;
-    isCustomNetwork = selectedNetwork?.id === NetworkType.CUSTOM;
     accounts = new Map();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    if (selectedNetwork?.endpoint && isValidURL(selectedNetwork!.endpoint.toString())) {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      await connectAndFetchAccounts(selectedNetwork!);
-      connectedToEndpoint = true;
-    }
+
+    await connectAndFetchAccounts(selectedNetwork!);
+    connectedToEndpoint = true;
 
     newUser = {
       network: selectedNetwork!,
@@ -62,28 +59,16 @@
     isLoading = false;
   }
 
-  // export for testing purposes
-  export const onSelectNetworkChanged = (selectedNetworkOption: Selected<string> | undefined) => {
-    const curNetwork: NetworkInfo | undefined = selectedNetworkOption
-      ? $allNetworks.find((network) => network.name === selectedNetworkOption.value)
-      : undefined;
-
-    if (curNetwork) {
-      selectedNetwork = curNetwork;
-    }
-
-    if (!selectedNetwork) return;
-    isCustomNetwork = selectedNetwork.id === NetworkType.CUSTOM;
-    if (!isCustomNetwork) {
+  $effect(() => {
+    if (!isCustomNetwork && selectedNetwork?.endpoint && isValidURL(selectedNetwork.endpoint.toString())) {
       networkChanged();
     }
-  };
+  });
 
   function customNetworkChanged(event: KeyboardEvent) {
     if (event.key === 'Enter') {
-      if (isValidURL(customNetwork)) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        selectedNetwork!.endpoint = customNetwork;
+      if (isValidURL(customNetwork) && selectedNetwork) {
+        selectedNetwork.endpoint = customNetwork;
       }
     }
   }
@@ -91,11 +76,11 @@
 
 {#if !connectedToEndpoint}
   <Select
+    bind:value={networkValue}
     id="network"
     label="Select a Network"
     placeholder="Select a Network"
     options={networkOptions}
-    onSelectedChange={onSelectNetworkChanged}
     {isLoading}
     error={networkErrorMsg}
   />
@@ -108,14 +93,15 @@
   </p>
 {/if}
 {#if isCustomNetwork}
-  <input
-    id="other-endpoint-url"
+  <Input
+    id="custom-endpoint-url"
     type="text"
     pattern="^(http:\/\/|https:\/\/|ws:\/\/|wss:\/\/).+"
     placeholder="wss://some.frequency.node"
     bind:value={customNetwork}
-    disabled={false}
-    class:hidden={false}
     onkeydown={customNetworkChanged}
+    disabled={false}
+    error={undefined}
+    label="Custom Endpoint URL"
   />
 {/if}

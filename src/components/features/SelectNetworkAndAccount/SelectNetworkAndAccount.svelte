@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 
-  import { type NetworkInfo } from '$lib/stores/networksStore';
+  import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 
   import { Account, fetchAccountsForNetwork, type Accounts } from '$lib/stores/accountsStore';
   import type { ApiPromise } from '@polkadot/api';
@@ -34,9 +34,19 @@
   let thisWeb3Enable: typeof web3Enable;
   let thisWeb3Accounts: typeof web3Accounts;
 
-  let selectedAccount: Account | null = $state(newUser);
-  let selectedNetwork: NetworkInfo | null = $state(newUser?.network ?? null);
-  let isCustomNetwork: boolean = $state(false);
+  let accountValue: Account['address'] | undefined = $state();
+  let selectedAccount: Account | null = $derived(newUser);
+
+  let networkValue: NetworkInfo['name'] | undefined = $state(newUser?.network?.name);
+  let selectedNetwork: NetworkInfo | null = $derived($allNetworks.find((n) => n.name === networkValue) ?? null);
+  let isCustomNetwork: boolean = $derived(selectedNetwork?.id === NetworkType.CUSTOM);
+
+  $effect(() => {
+    console.log('networkValue:', networkValue);
+    console.log('Selected network changed:', selectedNetwork);
+    console.log('isCustomNetwork:', isCustomNetwork);
+  });
+
   let connectedToEndpoint: boolean = $state(false);
   let networkErrorMsg: string = $state('');
   let accountErrorMsg: string = $state('');
@@ -74,9 +84,8 @@
   }
 
   const resetState = () => {
-    selectedNetwork = null;
+    networkValue = undefined;
     selectedAccount = null;
-    isCustomNetwork = false;
     connectedToEndpoint = false;
     networkErrorMsg = '';
     accountErrorMsg = '';
@@ -85,6 +94,7 @@
 </script>
 
 <SelectNetwork
+  bind:networkValue
   bind:accounts
   bind:newUser
   {resetState}
@@ -97,7 +107,7 @@
 />
 <SelectAccount
   {accounts}
-  bind:newUser
+  bind:accountValue
   bind:selectedAccount
   {accountSelectorTitle}
   {accountSelectorPlaceholder}

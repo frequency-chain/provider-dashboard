@@ -278,7 +278,7 @@ describe('subscribeToAccounts', () => {
 });
 
 describe('selectNetworkOptions', () => {
-  it('returns correct optionLabel and value for normal networks', () => {
+  it('returns correct label and value for normal networks', () => {
     const networks = [
       { id: NetworkType.MAINNET, name: 'MainNet', endpoint: 'wss://mainnet.node/' },
       { id: NetworkType.TESTNET_PASEO, name: 'TestNet', endpoint: 'wss://testnet.node/' },
@@ -287,8 +287,8 @@ describe('selectNetworkOptions', () => {
     const result = selectNetworkOptions(networks as any);
 
     expect(result).toEqual([
-      { optionLabel: 'MainNet: wss://mainnet.node', value: 'MainNet' },
-      { optionLabel: 'TestNet: wss://testnet.node', value: 'TestNet' },
+      { label: 'MainNet: wss://mainnet.node', value: 'MainNet' },
+      { label: 'TestNet: wss://testnet.node', value: 'TestNet' },
     ]);
   });
 
@@ -297,7 +297,7 @@ describe('selectNetworkOptions', () => {
 
     const result = selectNetworkOptions(networks as any);
 
-    expect(result).toEqual([{ optionLabel: 'CustomNet', value: 'CustomNet' }]);
+    expect(result).toEqual([{ label: 'CustomNet', value: 'CustomNet' }]);
   });
 
   it('handles missing name or endpoint gracefully', () => {
@@ -306,8 +306,8 @@ describe('selectNetworkOptions', () => {
     const result = selectNetworkOptions(networks);
 
     expect(result).toEqual([
-      { optionLabel: ': ', value: undefined },
-      { optionLabel: 'TestNet: ', value: 'TestNet' },
+      { label: ': ', value: undefined },
+      { label: 'TestNet: ', value: 'TestNet' },
     ]);
   });
 });
