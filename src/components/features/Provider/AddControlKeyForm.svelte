@@ -17,9 +17,13 @@
   let accountValue: string | undefined = $state();
   let selectedAccount: Account | undefined = $derived($unusedKeyAccountsStore.get(accountValue ?? ''));
 
-  let error: string | undefined = $state();
   let isLoading: boolean = $state(false);
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
+
+  let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {

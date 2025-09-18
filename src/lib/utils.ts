@@ -255,7 +255,7 @@ export async function connectAndFetchAccounts(
       if (!network.endpoint) throw new Error('Undefined endpoint.');
       const curApi = await createApi(network.endpoint);
       await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
-      // await curApi?.api?.disconnect();
+      await curApi?.api?.disconnect();
     } catch (e) {
       console.error(e);
       const networkErrorMsg = `Could not connect to ${network.endpoint || 'empty value'}. Please enter a valid and reachable Websocket URL.`;

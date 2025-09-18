@@ -16,12 +16,13 @@
 
   let isLoading: boolean = $state(false);
   let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   let { modalOpen = $bindable(null) } = $props();
 
   let unstakeAmountInPlancks = $derived(BigInt.asUintN(64, unstakeAmount) * BigInt.asUintN(64, DOLLARS));
-
-  let value: string | undefined = $state();
 
   function handleInput(evt: Event) {
     error = '';

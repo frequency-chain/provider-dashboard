@@ -11,12 +11,15 @@
   let { modalOpen = $bindable(null) } = $props();
 
   let stakeAmount = $state(1n);
-  
+
   let accountValue = $state<string | undefined>();
   let selectedAccount: Account | null = $derived($providerAccountsStore.get(accountValue ?? '') ?? null);
-  
+
   let isLoading = $state(false);
   let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
 
