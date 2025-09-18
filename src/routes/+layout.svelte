@@ -36,7 +36,7 @@
   });
 
   $effect(() => {
-    if ($user.network && $dotApi.api) {
+    if ($user?.network && $dotApi.api) {
       subscribeToAccounts($user.network, $dotApi.api);
     }
   });

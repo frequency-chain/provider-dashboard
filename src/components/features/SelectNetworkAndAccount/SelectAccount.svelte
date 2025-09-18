@@ -19,7 +19,7 @@
     accountValue = $bindable(),
     accountSelectorTitle,
     accountSelectorPlaceholder,
-    accountErrorMsg = $bindable(),
+    accountErrorMsg,
     isLoading,
     canCopyAddress = false,
   }: Props = $props();
@@ -27,7 +27,7 @@
   const accountOptions = $derived(selectAccountOptions(accounts));
 </script>
 
-<div class="flex items-end gap-2">
+<div class="flex items-start gap-2">
   <div class="max-w-[388px] flex-1">
     <Select
       bind:value={accountValue}
@@ -41,6 +41,6 @@
   </div>
 
   {#if canCopyAddress}
-    <AddToClipboard classes="my-2" copyValue={accountValue} disabled={!accountValue} />
+    <AddToClipboard classes="my-2 mt-[39px]" copyValue={accountValue} disabled={!accountValue} />
   {/if}
 </div>

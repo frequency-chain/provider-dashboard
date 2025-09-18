@@ -6,28 +6,30 @@
   import SelectNetworkAndAccount from '../SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
   import ButtonNoFill from '$atoms/ButtonNoFill.svelte';
 
-  // Props
   interface Props {
     modalOpen?: boolean | null;
   }
 
   let { modalOpen = $bindable(null) }: Props = $props();
 
-  // Get the matching account object safely
-  let newUser: Account | null = $state($providerAccountsStore.get($user.address) ?? null);
+  let newUser: Account | null = $state($providerAccountsStore.get($user?.address) ?? null);
 
-  // Derive whether we can connect
+  $effect(() => {
+    if (newUser) {
+      $inspect('New user selected:', newUser);
+    }
+  });
+
   const canConnect = $derived.by(() => {
     return newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
   });
 
-  // Handle connect
   async function connect() {
     if (!newUser) {
       alert('Invalid form values');
       return;
     }
-    if ($user.network) clearLog();
+    if ($user?.network) clearLog();
     $user = newUser;
     if (modalOpen !== null) modalOpen = false;
   }

@@ -47,9 +47,7 @@
 
   $effect(() => {
     error = undefined;
-    const curAccount: Account | undefined = value
-      ? $unusedKeyAccountsStore.get(value)
-      : undefined;
+    const curAccount: Account | undefined = value ? $unusedKeyAccountsStore.get(value) : undefined;
     if (curAccount) selectedAccount = curAccount;
   });
 

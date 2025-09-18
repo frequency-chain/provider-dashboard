@@ -1,14 +1,20 @@
 import { type ApiPromise } from '@polkadot/api';
 import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
-import type { InjectedAccountWithMeta } from '@polkadot/extension-inject/types';
+import type { InjectedAccountWithMeta, InjectedExtension, Web3AccountsOptions } from '@polkadot/extension-inject/types';
 import type { Option } from '@polkadot/types';
 import type { IKeyringPair } from '@polkadot/types/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
-import { getBalances, getMsaInfo } from './polkadotApi';
-import { Account, allAccountsStore, type Accounts, type SS58Address } from './stores/accountsStore';
+import { createApi, getBalances, getMsaInfo } from './polkadotApi';
+import {
+  Account,
+  allAccountsStore,
+  fetchAccountsForNetwork,
+  type Accounts,
+  type SS58Address,
+} from './stores/accountsStore';
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 import { user } from './stores/userStore';
 import type { MsaInfo } from './storeTypes';
@@ -232,4 +238,31 @@ export async function subscribeToAccounts(selectedNetwork: NetworkInfo, apiPromi
       await refreshAllBalances(apiPromise, allAccounts);
     }
   });
+}
+
+export async function connectAndFetchAccounts(
+  network: NetworkInfo | null,
+  thisWeb3Enable: (originName: string, compatInits?: (() => Promise<boolean>)[]) => Promise<InjectedExtension[]>,
+  thisWeb3Accounts: ({
+    accountType,
+    extensions,
+    genesisHash,
+    ss58Format,
+  }?: Web3AccountsOptions) => Promise<InjectedAccountWithMeta[]>
+): Promise<void> {
+  if (network) {
+    try {
+      if (!network.endpoint) throw new Error('Undefined endpoint.');
+      const curApi = await createApi(network.endpoint);
+      await fetchAccountsForNetwork(network, thisWeb3Enable, thisWeb3Accounts, curApi.api as ApiPromise);
+      // await curApi?.api?.disconnect();
+    } catch (e) {
+      console.error(e);
+      const networkErrorMsg = `Could not connect to ${network.endpoint || 'empty value'}. Please enter a valid and reachable Websocket URL.`;
+
+      console.error(networkErrorMsg);
+
+      throw new Error(networkErrorMsg);
+    }
+  }
 }
