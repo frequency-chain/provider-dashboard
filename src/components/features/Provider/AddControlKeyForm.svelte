@@ -9,13 +9,14 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   interface Props {
-    selectedAccount?: Account | null;
     modalOpen?: boolean | null;
   }
 
-  let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
+  let { modalOpen = $bindable(null) }: Props = $props();
 
-  let value: string | undefined = $state();
+  let accountValue: string | undefined = $state();
+  let selectedAccount: Account | undefined = $derived($unusedKeyAccountsStore.get(accountValue ?? ''));
+
   let error: string | undefined = $state();
   let isLoading: boolean = $state(false);
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
@@ -46,12 +47,6 @@
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
   $effect(() => {
-    error = undefined;
-    const curAccount: Account | undefined = value ? $unusedKeyAccountsStore.get(value) : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  });
-
-  $effect(() => {
     let noControlKeysError = 'No available Control Keys. Create a new Control Key without an MSA Id.';
     if ($unusedKeyAccountsStore.size === 0) {
       error = noControlKeysError;
@@ -63,7 +58,7 @@
 
 <form class="column gap-f16">
   <Select
-    bind:value
+    bind:value={accountValue}
     id="AddControlKey"
     label="Control Key to Add"
     placeholder="Select Id..."

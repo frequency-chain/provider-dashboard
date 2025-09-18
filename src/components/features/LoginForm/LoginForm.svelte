@@ -14,12 +14,6 @@
 
   let newUser: Account | null = $state($providerAccountsStore.get($user?.address) ?? null);
 
-  $effect(() => {
-    if (newUser) {
-      $inspect('New user selected:', newUser);
-    }
-  });
-
   const canConnect = $derived.by(() => {
     return newUser?.network != null && $providerAccountsStore.size > 0 && newUser?.address !== '';
   });

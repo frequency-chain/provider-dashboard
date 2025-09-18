@@ -10,7 +10,10 @@
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   let unstakeAmount = $state(1n);
-  let selectedAccount: Account | null = $state(null);
+
+  let accountValue = $state<string | undefined>();
+  let selectedAccount: Account | null = $derived($providerAccountsStore.get(accountValue ?? '') ?? null);
+
   let isLoading: boolean = $state(false);
   let error: string | undefined = $state();
 
@@ -51,17 +54,11 @@
   };
 
   const controlKeyOptions = $derived(selectAccountOptions($providerAccountsStore));
-
-  $effect(() => {
-    error = '';
-    const curAccount: Account | undefined = value ? $providerAccountsStore.get(value) : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  });
 </script>
 
 <form class="column gap-f16">
   <Select
-    bind:value
+    bind:value={accountValue}
     id="unstake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"

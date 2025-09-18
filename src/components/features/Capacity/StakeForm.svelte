@@ -11,13 +11,14 @@
   let { modalOpen = $bindable(null) } = $props();
 
   let stakeAmount = $state(1n);
-  let selectedAccount: Account | null = $state(null);
+  
+  let accountValue = $state<string | undefined>();
+  let selectedAccount: Account | null = $derived($providerAccountsStore.get(accountValue ?? '') ?? null);
+  
   let isLoading = $state(false);
   let error: string | undefined = $state();
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
-
-  let value: string | undefined = $state();
 
   function handleInput(evt: Event) {
     error = '';
@@ -52,17 +53,11 @@
   };
 
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
-
-  $effect(() => {
-    error = '';
-    const curAccount: Account | undefined = value ? $providerAccountsStore.get(value) : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  });
 </script>
 
 <form class="column gap-f16" data-testid="stake-form">
   <Select
-    bind:value
+    bind:value={accountValue}
     disabled={$providerAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"

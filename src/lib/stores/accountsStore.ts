@@ -58,7 +58,6 @@ export async function fetchAccountsForNetwork(
   thisWeb3Accounts: typeof web3Accounts,
   apiPromise: ApiPromise
 ): Promise<void> {
-  console.log(selectedNetwork);
   const allAccounts: Accounts = new Map<SS58Address, Account>();
 
   if (selectedNetwork.id === NetworkType.LOCALHOST) {
@@ -82,8 +81,6 @@ export async function fetchAccountsForNetwork(
   }
 
   try {
-    console.log('Enabling extension...', thisWeb3Accounts);
-    console.log('Enabling extension enable...', thisWeb3Enable);
     if (isFunction(thisWeb3Accounts) && isFunction(thisWeb3Enable)) {
       const extensions = await thisWeb3Enable('Frequency parachain provider dashboard');
       const extensionCheck = !!extensions && !!extensions.length;
@@ -93,7 +90,6 @@ export async function fetchAccountsForNetwork(
 
       // If so, add the wallet accounts for the selected network (chain)
       const walletAccounts = await thisWeb3Accounts();
-      console.log('walletAccounts: ', walletAccounts);
       await Promise.all(
         walletAccounts.map(async (walletAccount: InjectedAccountWithMeta) => {
           // include only the accounts allowed for this chain
@@ -116,7 +112,6 @@ export async function fetchAccountsForNetwork(
     console.error('Unable to load extension accounts', e);
   }
 
-  console.log('allAccounts: ', allAccounts);
   allAccountsStore.set(allAccounts);
 
   // trigger initial balance fetch
