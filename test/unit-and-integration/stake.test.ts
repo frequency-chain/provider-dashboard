@@ -6,8 +6,7 @@ import Keyring from '@polkadot/keyring';
 import { KeyringPair } from '@polkadot/keyring/types';
 import { waitReady } from '@polkadot/wasm-crypto';
 import '@testing-library/jest-dom';
-import { cleanup, fireEvent, render, screen } from '@testing-library/svelte';
-import userEvent from '@testing-library/user-event';
+import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import { vi } from 'vitest';
 
 const mocks = vi.hoisted(() => {
@@ -98,18 +97,32 @@ describe('Stake.svelte Unit Tests', () => {
 
     render(Stake);
 
-    const [outerOpenButton] = screen.getAllByRole('button', { name: /Stake to Provider/i });
-    await userEvent.click(outerOpenButton);
-
-    const trigger = screen.getByRole('combobox', { id: 'stake-using-account-id' });
-    await userEvent.click(trigger);
-
-    const option = await screen.findByRole('option', {
-      name: /Provider #76894: 5Ft7Wfr4FKTN3rYwBdZjpVpGQq3cFhNBWY1nHxySejos1dD/i,
+    // Open the outer dialog first
+    const [outerTrigger] = await screen.findAllByRole('button', {
+      name: /Stake to Provider/i,
     });
-    await userEvent.click(option);
+    await fireEvent.click(outerTrigger);
 
-    const [outerSubmitButton] = screen.getAllByRole('button', { name: 'Stake' });
-    await userEvent.click(outerSubmitButton);
+    // Now wait for the select trigger
+    await waitFor(async () => {
+      const trigger = await screen.findByLabelText(/Wallet Control Key/i);
+      await fireEvent.click(trigger);
+    });
+
+    await waitFor(async () => {
+      const listbox = await screen.findByRole('listbox');
+      expect(listbox).toBeVisible();
+      // Select the option
+      const option = await within(listbox).findByRole('option', {
+        name: /Provider #76894/i,
+      });
+      // click it
+      await fireEvent.click(option);
+    });
+
+    await waitFor(async () => {
+      const [outerSubmitButton] = screen.getAllByRole('button', { name: 'Stake' });
+      await fireEvent.click(outerSubmitButton);
+    });
   });
 });

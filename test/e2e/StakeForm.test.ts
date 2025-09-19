@@ -52,7 +52,7 @@ describe('StakeForm', () => {
   });
 
   it('calls submitStake when valid', async () => {
-    (selectAccountOptions as Mock).mockReturnValue([{ optionLabel: 'test option', value: mockAccount.address }]);
+    (selectAccountOptions as Mock).mockReturnValue([{ label: 'test option', value: mockAccount.address }]);
 
     render(StakeForm, { modalOpen: true });
 
@@ -81,7 +81,7 @@ describe('StakeForm', () => {
   });
 
   it('handles error when stakeAmount = 0n', async () => {
-    (selectAccountOptions as Mock).mockReturnValue([{ optionLabel: 'test option', value: mockAccount.address }]);
+    (selectAccountOptions as Mock).mockReturnValue([{ label: 'test option', value: mockAccount.address }]);
 
     render(StakeForm, { modalOpen: true });
 

@@ -3,7 +3,7 @@
   import AddToClipboard from '../../atoms/AddToClipboard.svelte';
 </script>
 
-<div class="flex flex-col items-center gap-2 md:min-w-[300px] md:flex-row md:gap-4">
+<div class="flex flex-col gap-2 sm:items-start md:min-w-[300px] md:flex-row md:items-center md:gap-4">
   <div
     class="lgText w-f64 h-f64 from-primary to-secondary text-cream flex min-w-[60px] items-center justify-center rounded-full bg-gradient-to-r font-bold md:h-[90px] md:w-[90px] md:max-w-[90px]"
   >
