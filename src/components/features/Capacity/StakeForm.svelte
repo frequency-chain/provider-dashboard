@@ -55,6 +55,10 @@
     }
   };
 
+  $effect(() => {
+    console.log('*******selectedAccount*******', selectedAccount);
+  });
+
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
 </script>
 
