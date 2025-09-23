@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Accordion, AccordionList } from '@frequency-chain/style-guide';
+  import { Accordion } from '@frequency-chain/style-guide';
   import HowToTransact from '$features/HowToTransact/HowToTransact.svelte';
   import BlockSection from '$atoms/BlockSection.svelte';
 
@@ -29,8 +29,10 @@
 {/snippet}
 
 <BlockSection title="FAQ's">
-  <AccordionList>
-    <Accordion trigger={question1} content={answer1} />
-    <Accordion trigger={question2} content={answer2} />
-  </AccordionList>
+  <Accordion
+    items={[
+      { value: 'item1', title: question1, content: answer1 },
+      { value: 'item2', title: question2, content: answer2 },
+    ]}
+  />
 </BlockSection>

@@ -6,15 +6,20 @@
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
-  import type { Selected } from 'bits-ui';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   let { modalOpen = $bindable(null) } = $props();
 
   let stakeAmount = $state(1n);
-  let selectedAccount: Account | null = $state(null);
+
+  let accountValue = $state<string | undefined>();
+  let selectedAccount: Account | null = $derived($providerAccountsStore.get(accountValue ?? '') ?? null);
+
   let isLoading = $state(false);
   let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   let stakeAmountInPlancks = $derived(BigInt.asUintN(64, stakeAmount) * BigInt.asUintN(64, DOLLARS));
 
@@ -51,24 +56,16 @@
   };
 
   const accountOptions = $derived(selectAccountOptions($providerAccountsStore));
-
-  let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    error = '';
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $providerAccountsStore.get(selectedAccountValue.value)
-      : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  };
 </script>
 
 <form class="column gap-f16" data-testid="stake-form">
   <Select
+    bind:value={accountValue}
     disabled={$providerAccountsStore.size === 0 || isLoading}
     id="stake-using-account-id"
     label="Wallet Control Key"
     placeholder="Select Control Key"
     options={accountOptions}
-    onSelectedChange={controlKeyChanged}
   />
 
   <Input

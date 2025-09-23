@@ -6,20 +6,24 @@
   import { submitAddControlKey } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import { ApiPromise } from '@polkadot/api';
-  import type { Selected } from 'bits-ui';
-  import type { OnChangeFn } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   interface Props {
-    selectedAccount?: Account | null;
     modalOpen?: boolean | null;
   }
 
-  let { selectedAccount = $bindable(), modalOpen = $bindable(null) }: Props = $props();
+  let { modalOpen = $bindable(null) }: Props = $props();
 
-  let error: string | undefined = $state();
+  let accountValue: string | undefined = $state();
+  let selectedAccount: Account | undefined = $derived($unusedKeyAccountsStore.get(accountValue ?? ''));
+
   let isLoading: boolean = $state(false);
   let isSubmitDisabled = $derived(selectedAccount?.injectedAccount == null || isLoading);
+
+  let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
@@ -46,14 +50,6 @@
 
   const accountOptions = $derived(selectAccountOptions($unusedKeyAccountsStore));
 
-  let accountChanged: OnChangeFn<Selected<string>> = (selectedAccountValue: Selected<string> | undefined) => {
-    error = undefined;
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $unusedKeyAccountsStore.get(selectedAccountValue.value)
-      : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  };
-
   $effect(() => {
     let noControlKeysError = 'No available Control Keys. Create a new Control Key without an MSA Id.';
     if ($unusedKeyAccountsStore.size === 0) {
@@ -66,11 +62,11 @@
 
 <form class="column gap-f16">
   <Select
+    bind:value={accountValue}
     id="AddControlKey"
     label="Control Key to Add"
     placeholder="Select Id..."
     options={accountOptions || []}
-    onSelectedChange={accountChanged}
     disabled={$unusedKeyAccountsStore.size === 0}
     {error}
   />
