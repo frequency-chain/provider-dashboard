@@ -199,7 +199,7 @@ export async function submitExtrinsicWithKeyring(
 }
 
 // only exporting for testing purposes
- 
+
 export async function signPayload(
   payload: any,
   account: Account,
