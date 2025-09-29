@@ -45,7 +45,6 @@
 
   let networkErrorMsg: string = $state('');
   let accountErrorMsg: string = $state('');
-  console.log(accounts.size, '**111accounts found***');
 
   // We need to access the user's wallet to get the accounts
   onMount(async () => {
@@ -67,10 +66,7 @@
     accountErrorMsg = '';
 
     try {
-      console.log(accounts.size, '**a2222ccounts found***');
-
       await connectAndFetchAccounts(selectedNetwork!, thisWeb3Enable, thisWeb3Accounts);
-      console.log(accounts.size, '**333accounts found***');
       if (networkErrorMsg == '' && accounts.size === 0) {
         accountErrorMsg = noAccountsFoundErrorMsg;
       }
@@ -94,13 +90,12 @@
       selectedNetwork !== $user.network &&
       isValidURL(selectedNetwork.endpoint.toString())
     ) {
-      console.log('networkChanged effect fired:', selectedNetwork);
       networkChanged();
     }
   });
 
   $effect(() => {
-    if (newUser?.address !== selectedAccount?.address) {
+    if (selectedAccount !== null && newUser?.address !== selectedAccount?.address) {
       newUser = selectedAccount;
     }
   });

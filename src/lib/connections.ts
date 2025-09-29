@@ -199,7 +199,7 @@ export async function submitExtrinsicWithKeyring(
 }
 
 // only exporting for testing purposes
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 export async function signPayload(
   payload: any,
   account: Account,

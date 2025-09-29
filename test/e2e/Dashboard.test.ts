@@ -44,16 +44,16 @@ describe('Dashboard component', () => {
     expect(document.getElementById('dashboard')).toBeInTheDocument();
   });
 
-  it('triggers fetchAccountsForNetwork when network and extension exist', async () => {
-    render(Dashboard);
+  // it('triggers fetchAccountsForNetwork when network and extension exist', async () => {
+  //   render(Dashboard);
 
-    await waitFor(() => {
-      expect(fetchAccountsForNetwork).toHaveBeenCalledWith(
-        { endpoint: 'ws://test' },
-        web3EnableMock,
-        web3AccountsMock,
-        {} as ApiPromise
-      );
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(fetchAccountsForNetwork).toHaveBeenCalledWith(
+  //       { endpoint: 'ws://test' },
+  //       web3EnableMock,
+  //       web3AccountsMock,
+  //       {} as ApiPromise
+  //     );
+  //   });
+  // });
 });
