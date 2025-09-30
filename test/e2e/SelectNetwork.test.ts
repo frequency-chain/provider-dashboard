@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/svelte';
+import { fireEvent, render, screen, waitFor } from '@testing-library/svelte';
 import { writable } from 'svelte/store';
 import { vi } from 'vitest';
 import SelectNetwork from '../../src/components/features/SelectNetworkAndAccount/SelectNetwork.svelte';
@@ -42,72 +42,72 @@ describe('SelectNetwork component', () => {
   });
 
   // TODO: fix this tests
-  // it('handles onSelectNetworkChanged', async () => {
-  //   render(SelectNetwork, { ...defaultProps });
+  it.skip('handles onSelectNetworkChanged', async () => {
+    render(SelectNetwork, { ...defaultProps });
 
-  //   const select = screen.getAllByText(/Select a Network/i)[1];
-  //   await fireEvent.click(select);
+    const select = screen.getAllByText(/Select a Network/i)[1];
+    await fireEvent.click(select);
 
-  //   const option = screen.getByText(/TestNet1:/i);
-  //   await fireEvent.click(option);
+    const option = screen.getByText(/TestNet1:/i);
+    await fireEvent.click(option);
 
-  //   await waitFor(() => {
-  //     expect(connectAndFetchAccountsMock).toHaveBeenCalled();
-  //   });
+    await waitFor(() => {
+      expect(connectAndFetchAccountsMock).toHaveBeenCalled();
+    });
 
-  //   await waitFor(() => {
-  //     expect(screen.getByText(/Connected to/i)).toBeInTheDocument();
-  //     expect(screen.getByRole('button', { name: /switch button/i })).toBeInTheDocument();
-  //   });
-  // });
-
-  // TODO: fix this test
-  // it('resets state when switch button is clicked', async () => {
-  //   render(SelectNetwork, { ...defaultProps });
-
-  //   const select = screen.getAllByText(/Select a Network/i)[1];
-  //   await fireEvent.click(select);
-
-  //   const option = screen.getByText(/TestNet1:/i);
-  //   await fireEvent.click(option);
-
-  //   const btn = screen.getByRole('button', { name: /switch button/i });
-  //   await fireEvent.click(btn);
-
-  //   expect(resetStateMock).toHaveBeenCalled();
-  // });
+    await waitFor(() => {
+      expect(screen.getByText(/Connected to/i)).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /switch button/i })).toBeInTheDocument();
+    });
+  });
 
   // TODO: fix this test
-  // it('handles custom network input on Enter key', async () => {
-  //   render(SelectNetwork, { ...defaultProps });
+  it.skip('resets state when switch button is clicked', async () => {
+    render(SelectNetwork, { ...defaultProps });
 
-  //   const select = screen.getAllByText(/Select a Network/i)[1];
-  //   await fireEvent.click(select);
+    const select = screen.getAllByText(/Select a Network/i)[1];
+    await fireEvent.click(select);
 
-  //   const option = screen.getByText(/Custom/i);
-  //   await fireEvent.click(option);
+    const option = screen.getByText(/TestNet1:/i);
+    await fireEvent.click(option);
 
-  //   const input = screen.getByPlaceholderText(/wss:\/\/some.frequency.node/i);
-  //   await fireEvent.input(input, { target: { value: 'wss://custom.node' } });
-  //   await fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    const btn = screen.getByRole('button', { name: /switch button/i });
+    await fireEvent.click(btn);
 
-  //   expect(input).toHaveValue('wss://custom.node');
-  // });
+    expect(resetStateMock).toHaveBeenCalled();
+  });
 
   // TODO: fix this test
-  // it('does not set endpoint if invalid URL entered', async () => {
-  //   render(SelectNetwork, { ...defaultProps });
+  it.skip('handles custom network input on Enter key', async () => {
+    render(SelectNetwork, { ...defaultProps });
 
-  //   const select = screen.getAllByText(/Select a Network/i)[1];
-  //   await fireEvent.click(select);
+    const select = screen.getAllByText(/Select a Network/i)[1];
+    await fireEvent.click(select);
 
-  //   const option = screen.getByText(/Custom/i);
-  //   await fireEvent.click(option);
+    const option = screen.getByText(/Custom/i);
+    await fireEvent.click(option);
 
-  //   const input = screen.getByPlaceholderText(/wss:\/\/some.frequency.node/i);
-  //   await fireEvent.input(input, { target: { value: 'invalid-url' } });
-  //   await fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+    const input = screen.getByPlaceholderText(/wss:\/\/some.frequency.node/i);
+    await fireEvent.input(input, { target: { value: 'wss://custom.node' } });
+    await fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
 
-  //   expect(input).toHaveValue('invalid-url');
-  // });
+    expect(input).toHaveValue('wss://custom.node');
+  });
+
+  // TODO: fix this test
+  it.skip('does not set endpoint if invalid URL entered', async () => {
+    render(SelectNetwork, { ...defaultProps });
+
+    const select = screen.getAllByText(/Select a Network/i)[1];
+    await fireEvent.click(select);
+
+    const option = screen.getByText(/Custom/i);
+    await fireEvent.click(option);
+
+    const input = screen.getByPlaceholderText(/wss:\/\/some.frequency.node/i);
+    await fireEvent.input(input, { target: { value: 'invalid-url' } });
+    await fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+
+    expect(input).toHaveValue('invalid-url');
+  });
 });

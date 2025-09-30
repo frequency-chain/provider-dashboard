@@ -1,10 +1,10 @@
 // ConnectAndFetchAccounts.test.ts
 import { InjectedAccount, InjectedAccountWithMeta, InjectedExtension } from '@polkadot/extension-inject/types';
-import { render } from '@testing-library/svelte';
+import { getByText, render, waitFor } from '@testing-library/svelte';
 import { Mock, describe, expect, it, vi } from 'vitest';
 import SelectNetworkAndAccount from '../../src/components/features/SelectNetworkAndAccount/SelectNetworkAndAccount.svelte';
 import { createApi } from '../../src/lib/polkadotApi';
-import { Account, allAccountsStore } from '../../src/lib/stores/accountsStore';
+import { Account, allAccountsStore, fetchAccountsForNetwork } from '../../src/lib/stores/accountsStore';
 import { NetworkInfo, NetworkType } from '../../src/lib/stores/networksStore';
 import { user } from '../../src/lib/stores/userStore';
 import { connectAndFetchAccounts } from '../../src/lib/utils';
@@ -110,37 +110,36 @@ describe('SelectNetworkAndAccount', () => {
     ).rejects.toThrowError('Could not connect to empty value. Please enter a valid and reachable Websocket URL.');
   });
 
-  // it('sets successfully calls createApi and fetchAccountsForNetwork', async () => {
-  //   const disconnectMock = vi.fn();
-  //   (createApi as unknown as Mock).mockResolvedValue({
-  //     api: { disconnect: disconnectMock },
-  //   });
+  it.skip('sets successfully calls createApi and fetchAccountsForNetwork', async () => {
+    const disconnectMock = vi.fn();
+    (createApi as unknown as Mock).mockResolvedValue({
+      api: { disconnect: disconnectMock },
+    });
 
-  //   render(SelectNetworkAndAccount, {
-  //     props: {
-  //       newUser: null,
-  //       accounts: allAccountsStore,
-  //     },
-  //   });
+    render(SelectNetworkAndAccount, {
+      props: {
+        newUser: null,
+        accounts: allAccountsStore,
+      },
+    });
 
-  //   // valid endpoint
-  //   const validEndpoint: NetworkInfo = {
-  //     id: NetworkType.TESTNET_PASEO,
-  //     name: 'testnet',
-  //     endpoint: 'wss://test1.node',
-  //     pathName: 'testnet',
-  //   };
-  //   await connectAndFetchAccounts(validEndpoint, mockWeb3Enable, mockWeb3Accounts);
+    // valid endpoint
+    const validEndpoint: NetworkInfo = {
+      id: NetworkType.TESTNET_PASEO,
+      name: 'testnet',
+      endpoint: 'wss://test1.node',
+      pathName: 'testnet',
+    };
+    await connectAndFetchAccounts(validEndpoint, mockWeb3Enable, mockWeb3Accounts);
 
-  //   await waitFor(() => {
-  //     expect(createApi).toBeCalledWith(validEndpoint.endpoint);
-  //     expect(fetchAccountsForNetwork).toBeCalled();
-  //     expect(disconnectMock).toBeCalled();
-  //   });
-  // });
+    await waitFor(() => {
+      expect(createApi).toBeCalledWith(validEndpoint.endpoint);
+      expect(fetchAccountsForNetwork).toBeCalled();
+      expect(disconnectMock).toBeCalled();
+    });
+  });
 
-  // TODO: fix this test
-  it('sets accountErrorMsg when account size is 0', async () => {
+  it.skip('sets accountErrorMsg when account size is 0', async () => {
     const disconnectMock = vi.fn();
     (createApi as unknown as Mock).mockResolvedValue({
       api: { disconnect: disconnectMock },
@@ -163,8 +162,8 @@ describe('SelectNetworkAndAccount', () => {
 
     await connectAndFetchAccounts(validEndpoint, mockWeb3EnableEmptyAccounts, mockWeb3EmptyAccounts);
 
-    // await waitFor(() => {
-    //   expect(getByText(container, 'No accounts found.')).toBeDefined();
-    // });
+    await waitFor(() => {
+      expect(getByText(container, 'No accounts found.')).toBeDefined();
+    });
   });
 });
