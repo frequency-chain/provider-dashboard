@@ -63,7 +63,7 @@
   "type": "module",
   "dependencies": {
     "@frequency-chain/api-augment": "^1.13.2",
-    "@frequency-chain/style-guide": "^0.3.5",
+    "@frequency-chain/style-guide": "0.4.0",
     "@polkadot/api": "^16.4.6",
     "@polkadot/extension-dapp": "^0.61.6",
     "@polkadot/extension-inject": "^0.61.6",
@@ -71,7 +71,7 @@
     "@polkadot/types": "^16.4.6",
     "@polkadot/util": "^13.5.6",
     "@tailwindcss/postcss": "^4.1.4",
-    "bits-ui": "^0.22.0",
+    "bits-ui": "^2.9.9",
     "jsdom": "^24.1.1",
     "rxjs": "^7.8.1",
     "svelte-preprocess": "^6.0.3"

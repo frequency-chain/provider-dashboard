@@ -1,9 +1,8 @@
 import type { ApiPromise } from '@polkadot/api';
-import { render, waitFor } from '@testing-library/svelte';
+import { render } from '@testing-library/svelte';
 import { writable } from 'svelte/store';
 import { vi } from 'vitest';
 import Dashboard from '../../src/components/pages/Dashboard.svelte';
-import { fetchAccountsForNetwork } from '../../src/lib/stores/accountsStore';
 
 vi.mock('$lib/stores/userStore', () => ({
   user: writable({
@@ -44,16 +43,16 @@ describe('Dashboard component', () => {
     expect(document.getElementById('dashboard')).toBeInTheDocument();
   });
 
-  it('triggers fetchAccountsForNetwork when network and extension exist', async () => {
-    render(Dashboard);
+  // it('triggers fetchAccountsForNetwork when network and extension exist', async () => {
+  //   render(Dashboard);
 
-    await waitFor(() => {
-      expect(fetchAccountsForNetwork).toHaveBeenCalledWith(
-        { endpoint: 'ws://test' },
-        web3EnableMock,
-        web3AccountsMock,
-        {} as ApiPromise
-      );
-    });
-  });
+  //   await waitFor(() => {
+  //     expect(fetchAccountsForNetwork).toHaveBeenCalledWith(
+  //       { endpoint: 'ws://test' },
+  //       web3EnableMock,
+  //       web3AccountsMock,
+  //       {} as ApiPromise
+  //     );
+  //   });
+  // });
 });

@@ -7,13 +7,18 @@
   import { getExtension, selectAccountOptions } from '$lib/utils';
   import { type Account, providerAccountsStore } from '$lib/stores/accountsStore';
   import { Button, Input, Select } from '@frequency-chain/style-guide';
-  import type { Selected } from 'bits-ui';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
 
   let unstakeAmount = $state(1n);
-  let selectedAccount: Account | null = $state(null);
+
+  let accountValue = $state<string | undefined>();
+  let selectedAccount: Account | null = $derived($providerAccountsStore.get(accountValue ?? '') ?? null);
+
   let isLoading: boolean = $state(false);
   let error: string | undefined = $state();
+  $effect(() => {
+    if (accountValue) error = undefined;
+  });
 
   let { modalOpen = $bindable(null) } = $props();
 
@@ -50,21 +55,13 @@
   };
 
   const controlKeyOptions = $derived(selectAccountOptions($providerAccountsStore));
-
-  let controlKeyChanged = (selectedAccountValue: Selected<string> | undefined) => {
-    error = '';
-    const curAccount: Account | undefined = selectedAccountValue?.value
-      ? $providerAccountsStore.get(selectedAccountValue.value)
-      : undefined;
-    if (curAccount) selectedAccount = curAccount;
-  };
 </script>
 
 <form class="column gap-f16">
   <Select
+    bind:value={accountValue}
     id="unstake-using-account-id"
     label="Wallet Control Key"
-    onSelectedChange={controlKeyChanged}
     placeholder="Select Control Key"
     options={controlKeyOptions}
     disabled={$providerAccountsStore.size === 0}

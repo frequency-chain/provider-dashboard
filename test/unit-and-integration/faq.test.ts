@@ -27,14 +27,25 @@ describe('FAQ Page', () => {
     });
   });
 
-  it('clicking the question shows the answer content', async () => {
+  it('clicking the question toggles the answer content', async () => {
     const { container } = render(FAQPage);
-    const questionBtn = container.querySelector('[data-accordion-header=""] button');
-    expect(container.querySelector('[data-accordion-content=""]')).toBeNull();
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-    questionBtn && fireEvent.click(questionBtn);
+
+    const questionBtn = container.querySelector('[data-accordion-header] button') as HTMLButtonElement;
+    expect(questionBtn).toBeInTheDocument();
+
+    const content = container.querySelector('[data-accordion-content]') as HTMLElement;
+    expect(content).toBeInTheDocument();
+
+    expect(content).toHaveAttribute('data-state', 'closed');
+    expect(content).toHaveAttribute('hidden');
+    expect(content).not.toBeVisible();
+
+    await fireEvent.click(questionBtn);
+
     await waitFor(() => {
-      expect(container.querySelector('[data-accordion-content=""]')).toBeVisible();
+      expect(content).toHaveAttribute('data-state', 'open');
+      expect(content).not.toHaveAttribute('hidden');
+      expect(content).toBeVisible();
     });
   });
 });

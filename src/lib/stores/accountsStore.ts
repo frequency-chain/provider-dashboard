@@ -111,6 +111,7 @@ export async function fetchAccountsForNetwork(
   } catch (e) {
     console.error('Unable to load extension accounts', e);
   }
+
   allAccountsStore.set(allAccounts);
 
   // trigger initial balance fetch
