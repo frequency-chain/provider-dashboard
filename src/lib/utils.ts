@@ -7,7 +7,7 @@ import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
-import { createApi, getBalances, getMsaInfo } from './polkadotApi';
+import { createApi, getBalances, getMsaInfoForPublicKey } from './polkadotApi';
 import {
   Account,
   allAccountsStore,
@@ -222,7 +222,7 @@ export async function subscribeToAccounts(selectedNetwork: NetworkInfo, apiPromi
           account.network = selectedNetwork;
           account.address = walletAccount.address;
           account.injectedAccount = walletAccount;
-          const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+          const msaInfo: MsaInfo = await getMsaInfoForPublicKey(apiPromise, account.address);
           account.msaId = msaInfo.msaId;
           account.isProvider = msaInfo.isProvider;
           account.providerName = providerNameToHuman(msaInfo.providerName);

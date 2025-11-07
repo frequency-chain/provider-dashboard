@@ -8,7 +8,7 @@
   import { activityLog } from '$lib/stores/activityLogStore';
   import BackHomeButton from '$atoms/BackHomeButton.svelte';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
-  import { getMsaInfo } from '$lib/polkadotApi';
+  import { getMsaInfoForPublicKey } from '$lib/polkadotApi';
   import ActivityLogPreviewItem from '$features/ActivityLogItem/ActivityLogItem.svelte';
   import { Button, Input } from '@frequency-chain/style-guide';
 
@@ -25,7 +25,7 @@
   let requestToBeProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
+      const msaInfo: MsaInfo = await getMsaInfoForPublicKey($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
       isLoading = false;

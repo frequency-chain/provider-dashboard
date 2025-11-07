@@ -3,7 +3,7 @@
   import { getExtension, providerNameToHuman } from '$lib/utils';
   import { submitCreateProvider } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
-  import { getMsaInfo } from '$lib/polkadotApi';
+  import { getMsaInfoForPublicKey } from '$lib/polkadotApi';
   import { TxnStatus, type Activity, type MsaInfo } from '$lib/storeTypes';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
@@ -29,7 +29,7 @@
   let createProviderTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const msaInfo: MsaInfo = await getMsaInfo($dotApi.api!, $user.address);
+      const msaInfo: MsaInfo = await getMsaInfoForPublicKey($dotApi.api!, $user.address);
       $user.providerName = providerNameToHuman(msaInfo.providerName);
       $user.isProvider = msaInfo.isProvider;
       isLoading = false;

@@ -25,10 +25,10 @@ const mocks = vi.hoisted(() => {
   }
 
   class TestProviderRegistry {
-    providerName: string;
+    defaultName: string;
     isSome: boolean;
     constructor(val: string) {
-      this.providerName = val;
+      this.defaultName = val;
       this.isSome = val !== '';
     }
     unwrap(): TestProviderRegistry {
@@ -71,7 +71,7 @@ const mocks = vi.hoisted(() => {
       },
       msa: {
         publicKeyToMsaId: vi.fn().mockResolvedValue(new TestCodec(3n)),
-        providerToRegistryEntry: vi.fn().mockResolvedValue(new TestProviderRegistry('Bobbay')),
+        providerToRegistryEntryV2: vi.fn().mockResolvedValue(new TestProviderRegistry('Bobbay')),
       },
     },
     rpc: { chain: { getBlock: vi.fn().mockResolvedValue(blockData) } },

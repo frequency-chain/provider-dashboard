@@ -1,4 +1,4 @@
-import { getMsaInfo, type AccountBalances } from '$lib/polkadotApi';
+import { getMsaInfoForPublicKey, type AccountBalances } from '$lib/polkadotApi';
 import { NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 import type { MsaInfo } from '$lib/storeTypes';
 import { providerNameToHuman, refreshAllBalances } from '$lib/utils';
@@ -69,7 +69,7 @@ export async function fetchAccountsForNetwork(
         const account = new Account();
         account.network = selectedNetwork;
         account.address = keyRingPair.address;
-        const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+        const msaInfo: MsaInfo = await getMsaInfoForPublicKey(apiPromise, account.address);
         account.msaId = msaInfo.msaId;
         account.keyringPair = keyRingPair;
         account.isProvider = msaInfo.isProvider;
@@ -98,7 +98,7 @@ export async function fetchAccountsForNetwork(
             account.network = selectedNetwork;
             account.address = walletAccount.address;
             account.injectedAccount = walletAccount;
-            const msaInfo: MsaInfo = await getMsaInfo(apiPromise, account.address);
+            const msaInfo: MsaInfo = await getMsaInfoForPublicKey(apiPromise, account.address);
             account.msaId = msaInfo.msaId;
             account.isProvider = msaInfo.isProvider;
             account.providerName = providerNameToHuman(msaInfo.providerName);

@@ -1,7 +1,7 @@
 import { ApiPromise } from '@polkadot/api';
 import { Option, u64 } from '@polkadot/types-codec';
 import { vi } from 'vitest';
-import { createApi, getBalances, getControlKeys, getMsaInfo, getToken } from '../../src/lib/polkadotApi';
+import { createApi, getBalances, getControlKeys, getMsaInfoForPublicKey, getToken } from '../../src/lib/polkadotApi';
 
 vi.mock('@polkadot/api', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@polkadot/api')>();
@@ -139,7 +139,7 @@ describe('getBalances', () => {
   });
 });
 
-describe('getMsaInfo', () => {
+describe('getMsaInfoForPublicKey', () => {
   const mockU64 = (num: number) =>
     ({
       toNumber: () => num,
@@ -162,16 +162,16 @@ describe('getMsaInfo', () => {
       query: {
         msa: {
           publicKeyToMsaId: vi.fn().mockResolvedValue(mockOptionNone as unknown as Option<u64>),
-          providerToRegistryEntry: vi.fn(),
+          providerToRegistryEntryV2: vi.fn(),
         },
       },
     } as unknown as ApiPromise;
 
-    const info = await getMsaInfo(mockApi, 'fakePublicKey');
+    const info = await getMsaInfoForPublicKey(mockApi, 'fakePublicKey');
 
     expect(info).toEqual({ isProvider: false, msaId: 0, providerName: '' });
     expect(mockApi.query.msa.publicKeyToMsaId).toHaveBeenCalledWith('fakePublicKey');
-    expect(mockApi.query.msa.providerToRegistryEntry).not.toHaveBeenCalled();
+    expect(mockApi.query.msa.providerToRegistryEntryV2).not.toHaveBeenCalled();
   });
 
   it('returns msaId without provider when registry entry is None', async () => {
@@ -181,30 +181,30 @@ describe('getMsaInfo', () => {
       query: {
         msa: {
           publicKeyToMsaId: vi.fn().mockResolvedValue(mockOptionSome(mockU64) as unknown as Option<u64>),
-          providerToRegistryEntry: vi.fn().mockResolvedValue(mockOptionNone),
+          providerToRegistryEntryV2: vi.fn().mockResolvedValue(mockOptionNone),
         },
       },
     } as unknown as ApiPromise;
 
-    const info = await getMsaInfo(mockApi, 'pk');
+    const info = await getMsaInfoForPublicKey(mockApi, 'pk');
 
     expect(info).toEqual({ isProvider: false, msaId: 123, providerName: '' });
   });
 
   it('returns msaId with provider info when registry entry is Some', async () => {
     const mockU64 = { toNumber: () => 456 } as unknown as u64;
-    const registryEntry = { providerName: { toString: () => 'AcmeProvider' } };
+    const registryEntry = { defaultName: { toString: () => 'AcmeProvider' } };
 
     const mockApi = {
       query: {
         msa: {
           publicKeyToMsaId: vi.fn().mockResolvedValue(mockOptionSome(mockU64) as unknown as Option<u64>),
-          providerToRegistryEntry: vi.fn().mockResolvedValue(mockOptionSome(registryEntry)),
+          providerToRegistryEntryV2: vi.fn().mockResolvedValue(mockOptionSome(registryEntry)),
         },
       },
     } as unknown as ApiPromise;
 
-    const info = await getMsaInfo(mockApi, 'pk2');
+    const info = await getMsaInfoForPublicKey(mockApi, 'pk2');
 
     expect(info).toEqual({ isProvider: true, msaId: 456, providerName: 'AcmeProvider' });
   });

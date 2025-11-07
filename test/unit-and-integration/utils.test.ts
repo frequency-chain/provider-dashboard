@@ -2,7 +2,7 @@ import { createMailto, isLocalhost, isMainnet } from '$lib/utils';
 import { web3AccountsSubscribe, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 import { stringToHex } from '@polkadot/util';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getBalances, getMsaInfo } from '../../src/lib/polkadotApi';
+import { getBalances, getMsaInfoForPublicKey } from '../../src/lib/polkadotApi';
 import { allAccountsStore } from '../../src/lib/stores/accountsStore';
 import { NetworkType } from '../../src/lib/stores/networksStore';
 import { user } from '../../src/lib/stores/userStore';
@@ -19,7 +19,7 @@ import {
 } from '../../src/lib/utils';
 
 vi.mock('../../src/lib/polkadotApi', () => ({
-  getMsaInfo: vi.fn().mockResolvedValue({
+  getMsaInfoForPublicKey: vi.fn().mockResolvedValue({
     msaId: 42,
     isProvider: true,
     providerName: { toString: () => '0x4d7950726f7669646572' },
@@ -252,7 +252,7 @@ describe('subscribeToAccounts', () => {
       };
     });
 
-    vi.mocked(getMsaInfo).mockImplementation(async (cb) => {
+    vi.mocked(getMsaInfoForPublicKey).mockImplementation(async (cb) => {
       return { isProvider: true, msaId: 1234, providerName: 'MyProvider' };
     });
 
