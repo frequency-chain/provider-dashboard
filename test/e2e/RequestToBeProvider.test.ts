@@ -4,7 +4,7 @@ import { tick } from 'svelte';
 import { Mock, vi } from 'vitest';
 import RequestToBeProvider from '../../src//components/features/BecomeProviderNextSteps/RequestToBeProvider.svelte';
 import { submitRequestToBeProvider } from '../../src/lib/connections';
-import { getMsaInfo } from '../../src/lib/polkadotApi';
+import { getMsaInfoForPublicKey } from '../../src/lib/polkadotApi';
 import { dotApi } from '../../src/lib/stores';
 import { handleResult } from '../../src/lib/stores/activityLogStore';
 import { user } from '../../src/lib/stores/userStore';
@@ -24,7 +24,7 @@ vi.mock('$lib/utils', async () => {
 });
 
 vi.mock('$lib/polkadotApi', () => ({
-  getMsaInfo: vi.fn().mockResolvedValue({ providerName: 'TestProvider', isProvider: true }),
+  getMsaInfoForPublicKey: vi.fn().mockResolvedValue({ providerName: 'TestProvider', isProvider: true }),
 }));
 
 describe('RequestToBeProvider', () => {
@@ -97,7 +97,7 @@ describe('RequestToBeProvider', () => {
     await tick();
 
     await waitFor(() => {
-      expect(getMsaInfo).toHaveBeenCalled();
+      expect(getMsaInfoForPublicKey).toHaveBeenCalled();
     });
   });
 
@@ -144,7 +144,7 @@ describe('RequestToBeProvider', () => {
     handleResult(mockResult);
 
     await waitFor(() => {
-      expect(getMsaInfo).toHaveBeenCalled();
+      expect(getMsaInfoForPublicKey).toHaveBeenCalled();
     });
 
     expect(await screen.findByText(/Your request to has failed/i)).toBeInTheDocument();

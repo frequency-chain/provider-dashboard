@@ -53,19 +53,22 @@ export async function getBalances(apiPromise: ApiPromise, ControlKey: string): P
   };
 }
 
-export async function getMsaInfo(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
+export async function getMsaInfoForPublicKey(apiPromise: ApiPromise, publicKey: string): Promise<MsaInfo> {
   const result = (await apiPromise?.query.msa.publicKeyToMsaId(publicKey)) as Option<u64>;
   const received = result?.unwrapOrDefault();
 
-  const msaInfo: MsaInfo = { isProvider: false, msaId: 0, providerName: '' };
+  return getMsaInfoById(apiPromise, received?.toNumber());
+}
 
-  msaInfo.msaId = received?.toNumber();
+export async function getMsaInfoById(apiPromise: ApiPromise, msaId: number): Promise<MsaInfo> {
+  const msaInfo: MsaInfo = { isProvider: false, msaId, providerName: '' };
+
   if (msaInfo.msaId > 0) {
-    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaInfo.msaId)) as Option<any>;
+    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId)) as Option<any>;
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
-      msaInfo.providerName = registryEntry.providerName.toString();
+      msaInfo.providerName = registryEntry.defaultName.toString();
     }
   }
   return msaInfo;
@@ -86,11 +89,11 @@ export const defaultCapacityDetails: CapacityDetails = {
 };
 
 export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Promise<CapacityDetails> {
-  const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntry(msaId)) as Option<any>;
+  const msaInfo = await getMsaInfoById(apiPromise, msaId);
 
   let capacityDetails = defaultCapacityDetails;
 
-  if (providerRegistry.isSome) {
+  if (msaInfo.isProvider) {
     const detailsResult = (await apiPromise.query.capacity.capacityLedger(
       msaId
     )) as Option<PalletCapacityCapacityDetails>;

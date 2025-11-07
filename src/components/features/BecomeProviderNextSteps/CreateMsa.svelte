@@ -6,7 +6,7 @@
   import { getExtension } from '$lib/utils';
   import { submitCreateMsa } from '$lib/connections';
   import { user } from '$lib/stores/userStore';
-  import { getMsaInfo } from '$lib/polkadotApi';
+  import { getMsaInfoForPublicKey } from '$lib/polkadotApi';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { activityLog } from '$lib/stores/activityLogStore';
   import BackToRootButton from '$atoms/BackHomeButton.svelte';
@@ -26,7 +26,7 @@
   let createMsaTxnFinished = async (succeeded: boolean) => {
     if (succeeded) {
       const apiPromise = $dotApi.api as ApiPromise;
-      const msaInfo: MsaInfo = await getMsaInfo(apiPromise, $user.address);
+      const msaInfo: MsaInfo = await getMsaInfoForPublicKey(apiPromise, $user.address);
       isLoading = false;
       setTimeout(() => {
         user.update((curUser) => ({ ...curUser, msaId: msaInfo.msaId }));

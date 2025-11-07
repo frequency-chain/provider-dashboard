@@ -6,7 +6,7 @@ import { writable } from 'svelte/store';
 import { Mock, vi } from 'vitest';
 import CreateProvider from '../../src/components/features/BecomeProviderNextSteps/CreateProvider.svelte';
 import { submitCreateProvider } from '../../src/lib/connections';
-import { getMsaInfo } from '../../src/lib/polkadotApi';
+import { getMsaInfoForPublicKey } from '../../src/lib/polkadotApi';
 import { dotApi } from '../../src/lib/stores';
 import { handleResult } from '../../src/lib/stores/activityLogStore';
 import { user } from '../../src/lib/stores/userStore';
@@ -27,7 +27,7 @@ vi.mock('$lib/utils', async () => {
 });
 
 vi.mock('$lib/polkadotApi', () => ({
-  getMsaInfo: vi.fn().mockResolvedValue({ providerName: 'TestProvider', isProvider: true }),
+  getMsaInfoForPublicKey: vi.fn().mockResolvedValue({ providerName: 'TestProvider', isProvider: true }),
 }));
 
 vi.mock('$app/navigation', () => ({
@@ -81,7 +81,7 @@ describe('CreateProvider component', () => {
     const txnId = 'txn123';
 
     (submitCreateProvider as Mock).mockResolvedValueOnce(txnId);
-    (getMsaInfo as Mock).mockResolvedValueOnce({
+    (getMsaInfoForPublicKey as Mock).mockResolvedValueOnce({
       isProvider: true,
       msaId: 1234,
       providerName: 'Alice',
@@ -114,7 +114,7 @@ describe('CreateProvider component', () => {
     await tick();
 
     await waitFor(() => {
-      expect(getMsaInfo).toHaveBeenCalled();
+      expect(getMsaInfoForPublicKey).toHaveBeenCalled();
     });
 
     await waitFor(() => {
@@ -128,7 +128,7 @@ describe('CreateProvider component', () => {
     const errorMsg = 'Submission failed';
 
     (submitCreateProvider as Mock).mockRejectedValueOnce(new Error(errorMsg));
-    (getMsaInfo as Mock).mockResolvedValueOnce({
+    (getMsaInfoForPublicKey as Mock).mockResolvedValueOnce({
       isProvider: true,
       msaId: 1234,
       providerName: 'Alice',
