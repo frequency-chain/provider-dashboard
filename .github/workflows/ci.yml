@@ -42,7 +42,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       frequency-instant:
-        image: 'frequencychain/instant-seal-node:latest'
+        image: 'frequencychain/standalone-node:v2.0.0-rc1'
         ports:
           - '9944:9944' # ws and rpc port
 
