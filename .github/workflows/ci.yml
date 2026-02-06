@@ -42,9 +42,14 @@ jobs:
     runs-on: ubuntu-latest
     services:
       frequency-instant:
-        image: 'frequencychain/instant-seal-node:latest'
+        image: 'frequencychain/standalone-node:latest'
         ports:
           - '9944:9944' # ws and rpc port
+        options: >-
+          --health-cmd="bash -c \"curl -X POST -H \\\"Content-Type: application/json\\\" -d '{\\\"jsonrpc\\\":\\\"2.0\\\",\\\"method\\\":\\\"system_health\\\",\\\"params\\\":[],\\\"id\\\":1}' http://127.0.0.1:9944 > /dev/null 2>&1\""
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Checkout
