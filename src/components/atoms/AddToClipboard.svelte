@@ -6,7 +6,7 @@
   let fill = $state(origFill);
   let isClicked = $state(false);
 
-  let { copyValue = '', disabled = false, classes = '' } = $props();
+  let { copyValue = '', disabled = false, classes = '', onCopied = () => {} } = $props();
 
   function handleMouseEnter() {
     fill = '#790E70';
@@ -16,11 +16,12 @@
     if (!isClicked) fill = origFill;
   }
 
-  function handleClick() {
+  async function handleClick() {
     if (disabled) return;
-    copyText();
+    await copyText();
     fill = '#790E70';
     isClicked = true;
+    onCopied();
     setTimeout(() => {
       fill = origFill;
       isClicked = false;

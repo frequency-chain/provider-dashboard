@@ -1,5 +1,5 @@
-import { ExtrinsicStatus } from '@polkadot/types/interfaces';
-import { ISubmittableResult } from '@polkadot/types/types';
+import { type ExtrinsicStatus } from '@polkadot/types/interfaces';
+import { type ISubmittableResult } from '@polkadot/types/types';
 import { u8aToHex } from '@polkadot/util';
 import { screen } from '@testing-library/svelte';
 import { Hash } from 'crypto';
@@ -23,8 +23,8 @@ export function createMockSubmittableResult(overrides: Partial<ISubmittableResul
     isBroadcast: false,
     isInvalid: false,
     isUsurped: false,
-    asFinalized: { toHex: () => '0x123456' } as any,
-    asInBlock: { toHex: () => '0x0' } as any,
+    asFinalized: { toHex: () => '0x123456' },
+    asInBlock: { toHex: () => '0x0' },
     toString: () => 'Finalized',
   } as unknown as ExtrinsicStatus;
 

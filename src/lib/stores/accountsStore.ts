@@ -15,7 +15,7 @@ export class Account {
   address: SS58Address = '';
   isProvider: boolean = false;
   balances: AccountBalances = { transferable: 0n, locked: 0n, total: 0n };
-  network?: NetworkInfo;
+  network?: NetworkInfo | null;
   keyringPair?: KeyringPair;
   injectedAccount?: InjectedAccountWithMeta;
   msaId?: number;

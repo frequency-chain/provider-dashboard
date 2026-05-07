@@ -1,12 +1,27 @@
 import type { DotApi, MsaInfo } from '$lib/storeTypes';
+import { decodeAvroPayload } from '$lib/utils';
 import { options } from '@frequency-chain/api-augment';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
-import type { KeyringPair } from '@polkadot/keyring/types';
 import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
+import type { CommonPrimitivesMsaProviderRegistryEntry, PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
+import { hexToString, u8aToHex } from '@polkadot/util';
 
-export type AccountMap = Record<string, KeyringPair>;
+interface Schema {
+  schemaId: number;
+  model: string | undefined;
+}
+
+interface Intent {
+  intentId: number;
+  payloadLocation: string;
+  settings: string[];
+  schemas: Schema[];
+}
+
+type IntentMap = Map<string, Intent>;
+
+const intentCache: IntentMap = new Map<string, Intent>();
 
 export async function createApi(networkEndpoint: string): Promise<DotApi> {
   const wsProvider = new WsProvider(networkEndpoint);
@@ -41,7 +56,7 @@ export interface AccountBalances {
   total: bigint;
 }
 export async function getBalances(apiPromise: ApiPromise, ControlKey: string): Promise<AccountBalances> {
-  const accountData = ((await apiPromise.query.system.account(ControlKey)) as any).data;
+  const accountData = (await apiPromise.query.system.account(ControlKey)).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
   const transferable = BigInt(free - locked);
@@ -64,7 +79,8 @@ export async function getMsaInfoById(apiPromise: ApiPromise, msaId: number): Pro
   const msaInfo: MsaInfo = { isProvider: false, msaId, providerName: '' };
 
   if (msaInfo.msaId > 0) {
-    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId)) as Option<any>;
+    const providerRegistry: Option<CommonPrimitivesMsaProviderRegistryEntry> =
+      await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId);
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
@@ -111,11 +127,112 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 }
 
 export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
-  const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
-  const keys = keyInfoResponse?.msa_keys;
+  const keyInfoResponse = await apiPromise.rpc.msa.getKeysByMsaId(msaId);
+  const keys = keyInfoResponse.isSome ? keyInfoResponse.unwrap().msa_keys : null;
   if (keys) {
     console.info('Successfully found keys.', keys);
     return keys;
   }
   throw Error(`Keys not found for ${msaId}`);
+}
+
+export async function getPublicKeys(apiPromise: ApiPromise, msaId: number, intentName: string): Promise<string[]> {
+  let publicKeys: string[] = [];
+
+  const intent = await getIntent(apiPromise, intentName);
+  if (!intent) {
+    throw new Error(`Unable to resolve intent for "${intentName}`);
+  }
+  const payload = await apiPromise.call.statefulStorageRuntimeApi.getItemizedStorageV2(msaId, intent.intentId);
+  if (payload.isOk) {
+    const payloads = payload.asOk.items.map((item) => ({
+      schemaId: item.schemaId.toNumber(),
+      payload: item.payload.toHex(),
+    }));
+
+    // Resolve all schema models
+    const payloadsWithModels = await Promise.all(
+      payloads.map(async (p) => {
+        const model = await getSchemaModel(apiPromise, intent, p.schemaId);
+        return { payload: p, model };
+      })
+    );
+
+    const decodedPayloads = payloadsWithModels.map((p) => decodeAvroPayload(p.payload.payload, p.model));
+    publicKeys = decodedPayloads.map((dp, i) => {
+      if (dp && typeof dp === 'object' && 'publicKey' in dp && dp?.publicKey) {
+        return u8aToHex(dp.publicKey as Uint8Array);
+      }
+      return `${i}: ${dp}`;
+    });
+  }
+
+  return publicKeys;
+}
+
+export async function getIntent(apiPromise: ApiPromise, intentName: string): Promise<Intent | undefined> {
+  let intent = intentCache.get(intentName);
+
+  if (!intent) {
+    const intentLookupResponse = await apiPromise.call.schemasRuntimeApi.getRegisteredEntitiesByName(intentName);
+    if (intentLookupResponse.isSome) {
+      const unwrappedResponse = intentLookupResponse.unwrap();
+      if (unwrappedResponse.length > 0) {
+        const intentId = unwrappedResponse[0].entityId.asIntent.toNumber();
+        const intentResponse = await apiPromise.call.schemasRuntimeApi.getIntentById(intentId, true);
+        if (intentResponse.isSome) {
+          const intentScale = intentResponse.unwrap();
+          intent = {
+            intentId,
+            payloadLocation: intentScale.payloadLocation.toString(),
+            settings: intentScale.settings.map((s) => s.toString()),
+            schemas: intentScale.schemaIds.unwrapOr([]).map((s) => ({ schemaId: s.toNumber(), model: undefined })),
+          };
+        }
+      }
+    }
+  }
+
+  return intent;
+}
+
+export async function getContentHashAndLatestSchemaForIntent(
+  apiPromise: ApiPromise,
+  msaId: number,
+  intentName: string
+) {
+  let contentHash = 0;
+
+  const intent = await getIntent(apiPromise, intentName);
+  if (!intent) {
+    throw new Error(`Unable to resolve intent "${intentName}"`);
+  }
+  const schemaId = intent.schemas[intent.schemas.length - 1].schemaId;
+  const response = await apiPromise.call.statefulStorageRuntimeApi.getItemizedStorageV2(msaId, intent.intentId);
+  if (response.isOk) {
+    contentHash = response.asOk.contentHash.toNumber();
+  }
+
+  return { intent, schemaId, contentHash };
+}
+
+export async function getSchemaModel(apiPromise: ApiPromise, intent: Intent, schemaId: number): Promise<string> {
+  let model: string | undefined = intent.schemas.find((s) => s.schemaId === schemaId)?.model ?? undefined;
+
+  if (!model) {
+    const response = await apiPromise.call.schemasRuntimeApi.getSchemaById(schemaId);
+    if (response.isSome) {
+      model = hexToString(response.unwrap().model.toString());
+      const schema = intent.schemas.find((s) => s.schemaId === schemaId);
+      if (schema) {
+        schema.model = model;
+      }
+    }
+  }
+
+  if (!model) {
+    throw new Error(`Unable to retrieve model for schema ${schemaId}`);
+  }
+
+  return model;
 }

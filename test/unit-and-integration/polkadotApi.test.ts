@@ -27,7 +27,7 @@ describe('createApi', async () => {
     const mockApi = await createApi(endpoint);
 
     expect(mockApi.wsProvider).toBeDefined();
-    expect(mockApi.api.isReady).resolves.toBe(true);
+    await expect(mockApi.api.isReady).resolves.toBe(true);
     expect(mockApi.keyring).toBeDefined();
     expect(mockApi.selectedEndpoint).toBe(endpoint);
     expect(mockApi.options).toBeDefined();
@@ -217,7 +217,8 @@ describe('getControlKeys', () => {
       rpc: {
         msa: {
           getKeysByMsaId: vi.fn().mockResolvedValue({
-            toHuman: () => ({ msa_keys: fakeKeys }),
+            isSome: true,
+            unwrap: () => ({ msa_keys: fakeKeys }),
           }),
         },
       },
