@@ -12,6 +12,7 @@ import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
 import type { HexString } from '@polkadot/util/types';
+import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 
 interface AddKeyData {
   msaId: string;
@@ -95,14 +96,14 @@ export async function submitAddControlKey(
         resolve('newKeySignature loaded successfully!');
       }, 3000);
     });
-  } catch (err: any) {
-    throw new Error(err.message);
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : String(err));
   }
 
   const ownerKeyProof = { Sr25519: ownerKeySignature };
   const newKeyProof = { Sr25519: newKeySignature };
   const addKeyCall = api.tx.msa.addPublicKeyToMsa(signingAccount.address, ownerKeyProof, newKeyProof, rawPayload);
-  let extrinsic: any;
+  let extrinsic;
   if (isPayingWithCapacity) {
     console.info('Paying for add key extrinsic with capacity');
     extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
@@ -142,7 +143,7 @@ export async function submitApplyAddItem(
   }
 
   const addKeyCall = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [{ Add: { data: payloadHex } }]);
-  let extrinsic: any;
+  let extrinsic;
   if (isPayingWithCapacity) {
     console.info('Paying for applyItemActions extrinsic with capacity');
     extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
@@ -187,7 +188,7 @@ export async function submitUnstake(
 
   const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
-  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<PalletCapacityCapacityDetails>;
   const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
   if (totalTokensStaked < unstakeAmount) throw new Error('User does not have the requested amount staked to unstake.');
   await submitExtrinsic(extrinsic, signingAccount, extension);
@@ -242,7 +243,7 @@ export async function submitExtrinsicWithKeyring(
 // only exporting for testing purposes
 
 export async function signPayload(
-  payload: any,
+  payload: unknown,
   account: Account,
   extension: InjectedExtension | undefined
 ): Promise<string> {
@@ -274,9 +275,10 @@ export async function signPayloadWithExtension(
     try {
       signed = await signer.signRaw(signerPayloadRaw);
       return signed?.signature;
-    } catch (e: any) {
-      console.error(`Error: ${e?.message}`);
-      throw new Error(e?.message);
+    } catch (e) {
+      const message = e instanceof Error ? e.message : String(e);
+      console.error(`Error: ${message}`);
+      throw new Error(message);
     }
   }
   throw new Error('Unknown error');

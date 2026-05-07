@@ -9,6 +9,7 @@
   import { hexToU8a, u8aToHex } from '@polkadot/util';
   import type { HexString } from '@polkadot/util/types';
   import { generateSubstrateKeypair } from '$lib/generateSubstrateIcsKey.js';
+  import { Buffer } from 'buffer';
 
   interface Props {
     modalOpen?: boolean | null;
@@ -62,13 +63,16 @@
       alert('Invalid provider.');
     } else {
       try {
+        if (!$dotApi.api) {
+          throw new Error("Null or undefined API object");
+        }
         isLoading = true;
-        const { contentHash, schemaId, intent } = await getContentHashAndLatestSchemaForIntent($dotApi.api!, $user.msaId, 'ics.public-key-key-agreement');
-        const model = await getSchemaModel($dotApi.api!, intent, schemaId);
+        const { contentHash, schemaId, intent } = await getContentHashAndLatestSchemaForIntent($dotApi.api, $user.msaId, 'ics.public-key-key-agreement');
+        const model = await getSchemaModel($dotApi.api, intent, schemaId);
         const publicKeyBytes = hexToU8a(publicKeyHex);
-        const payloadHex = encodeAvroPayload({ publicKey: Buffer.from(publicKeyBytes) }, model!);
+        const payloadHex = encodeAvroPayload({ publicKey: Buffer.from(publicKeyBytes) }, model);
         await submitApplyAddItem(
-          $dotApi.api!,
+          $dotApi.api,
           await getExtension($user),
           payloadHex as HexString,
           schemaId,

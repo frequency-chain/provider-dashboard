@@ -1,7 +1,7 @@
+import '@frequency-chain/api-augment';
 import { type ApiPromise } from '@polkadot/api';
 import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta, InjectedExtension, Web3AccountsOptions } from '@polkadot/extension-inject/types';
-import type { Option } from '@polkadot/types';
 import type { IKeyringPair } from '@polkadot/types/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { Type } from 'avsc';
@@ -19,6 +19,9 @@ import {
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 import { user } from './stores/userStore';
 import type { MsaInfo } from './storeTypes';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
+import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
+import type { Option } from '@polkadot/types-codec';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -107,7 +110,7 @@ export function selectAccountOptions(accounts: Accounts) {
   });
 }
 
-export function decodeAvroPayload(payload: string, model: string): any {
+export function decodeAvroPayload(payload: string, model: string) {
   const toPlainObject = (value: unknown): unknown => {
     if (value == null) return value;
     if (value instanceof Uint8Array) return new Uint8Array(value);
@@ -128,14 +131,14 @@ export function decodeAvroPayload(payload: string, model: string): any {
     const decoded = avroType.fromBuffer(payloadBytes);
 
     return toPlainObject(decoded);
-  } catch (err: any) {
-    const message = `Unable to decode Avro buffer: ${err?.message ?? String(err)}`
+  } catch (err) {
+    const message = `Unable to decode Avro buffer: ${err instanceof Error ? err.message : String(err)}`;
     console.error('Unable to decode Avro buffer: ', err);
     return message;
   }
 }
 
-export function encodeAvroPayload(data: any, model: string): string {
+export function encodeAvroPayload(data: unknown, model: string): string {
   try {
     const schema = JSON.parse(model);
     const avroType = Type.forSchema(schema);
@@ -196,16 +199,15 @@ export const getExtension = async (account: Account) => {
   return undefined;
 };
 
-export async function getTransactionCost(extrinsic: any, address: string, additionalCost = 0n): Promise<bigint> {
+export async function getTransactionCost(extrinsic:  SubmittableExtrinsic<'promise'>, address: string, additionalCost = 0n): Promise<bigint> {
   const { partialFee } = await extrinsic.paymentInfo(address);
   // Get estimated total cost of txn
-  const estTotalCost: bigint = partialFee.toBigInt() + BigInt(additionalCost);
-  return estTotalCost;
+  return partialFee.toBigInt() + BigInt(additionalCost);
 }
 
 export async function checkFundsForExtrinsic(
   api: ApiPromise,
-  extrinsic: any,
+  extrinsic: SubmittableExtrinsic<'promise'>,
   address: string,
   additionalCost = 0n
 ): Promise<bigint> {
@@ -220,7 +222,7 @@ export async function checkFundsForExtrinsic(
 
 export async function checkCapacityForExtrinsic(
   api: ApiPromise,
-  extrinsic: any,
+  extrinsic: SubmittableExtrinsic<'promise'>,
   signingAccount: Account,
   keyringPair: IKeyringPair
 ): Promise<boolean> {
@@ -234,7 +236,7 @@ export async function checkCapacityForExtrinsic(
 
   const estTotalCost = baseFee.toNumber() + lenFee.toNumber() + adjustedWeightFee.toNumber();
 
-  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<any>;
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<PalletCapacityCapacityDetails>;
   const transferable = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().remainingCapacity.toBigInt() : 0n;
 
   return transferable > estTotalCost;

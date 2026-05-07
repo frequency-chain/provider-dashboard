@@ -217,7 +217,8 @@ describe('getControlKeys', () => {
       rpc: {
         msa: {
           getKeysByMsaId: vi.fn().mockResolvedValue({
-            toHuman: () => ({ msa_keys: fakeKeys }),
+            isSome: true,
+            unwrap: () => ({ msa_keys: fakeKeys }),
           }),
         },
       },

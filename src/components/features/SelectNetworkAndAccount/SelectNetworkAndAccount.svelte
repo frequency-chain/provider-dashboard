@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { onMount, tick } from 'svelte';
+  import { onMount } from 'svelte';
 
   import { allNetworks, NetworkType, type NetworkInfo } from '$lib/stores/networksStore';
 
@@ -66,7 +66,7 @@
     accountErrorMsg = '';
 
     try {
-      await connectAndFetchAccounts(selectedNetwork!, thisWeb3Enable, thisWeb3Accounts);
+      await connectAndFetchAccounts(selectedNetwork, thisWeb3Enable, thisWeb3Accounts);
       if (networkErrorMsg == '' && accounts.size === 0) {
         accountErrorMsg = noAccountsFoundErrorMsg;
       }
@@ -75,7 +75,7 @@
     }
 
     newUser = {
-      network: selectedNetwork!,
+      network: selectedNetwork,
       address: '',
       isProvider: false,
       balances: { transferable: 0n, locked: 0n, total: 0n },

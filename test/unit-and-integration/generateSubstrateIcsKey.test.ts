@@ -20,5 +20,5 @@ describe('Native vs JS key generation', () => {
     expect(jsKeypair.publicKey.length).toBe(nativeKeypair.publicKey.length);
     expect(jsKeypair.secretKey.length).toBe(nativeKeypair.secretKey.length);
     expect(Buffer.from(jsKeypair.publicKey)).toStrictEqual(Buffer.from(nativeKeypair.publicKey));
-  })
-})
+  });
+});

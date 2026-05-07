@@ -3,21 +3,21 @@ import { options } from '@frequency-chain/api-augment';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
-import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
+import type { CommonPrimitivesMsaProviderRegistryEntry, PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 import { hexToString, u8aToHex } from '@polkadot/util';
 import { decodeAvroPayload } from '$lib/utils';
 
-type Schema = {
+interface Schema {
   schemaId: number;
   model: string | undefined;
-};
+}
 
-type Intent = {
+interface Intent {
   intentId: number;
   payloadLocation: string;
   settings: string[];
   schemas: Schema[];
-};
+}
 
 type IntentMap = Map<string, Intent>;
 
@@ -56,7 +56,7 @@ export interface AccountBalances {
   total: bigint;
 }
 export async function getBalances(apiPromise: ApiPromise, ControlKey: string): Promise<AccountBalances> {
-  const accountData = ((await apiPromise.query.system.account(ControlKey)) as any).data;
+  const accountData = (await apiPromise.query.system.account(ControlKey)).data;
   const free = accountData.free.toBigInt();
   const locked = accountData.frozen.toBigInt();
   const transferable = BigInt(free - locked);
@@ -79,7 +79,7 @@ export async function getMsaInfoById(apiPromise: ApiPromise, msaId: number): Pro
   const msaInfo: MsaInfo = { isProvider: false, msaId, providerName: '' };
 
   if (msaInfo.msaId > 0) {
-    const providerRegistry = (await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId)) as Option<any>;
+    const providerRegistry: Option<CommonPrimitivesMsaProviderRegistryEntry> = (await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId));
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
@@ -126,8 +126,10 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 }
 
 export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
-  const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
-  const keys = keyInfoResponse?.msa_keys;
+  // const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
+  // const keys = keyInfoResponse?.msa_keys;
+  const keyInfoResponse = await apiPromise.rpc.msa.getKeysByMsaId(msaId);
+  const keys = keyInfoResponse.isSome ? keyInfoResponse.unwrap().msa_keys : null;
   if (keys) {
     console.info('Successfully found keys.', keys);
     return keys;
@@ -152,14 +154,14 @@ export async function getPublicKeys(apiPromise: ApiPromise, msaId: number, inten
     // Resolve all schema models
     const payloadsWithModels = await Promise.all(payloads.map(async (p) => {
       const model = await getSchemaModel(apiPromise, intent, p.schemaId);
-      return { payload: p, model }
+      return { payload: p, model };
     }));
 
-    const decodedPayloads = payloadsWithModels.map((p) => decodeAvroPayload(p.payload.payload, p.model!));
+    const decodedPayloads = payloadsWithModels.map((p) => decodeAvroPayload(p.payload.payload, p.model));
     publicKeys = decodedPayloads
       .map((dp, i) => {
-        if (!!dp.publicKey) {
-          return u8aToHex(dp.publicKey || [])
+        if (dp.publicKey) {
+          return u8aToHex(dp.publicKey || []);
         }
         return `${i}: ${dp}`;
       });
@@ -212,7 +214,7 @@ export async function getContentHashAndLatestSchemaForIntent(apiPromise: ApiProm
   return { intent, schemaId, contentHash };
 }
 
-export async function getSchemaModel(apiPromise: ApiPromise, intent: Intent, schemaId: number): Promise<string | undefined> {
+export async function getSchemaModel(apiPromise: ApiPromise, intent: Intent, schemaId: number): Promise<string> {
   let model: string | undefined = intent.schemas.find((s) => s.schemaId === schemaId)?.model ?? undefined;
 
   if (!model) {
@@ -225,5 +227,10 @@ export async function getSchemaModel(apiPromise: ApiPromise, intent: Intent, sch
       }
     }
   }
+
+  if (!model) {
+    throw new Error(`Unable to retrieve model for schema ${schemaId}`);
+  }
+
   return model;
 }

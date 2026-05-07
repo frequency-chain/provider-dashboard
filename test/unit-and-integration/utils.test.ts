@@ -35,8 +35,8 @@ vi.mock('../../src/lib/utils', async () => {
   };
 });
 
-vi.mock('../../src/lib/stores/userStore', () => {
-  const { writable } = require('svelte/store');
+vi.mock('../../src/lib/stores/userStore', async () => {
+  const { writable } = await vi.importActual<typeof import('svelte/store')>('svelte/store');
   return { user: writable({ balances: { total: 0n } }) };
 });
 

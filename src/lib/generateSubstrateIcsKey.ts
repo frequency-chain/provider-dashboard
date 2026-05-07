@@ -39,6 +39,6 @@ function ed25519KeypairFromSeed64(seed64: Uint8Array) {
 export async function generateSubstrateKeypair(): Promise<[{ publicKey: Uint8Array, secretKey: Uint8Array }, string]> {
   const mnemonic = generateMnemonic(wordlist, 256);
   const jsSeed = await substrateSeed64FromMnemonic(mnemonic);
-  let { publicKey, secretKey } = ed25519KeypairFromSeed64(jsSeed);
+  const { publicKey, secretKey } = ed25519KeypairFromSeed64(jsSeed);
   return [{ publicKey, secretKey }, mnemonic];
 }
