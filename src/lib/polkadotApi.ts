@@ -127,8 +127,6 @@ export async function getCapacityInfo(apiPromise: ApiPromise, msaId: number): Pr
 }
 
 export async function getControlKeys(apiPromise: ApiPromise, msaId: number): Promise<string[]> {
-  // const keyInfoResponse = (await (apiPromise.rpc as any).msa.getKeysByMsaId(msaId)).toHuman();
-  // const keys = keyInfoResponse?.msa_keys;
   const keyInfoResponse = await apiPromise.rpc.msa.getKeysByMsaId(msaId);
   const keys = keyInfoResponse.isSome ? keyInfoResponse.unwrap().msa_keys : null;
   if (keys) {
@@ -162,13 +160,11 @@ export async function getPublicKeys(apiPromise: ApiPromise, msaId: number, inten
 
     const decodedPayloads = payloadsWithModels.map((p) => decodeAvroPayload(p.payload.payload, p.model));
     publicKeys = decodedPayloads.map((dp, i) => {
-      if (dp.publicKey) {
-        return u8aToHex(dp.publicKey || []);
+      if (dp && typeof dp === 'object' && 'publicKey' in dp && dp?.publicKey) {
+        return u8aToHex(dp.publicKey as Uint8Array);
       }
       return `${i}: ${dp}`;
     });
-    // .filter((dp) => !!dp?.publicKey)
-    // .map((dp) => u8aToHex(dp.publicKey || []));
   }
 
   return publicKeys;
