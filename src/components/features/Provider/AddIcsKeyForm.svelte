@@ -1,10 +1,12 @@
 <script lang="ts">
   import { encodeAvroPayload, getExtension } from '$lib/utils.js';
-  import { Button, Input, Modal } from '@frequency-chain/style-guide';
+  import { Button, IconButton, Input, Modal } from '@frequency-chain/style-guide';
   import { user } from '$lib/stores/userStore.js';
   import { submitApplyAddItem } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
+  import AddToClipboard from '$atoms/AddToClipboard.svelte';
+  import Refresh from '$lib/assets/Refresh.svelte';
   import { getContentHashAndLatestSchemaForIntent, getSchemaModel } from '$lib/polkadotApi';
   import { hexToU8a, u8aToHex } from '@polkadot/util';
   import type { HexString } from '@polkadot/util/types';
@@ -27,6 +29,7 @@
 
   let seedPhraseModalOpen: boolean = $state(false);
   let acknowledgeSavedPhrase: boolean = $state(false);
+  let seedPhraseCopied: boolean = $state(false);
   let generatedSeedPhrase: string = $state('');
   let generatedPublicKeyHex: string = $state('');
 
@@ -39,6 +42,7 @@
     try {
       isGenerating = true;
       acknowledgeSavedPhrase = false;
+      seedPhraseCopied = false;
       const [{ publicKey }, mnemonic] = await generateSubstrateKeypair();
       generatedSeedPhrase = mnemonic;
       generatedPublicKeyHex = u8aToHex(publicKey);
@@ -51,9 +55,13 @@
   };
 
   const closeSeedPhraseModal = () => {
-    if (!acknowledgeSavedPhrase) return;
+    if (!acknowledgeSavedPhrase || !seedPhraseCopied) return;
     publicKeyHex = generatedPublicKeyHex;
     seedPhraseModalOpen = false;
+  };
+
+  const handleSeedPhraseModalOpenChange = (val: boolean) => {
+    seedPhraseModalOpen = val;
   };
 
   const addPublicIcsKey = async () => {
@@ -127,7 +135,7 @@
   id="generated-ics-keypair-modal"
   title="Generated ICS Keypair"
   open={seedPhraseModalOpen}
-  onOpenChange={(val: boolean) => (seedPhraseModalOpen = val)}
+  onOpenChange={handleSeedPhraseModalOpenChange}
 >
   {#snippet body()}
     <div class="column gap-f16">
@@ -136,17 +144,23 @@
       </div>
 
       <div class="rounded-sm border p-3 font-mono break-words">{generatedSeedPhrase}</div>
+      <div class="flex items-center justify-between">
+        <IconButton label="Generate new keypair" onclick={generateKeypair} disabled={isGenerating}>
+          <Refresh />
+        </IconButton>
+        <AddToClipboard copyValue={generatedSeedPhrase} onCopied={() => (seedPhraseCopied = true)} />
+      </div>
 
       <label class="flex items-start gap-2">
         <input type="checkbox" bind:checked={acknowledgeSavedPhrase} />
         <span class="smText">
-          I have securely recorded the seed phrase and understand it cannot be regenerated or displayed again once
+          I have copied the seed phrase using the clipboard button above and recorded it securely. I understand it cannot be regenerated or displayed again once
           closed.
         </span>
       </label>
 
       <div class="flex justify-end">
-        <Button onclick={closeSeedPhraseModal} disabled={!acknowledgeSavedPhrase}>Close</Button>
+        <Button onclick={closeSeedPhraseModal} disabled={!acknowledgeSavedPhrase || !seedPhraseCopied}>Use Key</Button>
       </div>
     </div>
   {/snippet}
