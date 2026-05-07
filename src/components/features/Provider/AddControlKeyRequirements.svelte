@@ -6,7 +6,7 @@
       transactions.
     </li>
     <li>If using a wallet, ensure the new Control Key is imported into your wallet.</li>
-    <li>Select the new Control Key from the dropdown list below.</li>
+    <li>Select the new Control Key from the dropdown list above.</li>
     <li>Click 'Add It.'</li>
     <li>This requires 3 signatures: two for the authorization payload, and one to send the transaction.</li>
     <ul class="unordered-list">

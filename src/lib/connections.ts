@@ -11,6 +11,7 @@ import { mnemonicGenerate } from '@polkadot/util-crypto';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
+import type { HexString } from '@polkadot/util/types';
 
 interface AddKeyData {
   msaId: string;
@@ -104,6 +105,46 @@ export async function submitAddControlKey(
   let extrinsic: any;
   if (isPayingWithCapacity) {
     console.info('Paying for add key extrinsic with capacity');
+    extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
+  } else {
+    extrinsic = addKeyCall;
+  }
+
+  await submitExtrinsic(extrinsic, signingAccount, extension);
+}
+
+// creates the payloads and gets or creates the signatures, then submits the extrinsic
+export async function submitApplyAddItem(
+  api: ApiPromise,
+  extension: InjectedExtension | undefined,
+  payloadHex: HexString,
+  schemaId: number,
+  targetHash: number,
+  signingAccount: Account,
+  msaId: number
+) {
+  if (!api || !(await api.isReady)) {
+    console.debug('api is not available.');
+    return;
+  }
+
+  // mock signatures for fee estimation
+  const mnemonic = mnemonicGenerate(12);
+  const keyring = new Keyring({ type: 'sr25519' });
+  const keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
+  const mockExtrinsic = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [{ Add: { data: payloadHex } }]);
+
+  const isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
+
+  if (!isPayingWithCapacity) {
+    // Not enough capacity, check funds instead
+    await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
+  }
+
+  const addKeyCall = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [{ Add: { data: payloadHex } }]);
+  let extrinsic: any;
+  if (isPayingWithCapacity) {
+    console.info('Paying for applyItemActions extrinsic with capacity');
     extrinsic = api.tx.frequencyTxPayment.payWithCapacity(addKeyCall);
   } else {
     extrinsic = addKeyCall;

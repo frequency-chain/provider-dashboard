@@ -6,6 +6,8 @@
   import ListCard from '../../atoms/ListCard.svelte';
   import AddControlKey from './AddControlKey.svelte';
   import ViewControlKeys from './ViewControlKeys.svelte';
+  import AddIcsKey from './AddIcsKey.svelte';
+  import ViewIcsKeys from './ViewIcsKeys.svelte';
 
   $effect(() => {
     // Easy way to tag a subscription onto this action.
@@ -27,6 +29,14 @@
 </script>
 
 <ListCard title="Provider" list={providerList} errorMessage={errMsg}>
-  <AddControlKey />
-  <ViewControlKeys />
+  <div class="flex flex-col gap-2">
+    <div class="flex flex-wrap gap-2">
+      <AddControlKey />
+      <ViewControlKeys />
+    </div>
+    <div class="flex flex-wrap gap-2">
+      <AddIcsKey />
+      <ViewIcsKeys />
+    </div>
+  </div>
 </ListCard>

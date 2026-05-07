@@ -27,7 +27,7 @@
 
   const addControlKey = async () => {
     if (!selectedAccount || !selectedAccount.injectedAccount) {
-      alert('Please choose an Control Key to add.');
+      alert('Please choose a Control Key to add.');
     } else if (!$user.msaId || !$user.injectedAccount) {
       alert('Invalid provider.');
     } else {

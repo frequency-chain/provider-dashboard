@@ -4,6 +4,7 @@ import type { InjectedAccountWithMeta, InjectedExtension, Web3AccountsOptions } 
 import type { Option } from '@polkadot/types';
 import type { IKeyringPair } from '@polkadot/types/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
+import { Type } from 'avsc';
 import { clsx, type ClassValue } from 'clsx';
 import { get } from 'svelte/store';
 import { twMerge } from 'tailwind-merge';
@@ -104,6 +105,48 @@ export function selectAccountOptions(accounts: Accounts) {
       value: account.address,
     };
   });
+}
+
+export function decodeAvroPayload(payload: string, model: string): any {
+  const toPlainObject = (value: unknown): unknown => {
+    if (value == null) return value;
+    if (value instanceof Uint8Array) return new Uint8Array(value);
+    if (Array.isArray(value)) return value.map(toPlainObject);
+    if (typeof value === 'object') {
+      const entries = Object.entries(value as Record<string, unknown>).map(([k, v]) => [k, toPlainObject(v)]);
+      return Object.fromEntries(entries);
+    }
+    return value;
+  };
+
+  try {
+    const schema = JSON.parse(model);
+    const avroType = Type.forSchema(schema);
+    const payloadBytes = payload.startsWith('0x')
+      ? Buffer.from(payload.slice(2), 'hex')
+      : Buffer.from(payload, 'base64');
+    const decoded = avroType.fromBuffer(payloadBytes);
+
+    return toPlainObject(decoded);
+  } catch (err: any) {
+    const message = `Unable to decode Avro buffer: ${err?.message ?? String(err)}`
+    console.error('Unable to decode Avro buffer: ', err);
+    return message;
+  }
+}
+
+export function encodeAvroPayload(data: any, model: string): string {
+  try {
+    const schema = JSON.parse(model);
+    const avroType = Type.forSchema(schema);
+    console.log('Encoding Avro buffer: ', data);
+    const encoded = avroType.toBuffer(data);
+    console.log('Avro buffer: ', encoded);
+    return `0x${Buffer.from(encoded).toString('hex')}`;
+  } catch (err) {
+    console.error('Unable to encode Avro payload: ', err);
+    return '';
+  }
 }
 
 // create a URL-encoded mailto URL string using the provided parameters.
