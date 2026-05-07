@@ -3,11 +3,11 @@
  * which can't be used here because it contains native code that will not execute in a browser.
  */
 
-import { mnemonicToEntropy, validateMnemonic, generateMnemonic } from '@scure/bip39';
-import { wordlist } from '@scure/bip39/wordlists/english.js';
 import { ed25519 } from '@noble/curves/ed25519.js';
+import { pbkdf2Async } from '@noble/hashes/pbkdf2';
 import { sha512 } from '@noble/hashes/sha2';
-import { pbkdf2Async } from "@noble/hashes/pbkdf2";
+import { generateMnemonic, mnemonicToEntropy, validateMnemonic } from '@scure/bip39';
+import { wordlist } from '@scure/bip39/wordlists/english.js';
 
 // Returns 64-byte BIP39 seed (like PBKDF2-HMAC-SHA512 output)
 function substrateSeed64FromMnemonic(mnemonic: string, passphrase = ''): Promise<Uint8Array> {
@@ -36,7 +36,7 @@ function ed25519KeypairFromSeed64(seed64: Uint8Array) {
   return { seed64, seed32, publicKey, secretKey };
 }
 
-export async function generateSubstrateKeypair(): Promise<[{ publicKey: Uint8Array, secretKey: Uint8Array }, string]> {
+export async function generateSubstrateKeypair(): Promise<[{ publicKey: Uint8Array; secretKey: Uint8Array }, string]> {
   const mnemonic = generateMnemonic(wordlist, 256);
   const jsSeed = await substrateSeed64FromMnemonic(mnemonic);
   const { publicKey, secretKey } = ed25519KeypairFromSeed64(jsSeed);

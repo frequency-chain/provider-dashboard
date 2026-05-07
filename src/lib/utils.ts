@@ -1,7 +1,10 @@
 import '@frequency-chain/api-augment';
 import { type ApiPromise } from '@polkadot/api';
+import type { SubmittableExtrinsic } from '@polkadot/api/types';
 import { web3AccountsSubscribe } from '@polkadot/extension-dapp';
 import type { InjectedAccountWithMeta, InjectedExtension, Web3AccountsOptions } from '@polkadot/extension-inject/types';
+import type { Option } from '@polkadot/types-codec';
+import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 import type { IKeyringPair } from '@polkadot/types/types';
 import { formatBalance, hexToString, isFunction } from '@polkadot/util';
 import { Type } from 'avsc';
@@ -19,9 +22,6 @@ import {
 import { NetworkType, type NetworkInfo } from './stores/networksStore';
 import { user } from './stores/userStore';
 import type { MsaInfo } from './storeTypes';
-import type { SubmittableExtrinsic } from '@polkadot/api/types';
-import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
-import type { Option } from '@polkadot/types-codec';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -199,7 +199,11 @@ export const getExtension = async (account: Account) => {
   return undefined;
 };
 
-export async function getTransactionCost(extrinsic:  SubmittableExtrinsic<'promise'>, address: string, additionalCost = 0n): Promise<bigint> {
+export async function getTransactionCost(
+  extrinsic: SubmittableExtrinsic<'promise'>,
+  address: string,
+  additionalCost = 0n
+): Promise<bigint> {
   const { partialFee } = await extrinsic.paymentInfo(address);
   // Get estimated total cost of txn
   return partialFee.toBigInt() + BigInt(additionalCost);
@@ -236,7 +240,9 @@ export async function checkCapacityForExtrinsic(
 
   const estTotalCost = baseFee.toNumber() + lenFee.toNumber() + adjustedWeightFee.toNumber();
 
-  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<PalletCapacityCapacityDetails>;
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(
+    signingAccount.msaId
+  )) as Option<PalletCapacityCapacityDetails>;
   const transferable = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().remainingCapacity.toBigInt() : 0n;
 
   return transferable > estTotalCost;

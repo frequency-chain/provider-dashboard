@@ -1,11 +1,11 @@
 import type { DotApi, MsaInfo } from '$lib/storeTypes';
+import { decodeAvroPayload } from '$lib/utils';
 import { options } from '@frequency-chain/api-augment';
 import { ApiPromise, Keyring, WsProvider } from '@polkadot/api';
 import type { Option, u64 } from '@polkadot/types';
 import type { ChainProperties } from '@polkadot/types/interfaces';
 import type { CommonPrimitivesMsaProviderRegistryEntry, PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 import { hexToString, u8aToHex } from '@polkadot/util';
-import { decodeAvroPayload } from '$lib/utils';
 
 interface Schema {
   schemaId: number;
@@ -79,7 +79,8 @@ export async function getMsaInfoById(apiPromise: ApiPromise, msaId: number): Pro
   const msaInfo: MsaInfo = { isProvider: false, msaId, providerName: '' };
 
   if (msaInfo.msaId > 0) {
-    const providerRegistry: Option<CommonPrimitivesMsaProviderRegistryEntry> = (await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId));
+    const providerRegistry: Option<CommonPrimitivesMsaProviderRegistryEntry> =
+      await apiPromise.query.msa.providerToRegistryEntryV2(msaInfo.msaId);
     if (providerRegistry.isSome) {
       msaInfo.isProvider = true;
       const registryEntry = providerRegistry.unwrap();
@@ -152,19 +153,20 @@ export async function getPublicKeys(apiPromise: ApiPromise, msaId: number, inten
     }));
 
     // Resolve all schema models
-    const payloadsWithModels = await Promise.all(payloads.map(async (p) => {
-      const model = await getSchemaModel(apiPromise, intent, p.schemaId);
-      return { payload: p, model };
-    }));
+    const payloadsWithModels = await Promise.all(
+      payloads.map(async (p) => {
+        const model = await getSchemaModel(apiPromise, intent, p.schemaId);
+        return { payload: p, model };
+      })
+    );
 
     const decodedPayloads = payloadsWithModels.map((p) => decodeAvroPayload(p.payload.payload, p.model));
-    publicKeys = decodedPayloads
-      .map((dp, i) => {
-        if (dp.publicKey) {
-          return u8aToHex(dp.publicKey || []);
-        }
-        return `${i}: ${dp}`;
-      });
+    publicKeys = decodedPayloads.map((dp, i) => {
+      if (dp.publicKey) {
+        return u8aToHex(dp.publicKey || []);
+      }
+      return `${i}: ${dp}`;
+    });
     // .filter((dp) => !!dp?.publicKey)
     // .map((dp) => u8aToHex(dp.publicKey || []));
   }
@@ -198,7 +200,11 @@ export async function getIntent(apiPromise: ApiPromise, intentName: string): Pro
   return intent;
 }
 
-export async function getContentHashAndLatestSchemaForIntent(apiPromise: ApiPromise, msaId: number, intentName: string) {
+export async function getContentHashAndLatestSchemaForIntent(
+  apiPromise: ApiPromise,
+  msaId: number,
+  intentName: string
+) {
   let contentHash = 0;
 
   const intent = await getIntent(apiPromise, intentName);

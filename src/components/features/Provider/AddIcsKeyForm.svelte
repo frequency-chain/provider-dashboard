@@ -64,10 +64,14 @@
     } else {
       try {
         if (!$dotApi.api) {
-          throw new Error("Null or undefined API object");
+          throw new Error('Null or undefined API object');
         }
         isLoading = true;
-        const { contentHash, schemaId, intent } = await getContentHashAndLatestSchemaForIntent($dotApi.api, $user.msaId, 'ics.public-key-key-agreement');
+        const { contentHash, schemaId, intent } = await getContentHashAndLatestSchemaForIntent(
+          $dotApi.api,
+          $user.msaId,
+          'ics.public-key-key-agreement'
+        );
         const model = await getSchemaModel($dotApi.api, intent, schemaId);
         const publicKeyBytes = hexToU8a(publicKeyHex);
         const payloadHex = encodeAvroPayload({ publicKey: Buffer.from(publicKeyBytes) }, model);
@@ -136,7 +140,8 @@
       <label class="flex items-start gap-2">
         <input type="checkbox" bind:checked={acknowledgeSavedPhrase} />
         <span class="smText">
-          I have securely recorded the seed phrase and understand it cannot be regenerated or displayed again once closed.
+          I have securely recorded the seed phrase and understand it cannot be regenerated or displayed again once
+          closed.
         </span>
       </label>
 

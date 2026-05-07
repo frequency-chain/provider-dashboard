@@ -16,7 +16,10 @@
   }
 </script>
 
-<Modal title="ICS Public Keys" description={`ICS Public Keys associated with the logged in provider (MSA ID: ${$user.msaId})`}>
+<Modal
+  title="ICS Public Keys"
+  description={`ICS Public Keys associated with the logged in provider (MSA ID: ${$user.msaId})`}
+>
   {#snippet trigger()}
     <Button size="sm" onclick={handleGetIcsKeys}>View ICS Keys</Button>
   {/snippet}

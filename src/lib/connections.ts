@@ -5,14 +5,14 @@ import type { SubmittableExtrinsic } from '@polkadot/api/promise/types';
 import type { InjectedExtension } from '@polkadot/extension-inject/types';
 import type { KeyringPair } from '@polkadot/keyring/types';
 import type { Option } from '@polkadot/types';
+import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 import type { IKeyringPair, Signer, SignerPayloadRaw, SignerResult } from '@polkadot/types/types';
 import { isFunction, u8aToHex, u8aWrapBytes } from '@polkadot/util';
 import { mnemonicGenerate } from '@polkadot/util-crypto';
+import type { HexString } from '@polkadot/util/types';
 import type { Account } from './stores/accountsStore';
 import { handleResult, handleTxnError } from './stores/activityLogStore';
 import { checkCapacityForExtrinsic, checkFundsForExtrinsic } from './utils';
-import type { HexString } from '@polkadot/util/types';
-import type { PalletCapacityCapacityDetails } from '@polkadot/types/lookup';
 
 interface AddKeyData {
   msaId: string;
@@ -133,7 +133,9 @@ export async function submitApplyAddItem(
   const mnemonic = mnemonicGenerate(12);
   const keyring = new Keyring({ type: 'sr25519' });
   const keyringPair: IKeyringPair = keyring.addFromUri(mnemonic, { name: 'dummykeys' }, 'sr25519');
-  const mockExtrinsic = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [{ Add: { data: payloadHex } }]);
+  const mockExtrinsic = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [
+    { Add: { data: payloadHex } },
+  ]);
 
   const isPayingWithCapacity = await checkCapacityForExtrinsic(api, mockExtrinsic, signingAccount, keyringPair);
 
@@ -142,7 +144,9 @@ export async function submitApplyAddItem(
     await checkFundsForExtrinsic(api, mockExtrinsic, signingAccount.address);
   }
 
-  const addKeyCall = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [{ Add: { data: payloadHex } }]);
+  const addKeyCall = api.tx.statefulStorage.applyItemActions(msaId, schemaId, targetHash, [
+    { Add: { data: payloadHex } },
+  ]);
   let extrinsic;
   if (isPayingWithCapacity) {
     console.info('Paying for applyItemActions extrinsic with capacity');
@@ -188,7 +192,9 @@ export async function submitUnstake(
 
   const extrinsic = api.tx.capacity?.unstake(providerId, unstakeAmount);
   await checkFundsForExtrinsic(api, extrinsic, signingAccount.address);
-  const capacityLedgerResp = (await api.query.capacity.capacityLedger(signingAccount.msaId)) as Option<PalletCapacityCapacityDetails>;
+  const capacityLedgerResp = (await api.query.capacity.capacityLedger(
+    signingAccount.msaId
+  )) as Option<PalletCapacityCapacityDetails>;
   const totalTokensStaked = capacityLedgerResp.isSome ? capacityLedgerResp.unwrap().totalTokensStaked.toBigInt() : 0n;
   if (totalTokensStaked < unstakeAmount) throw new Error('User does not have the requested amount staked to unstake.');
   await submitExtrinsic(extrinsic, signingAccount, extension);
