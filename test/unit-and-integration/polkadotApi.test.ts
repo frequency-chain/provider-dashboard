@@ -27,7 +27,7 @@ describe('createApi', async () => {
     const mockApi = await createApi(endpoint);
 
     expect(mockApi.wsProvider).toBeDefined();
-    expect(mockApi.api.isReady).resolves.toBe(true);
+    await expect(mockApi.api.isReady).resolves.toBe(true);
     expect(mockApi.keyring).toBeDefined();
     expect(mockApi.selectedEndpoint).toBe(endpoint);
     expect(mockApi.options).toBeDefined();
