@@ -7,10 +7,6 @@
     </li>
     <li>Paste the public key hex value into the entry form.</li>
     <li>Click 'Add It.'</li>
-    <li>This requires 2 signatures: one for the authorization payload, and one to send the transaction.</li>
-    <ul class="unordered-list">
-      <li>Sign the payload with the current Control Key,</li>
-      <li>Sign the transaction with the current Control Key.</li>
-    </ul>
+    <li>This requires a single signature with the current Control Key to send the transaction.</li>
   </ol>
 </div>
