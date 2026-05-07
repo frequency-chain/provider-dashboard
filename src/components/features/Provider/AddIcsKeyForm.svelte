@@ -154,8 +154,8 @@
       <label class="flex items-start gap-2">
         <input type="checkbox" bind:checked={acknowledgeSavedPhrase} />
         <span class="smText">
-          I have copied the seed phrase using the clipboard button above and recorded it securely. I understand it cannot be regenerated or displayed again once
-          closed.
+          I have copied the seed phrase using the clipboard button above and recorded it securely. I understand it
+          cannot be regenerated or displayed again once closed.
         </span>
       </label>
 

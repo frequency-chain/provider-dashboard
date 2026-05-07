@@ -17,8 +17,8 @@
     "coverage": "vitest run --coverage",
     "lint": "npx eslint src test",
     "lint:fix": "npx eslint --fix src test",
-    "format": "npm run lint:fix && npm run prettier",
-    "prettier": "prettier --write .",
+    "format": "npm run lint:fix && npm run prettier --check --plugin prettier-plugin-tailwindcss --plugin prettier-plugin-svelte test src",
+    "prettier": "prettier --write --plugin prettier-plugin-tailwindcss --plugin prettier-plugin-svelte test src",
     "prettier:check:ci": "npx prettier --check --plugin prettier-plugin-tailwindcss --plugin prettier-plugin-svelte test src"
   },
   "devDependencies": {
