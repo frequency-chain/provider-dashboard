@@ -1,13 +1,14 @@
 <script lang="ts">
   import { encodeAvroPayload, getExtension } from '$lib/utils.js';
-  import { Button, Input } from '@frequency-chain/style-guide';
+  import { Button, Input, Modal } from '@frequency-chain/style-guide';
   import { user } from '$lib/stores/userStore.js';
   import { submitApplyAddItem } from '$lib/connections.js';
   import { dotApi } from '$lib/stores.js';
   import LoadingIcon from '$lib/assets/LoadingIcon.svelte';
   import { getContentHashAndLatestSchemaForIntent, getSchemaModel } from '$lib/polkadotApi';
-  import { hexToU8a } from '@polkadot/util';
+  import { hexToU8a, u8aToHex } from '@polkadot/util';
   import type { HexString } from '@polkadot/util/types';
+  import { generateSubstrateKeypair } from '$lib/generateSubstrateIcsKey.js';
 
   interface Props {
     modalOpen?: boolean | null;
@@ -21,11 +22,38 @@
 
   let isLoading: boolean = $state(false);
   let isSubmitDisabled = $derived(!isValidPublicKeyHex || isLoading);
+  let isGenerating: boolean = $state(false);
+
+  let seedPhraseModalOpen: boolean = $state(false);
+  let acknowledgeSavedPhrase: boolean = $state(false);
+  let generatedSeedPhrase: string = $state('');
+  let generatedPublicKeyHex: string = $state('');
 
   let error: string | undefined = $state();
   $effect(() => {
     if (publicKeyHex) error = undefined;
   });
+
+  const generateKeypair = async () => {
+    try {
+      isGenerating = true;
+      acknowledgeSavedPhrase = false;
+      const [{ publicKey }, mnemonic] = await generateSubstrateKeypair();
+      generatedSeedPhrase = mnemonic;
+      generatedPublicKeyHex = u8aToHex(publicKey);
+      seedPhraseModalOpen = true;
+    } catch (err) {
+      error = (err as Error).message;
+    } finally {
+      isGenerating = false;
+    }
+  };
+
+  const closeSeedPhraseModal = () => {
+    if (!acknowledgeSavedPhrase) return;
+    publicKeyHex = generatedPublicKeyHex;
+    seedPhraseModalOpen = false;
+  };
 
   const addPublicIcsKey = async () => {
     if (!isValidPublicKeyHex) {
@@ -68,11 +96,49 @@
     disabled={isLoading}
   />
 
-  <Button onclick={addPublicIcsKey} disabled={isSubmitDisabled}>
-    {#if isLoading}
-      <LoadingIcon />
-    {:else}
-      Add Control Key
-    {/if}</Button
-  >
+  <div class="flex gap-2">
+    <Button onclick={generateKeypair} disabled={isLoading || isGenerating}>
+      {#if isGenerating}
+        <LoadingIcon />
+      {:else}
+        Generate Keypair
+      {/if}
+    </Button>
+
+    <Button onclick={addPublicIcsKey} disabled={isSubmitDisabled || isGenerating}>
+      {#if isLoading}
+        <LoadingIcon />
+      {:else}
+        Add Public Key
+      {/if}</Button
+    >
+  </div>
 </form>
+
+<Modal
+  id="generated-ics-keypair-modal"
+  title="Generated ICS Keypair"
+  open={seedPhraseModalOpen}
+  onOpenChange={(val: boolean) => (seedPhraseModalOpen = val)}
+>
+  {#snippet body()}
+    <div class="column gap-f16">
+      <div class="smText">
+        Record this seed phrase securely before closing. It will not be shown again after this dialog is closed.
+      </div>
+
+      <div class="rounded-sm border p-3 font-mono break-words">{generatedSeedPhrase}</div>
+
+      <label class="flex items-start gap-2">
+        <input type="checkbox" bind:checked={acknowledgeSavedPhrase} />
+        <span class="smText">
+          I have securely recorded the seed phrase and understand it cannot be regenerated or displayed again once closed.
+        </span>
+      </label>
+
+      <div class="flex justify-end">
+        <Button onclick={closeSeedPhraseModal} disabled={!acknowledgeSavedPhrase}>Close</Button>
+      </div>
+    </div>
+  {/snippet}
+</Modal>
